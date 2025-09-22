@@ -1,6 +1,6 @@
-trainset: gsm8k-zh
-valset: null
-max_examples: 5
+# trainset: gsm8k-zh  # Commented out to allow data_source in child configs
+# valset: null
+max_examples: 10
 
 student_model: Qwen/Qwen3-4B
 teacher_model: Arc-Intelligence/ATLAS-8B-Thinking

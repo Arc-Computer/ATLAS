@@ -18,6 +18,7 @@ def load_arc_atlas_dataset_from_hf() -> List[ATLASDataInst]:
             "ground_truth": example["ground_truth"],
             "additional_context": {},
         })
+        
     return result
 
 
@@ -32,6 +33,151 @@ def load_gsm8k_zh_dataset() -> List[ATLASDataInst]:
         })
     return result
 
+
+def load_dynamic_dataset(data_source_config: Dict[str, Any], max_examples: int = 5) -> List[ATLASDataInst]:
+    """
+    Load dataset dynamically from configured source.
+    Supports multiple source types for different agents.
+    """
+    source_type = data_source_config.get('type', 'file')
+
+    if source_type == 'file':
+        return load_dataset_from_jsonl(
+            data_source_config['path'],
+            data_source_config.get('columns')
+        )
+
+    elif source_type == 'http_api':
+        import requests
+        url = data_source_config['url']
+        transform = data_source_config.get('transform', {})
+
+        try:
+            response = requests.get(url, timeout=5)
+            data = response.json()
+
+            dataset = []
+            if transform:
+                exec_globals = {'data': data, 'json': json}
+                exec(transform.get('script', ''), exec_globals)
+                items = exec_globals.get('result', [])
+            else:
+                items = data if isinstance(data, list) else [data]
+
+            for item in items[:max_examples]:
+                dataset.append({
+                    "question": item.get(transform.get('question_field', 'question'), ''),
+                    "ground_truth": item.get(transform.get('answer_field', 'ground_truth'), '{}'),
+                    "additional_context": item.get('context', {}),
+                })
+            return dataset
+
+        except Exception as e:
+            print(f"Failed to fetch from API: {e}")
+            return []
+
+    elif source_type == 'prometheus_alerts':
+        import requests
+        url = data_source_config.get('url', 'http://localhost:9090/api/v1/alerts')
+
+        try:
+            response = requests.get(url, timeout=5)
+            data = response.json()
+            alerts = []
+
+            for alert in data['data']['alerts']:
+                if alert['state'] == 'firing':
+                    alertname = alert['labels'].get('alertname', 'Unknown')
+                    desc = alert['annotations'].get('description', '')
+                    alerts.append(f"{alertname}: {desc}")
+
+            if not alerts:
+                print("No firing alerts found, using placeholder")
+                alerts = ["No active alerts"]
+
+            dataset = []
+            for i in range(min(max_examples, max(1, len(alerts) // 5))):
+                dataset.append({
+                    "question": json.dumps(alerts[i*5:(i+1)*5] if len(alerts) > 5 else alerts),
+                    "ground_truth": "{}",
+                    "additional_context": {},
+                })
+            return dataset
+
+        except Exception as e:
+            print(f"Failed to fetch Prometheus alerts: {e}")
+            return []
+
+    elif source_type == 'itbench_scenarios':
+        import yaml
+        import glob
+        scenarios_dir = data_source_config.get('scenarios_dir',
+            '/Users/arc-aman/Documents/GitHub/ATLAS/ITBench-Scenarios/sre/roles/incidents/files')
+
+        dataset = []
+        spec_files = glob.glob(f"{scenarios_dir}/specs/*.yaml")[:max_examples]
+
+        for spec_file in spec_files:
+            incident_id = os.path.basename(spec_file).replace('.yaml', '')
+            ground_truth_file = f"{scenarios_dir}/ground_truths/{incident_id}.yaml"
+
+            with open(spec_file, 'r') as f:
+                spec = yaml.safe_load(f)
+
+            if os.path.exists(ground_truth_file):
+                with open(ground_truth_file, 'r') as f:
+                    ground_truth = yaml.safe_load(f)
+
+                expected_json = {
+                    "entities": [],
+                    "propagations": []
+                }
+
+                for group in ground_truth.get('groups', []):
+                    expected_json["entities"].append({
+                        "id": group['id'],
+                        "root_cause": group.get('root_cause', False)
+                    })
+
+                for prop in ground_truth.get('propagations', []):
+                    expected_json["propagations"].append({
+                        "source": prop['source'],
+                        "target": prop['target'],
+                        "condition": prop.get('condition', ''),
+                        "effect": prop.get('effect', '')
+                    })
+
+                alert_text = f"Incident: {spec['metadata']['name']}\n"
+                alert_text += f"Platform: {spec['metadata']['platform']}\n"
+                alert_text += f"Complexity: {spec['metadata']['complexity']}\n"
+
+                if 'faults' in spec['spec']:
+                    for fault in spec['spec']['faults']:
+                        alert_text += f"Fault configuration: {json.dumps(fault)}\n"
+
+                dataset.append({
+                    'question': alert_text,
+                    'ground_truth': json.dumps(expected_json),
+                    'additional_context': spec
+                })
+
+        print(f"Loaded {len(dataset)} ITBench scenarios with ground truth")
+        return dataset
+
+    elif source_type == 'custom_function':
+        module_path = data_source_config['module']
+        function_name = data_source_config['function']
+
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("custom_data", module_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        fetch_function = getattr(module, function_name)
+        return fetch_function(max_examples)
+
+    else:
+        raise ValueError(f"Unknown data source type: {source_type}")
 
 def load_dataset_from_jsonl(path: str, column_config: Optional[Dict[str, str]] = None) -> List[ATLASDataInst]:
     dataset = []
@@ -93,6 +239,7 @@ def run_gepa_optimization(
             reflection_instructions=reflection_instructions,
             evaluation_config=evaluation_config,
             optimization_targets=optimization_targets,
+            student_model=student_model,
         )
     else:
         adapter = ATLASGEPAAdapter(
@@ -143,6 +290,12 @@ def run_gepa_optimization(
             print(f"[ERROR] Reflection LM failed: {e} (Model: {reflection_lm})")
             raise
 
+    print(f"\nCalling gepa.optimize with:")
+    print(f"  - {len(trainset)} training examples")
+    print(f"  - {len(valset if valset else trainset)} validation examples")
+    print(f"  - Max metric calls: {max_metric_calls}")
+    print(f"  - Display progress: {gepa_config.get('display_progress_bar', False)}")
+
     result = gepa.optimize(
         seed_candidate=seed_prompts,
         trainset=trainset,
@@ -152,6 +305,8 @@ def run_gepa_optimization(
         max_metric_calls=max_metric_calls,
         **gepa_config
     )
+
+    print("\nGEPA optimization completed!")
     
     return result
 
@@ -184,7 +339,8 @@ def main():
     parser.add_argument(
         "--trainset",
         type=str,
-        required=True,
+        required=False,
+        default=None,
         help="Path to training dataset (JSONL format)",
     )
     parser.add_argument(
@@ -196,13 +352,15 @@ def main():
     parser.add_argument(
         "--student-model",
         type=str,
-        required=True,
+        required=False,
+        default=None,
         help="Student model",
     )
     parser.add_argument(
         "--teacher-model",
         type=str,
-        required=True,
+        required=False,
+        default=None,
         help="Teacher model",
     )
     parser.add_argument(
@@ -277,7 +435,8 @@ def main():
                     base = yaml.safe_load(f)
                     base_config.update(base)
 
-        base_config.update(config)
+        config_without_defaults = {k: v for k, v in config.items() if k != 'defaults'}
+        base_config.update(config_without_defaults)
         config = base_config
     
     compatibility_mode = config.get('compatibility_mode', False)
@@ -302,19 +461,29 @@ def main():
     print("Loading datasets...")
     data_config = config.get('data', {})
     column_config = data_config.get('columns')
+    max_examples = config.get('max_examples', 5)
+    print(f"DEBUG: max_examples = {max_examples}")
 
-    if args.trainset == "arc-atlas-rl":
+    data_source = config.get('data_source')
+    if data_source:
+        print(f"Using dynamic data source: {data_source.get('type')}")
+        trainset = load_dynamic_dataset(data_source, max_examples)
+        print(f"DEBUG: Loaded {len(trainset)} from dynamic dataset")
+        valset = trainset
+        print(f"DEBUG: valset = trainset, now have {len(valset)} validation")
+    elif args.trainset and args.trainset == "arc-atlas-rl":
         trainset = load_arc_atlas_dataset_from_hf()
         valset = None
-    elif args.trainset == "gsm8k-zh":
+    elif args.trainset and args.trainset == "gsm8k-zh":
         trainset = load_gsm8k_zh_dataset()
         valset = None
-    else:
+    elif args.trainset:
         trainset = load_dataset_from_jsonl(args.trainset, column_config)
         valset = load_dataset_from_jsonl(args.valset, column_config) if args.valset else None
+    else:
+        raise ValueError("No data source specified. Either provide --trainset or configure data_source in config file")
 
-    max_examples = config.get('max_examples')
-    if max_examples:
+    if max_examples and not data_source:
         trainset = trainset[:max_examples]
         if valset:
             valset = valset[:max_examples]
@@ -355,14 +524,12 @@ def main():
         if agent_type:
             from wrappers import load_wrapper
             user_agent = load_wrapper(agent_type, agent_config)
-            student_model = None
         elif config.get('user_agent'):
             from wrappers import load_wrapper
             user_agent = load_wrapper(
                 config['user_agent']['type'],
                 config['user_agent']['config']
             )
-            student_model = None
         else:
             raise ValueError("Compatibility mode requires agent_type or user_agent configuration")
 
@@ -387,6 +554,8 @@ def main():
         print(f"Using vLLM client at {args.vllm_host}:{args.vllm_port}")
 
     print("\nStarting GEPA optimization...")
+    print(f"GEPA config: {gepa_config}")
+    print(f"Progress bar enabled: {gepa_config.get('display_progress_bar', False)}")
 
     result = run_gepa_optimization(
         teacher_model=teacher_model,

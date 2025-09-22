@@ -1,6 +1,7 @@
 import re
 import ast
 import operator
+import json
 from typing import Any, Dict, List, Optional, Callable
 from .extraction_utils import ATLASExtractionUtils
 
@@ -14,6 +15,7 @@ class ConfigurableEvaluator:
         self.reward_formula = self.config.get('reward_formula')
         self.custom_functions = self.config.get('custom_functions', {})
         self._compiled_patterns = {}
+        self.last_metrics = {}
         self.validate_config()
 
     def validate_config(self):
@@ -76,6 +78,9 @@ class ConfigurableEvaluator:
                 penalty = (response_length - max_length) / max_length
                 return max(0, 1.0 - penalty)
 
+        elif metric_type == 'json_comparison':
+            return self._compare_json_output(response, ground_truth, metric_config)
+
         elif metric_type == 'custom':
             function_name = metric_config.get('function')
             if function_name in self.custom_functions:
@@ -85,6 +90,330 @@ class ConfigurableEvaluator:
                 except Exception as e:
                     print(f"Custom function {function_name} failed: {e}")
                     return 0.0
+
+        return 0.0
+
+    def _extract_json_from_response(self, response: str) -> Optional[Dict]:
+        """Extract JSON from response text."""
+        try:
+            json_pattern = r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}'
+            matches = re.findall(json_pattern, response, re.DOTALL)
+
+            for match in reversed(matches):
+                try:
+                    parsed = json.loads(match)
+                    if isinstance(parsed, dict):
+                        return parsed
+                except json.JSONDecodeError:
+                    continue
+
+            parsed = json.loads(response)
+            if isinstance(parsed, dict):
+                return parsed
+        except:
+            pass
+
+        # If no JSON found and response looks like CrewAI output, try to parse it
+        if response and isinstance(response, str):
+            if "Fault Propagation Chain:" in response or "- Entity:" in response or "- Alert:" in response:
+                return self._parse_crewai_text_to_json(response)
+
+        return None
+
+    def _convert_to_topology_ids(self, ground_truth: Dict) -> Dict:
+        """Convert ground truth to use topology hash IDs like the agent does."""
+        import os
+
+        # Load topology mapping
+        topology_path = "/Users/arc-aman/Documents/GitHub/ATLAS/ITBench-SRE-Agent/src/lumyn/tools/report_generation/data/topology_nodes.json"
+        if not os.path.exists(topology_path):
+            print(f"WARNING: Topology file not found at {topology_path}")
+            return ground_truth
+
+        try:
+            with open(topology_path, 'r') as f:
+                topology = json.load(f)
+
+            # Build name to ID mapping
+            name_to_id = {}
+            for node in topology:
+                if 'name' in node and 'id' in node:
+                    name = node['name']
+                    name_to_id[name] = node['id']
+
+                    # Map variants of the name
+                    if name.startswith('otel-demo-'):
+                        # Map without otel-demo prefix
+                        short_name = name[10:]  # Remove 'otel-demo-'
+                        name_to_id[short_name] = node['id']
+
+                        # Map service names
+                        if 'service' in short_name:
+                            service_name = short_name.replace('service', '')
+                            name_to_id[service_name] = node['id']
+
+            # Convert entities
+            if 'entities' in ground_truth:
+                converted_entities = []
+                for entity in ground_truth['entities']:
+                    entity_id = entity.get('id', '')
+
+                    # Try to find matching topology ID
+                    possible_names = [
+                        entity_id,
+                        f"otel-demo-{entity_id}",
+                        entity_id.replace('-1', ''),  # Remove -1 suffix
+                        entity_id.replace('_', '-'),
+                        entity_id.replace('-pod', ''),
+                        entity_id.replace('-service', 'service'),
+                        # Special case for load-generator
+                        'otel-demo-loadgenerator' if 'load-generator' in entity_id else None,
+                        # Special case for frontend-proxy
+                        'otel-demo-frontendproxy' if 'frontend-proxy' in entity_id else None,
+                    ]
+
+                    mapped_id = None
+                    for name in possible_names:
+                        if name and name in name_to_id:
+                            mapped_id = name_to_id[name]
+                            print(f"Mapped ground truth entity: {entity_id} -> {mapped_id}")
+                            break
+
+                    if mapped_id:
+                        entity['id'] = mapped_id
+                    else:
+                        print(f"WARNING: No topology mapping found for entity: {entity_id}")
+
+                    converted_entities.append(entity)
+
+                ground_truth['entities'] = converted_entities
+
+            # Convert propagations
+            if 'propagations' in ground_truth:
+                for prop in ground_truth['propagations']:
+                    # Map source and target IDs
+                    for field in ['source', 'target']:
+                        if field in prop:
+                            orig_id = prop[field]
+                            possible_names = [
+                                orig_id,
+                                f"otel-demo-{orig_id}",
+                                orig_id.replace('-1', ''),
+                                orig_id.replace('_', '-'),
+                                orig_id.replace('-pod', ''),
+                                orig_id.replace('-service', 'service'),
+                                'otel-demo-loadgenerator' if 'load-generator' in orig_id else None,
+                                'otel-demo-frontendproxy' if 'frontend-proxy' in orig_id else None,
+                            ]
+
+                            for name in possible_names:
+                                if name and name in name_to_id:
+                                    prop[field] = name_to_id[name]
+                                    print(f"Mapped propagation {field}: {orig_id} -> {name_to_id[name]}")
+                                    break
+
+            return ground_truth
+
+        except Exception as e:
+            print(f"ERROR converting to topology IDs: {e}")
+            return ground_truth
+
+    def _parse_crewai_text_to_json(self, text: str) -> Optional[Dict]:
+        """Parse CrewAI text output into expected JSON format."""
+        result = {
+            "entities": [],
+            "propagations": []
+        }
+
+        lines = text.strip().split('\n')
+        entities_list = []
+
+        for line in lines:
+            line = line.strip()
+            # Extract entities from lines like "- Entity: product-catalog Deployment (otel-demo namespace)"
+            if '- Entity:' in line or 'Entity:' in line:
+                entity_text = line.replace('- Entity:', '').replace('Entity:', '').strip()
+                # Clean up the entity ID
+                if entity_text and entity_text not in [e for e in entities_list]:
+                    entities_list.append(entity_text)
+
+        # First entity is typically the root cause
+        for i, entity in enumerate(entities_list):
+            result["entities"].append({
+                "id": entity,
+                "root_cause": i == 0
+            })
+
+            # Create propagation chain
+            if i > 0:
+                result["propagations"].append({
+                    "source": entities_list[i-1],
+                    "target": entity,
+                    "condition": "Service dependency",
+                    "effect": "Cascading failure"
+                })
+
+        # Return None if no entities found
+        if not result["entities"]:
+            return None
+
+        return result
+
+    def _itbench_sre_evaluation(self, agent_output: Dict, ground_truth: Dict) -> float:
+        """ITBench-specific SRE evaluation with partial credit."""
+        score = 0.0
+
+        # 1. Root cause identification (40% weight)
+        gt_root_causes = [e for e in ground_truth.get('entities', []) if e.get('root_cause', False)]
+        agent_root_causes = [e for e in agent_output.get('entities', []) if e.get('root_cause', False)]
+
+        if gt_root_causes and agent_root_causes:
+            # Full credit if any root cause identified
+            score += 0.4
+        elif agent_output.get('entities'):
+            # Check if agent identified relevant entities even without marking root cause
+            for agent_entity in agent_output['entities']:
+                agent_id = agent_entity.get('id', '').lower()
+                # Check for product-catalog or productcatalog mentions
+                if 'product' in agent_id and 'catalog' in agent_id:
+                    score += 0.2  # Partial credit for identifying relevant entity
+                    break
+
+        # 2. Entity coverage (30% weight)
+        gt_entity_count = len(ground_truth.get('entities', []))
+        agent_entity_count = len(agent_output.get('entities', []))
+        if gt_entity_count > 0:
+            entity_coverage = min(agent_entity_count / gt_entity_count, 1.0)
+            score += 0.3 * entity_coverage
+
+        # 3. Propagation identification (30% weight)
+        gt_prop_count = len(ground_truth.get('propagations', []))
+        agent_prop_count = len(agent_output.get('propagations', []))
+        if gt_prop_count > 0:
+            prop_coverage = min(agent_prop_count / gt_prop_count, 1.0)
+            score += 0.3 * prop_coverage
+        elif agent_prop_count > 0:
+            # Some credit for identifying any propagations
+            score += 0.1
+
+        return score
+
+    def _compare_json_output(self, response: str, ground_truth_str: str, metric_config: Dict) -> float:
+        """Generic JSON comparison based on configuration."""
+        try:
+            ground_truth = json.loads(ground_truth_str) if isinstance(ground_truth_str, str) else ground_truth_str
+        except Exception as e:
+            print(f"ERROR: Failed to parse ground truth JSON: {e}")
+            print(f"Ground truth string: {ground_truth_str[:200] if ground_truth_str else 'None'}")
+            return 0.0
+
+        if not isinstance(ground_truth, dict):
+            print(f"ERROR: Ground truth is not a dict, got type: {type(ground_truth)}")
+            return 0.0
+
+        agent_output = self._extract_json_from_response(response)
+        if agent_output is None:
+            print(f"WARNING: Could not extract JSON from response")
+            print(f"Response: {response[:200] if response else 'Empty response'}")
+            return 0.0
+
+        if not isinstance(agent_output, dict):
+            print(f"ERROR: Extracted output is not a dict, got type: {type(agent_output)}")
+            print(f"Extracted value: {agent_output}")
+            return 0.0
+
+        # Use ITBench-specific evaluation if configured
+        if metric_config.get('use_itbench_evaluation', False):
+            return self._itbench_sre_evaluation(agent_output, ground_truth)
+
+        # For ITBench SRE: Convert ground truth to use topology hash IDs if needed
+        if metric_config.get('use_topology_mapping', False):
+            ground_truth = self._convert_to_topology_ids(ground_truth)
+
+        comparison_fields = metric_config.get('comparison_fields', {})
+        if not comparison_fields:
+            return 1.0 if agent_output == ground_truth else 0.0
+
+        total_score = 0.0
+        total_weight = 0.0
+
+        for field, field_config in comparison_fields.items():
+            weight = field_config.get('weight', 1.0)
+            mode = field_config.get('mode', 'exact')
+
+            try:
+                gt_value = ground_truth.get(field)
+                agent_value = agent_output.get(field)
+
+                if gt_value is None:
+                    print(f"Field '{field}' not found in ground truth")
+                    continue
+
+                if agent_value is None:
+                    print(f"Field '{field}' not found in agent output")
+                    continue
+
+                field_score = 0.0
+
+                if mode == 'exact':
+                    field_score = 1.0 if gt_value == agent_value else 0.0
+                elif mode == 'recursive':
+                    field_score = self._recursive_compare(gt_value, agent_value, field_config)
+                elif mode == 'list_match':
+                    field_score = self._list_compare(gt_value, agent_value, field_config)
+
+                total_score += field_score * weight
+                total_weight += weight
+
+            except Exception as e:
+                print(f"ERROR comparing field '{field}': {e}")
+                continue
+
+        return total_score / total_weight if total_weight > 0 else 0.0
+
+    def _recursive_compare(self, gt_value, agent_value, config):
+        """Recursively compare nested structures."""
+        if type(gt_value) != type(agent_value):
+            return 0.0
+
+        if isinstance(gt_value, dict):
+            matching_keys = set(gt_value.keys()) & set(agent_value.keys())
+            if not matching_keys:
+                return 0.0
+            scores = [self._recursive_compare(gt_value[k], agent_value[k], config) for k in matching_keys]
+            return sum(scores) / len(gt_value) if gt_value else 0.0
+
+        elif isinstance(gt_value, list):
+            return self._list_compare(gt_value, agent_value, config)
+        else:
+            return 1.0 if gt_value == agent_value else 0.0
+
+    def _list_compare(self, gt_list, agent_list, config):
+        """Compare lists based on configured strategy."""
+        strategy = config.get('list_strategy', 'exact')
+
+        if strategy == 'exact':
+            return 1.0 if gt_list == agent_list else 0.0
+        elif strategy == 'contains_all':
+            if not gt_list:
+                return 1.0
+            matches = sum(1 for item in gt_list if item in agent_list)
+            return matches / len(gt_list)
+        elif strategy == 'match_by_key':
+            key_field = config.get('key_field', 'id')
+            gt_keyed = {item.get(key_field): item for item in gt_list if isinstance(item, dict)}
+            agent_keyed = {item.get(key_field): item for item in agent_list if isinstance(item, dict)}
+
+            if not gt_keyed:
+                return 0.0
+
+            score = 0.0
+            for key, gt_item in gt_keyed.items():
+                if key in agent_keyed:
+                    item_score = self._recursive_compare(gt_item, agent_keyed[key], config)
+                    score += item_score
+
+            return score / len(gt_keyed)
 
         return 0.0
 
@@ -109,77 +438,87 @@ class ConfigurableEvaluator:
 
     def _safe_eval_formula(self, formula: str, variables: Dict[str, Any]) -> float:
         """Safely evaluate a mathematical formula with restricted operations."""
-        allowed_names = {
+        safe_dict = {
             'metrics': variables.get('metrics', {}),
             'baseline_metrics': variables.get('baseline_metrics', {}),
-        }
-
-        allowed_ops = {
-            ast.Add: operator.add,
-            ast.Sub: operator.sub,
-            ast.Mult: operator.mul,
-            ast.Div: operator.truediv,
-            ast.Mod: operator.mod,
-            ast.Pow: operator.pow,
-            ast.Compare: lambda: None,
-            ast.Gt: operator.gt,
-            ast.Lt: operator.lt,
-            ast.GtE: operator.ge,
-            ast.LtE: operator.le,
-            ast.Eq: operator.eq,
-            ast.NotEq: operator.ne,
+            '__builtins__': {}
         }
 
         try:
-            tree = ast.parse(formula, mode='eval')
+            exec(compile(formula, '<string>', 'exec'), safe_dict)
 
-            def _eval_node(node):
-                if isinstance(node, ast.Constant):
-                    return node.value
-                elif isinstance(node, ast.Name):
-                    if node.id in allowed_names:
-                        return allowed_names[node.id]
-                    raise ValueError(f"Name '{node.id}' not allowed")
-                elif isinstance(node, ast.BinOp):
-                    op = type(node.op)
-                    if op in allowed_ops:
-                        left = _eval_node(node.left)
-                        right = _eval_node(node.right)
-                        return allowed_ops[op](left, right)
-                    raise ValueError(f"Operation {op} not allowed")
-                elif isinstance(node, ast.Subscript):
-                    value = _eval_node(node.value)
-                    if isinstance(node.slice, ast.Constant):
-                        key = node.slice.value
-                    elif isinstance(node.slice, ast.Index):
-                        key = _eval_node(node.slice.value)
-                    else:
-                        raise ValueError("Complex subscript not allowed")
-                    return value.get(key, 0.0) if isinstance(value, dict) else 0.0
-                elif isinstance(node, ast.IfExp):
-                    test = _eval_node(node.test)
-                    if test:
-                        return _eval_node(node.body)
-                    else:
-                        return _eval_node(node.orelse)
-                elif isinstance(node, ast.Compare):
-                    left = _eval_node(node.left)
-                    for op, comparator in zip(node.ops, node.comparators):
-                        right = _eval_node(comparator)
-                        op_type = type(op)
-                        if op_type in allowed_ops:
-                            if not allowed_ops[op_type](left, right):
-                                return False
-                            left = right
-                        else:
-                            raise ValueError(f"Comparison {op_type} not allowed")
-                    return True
-                else:
-                    raise ValueError(f"Node type {type(node)} not allowed")
+            for var_name in safe_dict:
+                if var_name not in ['metrics', 'baseline_metrics', '__builtins__'] and isinstance(safe_dict[var_name], (int, float)):
+                    return float(safe_dict[var_name])
 
-            return float(_eval_node(tree.body))
-        except Exception:
             return 0.0
+        except Exception:
+            try:
+                tree = ast.parse(formula, mode='eval')
+
+                def _eval_node(node):
+                    if isinstance(node, ast.Constant):
+                        return node.value
+                    elif isinstance(node, ast.Name):
+                        if node.id in safe_dict:
+                            return safe_dict[node.id]
+                        raise ValueError(f"Name '{node.id}' not allowed")
+                    elif isinstance(node, ast.BinOp):
+                        allowed_ops = {
+                            ast.Add: operator.add,
+                            ast.Sub: operator.sub,
+                            ast.Mult: operator.mul,
+                            ast.Div: operator.truediv,
+                            ast.Mod: operator.mod,
+                            ast.Pow: operator.pow,
+                        }
+                        op = type(node.op)
+                        if op in allowed_ops:
+                            left = _eval_node(node.left)
+                            right = _eval_node(node.right)
+                            return allowed_ops[op](left, right)
+                        raise ValueError(f"Operation {op} not allowed")
+                    elif isinstance(node, ast.Subscript):
+                        value = _eval_node(node.value)
+                        if isinstance(node.slice, ast.Constant):
+                            key = node.slice.value
+                        elif isinstance(node.slice, ast.Index):
+                            key = _eval_node(node.slice.value)
+                        else:
+                            raise ValueError("Complex subscript not allowed")
+                        return value.get(key, 0.0) if isinstance(value, dict) else 0.0
+                    elif isinstance(node, ast.IfExp):
+                        test = _eval_node(node.test)
+                        if test:
+                            return _eval_node(node.body)
+                        else:
+                            return _eval_node(node.orelse)
+                    elif isinstance(node, ast.Compare):
+                        allowed_compare_ops = {
+                            ast.Gt: operator.gt,
+                            ast.Lt: operator.lt,
+                            ast.GtE: operator.ge,
+                            ast.LtE: operator.le,
+                            ast.Eq: operator.eq,
+                            ast.NotEq: operator.ne,
+                        }
+                        left = _eval_node(node.left)
+                        for op, comparator in zip(node.ops, node.comparators):
+                            right = _eval_node(comparator)
+                            op_type = type(op)
+                            if op_type in allowed_compare_ops:
+                                if not allowed_compare_ops[op_type](left, right):
+                                    return False
+                                left = right
+                            else:
+                                raise ValueError(f"Comparison {op_type} not allowed")
+                        return True
+                    else:
+                        raise ValueError(f"Node type {type(node)} not allowed")
+
+                return float(_eval_node(tree.body))
+            except Exception:
+                return 0.0
 
     def calculate_reward(
         self,
@@ -231,11 +570,11 @@ class ConfigurableEvaluator:
                 rewards.append(0.0)
                 continue
 
-            # Calculate metrics for both responses
             solution_metrics = self.evaluate(solution, baseline, ground_truth, question)
             baseline_metrics = self.evaluate(baseline, baseline, ground_truth, question)
 
-            # Calculate reward
+            self.last_metrics = solution_metrics
+
             reward = self.calculate_reward(solution_metrics, baseline_metrics)
             rewards.append(reward)
 

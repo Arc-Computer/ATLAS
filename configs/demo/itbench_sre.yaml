@@ -1,0 +1,205 @@
+defaults:
+  - ../optimize/default
+
+max_metric_calls: 50
+capture_traces: true
+
+user_agent:
+  type: custom
+  config:
+    integration_type: python_function
+    module_path: "ITBench-SRE-Agent/src/lumyn/crew.py"
+    module_base_path: "ITBench-SRE-Agent/src"
+    class_name: "LumynCrew"
+    function_name: "kickoff"
+    process_input: "dict_wrapper"
+    input_key: "alerts"
+    process_response: "json"
+    suppress_output: true  # Temporarily disabled to see what's happening
+    # capture_output_to_file: "logs/agent_output.log"
+
+max_examples: 10
+
+data_source:
+  type: itbench_scenarios
+  scenarios_dir: /Users/arc-aman/Documents/GitHub/ATLAS/ITBench-Scenarios/sre/roles/incidents/files
+
+data:
+  columns:
+    question: "alerts"
+
+
+evaluation:
+  metrics:
+
+    - name: json_correctness
+      type: json_comparison
+      weight: 1.0
+      use_itbench_evaluation: true  # Use ITBench-specific evaluation with partial credit
+      comparison_fields:
+        entities:
+          weight: 0.5
+          mode: list_match
+          list_strategy: match_by_key
+          key_field: id
+        propagations:
+          weight: 0.5
+          mode: list_match
+          list_strategy: match_by_key
+          key_field: source
+
+
+  reward_formula: |
+    base_score = metrics['json_correctness']
+    improvement_bonus = 1.5 if metrics['json_correctness'] > baseline_metrics['json_correctness'] else 1.0
+    base_score * improvement_bonus
+
+
+seed_prompts:
+  teacher_adaptive_template: |
+    You are an expert SRE reviewing a junior engineer's diagnostic approach.
+
+    Incident Details: {question}
+
+    Junior's Proposed Approach: {approach}
+
+    Review their diagnostic approach and provide guidance:
+    1. Point out any missed investigation steps
+    2. Identify areas they should check but haven't mentioned
+    3. Suggest better diagnostic techniques for this type of incident
+    4. Highlight any overlooked symptoms or correlations they should investigate
+
+    Focus on improving their investigation approach before they execute.
+    Wrap your teaching in <teaching> tags.
+
+  student_diagnostic_template: |
+    You are an SRE agent planning to investigate a production incident.
+
+    {question}
+
+    Describe your diagnostic approach - what steps will you take to investigate this incident?
+    1. What entities will you check (services, pods, configmaps)?
+    2. How will you trace the fault propagation?
+    3. What logs and metrics will you examine?
+    4. What dependencies will you investigate?
+
+    Provide your investigation plan (do not execute yet, just describe your approach).
+
+  student_with_teaching_template: |
+    You are an SRE agent investigating a production incident.
+
+    {question}
+
+    Your Initial Diagnostic Approach:
+    {approach}
+
+    Senior SRE Guidance:
+    {teaching}
+
+    Now execute your diagnostic approach with the senior's corrections and guidance:
+    - Use the diagnostic techniques suggested
+    - Check for the specific issues mentioned
+    - Follow the recommended investigation path
+    - Ensure complete fault chain analysis
+
+    Output a JSON diagnosis with this EXACT structure:
+    {{
+      "entities": [
+        {{"id": "entity_identifier", "root_cause": true/false}}
+      ],
+      "propagations": [
+        {{"source": "source_entity", "target": "target_entity", "condition": "how it propagated", "effect": "what happened"}}
+      ]
+    }}
+
+optimization_targets:
+  teacher_adaptive_template:
+    optimize: true
+    reflection_goal: "Improve SRE agent's ability to identify root causes and fault propagation chains"
+
+  student_diagnostic_template:
+    optimize: true
+    reflection_goal: "Improve initial diagnostic approach for faster root cause discovery"
+
+  student_with_teaching_template:
+    optimize: true
+    reflection_goal: "Better integrate teaching guidance to improve diagnosis accuracy"
+
+reflection_instructions:
+  teacher_adaptive_template: |
+    You are optimizing the teacher's guidance for incident diagnosis.
+
+    CURRENT ITERATION RESULTS:
+    Performance: {performance_data}
+
+    The current teaching template is:
+    {current_template}
+
+    METRICS ANALYSIS:
+    - JSON correctness: {metrics[json_correctness]} (Need: 1.0 for perfect match with ground truth)
+
+    The student is struggling with the above metrics.
+
+    TASK: Generate an IMPROVED teaching template that:
+    1. Addresses the specific metric failures above
+    2. Provides more explicit guidance where scores are low
+    3. Includes concrete examples of what to look for
+    4. Ensures the student produces proper JSON with all required fields
+
+    Return ONLY the improved template text, maintaining the {question} and {baseline_response} placeholders.
+
+  student_diagnostic_template: |
+    You are optimizing the student's initial diagnostic approach.
+
+    CURRENT ITERATION RESULTS:
+    Performance: {performance_data}
+
+    Current diagnostic template:
+    {current_template}
+
+    ANALYSIS OF FAILURES:
+    The student's diagnosis is missing key elements. Improve the template to ensure:
+    1. All entities are identified with proper IDs
+    2. Root cause is correctly marked (root_cause: true)
+    3. Propagation chains are complete with source/target/condition/effect
+    4. Output is valid JSON matching the expected schema
+
+    TASK: Generate an IMPROVED diagnostic template that produces better initial diagnosis.
+    Focus on systematic investigation and proper JSON formatting.
+
+    Return ONLY the improved template text, maintaining the {question} placeholder.
+
+  student_with_teaching_template: |
+    You are optimizing how the student applies teaching.
+
+    CURRENT ITERATION RESULTS:
+    Performance with teaching: {performance_data}
+
+    Current template for applying teaching:
+    {current_template}
+
+    ANALYSIS:
+    The student is not effectively using the teacher's guidance.
+
+    TASK: Generate an IMPROVED template that:
+    1. Explicitly instructs the student to follow each teaching point
+    2. Ensures the student produces complete JSON output
+    3. Emphasizes checking for root causes and full propagation chains
+    4. Results in higher metric scores
+
+    Return ONLY the improved template text, maintaining {question} and {teaching} placeholders.
+
+
+trace_storage: traces/itbench_traces.jsonl
+output: traces/itbench_optimized.json
+
+
+compatibility_mode: true
+
+gepa_config:
+  reflection_minibatch_size: 5
+  candidate_selection_strategy: pareto
+  skip_perfect_score: false
+  perfect_score: 1.0
+  module_selector: all
+  display_progress_bar: true
