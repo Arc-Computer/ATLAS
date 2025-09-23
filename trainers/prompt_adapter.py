@@ -202,17 +202,25 @@ class ATLASGEPAAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRolloutO
             else:
                 timeout = self.generation_config.get('timeout', 300)
                 request_timeout = self.generation_config.get('request_timeout', 300)
+
+                completion_params = {
+                    'model': model,
+                    'messages': messages_batch,
+                    'max_workers': self.max_litellm_workers,
+                    'timeout': timeout,
+                    'request_timeout': request_timeout,
+                }
+
+                if 'gpt-5' in model.lower() or 'o1' in model.lower():
+                    completion_params['max_completion_tokens'] = max_tokens
+                    completion_params['reasoning_effort'] = self.generation_config.get('reasoning_effort', 'medium')
+                else:
+                    completion_params['max_tokens'] = max_tokens
+                    completion_params['temperature'] = temperature
+
                 responses = [
                     resp.choices[0].message.content.strip()
-                    for resp in litellm.batch_completion(
-                        model=model,
-                        messages=messages_batch,
-                        max_workers=self.max_litellm_workers,
-                        temperature=temperature,
-                        max_tokens=max_tokens,
-                        timeout=timeout,
-                        request_timeout=request_timeout,
-                    )
+                    for resp in litellm.batch_completion(**completion_params)
                 ]
             return responses[0] if single else responses
         except Exception as e:

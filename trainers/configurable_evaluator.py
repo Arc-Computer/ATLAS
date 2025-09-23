@@ -164,12 +164,19 @@ IMPORTANT:
         try:
             import litellm
 
-            llm_response = litellm.completion(
-                model=self.evaluation_model,
-                messages=[{"role": "user", "content": eval_prompt}],
-                temperature=0.1,
-                max_tokens=500
-            )
+            completion_params = {
+                'model': self.evaluation_model,
+                'messages': [{"role": "user", "content": eval_prompt}],
+            }
+
+            if 'gpt-5' in self.evaluation_model.lower() or 'o1' in self.evaluation_model.lower():
+                completion_params['max_completion_tokens'] = 500
+                completion_params['reasoning_effort'] = 'low'
+            else:
+                completion_params['temperature'] = 0.1
+                completion_params['max_tokens'] = 500
+
+            llm_response = litellm.completion(**completion_params)
 
             response_text = llm_response.choices[0].message.content.strip()
             evaluation_result = self._parse_llm_evaluation(response_text)
