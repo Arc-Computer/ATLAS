@@ -1,0 +1,70 @@
+# Example data source configurations for different agent types
+
+# Example 1: ITBench SRE Agent - Prometheus Alerts
+itbench_example:
+  data_source:
+    type: prometheus_alerts
+    url: http://localhost:9090/api/v1/alerts
+
+# Example 2: Customer Support Agent - Tickets from API
+support_agent_example:
+  data_source:
+    type: http_api
+    url: https://api.support.com/tickets
+    transform:
+      question_field: ticket_description
+      answer_field: resolution
+      script: |
+        result = [
+          {
+            'ticket_description': t['description'],
+            'resolution': t.get('resolution', '{}'),
+            'context': {'priority': t['priority']}
+          }
+          for t in data['tickets']
+        ]
+
+# Example 3: Code Review Agent - GitHub PRs
+code_review_example:
+  data_source:
+    type: http_api
+    url: https://api.github.com/repos/owner/repo/pulls
+    transform:
+      script: |
+        result = [
+          {
+            'question': json.dumps({
+              'title': pr['title'],
+              'diff': pr['diff_url'],
+              'description': pr['body']
+            }),
+            'ground_truth': '{}'
+          }
+          for pr in data[:5]
+        ]
+
+# Example 4: Static File (Traditional Approach)
+static_file_example:
+  data_source:
+    type: file
+    path: data/training_examples.jsonl
+    columns:
+      question: prompt
+      answer: expected_output
+
+# Example 5: Custom Python Function
+custom_function_example:
+  data_source:
+    type: custom_function
+    module: ./data_fetchers/market_data.py
+    function: fetch_trading_signals
+
+# Example 6: Database Query (via custom function)
+database_example:
+  data_source:
+    type: custom_function
+    module: ./data_fetchers/db_fetcher.py
+    function: get_latest_incidents
+    config:
+      connection_string: ${DB_CONNECTION}
+      query: "SELECT * FROM incidents WHERE status='open' LIMIT 10"

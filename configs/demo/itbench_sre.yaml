@@ -1,0 +1,224 @@
+defaults:
+  - ../optimize/default
+
+max_metric_calls: 5
+capture_traces: true
+
+user_agent:
+  type: custom
+  config:
+    integration_type: python_function
+    module_path: "ITBench-SRE-Agent/src/lumyn/crew.py"
+    module_base_path: "ITBench-SRE-Agent/src"
+    class_name: "LumynCrew"
+    function_name: "kickoff"
+    process_input: "dict_wrapper"
+    input_key: "alerts"
+    process_response: "json"
+    suppress_output: true
+
+max_examples: 5
+
+data_source:
+  type: itbench_scenarios
+  scenarios_dir: ITBench-Scenarios/sre/roles/incidents/files
+
+data:
+  columns:
+    question: "alerts"
+
+
+evaluation:
+  evaluation_model: gpt-5
+
+  metrics:
+    - name: root_cause_identification
+      description: "Correctly identifies the root cause entity"
+      weight: 0.4
+      criteria: |
+        Evaluate if the agent correctly identifies the root cause entity from the incident.
+        - Score 1.0 if the exact root cause entity is identified and marked as root_cause: true
+        - Score 0.7 if the root cause entity is identified but not properly marked
+        - Score 0.3 if a related entity is identified that's close to the root cause
+        - Score 0.0 if the root cause is completely wrong or missing
+
+    - name: fault_propagation_chain
+      description: "Traces the complete fault propagation path"
+      weight: 0.3
+      criteria: |
+        Evaluate the completeness and accuracy of the fault propagation chain.
+        - Score based on percentage of correct propagation links identified
+        - Each correct source->target relationship counts
+        - Consider partial credit for chains that are directionally correct
+        - Check if the chain logically connects the root cause to the symptoms
+
+    - name: json_structure_validity
+      description: "Outputs valid JSON with required fields"
+      weight: 0.2
+      criteria: |
+        Evaluate if the output is properly structured JSON.
+        - Must contain 'entities' array with at least one entity
+        - Must contain 'propagations' array (can be empty if no propagation)
+        - Each entity must have 'id' field
+        - Root cause entity should have 'root_cause: true'
+        - Each propagation must have 'source' and 'target' fields
+
+    - name: diagnostic_completeness
+      description: "Includes all relevant entities and relationships"
+      weight: 0.1
+      criteria: |
+        Evaluate the overall completeness of the diagnosis.
+        - Are all affected entities identified?
+        - Are the relationships between entities captured?
+        - Is sufficient detail provided for actionable diagnosis?
+        - Score based on coverage compared to ground truth
+
+
+seed_prompts:
+  teacher_adaptive_template: |
+    You are a adaptive teacher reviewing a student for SRE tasks diagnostic approach.
+
+    Incident Details: {question}
+
+    Student Proposed Approach: {approach}
+
+    Review their diagnostic approach and provide guidance:
+    1. Point out any missed investigation steps should be consider
+    2. Identify areas they should check but haven't mentioned
+    3. Suggest better techniques for this type of incident
+    4. Highlight any overlooked symptoms or correlations they should investigate
+
+    Focus on improving their investigation approach before they execute.
+    And If Student is right and not made any mistake in there apporach then agree with the approach and tell student to go ahead.
+    Wrap your teaching in <teaching> tags.
+
+  student_diagnostic_template: |
+    You are an SRE agent investigating: {question}
+
+    List your diagnostic steps concisely:
+    - Key entities to check
+    - Fault propagation path
+    - Critical metrics/logs
+
+    Be brief and direct. No explanations needed. 
+    And if you are confuse on any part ask the teacher for which you are providing the apporach.
+
+  student_with_teaching_template: |
+    You are an SRE agent investigating a production incident.
+
+    {question}
+
+    Your Initial Diagnostic Approach:
+    {approach}
+
+    Teacher Guidance:
+    {teaching}
+
+    Now execute your diagnostic approach with the Teacher corrections and guidance if any do not think directly go the implementation:
+    - Use the diagnostic techniques suggested
+    - Check for the specific issues mentioned
+    - Follow the recommended investigation path
+    - Ensure complete fault chain analysis
+
+    Output a JSON diagnosis with this EXACT structure:
+    ```json
+    {{
+      "entities": [
+        {{"id": "entity_identifier", "root_cause": true/false}}
+      ],
+      "propagations": [
+        {{"source": "source_entity", "target": "target_entity", "condition": "how it propagated", "effect": "what happened"}}
+      ]
+    }}
+    ```
+
+optimization_targets:
+  teacher_adaptive_template:
+    optimize: true
+    reflection_goal: "Improve SRE agent's ability to identify root causes and fault propagation chains"
+
+  student_diagnostic_template:
+    optimize: true
+    reflection_goal: "Improve initial diagnostic approach for faster root cause discovery"
+
+  student_with_teaching_template:
+    optimize: true
+    reflection_goal: "Better integrate teaching guidance to improve diagnosis accuracy"
+
+reflection_instructions:
+  teacher_adaptive_template: |
+    You are optimizing the teacher's guidance for incident diagnosis.
+
+    CURRENT ITERATION RESULTS:
+    Performance: {performance_data}
+
+    The current teaching template is:
+    {current_template}
+
+    METRICS ANALYSIS:
+    - JSON correctness: {metrics[json_correctness]} (Need: 1.0 for perfect match with ground truth)
+
+    The student is struggling with the above metrics.
+
+    TASK: Generate an IMPROVED teaching template that:
+    1. Addresses the specific metric failures above
+    2. Provides more explicit guidance where scores are low
+    3. Includes concrete examples of what to look for
+    4. Ensures the student produces proper JSON with all required fields
+
+    Return ONLY the improved template text, maintaining the {question} and {baseline_response} placeholders.
+
+  student_diagnostic_template: |
+    You are optimizing the student's initial diagnostic approach.
+
+    CURRENT ITERATION RESULTS:
+    Performance: {performance_data}
+
+    Current diagnostic template:
+    {current_template}
+
+    ANALYSIS OF FAILURES:
+    The student's diagnosis is missing key elements. Improve the template to ensure:
+    1. All entities are identified with proper IDs
+    2. Root cause is correctly marked (root_cause: true)
+    3. Propagation chains are complete with source/target/condition/effect
+    4. Output is valid JSON matching the expected schema
+
+    TASK: Generate an IMPROVED diagnostic template that produces better initial diagnosis.
+    Focus on systematic investigation and proper JSON formatting.
+
+    Return ONLY the improved template text, maintaining the {question} placeholder.
+
+  student_with_teaching_template: |
+    You are optimizing how the student applies teaching.
+
+    CURRENT ITERATION RESULTS:
+    Performance with teaching: {performance_data}
+
+    Current template for applying teaching:
+    {current_template}
+
+    ANALYSIS:
+    The student is not effectively using the teacher's guidance.
+
+    TASK: Generate an IMPROVED template that:
+    1. Explicitly instructs the student to follow each teaching point
+    2. Ensures the student produces complete JSON output
+    3. Emphasizes checking for root causes and full propagation chains
+    4. Results in higher metric scores
+
+    Return ONLY the improved template text, maintaining {question} and {teaching} placeholders.
+
+
+trace_storage: traces/itbench_traces.jsonl
+output: traces/itbench_optimized.json
+
+
+compatibility_mode: true
+
+gepa_config:
+  reflection_minibatch_size: 5
+  candidate_selection_strategy: pareto
+  skip_perfect_score: false
+  perfect_score: 1.0
+  module_selector: all

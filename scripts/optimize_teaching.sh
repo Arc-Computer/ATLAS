@@ -35,8 +35,10 @@ USE_VLLM=$(extract_yaml_value "use_vllm_client" "$CONFIG_FILE")
 VLLM_HOST=$(extract_yaml_value "vllm_host" "$CONFIG_FILE")
 VLLM_PORT=$(extract_yaml_value "vllm_port" "$CONFIG_FILE")
 
-CMD="python optimize_teaching.py"
-CMD="$CMD --trainset ${TRAINSET:-arc-atlas-rl}"
+CMD="python -u optimize_teaching.py"
+if [ ! -z "$TRAINSET" ]; then
+    CMD="$CMD --trainset $TRAINSET"
+fi
 CMD="$CMD --student-model ${STUDENT_MODEL}"
 CMD="$CMD --teacher-model ${TEACHER_MODEL}"
 CMD="$CMD --reflection-lm ${REFLECTION_LM:-gpt-4}"

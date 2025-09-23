@@ -35,27 +35,27 @@ class ATLASExtractionUtils:
         boxed_matches = re.findall(r'\\boxed\{([^}]+)\}', response)
         if boxed_matches:
             return boxed_matches[-1].strip()
-        
+
         solution_matches = re.findall(r'<solution>(.*?)</solution>', response, re.DOTALL)
         if solution_matches:
             return solution_matches[-1].strip()
-        
+
         answer_patterns = [
             r'answer is[:\s]+([^\n.]+)',
             r'answer[:\s]+([^\n.]+)',
             r'= ([^\n.]+)$',
         ]
-        
+
         for pattern in answer_patterns:
             matches = re.findall(pattern, response, re.IGNORECASE | re.MULTILINE)
             if matches:
                 return matches[-1].strip()
-        
+
         numbers = re.findall(r'-?\d+(?:\.\d+)?', response)
         if numbers:
             return numbers[-1]
-        
-        return ""
+
+        return response
     
     @staticmethod
     def extract_solutions(responses: List[str]) -> List[str]:

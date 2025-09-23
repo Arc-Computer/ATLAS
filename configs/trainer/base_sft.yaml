@@ -6,7 +6,6 @@ num_train_epochs: 1
 max_steps: -1
 max_seq_length: 4096
 
-# only save best model
 save_strategy: epoch
 save_steps: 1
 do_eval: true

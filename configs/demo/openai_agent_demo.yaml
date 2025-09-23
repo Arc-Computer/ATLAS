@@ -1,0 +1,139 @@
+# OpenAI Agent Demo Configuration
+# Demonstrates ATLAS optimization with custom agent
+
+# Agent configuration
+agent_type: openai_assistant
+agent_config:
+  api_key: ${OPENAI_API_KEY}
+  assistant_id: null
+  model: gpt-4o-mini
+  name: ATLAS Demo Assistant
+  instructions: "You are a helpful assistant that answers questions accurately and concisely."
+  timeout: 300
+  max_workers: 10
+  response_format:
+    type: text
+
+# Data configuration with column mapping
+data:
+  source: jsonl
+  path: data/demo_dataset.jsonl
+  columns:
+    question: question
+    answer: ground_truth
+    context: null
+  max_examples: 20
+
+# Teacher model
+teacher_model: Arc-Intelligence/ATLAS-8B-Thinking
+student_model: null  # Will use agent instead
+
+# Reflection configuration
+reflection_lm: gemini/gemini-2.0-flash-exp
+reflection_instructions:
+  teacher_adaptive_template: |
+    Analyze teaching effectiveness and suggest improvements.
+    Current template: {current_template}
+    Performance: {performance_data}
+    Focus on: clarity, relevance, conciseness.
+    Suggest a better teaching template.
+
+  student_diagnostic_template: |
+    Review how well the diagnostic identifies student errors.
+    Current template: {current_template}
+    Examples: {examples}
+    Improve the diagnostic to better identify misconceptions.
+
+  student_with_teaching_template: |
+    Analyze how the student uses teaching guidance.
+    Current template: {current_template}
+    Performance: {performance_data}
+    Optimize how teaching is presented to the student.
+
+# Optimization settings
+max_metric_calls: 100
+trace_storage: traces/openai_demo_traces.jsonl
+output: results/openai_demo_results.json
+
+# Generation settings
+generation_config:
+  max_tokens: 2048
+  temperature: 0.7
+  timeout: 300
+
+# GEPA settings
+gepa_config:
+  candidate_selection_strategy: pareto
+  reflection_minibatch_size: 5
+  module_selector: single
+  display_progress_bar: true
+
+# Seed prompts - ALL components for optimization
+seed_prompts:
+  # How teacher analyzes student's initial attempt
+  student_diagnostic_template: |
+    Analyze this student response for the question:
+    Question: {question}
+    Student's attempt: {baseline_response}
+
+    Identify key errors and misconceptions. What does the student understand vs what they're missing?
+
+  # How teacher provides adaptive teaching
+  teacher_adaptive_template: |
+    Question: {question}
+    Student response: {baseline_response}
+
+    Based on the student's errors, provide targeted teaching to help them improve.
+    Focus only on what they're missing. Wrap teaching in <teaching> tags.
+
+  # How student responds with teaching
+  student_with_teaching_template: |
+    {teaching_content}
+
+    Now, using the guidance above, answer this question:
+    {question}
+
+# User-defined evaluation system
+evaluation:
+  # Define custom metrics
+  metrics:
+    - name: correctness
+      type: exact_match  # Check if answer matches ground truth
+      weight: 0.5
+
+    - name: efficiency
+      type: token_reduction  # Reward shorter responses
+      weight: 0.2
+
+    - name: completeness
+      type: contains  # Check if key terms are present
+      target: "explanation"
+      weight: 0.2
+
+    - name: length_constraint
+      type: length_penalty  # Penalize overly long responses
+      max_length: 200
+      weight: 0.1
+
+  # Custom reward formula (optional - uses weighted sum by default)
+  reward_formula: |
+    (metrics['correctness'] * 2.0 if metrics['correctness'] > baseline_metrics['correctness'] else 0) +
+    (metrics['efficiency'] * 0.5) +
+    (metrics['completeness'] * 0.3)
+
+# Define what to optimize
+optimization_targets:
+  teacher_adaptive_template:
+    optimize: true
+    reflection_goal: "Improve teaching clarity while maintaining brevity"
+
+  student_diagnostic_template:
+    optimize: true
+    reflection_goal: "Better identify specific errors and misconceptions"
+
+  student_with_teaching_template:
+    optimize: false  # Can disable optimization for specific components
+
+# Compatibility mode
+compatibility_mode: true
+max_litellm_workers: 10
