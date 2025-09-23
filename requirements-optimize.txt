@@ -1,5 +1,7 @@
 # Core dependencies for ATLAS teaching optimization
 gepa[full]
+colorama
+rich
 
 # Optional: For vLLM server support (install if using vLLM)
 # vllm

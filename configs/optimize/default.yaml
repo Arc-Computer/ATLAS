@@ -39,7 +39,7 @@ gepa_config:
   reflection_minibatch_size: 5
   perfect_score: 1.0
   module_selector: all
-  display_progress_bar: true
+  display_progress_bar: false
 
 wandb:
   enabled: false

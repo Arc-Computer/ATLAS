@@ -6,6 +6,7 @@ from gepa.core.adapter import GEPAAdapter, EvaluationBatch
 from .extraction_utils import ATLASExtractionUtils
 from .online_teaching_reward import OnlineTeachingReward
 from .prompt_adapter import ATLASDataInst, ATLASTrajectory, ATLASRolloutOutput
+from .terminal_display import DisplayManager
 
 
 class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRolloutOutput]):
@@ -35,6 +36,8 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
         self.reflection_instructions = reflection_instructions or {}
         self.evaluation_config = evaluation_config or {}
         self.optimization_targets = optimization_targets or {}
+        self.display_manager = DisplayManager(verbose=True)
+        self.total_evaluations = 0
 
         if isinstance(teacher_model, str):
             import litellm
@@ -45,32 +48,37 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
             self.student_model = lambda prompts: self._litellm_generate(litellm, student_model, prompts)
 
     def _safe_format(self, template_str: str, **kwargs) -> str:
-        # Simply use format directly - we control the templates
         try:
             return template_str.format(**kwargs)
-        except KeyError as e:
-            print(f"ERROR: Missing template variable: {e}")
+        except (KeyError, IndexError) as e:
+            if isinstance(e, IndexError):
+                print(f"ERROR: Template has numbered placeholders but got named arguments")
+            else:
+                print(f"ERROR: Missing template variable: {e}")
             print(f"Available variables: {list(kwargs.keys())}")
-            # Return template with available substitutions
             result = template_str
             for key, value in kwargs.items():
                 result = result.replace('{' + key + '}', str(value))
             return result
 
     def _litellm_generate(self, litellm, model: str, prompts: Union[str, List[str]]) -> Union[str, List[str]]:
+        import logging
+        import os
+
+        os.environ["LITELLM_LOG"] = "ERROR"
+        litellm.suppress_debug_info = True
+        logging.getLogger("LiteLLM").setLevel(logging.ERROR)
+        logging.getLogger("httpx").setLevel(logging.ERROR)
+        logging.getLogger("openai").setLevel(logging.ERROR)
+
         if isinstance(prompts, str):
             prompts = [prompts]
             single = True
         else:
             single = False
 
-
-        for i, p in enumerate(prompts):
-            if not p or p.strip() == "":
-                print(f"WARNING: Prompt {i+1} is empty!")
-            else:
-                print(f"DEBUG: Prompt {i+1} length: {len(p)} chars")
-                print(f"DEBUG: Prompt {i+1} preview: {p[:200]}...")
+        if model.startswith("https://") and "huggingface" in model:
+            return self._call_hf_endpoint(model, prompts, single)
 
         messages_batch = [[{"role": "user", "content": p}] for p in prompts]
 
@@ -92,15 +100,61 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
         responses = []
         for i, resp in enumerate(batch_responses):
             if isinstance(resp, Exception):
-                print(f"\n❌ Teacher model failed for prompt {i+1}/{len(batch_responses)}:")
-                print(f"  Model: {model}")
-                print(f"  Error: {resp}")
                 raise resp
             else:
                 content = resp.choices[0].message.content.strip()
                 responses.append(content)
 
         return responses[0] if single else responses
+
+    def _call_hf_endpoint(self, endpoint_url: str, prompts: List[str], single: bool) -> Union[str, List[str]]:
+        import requests
+        import time
+
+        responses = []
+        for prompt in prompts:
+            payload = {
+                "inputs": prompt,
+                "parameters": {
+                    "max_new_tokens": self.generation_config.get('max_tokens', 200),
+                    "temperature": self.generation_config.get('temperature', 0.7),
+                    "return_full_text": False
+                }
+            }
+
+            headers = {"Content-Type": "application/json"}
+            max_retries = 3
+
+            for attempt in range(max_retries):
+                try:
+                    response = requests.post(
+                        endpoint_url,
+                        headers=headers,
+                        json=payload,
+                        timeout=self.generation_config.get('timeout', 300)
+                    )
+
+                    if response.status_code == 200:
+                        result = response.json()
+                        if isinstance(result, list):
+                            text = result[0].get("generated_text", "")
+                        else:
+                            text = result.get("generated_text", "")
+                        responses.append(text)
+                        break
+                    else:
+                        if attempt < max_retries - 1:
+                            time.sleep(2)
+                        else:
+                            responses.append(f"Error: HF endpoint returned {response.status_code}")
+                except Exception as e:
+                    if attempt < max_retries - 1:
+                        time.sleep(2)
+                    else:
+                        responses.append(f"Error calling HF endpoint: {e}")
+
+        return responses[0] if single else responses
+
 
     def evaluate(
         self,
@@ -122,21 +176,19 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
         student_with_teaching_template = candidate.get("student_with_teaching_template", "")
 
         if not student_diagnostic_template or not teacher_adaptive_template or not student_with_teaching_template:
-            print("❌ ERROR: Required templates not found in candidate")
-            print(f"  student_diagnostic_template: {'✓' if student_diagnostic_template else '✗'}")
-            print(f"  teacher_adaptive_template: {'✓' if teacher_adaptive_template else '✗'}")
-            print(f"  student_with_teaching_template: {'✓' if student_with_teaching_template else '✗'}")
             raise ValueError("Missing required templates in candidate")
 
-        print(f"\n{'='*60}")
-        print(f"🔄 GEPA Evaluation #{self.eval_count}")
-        print(f"{'='*60}")
+        if not hasattr(self.display_manager, 'display') or not self.display_manager.display:
+            total_evals = getattr(self, 'total_evaluations', 50)
+            self.display_manager.start(total_evals)
 
-        print(f"\n🎓 Step 1: Student provides diagnostic APPROACH (not execution)...")
         approach_prompts = [
             self._safe_format(student_diagnostic_template, question=q)
             for q in questions
         ]
+
+        if self.display_manager:
+            self.display_manager.update("student", text="")
 
         if self.student_model:
             if callable(self.student_model):
@@ -149,22 +201,21 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
         if not isinstance(student_approaches, list):
             student_approaches = [student_approaches]
 
-        print(f"✅ Student approaches generated. Got {len(student_approaches)} diagnostic approaches")
+        if student_approaches and self.display_manager:
+            self.display_manager.update("student",
+                text=student_approaches[0],
+                sample=1,
+                total=len(student_approaches))
 
-        # Print student diagnostic response
-        for i, approach in enumerate(student_approaches, 1):
-            print(f"\n📝 Student Diagnostic Approach #{i}:")
-            print("-" * 60)
-            print(approach)
-            print("-" * 60)
-
-        print(f"\n👨‍🏫 Step 2: Teacher reviews approach and provides teaching...")
         teacher_prompts = [
             self._safe_format(teacher_adaptive_template,
                 question=q,
                 approach=a)
             for q, a in zip(questions, student_approaches)
         ]
+
+        if self.display_manager:
+            self.display_manager.update("teacher", text="")
 
         teacher_responses = self.teacher_model(teacher_prompts)
         if not isinstance(teacher_responses, list):
@@ -175,26 +226,17 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
             for tr in teacher_responses
         ]
 
-        print(f"✅ Teaching generated. {len(teacher_responses)} teachings created")
-
-        # Print teacher teaching response
-        for i, (full_response, teaching) in enumerate(zip(teacher_responses, teaching_contents), 1):
-            print(f"\n👨‍🏫 Teacher Full Response #{i}:")
-            print("-" * 60)
-            print(full_response)
-            print("-" * 60)
-            print(f"\n📚 Extracted Teaching #{i}:")
-            print("-" * 60)
-            print(teaching if teaching else "[NO TEACHING TAGS FOUND - Using full response]")
-            print("-" * 60)
-
-        # If no teaching tags found, use full response
         teaching_contents = [
             teaching if teaching else response
             for teaching, response in zip(teaching_contents, teacher_responses)
         ]
 
-        print(f"\n📚 Step 3: Student EXECUTES with teaching...")
+        if teaching_contents and self.display_manager:
+            self.display_manager.update("teacher",
+                text=teaching_contents[0],
+                sample=1,
+                total=len(teaching_contents))
+
         enhanced_prompts = [
             self._safe_format(student_with_teaching_template,
                 teaching=teaching,
@@ -202,23 +244,28 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
                 approach=approach)
             for teaching, question, approach in zip(teaching_contents, questions, student_approaches)
         ]
+        if self.display_manager:
+            self.display_manager.update("student_with_teaching", text="")
+
         enhanced_responses = self.user_agent(enhanced_prompts)
         if not isinstance(enhanced_responses, list):
             enhanced_responses = [enhanced_responses]
 
-        print(f"✅ Student execution complete. Got {len(enhanced_responses)} responses")
+        if enhanced_responses and self.display_manager:
+            self.display_manager.update("student_with_teaching", text=str(enhanced_responses[0]))
 
-        print(f"\n🔍 Step 4: Running BASELINE agent for comparison...")
+        if self.display_manager:
+            self.display_manager.update("baseline", text="")
+
         baseline_responses = self.user_agent(questions)
         if not isinstance(baseline_responses, list):
             baseline_responses = [baseline_responses]
 
-        print(f"✅ Baseline complete. Got {len(baseline_responses)} responses")
+        if baseline_responses and self.display_manager:
+            self.display_manager.update("baseline", text=str(baseline_responses[0]))
 
         baseline_solutions = ATLASExtractionUtils.extract_solutions(baseline_responses)
         enhanced_solutions = ATLASExtractionUtils.extract_solutions(enhanced_responses)
-
-        print(f"\n📊 Step 5: EVALUATING performance...")
 
         def count_tokens(text):
             return len(text.split())
@@ -226,11 +273,6 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
         baseline_tokens = sum(count_tokens(resp) for resp in baseline_responses)
         enhanced_tokens = sum(count_tokens(resp) for resp in enhanced_responses)
         token_reduction = ((baseline_tokens - enhanced_tokens) / baseline_tokens * 100) if baseline_tokens > 0 else 0
-
-        print(f"\n Token Usage Comparison:")
-        print(f"  Baseline tokens: {baseline_tokens}")
-        print(f"  With teaching tokens: {enhanced_tokens}")
-        print(f"  Difference: {enhanced_tokens - baseline_tokens} ({'+' if enhanced_tokens > baseline_tokens else ''}{token_reduction:.1f}%)")
 
         if self.evaluation_config:
             from .configurable_evaluator import ConfigurableEvaluator
@@ -241,13 +283,18 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
                     return text.split()
             reward_calculator = OnlineTeachingReward(tokenizer=SimpleTokenizer())
 
+
         rewards = reward_calculator(
             prompts=questions,
             completions=teacher_responses,
-            baseline_solutions=baseline_solutions,
-            solutions=enhanced_solutions,
+            solutions=enhanced_responses,
             ground_truths=ground_truths,
+            questions=questions,
         )
+
+        detailed_metrics = {}
+        if hasattr(reward_calculator, 'last_metrics'):
+            detailed_metrics = reward_calculator.last_metrics
 
         for i in range(len(batch)):
             output = {
@@ -262,16 +309,18 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
 
         avg_score = sum(scores) / len(scores) if scores else 0
 
-        print(f"\n{'='*60}")
-        print(f"📈 RESULTS for Evaluation #{self.eval_count}")
-        print(f"{'='*60}")
-        print(f"Average Score: {avg_score:.3f}")
+        metrics_dict = {
+            "avg_reward": avg_score,
+            "token_savings": token_reduction
+        }
 
-        if hasattr(reward_calculator, 'last_metrics') and reward_calculator.last_metrics:
-            print(f"\nMetrics Breakdown:")
-            for metric_name, value in reward_calculator.last_metrics.items():
-                bar = '█' * int(value * 20) + '░' * (20 - int(value * 20))
-                print(f"  {metric_name:<20}: [{bar}] {value:.3f}")
+
+        if self.display_manager:
+            self.display_manager.update("iteration_complete",
+                iteration=self.eval_count,
+                score=avg_score,
+                metrics=metrics_dict)
+            self.display_manager.update("progress", current=self.eval_count, total=getattr(self, 'total_evaluations', 50))
 
         if capture_traces:
             for i in range(len(batch)):
@@ -302,7 +351,6 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
                         "trajectory": traj
                     }
                     f.write(json.dumps(trace_entry) + '\n')
-            print(f"💾 Saved {len(trajectories)} traces to {trace_file}")
 
         return EvaluationBatch(
             outputs=outputs,
