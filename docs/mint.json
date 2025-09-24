@@ -65,8 +65,7 @@
     {
       "group": "Examples",
       "pages": [
-        "examples/sre-root-cause-analysis",
-        "examples/custom-implementation"
+        "examples/online_optimization"
       ]
     },
     {
@@ -122,6 +121,7 @@
         "reference/technical-report",
         "reference/models",
         "reference/datasets",
+        "reference/glossary",
         "reference/troubleshooting",
         "reference/faq"
       ]

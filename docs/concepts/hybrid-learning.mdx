@@ -50,7 +50,7 @@ Online Adaptation (2 hours)
 
 ### Offline Training Pipeline
 
-The offline phase uses GRPO (Generalized Reward Policy Optimization) with the following objective:
+The offline phase uses GRPO (Group Relative Policy Optimization) with the following objective:
 
 ```python
 def grpo_loss(logits, rewards, reference_logits, beta=0.04):

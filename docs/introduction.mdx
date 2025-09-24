@@ -1,12 +1,12 @@
 ---
 title: Introduction
-description: A Hybrid RL Architecture for Compounding Intelligence in Language Models
+description: A Continual Learning Framework for Production LLM Agents
 sidebarTitle: Introduction
 ---
 
 ## ATLAS: Adaptive Teaching and Learning Alignment System
 
-ATLAS is a hybrid reinforcement learning architecture that enhances language model performance through adaptive teaching protocols. The system demonstrates significant improvements across multiple evaluation metrics while maintaining computational efficiency.
+ATLAS is a memory-based continual learning framework that separates complex reinforcement learning into two complementary phases: offline training of specialized teacher models and online optimization for task-specific adaptation. This hybrid approach enables production agents to improve from experience through adaptive teaching while maintaining strict performance guarantees.
 
 ### Key Performance Metrics
 
@@ -29,19 +29,22 @@ ATLAS is a hybrid reinforcement learning architecture that enhances language mod
   **Empirical validation:** See [SRE Root Cause Analysis case study](/examples/sre-root-cause-analysis) for detailed performance analysis on production debugging tasks, demonstrating systematic improvement through iterative teaching.
 </Note>
 
-## Technical Motivation
+## Why ATLAS: The Hybrid Advantage
 
-Current approaches to improving language model performance face fundamental limitations:
+Current approaches to improving language model performance face fundamental trade-offs:
 
-- **Fine-tuning requires** extensive domain-specific datasets and risks catastrophic forgetting
+- **Traditional RL training** requires extensive compute and fixed reward functions that don't adapt to new scenarios
+- **Fine-tuning** risks catastrophic forgetting and requires retraining for each new task or domain
 - **Prompt engineering** provides inconsistent results and lacks systematic improvement mechanisms
-- **Retrieval augmentation** addresses knowledge gaps but not reasoning capabilities
-- **Chain-of-thought** improves step-by-step reasoning but increases token usage significantly
+- **Memory/retrieval systems** address knowledge gaps but don't improve reasoning capabilities
 
-ATLAS addresses these limitations through a novel hybrid architecture combining:
-1. **Offline RL training** for foundational skill acquisition
-2. **Online optimization** for rapid task-specific adaptation
-3. **Adaptive teaching protocols** for efficient knowledge transfer
+ATLAS resolves these trade-offs through a hybrid architecture that separates concerns:
+
+1. **Offline RL training (GRPO)** - Build foundational teaching skills into specialized models that understand how to diagnose and guide other agents
+2. **Online optimization (GEPA)** - Rapidly adapt to specific tasks and domains through evolutionary search, accumulating improvements without retraining
+3. **Adaptive teaching protocol** - Efficient two-pass system (diagnostic probe + targeted guidance) that transfers learned skills to any student model
+
+This separation enables **continual learning**: your agents improve from experience and transfer those improvements across tasks, while the offline-trained teachers ensure safety and consistency.
 
 <img
   className="block dark:hidden"

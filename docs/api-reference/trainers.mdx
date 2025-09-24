@@ -81,27 +81,11 @@ trainer.train()
 
 ## GRPOTrainer
 
-Main trainer for Generalized Reward Policy Optimization.
+Main trainer for Group Relative Policy Optimization.
 
-### Constructor
+### Class Overview
 
-```python
-class GRPOTrainer(BaseTrainer):
-    def __init__(
-        self,
-        config: GRPOConfig,
-        model: Optional[PreTrainedModel] = None,
-        ref_model: Optional[PreTrainedModel] = None,
-        tokenizer: Optional[PreTrainedTokenizer] = None,
-        train_dataset: Optional[Dataset] = None,
-        eval_dataset: Optional[Dataset] = None,
-        reward_model: Optional[PreTrainedModel] = None,
-        compute_metrics: Optional[Callable] = None,
-        callbacks: Optional[List[TrainerCallback]] = None,
-        optimizers: Tuple[torch.optim.Optimizer, torch.optim.lr_scheduler.LambdaLR] = (None, None),
-        preprocess_logits_for_metrics: Optional[Callable] = None,
-    ):
-```
+GRPOTrainer is the main trainer class for Group Relative Policy Optimization, extending the standard HuggingFace Trainer with reinforcement learning capabilities.
 
 <AccordionGroup>
   <Accordion title="Parameters">
@@ -119,59 +103,16 @@ class GRPOTrainer(BaseTrainer):
     | `optimizers` | Tuple | Custom optimizer and scheduler |
   </Accordion>
 
-  <Accordion title="Key Methods">
-    ### train()
-    Main training loop with GRPO algorithm:
-    ```python
-    def train(
-        self,
-        resume_from_checkpoint: Optional[str] = None,
-        trial: Optional["optuna.Trial"] = None,
-        ignore_keys_for_eval: Optional[List[str]] = None,
-    ) -> TrainOutput:
-        """
-        Execute GRPO training loop
+  <Accordion title="Key Features">
+    **GRPO Training Loop**: Implements the complete reinforcement learning training process with policy gradient optimization and KL divergence constraints.
 
-        Returns:
-            TrainOutput with metrics and model state
-        """
-    ```
+    **Generation Support**: Supports both local generation and distributed generation via vLLM server integration.
 
-    ### compute_loss()
-    GRPO loss computation:
-    ```python
-    def compute_loss(
-        self,
-        model: PreTrainedModel,
-        inputs: Dict[str, torch.Tensor],
-        return_outputs: bool = False
-    ) -> Union[torch.Tensor, Tuple[torch.Tensor, Dict]]:
-        """
-        Compute GRPO loss with KL penalty
+    **Memory Management**: Includes optimizations for training large models with gradient checkpointing and model offloading.
 
-        Loss = -E[r(x,y) * log π(y|x)] + β * KL(π || π_ref)
-        """
-    ```
+    **Reward Integration**: Handles multiple reward functions and reward weighting for complex optimization objectives.
 
-    ### generate_completions()
-    Generate responses for training:
-    ```python
-    def generate_completions(
-        self,
-        prompts: List[str],
-        **generation_kwargs
-    ) -> List[str]:
-        """
-        Generate completions using current policy
-
-        Args:
-            prompts: Input prompts
-            generation_kwargs: Generation parameters
-
-        Returns:
-            List of generated completions
-        """
-    ```
+    **Implementation**: See `trainers/grpo.py` for complete method signatures and implementation details.
   </Accordion>
 
   <Accordion title="Training Hooks">
@@ -204,23 +145,14 @@ class GRPOTrainer(BaseTrainer):
 
 Specialized trainer for adaptive teaching with teacher-student paradigm.
 
-### Constructor
+### Class Overview
 
-```python
-class TeacherGRPOTrainer(GRPOTrainer):
-    def __init__(
-        self,
-        config: TeacherGRPOConfig,
-        teacher_model: PreTrainedModel,
-        student_model: PreTrainedModel,
-        teacher_tokenizer: PreTrainedTokenizer,
-        student_tokenizer: PreTrainedTokenizer,
-        train_dataset: Dataset,
-        eval_dataset: Optional[Dataset] = None,
-        skill_repository: Optional[SkillRepository] = None,
-        **kwargs
-    ):
-```
+TeacherGRPOTrainer extends GRPOTrainer to implement the two-pass teaching protocol. From the actual source code (`trainers/teacher_trainers.py`), this trainer:
+
+- Inherits from both `GRPOTrainer` and `TeacherTrainer`
+- Accepts `student_model` parameter in constructor
+- Implements diagnostic probing and adaptive teaching templates
+- Manages both teacher and student models during training
 
 <AccordionGroup>
   <Accordion title="Unique Methods">
@@ -233,10 +165,29 @@ class TeacherGRPOTrainer(GRPOTrainer):
         max_tokens: int = 50
     ) -> DiagnosticResult:
         """
-        Probe student understanding
+        Probe student understanding of given task
+
+        Args:
+            task: Task or problem statement to probe
+            max_tokens: Maximum tokens for probe response
 
         Returns:
-            DiagnosticResult with capability assessment
+            DiagnosticResult: Assessment containing:
+                - capability_level: Student capability (0.0-1.0)
+                - confidence_score: Confidence in assessment (0.0-1.0)
+                - identified_gaps: List of specific knowledge gaps
+                - response_quality: Quality metrics for student response
+                - probe_tokens: Number of tokens used in probe
+
+        Raises:
+            ValueError: If task is empty or max_tokens &lt; 1
+            RuntimeError: If student model inference fails
+            TypeError: If task is not a string
+
+        Example:
+            result = trainer.diagnostic_probe("Solve: 2x + 5 = 11")
+            if result.capability_level &lt; 0.3:
+                print("Student needs significant help")
         """
     ```
 
@@ -252,8 +203,31 @@ class TeacherGRPOTrainer(GRPOTrainer):
         """
         Generate teaching guidance based on diagnosis
 
+        Args:
+            task: Original task or problem statement
+            diagnostic: Results from diagnostic_probe()
+            max_tokens: Maximum tokens for guidance response
+
         Returns:
-            Tailored teaching instructions
+            str: Tailored teaching guidance text
+                Format depends on capability_level:
+                - Low (0.0-0.3): Step-by-step walkthrough
+                - Medium (0.3-0.7): Hints and scaffolding
+                - High (0.7-1.0): Minimal guidance or verification
+
+        Raises:
+            ValueError: If max_tokens &lt; 10 or diagnostic is None
+            RuntimeError: If teacher model fails to generate guidance
+            TypeError: If task is not a string
+
+        Example:
+            diagnostic = trainer.diagnostic_probe("Solve quadratic equation")
+            guidance = trainer.generate_guidance(
+                "Solve: x² - 5x + 6 = 0",
+                diagnostic,
+                max_tokens=150
+            )
+            print(f"Teaching guidance: {guidance}")
         """
     ```
 
@@ -269,7 +243,33 @@ class TeacherGRPOTrainer(GRPOTrainer):
         """
         Compute reward for teaching quality
 
-        Includes efficiency bonus and safety checks
+        Args:
+            baseline_score: Student performance without guidance (0.0-1.0)
+            enhanced_score: Student performance with guidance (0.0-1.0)
+            teaching_length: Number of tokens in teaching guidance
+
+        Returns:
+            float: Teaching reward score
+                - Positive: Effective teaching (improvement achieved)
+                - Zero: No improvement or neutral
+                - Negative: Degraded performance (safety penalty)
+
+        Raises:
+            ValueError: If scores not in [0.0, 1.0] or teaching_length &lt; 0
+            TypeError: If inputs are not numeric
+
+        Reward Components:
+            - Improvement bonus: (enhanced_score - baseline_score)
+            - Efficiency bonus: max(0, 1 - teaching_length / 200)
+            - Safety penalty: -2.0 if enhanced_score &lt; baseline_score
+
+        Example:
+            reward = trainer.compute_teaching_reward(
+                baseline_score=0.6,
+                enhanced_score=0.8,
+                teaching_length=120
+            )
+            # reward ≈ 0.2 + 0.4 = 0.6 (improvement + efficiency)
         """
     ```
   </Accordion>
@@ -504,6 +504,14 @@ trainer = GRPOTrainer(
     deepspeed="deepspeed_config.json"
 )
 ```
+
+## Implementation Notes
+
+ATLAS trainers extend standard HuggingFace Trainer classes with RL-specific functionality. The implementation details can be found in:
+
+- `trainers/grpo.py` - Main GRPO trainer implementation
+- `trainers/teacher_trainers.py` - Teacher-student training logic
+- `trainers/grpo_config.py` - Configuration parameters
 
 ## Troubleshooting
 
