@@ -7,7 +7,9 @@ icon: brain
 
 ## Architectural Overview
 
-ATLAS implements a hybrid learning architecture that separates complex offline training from lightweight online deployment. This approach addresses fundamental limitations in current language model optimization strategies.
+ATLAS implements a revolutionary hybrid learning architecture that fundamentally reimagines how AI systems acquire and transfer knowledge. Instead of training separate models for every business domain (requiring massive datasets that rarely exist), we train a Teacher model to master reasoning in mathematics - where logic is clear and data is abundant - then transfer those reasoning skills to solve any business problem.
+
+This cross-domain learning breakthrough means a model trained exclusively on math problems can guide agents through CRM workflows, telecom debugging, or any complex business task without domain-specific training. It's not about teaching facts; it's about teaching how to think.
 
 ## The Two-Phase Paradigm
 
@@ -23,9 +25,10 @@ Offline RL Training (24-48 hours)
 ```
 
 **Key Characteristics:**
-- **Compute-intensive**: 4-8 H100 GPUs for 2-3 days
-- **Data-rich**: Millions of teaching interactions
-- **Generalizable**: Skills transfer across domains
+- **Compute-intensive**: Minimum 2 GPUs (1 for vLLM, 1 for training)
+- **High-quality teaching examples**: ~900 carefully curated adaptive teaching demonstrations from Arc-ATLAS-Teach-v0
+- **Math-trained foundation**: Teacher model trained as expert in reasoning, sequential thinking, and complex problem decomposition
+- **Cross-domain transfer**: Math-trained reasoning generalizes to debugging, coding, and other analytical tasks
 - **One-time cost**: Amortized over all deployments
 
 ### Phase 2: Online Optimization
@@ -119,29 +122,56 @@ class OnlineOptimizer:
 
 *With pre-trained teacher models
 
-### Case Study: SRE Task Evolution
+### Case Study: Validated Cross-Domain Transfer
 
-The hybrid approach demonstrates its effectiveness in the [SRE root cause analysis task](/examples/sre-root-cause-analysis):
+Our approach's effectiveness is validated across multiple benchmarks:
 
-1. **Offline Foundation**: Teacher learns systematic debugging patterns
-2. **Online Adaptation**: Specializes for Kubernetes/Istio environments
-3. **Result**: Systematic improvement in root cause identification
+**Mathematics → Telecom (τ²-bench):**
+- Teacher trained only on math problems (Arc-ATLAS-Teach-v0)
+- Applied to telecom troubleshooting without any telecom training
+- Result: 24.0% pass@1 (vs 18.0% for GPT-4.1 and Claude 3.7)
 
-## Theoretical Foundation
+**Mathematics → CRM (CRMArena-Pro):**
+- Same math-trained teacher
+- Applied to policy compliance tasks
+- Result: 54% task completion (vs ~35% for leading models)
 
-### Why Hybrid Learning Works
+The key insight: The Teacher learns problem decomposition and systematic reasoning from mathematics, skills that transfer universally to any domain requiring analytical thinking.
 
-The separation of offline and online phases leverages different optimization dynamics:
+## Theoretical Foundation: Cross-Domain Learning
 
-**Offline Phase Benefits:**
-- **Exploration**: Can afford extensive trial-and-error
-- **Generalization**: Learns transferable meta-skills
-- **Stability**: Controlled environment prevents catastrophic failures
+### The Revolutionary Insight
 
-**Online Phase Benefits:**
-- **Exploitation**: Focuses on task-specific optimization
-- **Efficiency**: Minimal compute requirements
-- **Adaptability**: Rapid response to new requirements
+Traditional approaches require massive datasets for every business domain - data that rarely exists. Our breakthrough is teaching an agent the foundational skill of reasoning itself using mathematics, where logic principles are clear and data is abundant, then transferring that skill to solve any business problem.
+
+This cross-domain learning addresses the fundamental constraint in enterprise AI: **the scarcity of high-quality, in-domain preference data for complex business tasks**.
+
+### Why Mathematics as the Foundation?
+
+Mathematics was chosen deliberately as the training domain because:
+- **Clear correctness**: Unlike business tasks, math has verifiable ground truth
+- **Abundant data**: Thousands of well-structured problems available
+- **Pure reasoning**: Requires systematic thinking, problem decomposition, and logical flow
+- **Complexity gradient**: From simple arithmetic to AIME-level competition problems
+
+Our Teacher model trained on ~7,000 math problems achieved **46% accuracy on AIME-25**, placing it at top-10 SOTA level and validating its deep reasoning capabilities.
+
+### The Cross-Domain Transfer Mechanism
+
+The magic happens when this math-trained reasoning transfers to business domains:
+
+1. **Fundamental Skills Transfer**: Problem decomposition, logical sequencing, and systematic thinking learned in math apply universally
+2. **Domain-Agnostic Reasoning**: The Teacher generates "thinking traces" - step-by-step reasoning guides that work regardless of domain
+3. **No Domain Fine-tuning Required**: The Student agent uses these traces without needing business-specific training
+
+### Empirical Proof of Transfer
+
+Our results demonstrate unprecedented cross-domain transfer:
+- **Math → CRM**: 54% task completion on CRMArena-Pro (vs ~35% for leading models)
+- **Math → Telecom**: 24% pass@1 on τ²-bench (vs 18% for GPT-4.1 and Claude)
+- **Critical Accuracy**: 69.2% accuracy identifying policy violations when present
+
+This proves that deep reasoning skills learned in mathematics create a universal problem-solving capability.
 
 ### Compounding Intelligence
 
@@ -162,9 +192,9 @@ The hybrid architecture enables "Compounding Intelligence" through:
     # Option 1: Use pre-trained
     huggingface-cli download Arc-Intelligence/ATLAS-8B-Thinking
 
-    # Option 2: Train custom
-    scripts/launch.sh 8 configs/run/teacher_sft.yaml
-    scripts/launch_with_server.sh 4 4 configs/run/teacher_rcl.yaml
+    # Option 2: Train custom (minimum 2 GPUs)
+    scripts/launch.sh 2 configs/run/teacher_sft.yaml
+    scripts/launch_with_server.sh 1 1 configs/run/teacher_rcl.yaml
     ```
   </Step>
 
@@ -181,11 +211,12 @@ The hybrid architecture enables "Compounding Intelligence" through:
   <Step title="Deploy Enhanced Model">
     Integrate optimized teaching into production:
     ```python
-    from atlas_inference import ATLASInference
+    from trainers.prompt_adapter import ATLASGEPAAdapter
 
-    atlas = ATLASInference(
-        teacher_model=optimized_teacher,
-        student_model=your_production_model
+    adapter = ATLASGEPAAdapter(
+        teacher_model=optimized_teacher_generate_fn,
+        student_model=your_production_model_generate_fn,
+        all_prompts=optimized_prompts
     )
     ```
   </Step>
@@ -209,13 +240,13 @@ The hybrid architecture enables "Compounding Intelligence" through:
   <Card title="Adaptive Teaching Protocol" icon="chalkboard-user" href="/concepts/adaptive-teaching-protocol">
     Understand the two-pass teaching mechanism
   </Card>
-  <Card title="Compounding Intelligence" icon="layer-group" href="/concepts/compounding-intelligence">
+  <Card title="Online Learning" icon="layer-group" href="/training/online/continuous-learning">
     Learn how skills accumulate over time
   </Card>
   <Card title="First Experiment" icon="flask" href="/first-experiment">
     Run your first hybrid training pipeline
   </Card>
-  <Card title="Architecture Details" icon="diagram-project" href="/architecture/system-overview">
+  <Card title="Architecture Details" icon="diagram-project" href="/architecture/config-system">
     Explore technical implementation
   </Card>
 </CardGroup>

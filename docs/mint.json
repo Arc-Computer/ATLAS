@@ -89,7 +89,6 @@
           "group": "Online Optimization",
           "pages": [
             "training/online/optimize-with-atlas",
-            "training/online/skill-transfer",
             "training/online/continuous-learning"
           ]
         },

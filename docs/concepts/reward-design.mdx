@@ -94,7 +94,7 @@ def validate_non_degradation(results: List[TeachingResult]) -> float:
     return len(non_degraded) / len(results)
 ```
 
-**Empirical Result**: 97% non-degradation rate on Arc-ATLAS-Teach-v0
+**Empirical Result**: 97% non-degradation rate
 
 ### 2. Efficiency Incentive
 
@@ -350,7 +350,7 @@ def learn_reward_function(expert_demos: List[Demonstration]) -> RewardFunction:
   <Card title="RL Training Guide" icon="robot" href="/training/offline/grpo-training">
     How rewards guide GRPO optimization
   </Card>
-  <Card title="Performance Benchmarks" icon="chart-line" href="/benchmarks/detailed-analysis">
+  <Card title="Performance Benchmarks" icon="chart-line" href="/benchmarks/performance-results">
     Reward impact on final metrics
   </Card>
   <Card title="Custom Rewards" icon="code" href="/api-reference/trainers">

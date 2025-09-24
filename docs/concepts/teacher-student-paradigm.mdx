@@ -145,20 +145,31 @@ def minimal_intervention(self, task: str) -> str:
 
 ## Empirical Performance
 
-### Enhancement Across Student Models
+### τ²-bench Results (Dual-Control Environment)
 
-| Student Model | Size | Baseline | w/ ATLAS Teacher | Improvement |
-|--------------|------|----------|------------------|-------------|
-| Qwen3-4B-Instruct | 4B | 62.3% | 78.0% | +15.7% |
-| Llama-3.1-8B | 8B | 71.2% | 85.4% | +14.2% |
-| Mixtral-8x7B | 47B | 78.5% | 89.1% | +10.6% |
-| GPT-4 | ~1.7T | 84.3% | 92.8% | +8.5% |
+Our system was evaluated on τ²-bench's most complex mms_issue tasks, establishing state-of-the-art performance:
+
+| System | Pass@1 Rate | Pass@4 Rate | Notes |
+|--------|-------------|-------------|-------|
+| **ATLAS Teacher-Student** | **24.0%** | **22.4%** | Minimal degradation |
+| GPT-4.1 | 18.0% | 10.0% | -8pt drop |
+| Claude 3.7 Sonnet | 18.0% | 2.0% | -16pt drop |
+| o4-mini | 12.0% | 2.0% | -10pt drop |
+| Qwen3-8B (Student Only) | 4.1% | - | No teacher guidance |
+
+### Key Performance Metrics (from README)
+
+- **Average accuracy improvement**: 15.7% across tasks
+- **Maximum improvement**: 29.6% on specific domains
+- **Completion rate**: 31% improvement (69% → 100%)
+- **Token efficiency**: 50% reduction (4k → 2k tokens)
+- **Non-degradation rate**: 97%
 
 ### Key Observations
 
-1. **Inverse scaling**: Smaller models benefit more from teaching
-2. **Universal compatibility**: Works with any architecture
-3. **Consistent safety**: 97% non-degradation across all models
+1. **6x performance lift**: Teacher guidance improves Qwen3-8B from 4.1% to 24.0%
+2. **Consistency advantage**: Minimal pass@4 degradation vs competitors
+3. **Cross-domain transfer**: Math-trained teacher successfully guides telecom tasks
 
 ## Case Study: Mathematical Reasoning
 
@@ -202,21 +213,28 @@ Demonstrating teacher-student interaction on a complex problem:
 ### Pattern 1: Direct Enhancement
 
 ```python
-# Immediate application for single queries
-atlas = ATLASInference(teacher, student)
-enhanced_result = atlas.run_full_protocol(user_query)
+# Using optimize_teaching.py for enhancement
+from trainers.prompt_adapter import ATLASGEPAAdapter
+
+adapter = ATLASGEPAAdapter(
+    teacher_model=teacher_generate_fn,
+    student_model=student_generate_fn,
+    all_prompts=optimized_prompts
+)
+result = adapter.evaluate([{"question": user_query}])
+enhanced_output = result.outputs[0]["student_with_teaching"]
 ```
 
 ### Pattern 2: Batch Processing
 
 ```python
 # Efficient processing of multiple queries
-batch_enhancer = BatchATLAS(teacher, student)
-enhanced_results = batch_enhancer.process_batch(
-    queries=query_list,
-    parallel=True,
-    cache_guidance=True
+queries = [{"question": q} for q in query_list]
+results = adapter.evaluate(
+    queries,
+    capture_traces=True  # For analysis
 )
+enhanced_outputs = [r["student_with_teaching"] for r in results.outputs]
 ```
 
 ### Pattern 3: Streaming Applications
@@ -290,16 +308,16 @@ class StreamingATLAS:
   <Card title="Integration Guide" icon="plug" href="/integration/inference-only">
     Deploy teacher-student system
   </Card>
-  <Card title="API Reference" icon="code" href="/api-reference/atlas-inference">
-    ATLASInference implementation
+  <Card title="API Reference" icon="code" href="/api-reference/configs">
+    Configuration reference
   </Card>
-  <Card title="Benchmarks" icon="chart-line" href="/benchmarks/results-summary">
-    Performance across models
+  <Card title="Performance Results" icon="chart-line" href="/benchmarks/performance-results">
+    Detailed benchmarks
   </Card>
 </CardGroup>
 
 ## References
 
-- [ATLAS Technical Report](/reference/technical-report) - Section 3.1 on teacher-student architecture
+- [ATLAS Technical Report](/ATLAS-Technical-Report.pdf) - Complete methodology and architecture
 - [First Experiment](/first-experiment) - Hands-on teacher training
-- [Examples](/examples/math-reasoning) - Interactive demonstrations
+- [τ²-bench Results](/examples/sota-on-tau-squared-bench) - State-of-the-art performance

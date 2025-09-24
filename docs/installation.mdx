@@ -17,13 +17,14 @@ This guide covers installing ATLAS with Python 3.11/3.12, PyTorch 2.6.0, and vLL
 
 <CardGroup cols={2}>
   <Card title="Minimum Requirements" icon="desktop">
-    - NVIDIA GPU with CUDA support
-    - 16GB+ system RAM
-    - 50GB+ disk space
+    - 2× NVIDIA GPUs with CUDA support (for RL training)
+    - 1× GPU minimum for inference only
+    - 32GB+ system RAM
+    - 100GB+ disk space
     - Python 3.11 or 3.12
   </Card>
   <Card title="Recommended Setup" icon="server">
-    - 4×H100 or 8×H100 GPUs
+    - 4×H100 or 8×H100 GPUs (40GB+ VRAM each)
     - 128GB+ system RAM
     - 200GB+ NVMe storage
     - Ubuntu 22.04 LTS
@@ -163,18 +164,24 @@ Run this once to confirm CUDA, vLLM, and model downloads are working before you 
 ```bash
 python - <<'PY'
 import torch
-from transformers import AutoModelForCausalLM
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
+# Load teacher model
 teacher = AutoModelForCausalLM.from_pretrained(
     "Arc-Intelligence/ATLAS-8B-Thinking",
     device_map="auto",
     torch_dtype=torch.float16
 )
+teacher_tokenizer = AutoTokenizer.from_pretrained(
+    "Arc-Intelligence/ATLAS-8B-Thinking"
+)
 
 print("CUDA available:", torch.cuda.is_available())
-print("✓ Teacher model loaded:", teacher.config.model_type)
+print("GPU count:", torch.cuda.device_count())
+print("Teacher model loaded:", teacher.config.model_type)
+print("Model device:", next(teacher.parameters()).device)
 PY
-# ✓ Expect CUDA available: True and the teacher model type printed (e.g., 'atlas').
+# Expected output: CUDA available: True, GPU count: 2+ (for RL training), model type shown
 ```
 
 <CodeGroup>
@@ -212,9 +219,12 @@ For different GPU configurations:
 
 <AccordionGroup>
   <Accordion title="Single GPU Setup" icon="microchip">
-    For limited VRAM, use model offloading:
+    Single GPU is supported for inference only. For RL training, use model offloading:
     ```bash
-    # Add offload flag
+    # Inference only with single GPU
+    python smoke_test.py  # Uses pre-trained models
+
+    # For training with limited VRAM (requires 2+ GPUs)
     python train.py +offload
 
     # Or use Zero-1 optimization
@@ -225,12 +235,14 @@ For different GPU configurations:
   <Accordion title="Multi-GPU Setup" icon="layer-group">
     For distributed training across multiple GPUs:
     ```bash
-    # 4 GPUs
-    scripts/launch.sh 4 configs/run/teacher_sft.yaml
+    # Minimum 2 GPUs for RL training (1 for vLLM, 1 for training)
+    scripts/launch_with_server.sh 1 1 configs/run/teacher_rcl.yaml
 
-    # 8 GPUs with specific configuration
-    accelerate launch --num_processes=8 train.py \
-      configs/run/teacher_sft.yaml
+    # Production setup with 4 GPUs (2 for vLLM, 2 for training)
+    scripts/launch_with_server.sh 2 2 configs/run/teacher_rcl.yaml
+
+    # Full 8 GPU setup
+    scripts/launch_with_server.sh 4 4 configs/run/teacher_rcl.yaml
     ```
   </Accordion>
 
