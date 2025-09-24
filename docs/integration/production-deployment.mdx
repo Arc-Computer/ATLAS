@@ -5,6 +5,26 @@ sidebarTitle: Production Deploy
 icon: rocket
 ---
 
+**TL;DR:** Pick the deployment pattern that matches your workload (microservices for always-on teacher/student pools, serverless for bursty workloads), confirm GPUs and observability are in place, then follow the implementation checklist to wire ATLAS into your production stack.
+
+## Before You Begin
+
+<Info>
+Complete these setup steps so the production rollout focuses on infrastructure—not basics.
+</Info>
+
+- Finish the [Installation](/installation) guide and pass the smoke tests in [Quickstart](/quickstart#5-minute-smoke-test).
+- Deploy the [inference-only integration](/integration/inference-only) to confirm your student model behaves with ATLAS guidance.
+- Ensure you have GPU capacity (or an equivalent managed service) that matches the scale in the decision matrix below.
+- Set up access to your monitoring stack (Prometheus, Datadog, etc.) so you can track non-degradation and latency from day one.
+
+## Deployment Decision Matrix
+
+| Pattern | When to choose | Infrastructure footprint | Related docs |
+|---------|----------------|--------------------------|--------------|
+| **Microservices** | Steady or high request volume, low-latency SLAs, dedicated GPU fleet | Long-running teacher + student services with caches and autoscaling | [See pattern](#microservices-architecture) • [Troubleshooting](/reference/troubleshooting) |
+| **Serverless** | Bursty workloads, pay-per-use preference, managed GPU endpoints | Cloud functions + managed model hosts (SageMaker, Vertex AI) | [See pattern](#serverless-deployment) • [Inference Only](/integration/inference-only) |
+
 ## Architecture Overview
 
 Production ATLAS deployment requires careful consideration of scale, reliability, and cost:
@@ -46,9 +66,20 @@ Recommended specifications for different scales:
 - **Latency**: &lt;10ms between teacher and student services
 - **Load balancing**: Layer 7 with sticky sessions
 
-## Deployment Strategies
+## Microservices Architecture
 
-### Strategy 1: Microservices Architecture
+<Note>
+Choose this when you need predictable latency, operate your own GPUs, or plan to run ATLAS continuously alongside other services.
+</Note>
+
+### Prerequisites
+
+- Dedicated GPU nodes for the teacher and student pools (see [decision matrix](#deployment-decision-matrix))
+- Centralized configuration/secrets management for API keys and model paths
+- Observability pipeline (metrics + logs) ready to ingest the counters referenced in [Monitoring and Observability](#monitoring-and-observability)
+- Familiarity with container orchestration (Kubernetes, ECS, etc.)
+
+### Implementation Checklist
 
 <Steps>
   <Step title="Deploy Teacher Service">
@@ -234,7 +265,19 @@ Recommended specifications for different scales:
   </Step>
 </Steps>
 
-### Strategy 2: Serverless Deployment
+## Serverless Deployment
+
+<Note>
+Choose this when traffic is spiky, you prefer managed scaling, or you are iterating before committing to a dedicated GPU cluster.
+</Note>
+
+### Prerequisites
+
+- Cloud account with access to managed model hosting (e.g., SageMaker, Vertex AI)
+- Network egress allowances for cross-service calls between teacher and student endpoints
+- Plan for cold-start latency that aligns with your SLA
+
+### Implementation Checklist
 
 Deploy on serverless platforms for auto-scaling:
 

@@ -1,0 +1,71 @@
+---
+title: "Case Study: Online Optimization"
+description: "How ATLAS achieved a 165% performance gain in 2 hours with hyper-efficient online optimization."
+sidebarTitle: "Online Optimization Case Study"
+icon: "bolt"
+---
+
+## Abstract
+
+This case study demonstrates the power of layering a hyper-efficient online optimization process (GEPA) on top of a powerful, RL-trained foundation model. By using a `gemini/gemini-flash-2.5` reflection agent to evolve the prompts of our `ATLAS-8B-Thinking` teacher model, we achieved a **+165% performance improvement** on the student model in approximately **2 hours** and at a cost of only **~$10** in API inference.
+
+<CardGroup cols={2}>
+    <Card title="+165% Performance" icon="chart-line">
+        Measured by the increase in the Pareto front score, reflecting robust and diverse solutions.
+    </Card>
+    <Card title="~2 Hours to Optimize" icon="clock">
+        Rapid adaptation without the need for expensive, long-running training jobs.
+    </Card>
+</CardGroup>
+
+![ATLAS Online Learning Improvement](/images/atlas-online-learning.png "Pareto front score across GEPA iterations for ATLAS-8B-Thinking teaching Qwen3-4B")
+
+## The Hybrid Architecture: Offline RL + Online Optimization
+
+This experiment showcases a hybrid approach that combines the best of offline and online learning:
+
+1.  **Offline RL Foundation (ATLAS):** The `ATLAS-8B-Thinking` teacher model is first trained offline using our Reinforced Continual Learning (RCL) process. This builds a deep, generalizable foundation of reasoning and pedagogical skills.
+
+2.  **Online Optimization (GEPA):** We then use a "reflection agent" to analyze student failures on a live task and propose targeted "reflective mutations" to the teacher's prompts. This rapidly specializes the teacher for the specific task domain.
+
+## The Evolution of a Prompt
+
+The optimization process intelligently evolves prompts from a generic instruction to a sophisticated teaching framework.
+
+#### Initial Prompt (Score: -0.2)
+
+The initial prompt was too generic and actually harmed performance:
+```text
+You are solving math word problems. Think step by step and
+show your work clearly to arrive at the correct answer.
+```
+
+#### Final Evolved Prompt (Score: 1.479)
+
+After reflective mutation, the prompt became a detailed, multi-step teaching strategy:
+```text
+You are an expert teacher helping a student solve a math problem.
+Your primary goal is to provide focused, adaptive teaching that
+directly addresses the student's specific misconceptions or gaps...
+
+1. Analyze the Student's Approach Step-by-Step
+2. Identify Specific Issues, Misconceptions, or Gaps
+3. Provide Focused and Actionable Teaching...
+```
+
+The reflection agent identified key failure modes, such as the student providing solutions directly instead of reasoning, and evolved the prompt to enforce a diagnostic process.
+
+## Real-World Impact
+
+This hybrid architecture provides a powerful new paradigm for agent builders. It delivers the reliability of a model thoroughly trained with RL, plus the speed and task-specificity of online learning, without requiring massive compute for every new adaptation.
+
+## Next Steps
+
+<CardGroup cols={2}>
+    <Card title="Full Technical Breakdown" icon="file-text" href="/reference/supercharging-rl-with-online-optimization">
+        Read the original article for more details.
+    </Card>
+    <Card title="Online Optimization Guide" icon="graduation-cap" href="/training/online/optimize-with-atlas">
+        Learn how to run this process yourself.
+    </Card>
+</CardGroup>

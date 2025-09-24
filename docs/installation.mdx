@@ -9,7 +9,9 @@ icon: download
 **Time required**: 10-15 minutes • **Difficulty**: Beginner
 </Note>
 
-This guide covers installing ATLAS with Python 3.11/3.12, PyTorch 2.6.0, and vLLM 0.8.3.
+**TL;DR:** Use the automated install script for your Python version, then run the smoke test in the Verification section to confirm PyTorch, vLLM, and model downloads are configured correctly.
+
+This guide covers installing ATLAS with Python 3.11/3.12, PyTorch 2.6.0, and vLLM 0.8.3 (the high-throughput inference engine).
 
 ## System Requirements
 
@@ -151,6 +153,29 @@ report_to: null
 ## Verification
 
 After installation, verify your setup:
+
+### 3-Minute Smoke Test
+
+<Note>
+Run this once to confirm CUDA, vLLM, and model downloads are working before you invest in longer training jobs.
+</Note>
+
+```bash
+python - <<'PY'
+import torch
+from transformers import AutoModelForCausalLM
+
+teacher = AutoModelForCausalLM.from_pretrained(
+    "Arc-Intelligence/ATLAS-8B-Thinking",
+    device_map="auto",
+    torch_dtype=torch.float16
+)
+
+print("CUDA available:", torch.cuda.is_available())
+print("✓ Teacher model loaded:", teacher.config.model_type)
+PY
+# ✓ Expect CUDA available: True and the teacher model type printed (e.g., 'atlas').
+```
 
 <CodeGroup>
   ```python "Quick Test"

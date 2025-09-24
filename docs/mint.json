@@ -24,6 +24,10 @@
   },
   "topbarLinks": [
     {
+      "name": "Website",
+      "url": "https://www.arc.computer"
+    },
+    {
       "name": "GitHub",
       "url": "https://github.com/Arc-Computer/ATLAS"
     }
@@ -63,9 +67,17 @@
       ]
     },
     {
-      "group": "Examples",
+      "group": "Examples & Case Studies",
       "pages": [
-        "examples/online_optimization"
+        "examples/online_optimization",
+        {
+          "group": "Case Studies",
+          "pages": [
+            "examples/sre-root-cause-analysis",
+            "examples/online-optimization-case-study",
+            "examples/sota-on-tau-squared-bench"
+          ]
+        }
       ]
     },
     {

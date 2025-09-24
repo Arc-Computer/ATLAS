@@ -1,13 +1,15 @@
 ---
 title: First Experiment
 description: Complete walkthrough of the ATLAS training pipeline from SFT warmup to GRPO reinforcement learning
-sidebarTitle: First Experiment
+sidebarTitle: Custom Teacher Training
 icon: flask
 ---
 
 <Note>
 **Total time**: 24-48 hours (mostly unattended training) • **Active setup time**: 30-45 minutes • **Difficulty**: Intermediate
 </Note>
+
+**TL;DR:** Phase 1 (SFT) takes ~4-6 hours to establish a baseline teacher, Phase 2 (GRPO) runs ~24-36 hours with periodic monitoring, and validation at the end confirms the 15.7% accuracy lift before you promote the checkpoint.
 
 ## Overview
 
