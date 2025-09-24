@@ -24,10 +24,6 @@
   },
   "topbarLinks": [
     {
-      "name": "Website",
-      "url": "https://www.arc.computer"
-    },
-    {
       "name": "GitHub",
       "url": "https://github.com/Arc-Computer/ATLAS"
     }
@@ -62,7 +58,6 @@
         "concepts/teacher-student-paradigm",
         "concepts/adaptive-teaching-protocol",
         "concepts/hybrid-learning",
-        "concepts/compounding-intelligence",
         "concepts/reward-design"
       ]
     },
