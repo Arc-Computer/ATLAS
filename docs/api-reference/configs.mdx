@@ -1,0 +1,289 @@
+---
+title: Configuration Reference
+description: Complete reference for all ATLAS configuration parameters
+sidebarTitle: Configs
+icon: sliders
+---
+
+## Overview
+
+ATLAS configurations control every aspect of training and inference. Parameters are organized into logical groups for easier navigation.
+
+![ATLAS Architecture](/images/ATLAS.png)
+
+## Typical Usage
+
+<CodeGroup>
+```python title="Basic RL Training"
+from configs import GRPOConfig
+from trainers import GRPOTrainer
+
+config = GRPOConfig(
+    model_name_or_path="Arc-Intelligence/ATLAS-8B-Thinking",
+    learning_rate=5e-6,
+    num_train_epochs=3,
+    per_device_train_batch_size=4,
+    gradient_accumulation_steps=4,
+    beta=0.04,  # KL penalty
+    temperature=0.7
+)
+
+trainer = GRPOTrainer(config)
+trainer.train()
+```
+
+```python title="Adaptive Teaching"
+from configs import TeacherGRPOConfig
+from trainers import TeacherGRPOTrainer
+
+config = TeacherGRPOConfig(
+    teacher_model="Arc-Intelligence/ATLAS-8B-Thinking",
+    student_model="meta-llama/Llama-3.2-8B-Instruct",
+    adaptive_teaching=True,
+    max_probe_tokens=50,
+    max_guidance_tokens=200,
+    efficiency_weight=1.0
+)
+
+trainer = TeacherGRPOTrainer(config)
+trainer.train()
+```
+</CodeGroup>
+
+## GRPOConfig Parameters
+
+<AccordionGroup>
+  <Accordion title="Core Training Parameters">
+    | Parameter | Type | Default | Description |
+    |-----------|------|---------|-------------|
+    | `model_name_or_path` | str | required | HuggingFace model or local path |
+    | `learning_rate` | float | 5e-7 | Peak learning rate for training |
+    | `num_train_epochs` | int | 3 | Number of training epochs |
+    | `per_device_train_batch_size` | int | 8 | Batch size per GPU/TPU core |
+    | `gradient_accumulation_steps` | int | 1 | Steps before backward pass |
+    | `warmup_ratio` | float | 0.1 | Ratio of warmup steps |
+    | `weight_decay` | float | 0.01 | L2 regularization coefficient |
+    | `max_grad_norm` | float | 1.0 | Maximum gradient norm for clipping |
+
+    **Why adjust these?**
+    - Lower `learning_rate` for more stable training
+    - Increase `gradient_accumulation_steps` if GPU memory limited
+    - Adjust `warmup_ratio` for better convergence
+  </Accordion>
+
+  <Accordion title="GRPO Algorithm Parameters">
+    | Parameter | Type | Default | Description |
+    |-----------|------|---------|-------------|
+    | `beta` | float | 0.04 | KL divergence penalty coefficient |
+    | `temperature` | float | 1.0 | Sampling temperature for generation |
+    | `grpo_alpha` | float | 1.0 | PPO-style clipping parameter |
+    | `generation_kwargs` | dict | {} | Additional generation parameters |
+    | `reward_model` | str | None | Optional reward model path |
+    | `use_adaptive_kl` | bool | False | Dynamically adjust KL penalty |
+
+    **Key insights:**
+    - `beta`: Lower values (0.01-0.05) encourage exploration
+    - `temperature`: Higher values (0.7-1.5) increase diversity
+    - `grpo_alpha`: Controls policy update magnitude
+  </Accordion>
+
+  <Accordion title="Generation & Sampling">
+    | Parameter | Type | Default | Description |
+    |-----------|------|---------|-------------|
+    | `max_new_tokens` | int | 512 | Maximum tokens to generate |
+    | `min_new_tokens` | int | 1 | Minimum tokens to generate |
+    | `top_k` | int | 50 | Top-k sampling parameter |
+    | `top_p` | float | 0.95 | Nucleus sampling threshold |
+    | `do_sample` | bool | True | Enable sampling vs greedy |
+    | `num_return_sequences` | int | 1 | Sequences per prompt |
+    | `generation_aggregation_steps` | int | 1 | Steps between generation batches |
+
+    **Optimization tips:**
+    - Set `generation_aggregation_steps` > 1 for memory efficiency
+    - Adjust `top_p` for quality/diversity tradeoff
+    - Use `min_new_tokens` to prevent early stopping
+  </Accordion>
+
+  <Accordion title="vLLM Integration">
+    | Parameter | Type | Default | Description |
+    |-----------|------|---------|-------------|
+    | `use_vllm` | bool | False | Enable vLLM server for generation |
+    | `vllm_server_url` | str | None | vLLM server endpoint |
+    | `vllm_gpu_memory_utilization` | float | 0.9 | GPU memory for vLLM |
+    | `vllm_max_model_len` | int | 2048 | Maximum sequence length |
+    | `vllm_tensor_parallel_size` | int | 1 | Tensor parallelism degree |
+    | `vllm_enable_prefix_caching` | bool | True | Cache prompt prefixes |
+
+    **When to use:**
+    - Enable for distributed generation
+    - Required for models > 40GB
+    - Improves throughput by 2-5x
+  </Accordion>
+
+  <Accordion title="Memory Optimization">
+    | Parameter | Type | Default | Description |
+    |-----------|------|---------|-------------|
+    | `gradient_checkpointing` | bool | False | Trade compute for memory |
+    | `offload` | bool | False | Offload to CPU when possible |
+    | `load_in_8bit` | bool | False | 8-bit quantization |
+    | `load_in_4bit` | bool | False | 4-bit quantization |
+    | `torch_dtype` | str | "auto" | Data type (float16, bfloat16) |
+    | `optim` | str | "adamw_torch" | Optimizer choice |
+    | `deepspeed` | str | None | DeepSpeed config path |
+
+    **Memory saving options:**
+    - Enable `gradient_checkpointing`: -40% memory
+    - Use `load_in_4bit`: -75% memory
+    - Enable `offload`: Allows training on smaller GPUs
+  </Accordion>
+
+  <Accordion title="Adaptive Teaching">
+    | Parameter | Type | Default | Description |
+    |-----------|------|---------|-------------|
+    | `adaptive_teaching` | bool | False | Enable two-pass protocol |
+    | `max_probe_tokens` | int | 50 | Diagnostic probe limit |
+    | `max_guidance_tokens` | int | 200 | Teaching guidance limit |
+    | `student_model_name` | str | None | Student model for teaching |
+    | `efficiency_weight` | float | 1.0 | Reward efficiency scaling |
+    | `baseline_threshold` | float | 0.5 | Minimum performance threshold |
+    | `degradation_penalty` | float | 2.0 | Penalty for degradation |
+
+    **Teaching optimization:**
+    - Lower `max_probe_tokens` for efficiency
+    - Increase `efficiency_weight` for concise teaching
+    - Adjust `baseline_threshold` based on task difficulty
+  </Accordion>
+
+  <Accordion title="Logging & Checkpointing">
+    | Parameter | Type | Default | Description |
+    |-----------|------|---------|-------------|
+    | `logging_steps` | int | 10 | Log every N steps |
+    | `save_steps` | int | 500 | Save checkpoint every N steps |
+    | `eval_steps` | int | 500 | Evaluate every N steps |
+    | `save_total_limit` | int | 3 | Maximum checkpoints to keep |
+    | `load_best_model_at_end` | bool | True | Load best model after training |
+    | `metric_for_best_model` | str | "eval_reward" | Metric for model selection |
+    | `greater_is_better` | bool | True | Whether metric should increase |
+    | `report_to` | list | ["wandb"] | Logging integrations |
+
+    **Best practices:**
+    - Set `save_steps` = `eval_steps` for consistency
+    - Use `save_total_limit` to manage disk space
+    - Enable W&B for experiment tracking
+  </Accordion>
+</AccordionGroup>
+
+## TeacherGRPOConfig
+
+Extends GRPOConfig with teacher-specific parameters:
+
+<AccordionGroup>
+  <Accordion title="Teacher-Specific Parameters">
+    | Parameter | Type | Default | Description |
+    |-----------|------|---------|-------------|
+    | `teacher_model_name` | str | required | Teacher model path |
+    | `student_model_name` | str | required | Student model path |
+    | `teaching_strategy` | str | "adaptive" | Teaching approach |
+    | `capability_bins` | int | 3 | Capability level granularity |
+    | `probe_temperature` | float | 0.1 | Temperature for probing |
+    | `guidance_temperature` | float | 0.7 | Temperature for guidance |
+    | `cache_guidance` | bool | True | Cache repeated guidance |
+
+    **Strategy options:**
+    - `"adaptive"`: Full two-pass protocol
+    - `"minimal"`: Light-touch guidance only
+    - `"comprehensive"`: Maximum scaffolding
+  </Accordion>
+</AccordionGroup>
+
+## DataConfig
+
+Dataset configuration parameters:
+
+<AccordionGroup>
+  <Accordion title="Dataset Parameters">
+    | Parameter | Type | Default | Description |
+    |-----------|------|---------|-------------|
+    | `dataset_name` | str | required | HuggingFace dataset name |
+    | `dataset_config` | str | None | Dataset configuration name |
+    | `train_split` | str | "train" | Training split name |
+    | `eval_split` | str | "validation" | Evaluation split name |
+    | `max_train_samples` | int | None | Limit training samples |
+    | `max_eval_samples` | int | None | Limit evaluation samples |
+    | `preprocessing_num_workers` | int | 4 | Parallel preprocessing |
+    | `max_length` | int | 2048 | Maximum sequence length |
+    | `pad_to_multiple_of` | int | 8 | Padding for efficiency |
+
+    **Performance tips:**
+    - Increase `preprocessing_num_workers` for faster loading
+    - Set `pad_to_multiple_of` = 16 for tensor cores
+    - Use `max_train_samples` for quick experiments
+  </Accordion>
+</AccordionGroup>
+
+## Command-Line Overrides
+
+Any parameter can be overridden via command line:
+
+```bash
+# Override single parameter
+scripts/launch.sh 8 configs/run/teacher_sft.yaml learning_rate=1e-5
+
+# Override multiple parameters
+scripts/launch.sh 8 configs/run/teacher_sft.yaml \
+  learning_rate=1e-5 \
+  num_train_epochs=5 \
+  per_device_train_batch_size=2
+
+# Override nested parameters
+scripts/launch.sh 8 configs/run/teacher_sft.yaml \
+  generation_kwargs.temperature=0.9 \
+  generation_kwargs.top_p=0.8
+```
+
+## Configuration Validation
+
+ATLAS validates configurations at runtime:
+
+```python
+from configs import validate_config
+
+config = GRPOConfig(
+    model_name_or_path="Arc-Intelligence/ATLAS-8B-Thinking",
+    learning_rate=5e-6,
+    beta=0.04
+)
+
+# Validate before training
+errors = validate_config(config)
+if errors:
+    print(f"Configuration errors: {errors}")
+else:
+    trainer = GRPOTrainer(config)
+    trainer.train()
+```
+
+## Source Code
+
+For complete implementation details:
+- **GRPOConfig**: `configs/grpo_config.py`
+- **TeacherGRPOConfig**: `configs/teacher_config.py`
+- **DataConfig**: `configs/data_config.py`
+- **Validation**: `configs/validation.py`
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Trainers Reference" icon="robot" href="/api-reference/trainers">
+    Trainer class documentation
+  </Card>
+  <Card title="Configuration Deep Dive" icon="cog" href="/architecture/config-system">
+    Understanding config composition
+  </Card>
+  <Card title="RL Training Guide" icon="graduation-cap" href="/training/offline/grpo-training">
+    Apply configs to training
+  </Card>
+  <Card title="First Experiment" icon="flask" href="/first-experiment">
+    Hands-on configuration tutorial
+  </Card>
+</CardGroup>

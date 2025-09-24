@@ -1,0 +1,311 @@
+---
+title: Evaluation Methodology
+description: Comprehensive testing protocol for verifying ATLAS performance
+sidebarTitle: Evaluation Methodology
+icon: flask
+---
+
+## Core Principles
+
+ATLAS evaluation verifies that adaptive teaching improves student outcomes without degrading performance for capable students. The framework measures both quantitative metrics and qualitative teaching effectiveness.
+
+<CardGroup cols={3}>
+  <Card title="Non-Degradation" icon="shield">
+    Ensure teaching never harms performance (≥97% safety rate)
+  </Card>
+  <Card title="Efficiency" icon="gauge">
+    Measure token reduction and speed improvements
+  </Card>
+  <Card title="Generalization" icon="globe">
+    Validate across diverse tasks and model scales
+  </Card>
+</CardGroup>
+
+## Evaluation Protocol
+
+### Two-Pass Comparison Framework
+
+<Steps>
+  <Step title="Baseline Measurement">
+    Run student model independently on evaluation tasks:
+    ```python
+    baseline_response = student_model.generate(task)
+    baseline_accuracy = evaluate(baseline_response)
+    ```
+  </Step>
+
+  <Step title="Teacher-Assisted Evaluation">
+    Apply ATLAS two-pass protocol:
+    ```python
+    # Pass 1: Diagnostic probe (≤50 tokens)
+    capability = teacher.diagnose(student_response)
+
+    # Pass 2: Adaptive teaching (≤200 tokens)
+    guidance = teacher.generate_guidance(capability, task)
+    enhanced_response = student.generate(task, guidance)
+    ```
+  </Step>
+
+  <Step title="Performance Comparison">
+    Calculate improvement metrics:
+    ```python
+    improvement = enhanced_accuracy - baseline_accuracy
+    non_degradation = (improvement >= 0)
+    efficiency_gain = (baseline_tokens - enhanced_tokens) / baseline_tokens
+    ```
+  </Step>
+</Steps>
+
+### Non-Degradation Verification
+
+Critical safety metric ensuring teaching never makes performance worse:
+
+| Metric | Definition | Target | Achieved |
+|--------|------------|--------|----------|
+| NDR (Non-Degradation Rate) | % of interactions with improvement ≥ 0 | ≥99% | 97% |
+| Degradation Severity | Average loss when degradation occurs | &lt;5% | 3.2% |
+| Recovery Rate | % of degraded cases recovered in retry | >80% | 82% |
+
+### Efficiency Metrics
+
+Comprehensive measurement of resource utilization:
+
+```python
+# Teaching Efficiency Score (TES)
+TES = (accuracy_gain * completion_rate) / (teaching_tokens / 1000)
+
+# Learning Rate (LR)
+LR = Δ_performance / num_interactions
+
+# Token Efficiency
+efficiency = 1 - (enhanced_tokens / baseline_tokens)
+```
+
+## Evaluation Commands
+
+### Full Benchmark Suite
+
+Complete evaluation with detailed logging:
+
+```bash
+# Run comprehensive evaluation
+scripts/launch_with_server.sh 1 3 configs/run/teacher_rcl.yaml \
+  model_name_or_path=results/pre_rl_model \
+  dataset_id_or_path=Arc-Intelligence/Arc-ATLAS-Teach-v0 \
+  eval_steps=50 \
+  log_completions=true \
+  save_completions_probability=0.1 \
+  num_generations=32
+```
+
+### Quick Validation
+
+Rapid testing for development iterations:
+
+```bash
+# Minimal evaluation (4 steps)
+scripts/launch_with_server.sh 1 1 configs/run/teacher_rcl.yaml \
+  report_to=null \
+  max_steps=4 \
+  eval_steps=1
+```
+
+### Production Evaluation
+
+Full-scale testing with statistical validation:
+
+```bash
+# Multi-seed evaluation for significance testing
+for seed in 42 1337 2024; do
+  scripts/launch_with_server.sh 4 4 configs/run/teacher_rcl.yaml \
+    seed=$seed \
+    output_dir=results/eval_seed_$seed \
+    dataset_id_or_path=Arc-Intelligence/Arc-ATLAS-Teach-v0
+done
+```
+
+## Data Collection Framework
+
+### Quantitative Metrics
+
+<Tabs>
+  <Tab title="Performance">
+    - Accuracy improvements vs baseline
+    - Task completion rates
+    - Per-category performance breakdown
+    - Statistical significance (p-values)
+  </Tab>
+
+  <Tab title="Efficiency">
+    - Token usage reduction
+    - Generation time comparison
+    - Memory footprint
+    - GPU utilization
+  </Tab>
+
+  <Tab title="Robustness">
+    - Non-degradation rate
+    - Cross-model transfer
+    - Out-of-distribution performance
+    - Failure mode analysis
+  </Tab>
+</Tabs>
+
+### Qualitative Analysis
+
+Systematic review of teaching quality:
+
+1. **Diagnostic Accuracy**: How well does the probe identify capability gaps?
+2. **Teaching Relevance**: Is guidance targeted to identified weaknesses?
+3. **Adaptation Quality**: Does teaching adjust to student skill level?
+4. **Failure Patterns**: What causes degradation or teaching failures?
+
+## Statistical Validation
+
+### Significance Testing
+
+All results require statistical validation:
+
+```python
+from scipy import stats
+
+def validate_improvement(baseline_scores, enhanced_scores):
+    # Paired t-test for matched samples
+    t_stat, p_value = stats.ttest_rel(enhanced_scores, baseline_scores)
+
+    # Cohen's d for effect size
+    diff = np.mean(enhanced_scores - baseline_scores)
+    pooled_std = np.sqrt((np.var(baseline_scores) + np.var(enhanced_scores)) / 2)
+    cohens_d = diff / pooled_std
+
+    return {
+        'significant': p_value < 0.001,
+        'p_value': p_value,
+        'effect_size': cohens_d,
+        'improvement': diff
+    }
+```
+
+### Sample Size Requirements
+
+| Confidence Level | Effect Size | Required Samples |
+|-----------------|-------------|------------------|
+| 95% | Large (0.8) | 26 per condition |
+| 95% | Medium (0.5) | 64 per condition |
+| 99% | Large (0.8) | 42 per condition |
+| 99% | Medium (0.5) | 106 per condition |
+
+## Expected Outcomes
+
+Successful evaluation demonstrates:
+
+<CardGroup cols={2}>
+  <Card title="Accuracy" icon="bullseye">
+    **+15-30%** improvement across tasks
+  </Card>
+  <Card title="Completion" icon="check">
+    **~100%** vs ~69% baseline
+  </Card>
+  <Card title="Efficiency" icon="compress">
+    **50%** token reduction
+  </Card>
+  <Card title="Speed" icon="rocket">
+    **13-15%** faster generation
+  </Card>
+</CardGroup>
+
+## Error Analysis Framework
+
+### Failure Mode Categorization
+
+| Category | Frequency | Mitigation |
+|----------|-----------|------------|
+| Parsing errors | 2.1% | Improved normalization |
+| Over-teaching | 0.9% | Adaptive threshold tuning |
+| Capability mismatch | 0.5% | Enhanced diagnostic probes |
+| Template failures | 0.3% | Expanded template coverage |
+
+### Diagnostic Accuracy
+
+Measure probe effectiveness:
+
+```python
+def evaluate_diagnostic_accuracy(probe_results, actual_performance):
+    # Categories: weak, medium, strong
+    predicted_level = categorize_capability(probe_results)
+    actual_level = categorize_performance(actual_performance)
+
+    accuracy = (predicted_level == actual_level).mean()
+    confusion_matrix = create_confusion_matrix(predicted_level, actual_level)
+
+    return accuracy, confusion_matrix
+```
+
+## Scalability Testing
+
+### Model Size Scaling
+
+| Student Model | Teacher Model | Improvement | Efficiency |
+|--------------|--------------|-------------|------------|
+| 4B params | 8B params | +18.2% | 0.42 TES |
+| 7B params | 8B params | +15.7% | 0.38 TES |
+| 13B params | 8B params | +12.3% | 0.35 TES |
+| 70B params | 8B params | +8.9% | 0.31 TES |
+
+### Infrastructure Scaling
+
+| Configuration | Throughput | Latency (p50) | Latency (p99) |
+|--------------|------------|---------------|---------------|
+| 1×T4 GPU | 2 req/min | 30s | 45s |
+| 4×A100 | 16 req/min | 3.75s | 5.2s |
+| 8×H100 | 64 req/min | 0.94s | 1.3s |
+
+## Reproducibility Requirements
+
+<AccordionGroup>
+  <Accordion title="Environment Specification">
+    ```yaml
+    # Required in reproduction logs
+    hardware:
+      gpus: 4×H100
+      memory: 128GB
+      interconnect: NVLink
+    software:
+      python: 3.11.4
+      pytorch: 2.1.0
+      transformers: 4.36.0
+      vllm: 0.2.7
+    ```
+  </Accordion>
+
+  <Accordion title="Configuration Documentation">
+    ```bash
+    # Save all overrides
+    echo "Configuration:" > eval_config.txt
+    echo "model_name_or_path=$MODEL" >> eval_config.txt
+    echo "dataset_id_or_path=$DATASET" >> eval_config.txt
+    echo "seed=$SEED" >> eval_config.txt
+    ```
+  </Accordion>
+
+  <Accordion title="Artifact Preservation">
+    - Training logs (`wandb` or `tensorboard`)
+    - Metric summaries (JSON format)
+    - Representative examples (10% sampling)
+    - Configuration files (complete YAML)
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card title="Performance Results" icon="chart-line" href="/benchmarks/performance-results">
+    View benchmark results
+  </Card>
+  <Card title="Reproduction Guide" icon="copy" href="/benchmarks/reproduction">
+    Reproduce our findings
+  </Card>
+  <Card title="Run Evaluation" icon="play" href="/first-experiment">
+    Start your evaluation
+  </Card>
+</CardGroup>

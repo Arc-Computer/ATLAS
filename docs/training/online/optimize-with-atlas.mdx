@@ -1,0 +1,569 @@
+---
+title: Optimize with ATLAS
+description: Rapidly enhance model performance with online optimization in 2 hours
+sidebarTitle: Quick Optimization
+icon: bolt
+---
+
+## Overview
+
+Online optimization allows you to enhance any model's performance on specific tasks in just 2 hours using API-based training. This approach leverages pre-trained ATLAS teachers and reflective mutation for rapid improvement.
+
+![Online Learning Architecture](/images/atlas-online-learning.png)
+
+## Prerequisites
+
+- OpenAI API key (for optimization agent)
+- Pre-trained ATLAS teacher model
+- Task-specific evaluation data
+- ~$10 in API credits
+
+## Quick Start
+
+<Steps>
+  <Step title="Set Up Environment">
+    Configure API credentials and install dependencies:
+
+    ```bash
+    # Set API key
+    export OPENAI_API_KEY="your-api-key"
+
+    # Install requirements
+    pip install openai transformers accelerate
+    pip install atlas-online  # Coming soon to PyPI
+    ```
+
+    <Note>
+    Online optimization uses GPT-4 for reflective mutation. Ensure your API key has sufficient credits.
+    </Note>
+  </Step>
+
+  <Step title="Prepare Task Data">
+    Create evaluation samples for your specific task:
+
+    ```python
+    # task_samples.json
+    [
+        {
+            "prompt": "Debug: Service returns 503 errors intermittently",
+            "expected_response": "Check service mesh configuration, verify mTLS policies...",
+            "domain": "sre"
+        },
+        {
+            "prompt": "Optimize this SQL query for better performance",
+            "expected_response": "Add index on join columns, use EXPLAIN ANALYZE...",
+            "domain": "database"
+        }
+        # Add 10-20 diverse examples
+    ]
+    ```
+
+    <Warning>
+    Use representative samples that cover edge cases. Quality matters more than quantity.
+    </Warning>
+  </Step>
+
+  <Step title="Run Online Optimization">
+    Execute the optimization script:
+
+    ```bash
+    ./scripts/openai_agent_atlas.sh \
+      configs/optimize/default.yaml \
+      task_samples=task_samples.json \
+      num_iterations=100 \
+      temperature=0.7
+    ```
+
+    The optimization process:
+    1. Evaluates baseline performance
+    2. Generates teaching variations
+    3. Tests improvements
+    4. Creates skill capsules
+  </Step>
+
+  <Step title="Deploy Optimized Model">
+    Use the enhanced teaching strategies:
+
+    ```python
+    from atlas_online import OnlineATLAS
+
+    # Load optimized teaching
+    atlas = OnlineATLAS.from_optimization(
+        "optimization_results/best_strategy.json"
+    )
+
+    # Apply to new queries
+    response = atlas.enhance(
+        "Debug: Database connection pool exhausted"
+    )
+    ```
+  </Step>
+</Steps>
+
+## Optimization Algorithm
+
+### Reflective Mutation Process
+
+The online optimization uses reflective mutation to evolve teaching strategies:
+
+```python
+class ReflectiveMutation:
+    """
+    Evolutionary optimization for teaching strategies
+    """
+
+    def __init__(self, evaluator, mutation_agent):
+        self.evaluator = evaluator
+        self.mutation_agent = mutation_agent  # GPT-4
+        self.population = []
+
+    def optimize(self, task_samples, num_iterations=100):
+        """
+        Main optimization loop
+        """
+        for iteration in range(num_iterations):
+            # Step 1: Evaluate current strategies
+            scores = self.evaluate_population(task_samples)
+
+            # Step 2: Select best performers
+            elite = self.select_elite(scores)
+
+            # Step 3: Generate mutations
+            mutations = self.mutate_strategies(elite)
+
+            # Step 4: Update population
+            self.population = elite + mutations
+
+            # Step 5: Log progress
+            self.log_iteration(iteration, scores)
+
+        return self.get_best_strategy()
+
+    def mutate_strategies(self, strategies):
+        """
+        Use LLM to intelligently mutate teaching strategies
+        """
+        mutations = []
+        for strategy in strategies:
+            prompt = f"""
+            Current teaching strategy:
+            {strategy}
+
+            Performance: {strategy.score}
+            Failures: {strategy.failure_cases}
+
+            Generate an improved variant that addresses the failures.
+            """
+
+            mutation = self.mutation_agent.generate(prompt)
+            mutations.append(mutation)
+
+        return mutations
+```
+
+### Performance Tracking
+
+Monitor optimization progress in real-time:
+
+```python
+class OptimizationMonitor:
+    def __init__(self):
+        self.metrics = {
+            'iteration': [],
+            'best_score': [],
+            'mean_score': [],
+            'diversity': []
+        }
+
+    def update(self, iteration, population):
+        scores = [p.score for p in population]
+        self.metrics['iteration'].append(iteration)
+        self.metrics['best_score'].append(max(scores))
+        self.metrics['mean_score'].append(np.mean(scores))
+        self.metrics['diversity'].append(self.compute_diversity(population))
+
+    def plot_convergence(self):
+        """Visualize optimization progress"""
+        import matplotlib.pyplot as plt
+
+        plt.figure(figsize=(12, 4))
+
+        plt.subplot(1, 3, 1)
+        plt.plot(self.metrics['iteration'], self.metrics['best_score'])
+        plt.xlabel('Iteration')
+        plt.ylabel('Best Score')
+        plt.title('Optimization Progress')
+
+        plt.subplot(1, 3, 2)
+        plt.plot(self.metrics['iteration'], self.metrics['mean_score'])
+        plt.xlabel('Iteration')
+        plt.ylabel('Mean Score')
+        plt.title('Population Performance')
+
+        plt.subplot(1, 3, 3)
+        plt.plot(self.metrics['iteration'], self.metrics['diversity'])
+        plt.xlabel('Iteration')
+        plt.ylabel('Diversity')
+        plt.title('Strategy Diversity')
+
+        plt.tight_layout()
+        plt.savefig('optimization_progress.png')
+```
+
+## Configuration Options
+
+### Optimization Parameters
+
+```yaml
+# configs/optimize/default.yaml
+optimization:
+  num_iterations: 100        # Total optimization steps
+  population_size: 20        # Strategies per generation
+  elite_ratio: 0.2          # Top performers to keep
+  mutation_rate: 0.8        # Probability of mutation
+  crossover_rate: 0.3       # Probability of combining strategies
+
+evaluation:
+  batch_size: 4             # Parallel evaluations
+  timeout: 30               # Seconds per evaluation
+  success_threshold: 0.7    # Minimum acceptable score
+
+mutation_agent:
+  model: "gpt-4-turbo"      # Mutation generation model
+  temperature: 0.7          # Creativity level
+  max_tokens: 500           # Response length limit
+
+constraints:
+  max_teaching_tokens: 200  # Guidance length limit
+  min_improvement: 0.05     # Required improvement
+  safety_check: true        # Verify non-degradation
+```
+
+### Task-Specific Configurations
+
+<Tabs>
+  <Tab title="SRE Tasks">
+    ```yaml
+    # configs/optimize/sre.yaml
+    task_specific:
+      domain: "site_reliability"
+      keywords: ["kubernetes", "istio", "monitoring", "debugging"]
+      success_metrics:
+        - "root_cause_identified"
+        - "mitigation_proposed"
+        - "prevention_suggested"
+
+    evaluation:
+      success_threshold: 0.8  # Higher bar for critical tasks
+      timeout: 45              # More time for complex analysis
+    ```
+  </Tab>
+
+  <Tab title="Code Generation">
+    ```yaml
+    # configs/optimize/coding.yaml
+    task_specific:
+      domain: "programming"
+      languages: ["python", "javascript", "rust"]
+      success_metrics:
+        - "syntax_correct"
+        - "logic_sound"
+        - "edge_cases_handled"
+
+    constraints:
+      max_teaching_tokens: 300  # Allow longer explanations
+      include_examples: true     # Show code samples
+    ```
+  </Tab>
+
+  <Tab title="Math Reasoning">
+    ```yaml
+    # configs/optimize/math.yaml
+    task_specific:
+      domain: "mathematics"
+      topics: ["algebra", "calculus", "statistics"]
+      success_metrics:
+        - "correct_answer"
+        - "valid_reasoning"
+        - "step_by_step_shown"
+
+    mutation_agent:
+      temperature: 0.5  # More deterministic for math
+      verify_calculations: true
+    ```
+  </Tab>
+</Tabs>
+
+## Advanced Techniques
+
+### Skill Composition
+
+Combine multiple optimized skills:
+
+```python
+class SkillComposer:
+    """
+    Combine specialized skills for complex tasks
+    """
+
+    def __init__(self):
+        self.skills = {}
+
+    def load_skill(self, name, path):
+        """Load optimized skill from file"""
+        with open(path) as f:
+            self.skills[name] = json.load(f)
+
+    def compose(self, task):
+        """
+        Select and combine relevant skills
+        """
+        # Identify required skills
+        required_skills = self.analyze_task(task)
+
+        # Combine teaching strategies
+        combined_strategy = self.merge_strategies(
+            [self.skills[s] for s in required_skills]
+        )
+
+        return combined_strategy
+
+    def merge_strategies(self, strategies):
+        """
+        Intelligently merge multiple strategies
+        """
+        merged = {
+            'diagnostic_approach': self.merge_diagnostics(strategies),
+            'teaching_pattern': self.merge_patterns(strategies),
+            'safety_checks': self.merge_safety(strategies)
+        }
+        return merged
+```
+
+### Continuous Learning
+
+Implement online learning in production:
+
+```python
+class ContinuousOptimizer:
+    """
+    Continuously improve from production feedback
+    """
+
+    def __init__(self, atlas_instance):
+        self.atlas = atlas_instance
+        self.feedback_buffer = []
+        self.optimization_threshold = 100  # Feedback samples
+
+    async def collect_feedback(self, query, response, user_rating):
+        """Collect production feedback"""
+        self.feedback_buffer.append({
+            'query': query,
+            'response': response,
+            'rating': user_rating,
+            'timestamp': time.time()
+        })
+
+        # Trigger optimization when threshold reached
+        if len(self.feedback_buffer) >= self.optimization_threshold:
+            await self.trigger_optimization()
+
+    async def trigger_optimization(self):
+        """Run optimization on collected feedback"""
+        # Convert feedback to training samples
+        samples = self.prepare_samples(self.feedback_buffer)
+
+        # Run online optimization
+        optimizer = ReflectiveMutation(self.atlas)
+        improved_strategy = optimizer.optimize(samples, num_iterations=50)
+
+        # Update production model
+        self.atlas.update_strategy(improved_strategy)
+
+        # Clear buffer
+        self.feedback_buffer = []
+
+    def prepare_samples(self, feedback):
+        """Convert feedback to optimization samples"""
+        samples = []
+        for item in feedback:
+            if item['rating'] >= 4:  # Positive examples
+                samples.append({
+                    'prompt': item['query'],
+                    'expected_response': item['response'],
+                    'weight': item['rating'] / 5.0
+                })
+        return samples
+```
+
+### A/B Testing Strategies
+
+Test optimized strategies in production:
+
+```python
+class StrategyABTest:
+    """
+    A/B test teaching strategies
+    """
+
+    def __init__(self, baseline_strategy, optimized_strategy):
+        self.strategies = {
+            'baseline': baseline_strategy,
+            'optimized': optimized_strategy
+        }
+        self.results = {
+            'baseline': {'success': 0, 'total': 0},
+            'optimized': {'success': 0, 'total': 0}
+        }
+
+    def select_strategy(self, user_id):
+        """Deterministic strategy selection"""
+        # Use hash for consistent assignment
+        if hash(user_id) % 2 == 0:
+            return 'baseline'
+        return 'optimized'
+
+    def process_request(self, user_id, query):
+        """Process with selected strategy"""
+        strategy_name = self.select_strategy(user_id)
+        strategy = self.strategies[strategy_name]
+
+        response = strategy.enhance(query)
+
+        # Track for analysis
+        self.results[strategy_name]['total'] += 1
+
+        return response
+
+    def analyze_results(self):
+        """Statistical significance testing"""
+        from scipy.stats import chi2_contingency
+
+        # Prepare contingency table
+        observed = [
+            [self.results['baseline']['success'],
+             self.results['baseline']['total'] - self.results['baseline']['success']],
+            [self.results['optimized']['success'],
+             self.results['optimized']['total'] - self.results['optimized']['success']]
+        ]
+
+        chi2, p_value, dof, expected = chi2_contingency(observed)
+
+        return {
+            'p_value': p_value,
+            'significant': p_value < 0.05,
+            'baseline_rate': self.results['baseline']['success'] / max(1, self.results['baseline']['total']),
+            'optimized_rate': self.results['optimized']['success'] / max(1, self.results['optimized']['total'])
+        }
+```
+
+## Monitoring and Debugging
+
+### Real-time Monitoring
+
+Track optimization metrics:
+
+```python
+import wandb
+
+# Initialize W&B
+wandb.init(
+    project="atlas-online",
+    config={
+        "optimization_type": "reflective_mutation",
+        "task_domain": "sre",
+        "num_iterations": 100
+    }
+)
+
+# Log during optimization
+for iteration in range(num_iterations):
+    metrics = optimizer.step()
+
+    wandb.log({
+        "iteration": iteration,
+        "best_score": metrics["best_score"],
+        "mean_score": metrics["mean_score"],
+        "diversity": metrics["diversity"],
+        "api_cost": metrics["api_cost"]
+    })
+```
+
+### Debugging Failed Optimizations
+
+<AccordionGroup>
+  <Accordion title="Optimization Not Converging">
+    **Problem**: Score plateaus early
+
+    **Solutions**:
+    ```python
+    # Increase diversity
+    config.mutation_rate = 0.9
+    config.population_size = 30
+
+    # Add random exploration
+    config.exploration_rate = 0.2
+
+    # Use different mutation model
+    config.mutation_agent.model = "gpt-4-turbo"
+    ```
+  </Accordion>
+
+  <Accordion title="High API Costs">
+    **Problem**: Exceeding budget
+
+    **Solutions**:
+    ```python
+    # Reduce population size
+    config.population_size = 10
+
+    # Use caching
+    config.enable_cache = True
+
+    # Batch evaluations
+    config.evaluation.batch_size = 8
+    ```
+  </Accordion>
+
+  <Accordion title="Poor Generalization">
+    **Problem**: Overfitting to samples
+
+    **Solutions**:
+    ```python
+    # Add more diverse samples
+    # Use cross-validation
+    config.validation_split = 0.2
+
+    # Regularize strategies
+    config.constraints.complexity_penalty = 0.1
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Cost Analysis
+
+Typical costs for online optimization:
+
+| Task Complexity | Iterations | API Calls | Estimated Cost |
+|----------------|------------|-----------|----------------|
+| Simple | 50 | ~500 | $2-3 |
+| Moderate | 100 | ~1500 | $5-8 |
+| Complex | 200 | ~3000 | $10-15 |
+| Expert | 500 | ~7500 | $25-35 |
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Skill Transfer" icon="share" href="/training/online/skill-transfer">
+    Apply skills across domains
+  </Card>
+  <Card title="Production Monitoring" icon="chart-line" href="/integration/monitoring-setup">
+    Monitor optimized models
+  </Card>
+  <Card title="Offline Training" icon="dumbbell" href="/training/offline/grpo-training">
+    Train custom teachers
+  </Card>
+  <Card title="Examples" icon="lightbulb" href="/examples/sre-root-cause-analysis">
+    See optimization results
+  </Card>
+</CardGroup>

@@ -1,0 +1,489 @@
+---
+title: Inference-Only Integration
+description: Deploy ATLAS teaching capabilities without training infrastructure
+sidebarTitle: Inference Only
+icon: play
+---
+
+## Overview
+
+The simplest way to leverage ATLAS is through inference-only integration. This approach uses pre-trained teacher models to enhance any student model's performance without requiring training infrastructure.
+
+## Prerequisites
+
+- Python 3.8+
+- PyTorch 2.0+
+- Transformers library
+- 16GB+ GPU memory (or CPU with sufficient RAM)
+- Pre-trained ATLAS teacher model
+
+## Installation
+
+<Steps>
+  <Step title="Install Dependencies">
+    Install the minimal requirements for inference:
+
+    ```bash
+    pip install torch transformers accelerate
+    pip install atlas-inference  # Coming soon to PyPI
+    ```
+
+    <Note>
+    For CPU inference, install PyTorch without CUDA:
+    ```bash
+    pip install torch --index-url https://download.pytorch.org/whl/cpu
+    ```
+    </Note>
+  </Step>
+
+  <Step title="Download Teacher Models">
+    Choose and download a pre-trained teacher model:
+
+    ```python
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+
+    # For reasoning tasks
+    teacher_model = AutoModelForCausalLM.from_pretrained(
+        "Arc-Intelligence/ATLAS-8B-Thinking",
+        torch_dtype="auto",
+        device_map="auto"
+    )
+    teacher_tokenizer = AutoTokenizer.from_pretrained(
+        "Arc-Intelligence/ATLAS-8B-Thinking"
+    )
+
+    # For coding tasks
+    # teacher_model = AutoModelForCausalLM.from_pretrained(
+    #     "Arc-Intelligence/ATLAS-8B-Instruct",
+    #     torch_dtype="auto",
+    #     device_map="auto"
+    # )
+    ```
+
+    <Warning>
+    Models are ~16GB each. Ensure sufficient disk space and bandwidth.
+    </Warning>
+  </Step>
+
+  <Step title="Initialize Student Model">
+    Load your existing model as the student:
+
+    ```python
+    # Example with Llama 3
+    student_model = AutoModelForCausalLM.from_pretrained(
+        "meta-llama/Llama-3.2-8B-Instruct",
+        torch_dtype="auto",
+        device_map="auto"
+    )
+    student_tokenizer = AutoTokenizer.from_pretrained(
+        "meta-llama/Llama-3.2-8B-Instruct"
+    )
+    ```
+  </Step>
+
+  <Step title="Create ATLAS Inference Pipeline">
+    Initialize the teaching system:
+
+    ```python
+    from atlas_inference import ATLASInference
+
+    atlas = ATLASInference(
+        teacher_model=teacher_model,
+        teacher_tokenizer=teacher_tokenizer,
+        student_model=student_model,
+        student_tokenizer=student_tokenizer,
+        device="cuda"  # or "cpu"
+    )
+    ```
+  </Step>
+</Steps>
+
+## Basic Usage
+
+### Single Query Enhancement
+
+Enhance a single response with the two-pass protocol:
+
+```python
+def enhance_response(query: str) -> dict:
+    """Run the complete ATLAS protocol"""
+
+    # Run adaptive teaching protocol
+    result = atlas.run_full_protocol(query)
+
+    return {
+        "baseline": result.baseline_response,
+        "enhanced": result.enhanced_response,
+        "improvement": result.improvement_score,
+        "guidance": result.teaching_guidance
+    }
+
+# Example usage
+query = "Explain how a transformer attention mechanism works"
+result = enhance_response(query)
+
+print(f"Baseline: {result['baseline'][:200]}...")
+print(f"Enhanced: {result['enhanced'][:200]}...")
+print(f"Improvement: {result['improvement']:.1%}")
+```
+
+### Batch Processing
+
+Process multiple queries efficiently:
+
+```python
+queries = [
+    "Debug this Python code that's causing a memory leak",
+    "Explain the CAP theorem in distributed systems",
+    "Write a function to validate email addresses"
+]
+
+results = atlas.batch_enhance(
+    queries=queries,
+    batch_size=4,
+    show_progress=True
+)
+
+for query, result in zip(queries, results):
+    print(f"Query: {query[:50]}...")
+    print(f"Improvement: {result.improvement_score:.1%}\n")
+```
+
+## Advanced Integration Patterns
+
+### Pattern 1: Streaming Applications
+
+Integrate with chat applications using streaming:
+
+```python
+async def stream_enhanced_response(query: str):
+    """Stream tokens with real-time enhancement"""
+
+    # Get teaching guidance once
+    guidance = await atlas.get_guidance_async(query)
+
+    # Stream enhanced response
+    async for token in atlas.stream_with_guidance(query, guidance):
+        yield token
+
+# Usage in async context
+async for token in stream_enhanced_response("How do I optimize this SQL query?"):
+    print(token, end="", flush=True)
+```
+
+### Pattern 2: Selective Enhancement
+
+Only enhance responses when needed:
+
+```python
+class SelectiveATLAS:
+    def __init__(self, atlas_instance, complexity_threshold=0.7):
+        self.atlas = atlas_instance
+        self.threshold = complexity_threshold
+
+    def should_enhance(self, query: str) -> bool:
+        """Determine if query needs enhancement"""
+        complexity = self.atlas.assess_complexity(query)
+        return complexity > self.threshold
+
+    def process(self, query: str) -> str:
+        if self.should_enhance(query):
+            result = self.atlas.run_full_protocol(query)
+            return result.enhanced_response
+        else:
+            # Direct student response for simple queries
+            return self.atlas.get_student_response(query)
+
+# Only enhance complex queries
+selective = SelectiveATLAS(atlas)
+response = selective.process("What is 2+2?")  # Direct response
+response = selective.process("Explain quantum entanglement")  # Enhanced
+```
+
+### Pattern 3: Caching and Optimization
+
+Implement caching for repeated queries:
+
+```python
+from functools import lru_cache
+import hashlib
+
+class CachedATLAS:
+    def __init__(self, atlas_instance):
+        self.atlas = atlas_instance
+        self.guidance_cache = {}
+
+    def _hash_query(self, query: str) -> str:
+        """Create cache key for query"""
+        return hashlib.md5(query.encode()).hexdigest()
+
+    def enhance_with_cache(self, query: str) -> str:
+        """Enhanced response with guidance caching"""
+        cache_key = self._hash_query(query)
+
+        # Reuse guidance for similar queries
+        if cache_key not in self.guidance_cache:
+            self.guidance_cache[cache_key] = self.atlas.generate_guidance(query)
+
+        guidance = self.guidance_cache[cache_key]
+        return self.atlas.apply_guidance(query, guidance)
+
+# Efficient for repeated similar queries
+cached_atlas = CachedATLAS(atlas)
+```
+
+## Configuration Options
+
+### Memory Optimization
+
+Configure for different memory constraints:
+
+<Tabs>
+  <Tab title="High Memory (40GB+)">
+    ```python
+    atlas = ATLASInference(
+        teacher_model=teacher_model,
+        student_model=student_model,
+        torch_dtype=torch.bfloat16,
+        device_map="auto",
+        max_memory={0: "40GB"}
+    )
+    ```
+  </Tab>
+
+  <Tab title="Medium Memory (24GB)">
+    ```python
+    atlas = ATLASInference(
+        teacher_model=teacher_model,
+        student_model=student_model,
+        torch_dtype=torch.float16,
+        load_in_8bit=True,
+        device_map="auto"
+    )
+    ```
+  </Tab>
+
+  <Tab title="Low Memory (<16GB)">
+    ```python
+    atlas = ATLASInference(
+        teacher_model=teacher_model,
+        student_model=student_model,
+        torch_dtype=torch.float16,
+        load_in_4bit=True,
+        offload_folder="./offload",
+        device_map="auto"
+    )
+    ```
+  </Tab>
+</Tabs>
+
+### Protocol Parameters
+
+Fine-tune the teaching protocol:
+
+```python
+atlas = ATLASInference(
+    teacher_model=teacher_model,
+    student_model=student_model,
+    # Protocol settings
+    max_probe_tokens=50,      # Diagnostic probe limit
+    max_guidance_tokens=200,  # Teaching guidance limit
+    temperature=0.7,          # Generation temperature
+    top_p=0.95,              # Nucleus sampling
+    # Safety settings
+    enable_safety_checks=True,
+    min_baseline_score=0.3,   # Minimum acceptable baseline
+    # Performance settings
+    batch_size=4,
+    use_flash_attention=True
+)
+```
+
+## Performance Monitoring
+
+### Metrics Collection
+
+Track enhancement effectiveness:
+
+```python
+class MetricsCollector:
+    def __init__(self):
+        self.metrics = []
+
+    def record(self, result):
+        self.metrics.append({
+            "timestamp": time.time(),
+            "baseline_score": result.baseline_score,
+            "enhanced_score": result.enhanced_score,
+            "improvement": result.improvement_score,
+            "tokens_used": result.total_tokens,
+            "latency_ms": result.latency * 1000
+        })
+
+    def summary(self):
+        if not self.metrics:
+            return {}
+
+        improvements = [m["improvement"] for m in self.metrics]
+        return {
+            "mean_improvement": np.mean(improvements),
+            "median_improvement": np.median(improvements),
+            "non_degradation_rate": sum(i >= 0 for i in improvements) / len(improvements),
+            "avg_latency_ms": np.mean([m["latency_ms"] for m in self.metrics])
+        }
+
+# Usage
+collector = MetricsCollector()
+result = atlas.run_full_protocol(query)
+collector.record(result)
+print(collector.summary())
+```
+
+### Debugging
+
+Enable verbose logging for troubleshooting:
+
+```python
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("atlas_inference")
+
+atlas = ATLASInference(
+    teacher_model=teacher_model,
+    student_model=student_model,
+    verbose=True,  # Enable detailed logging
+    debug_mode=True  # Save intermediate outputs
+)
+
+# Debug output will show:
+# - Diagnostic probe and response
+# - Capability assessment
+# - Generated guidance
+# - Final enhancement
+```
+
+## Production Deployment
+
+### API Server Example
+
+Deploy as a REST API service:
+
+```python
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+import uvicorn
+
+app = FastAPI()
+
+class QueryRequest(BaseModel):
+    text: str
+    enhance: bool = True
+
+class ResponseModel(BaseModel):
+    response: str
+    enhanced: bool
+    improvement: float = None
+
+@app.on_event("startup")
+async def load_models():
+    global atlas
+    # Initialize models once
+    atlas = ATLASInference(...)
+
+@app.post("/generate", response_model=ResponseModel)
+async def generate(request: QueryRequest):
+    try:
+        if request.enhance:
+            result = atlas.run_full_protocol(request.text)
+            return ResponseModel(
+                response=result.enhanced_response,
+                enhanced=True,
+                improvement=result.improvement_score
+            )
+        else:
+            response = atlas.get_student_response(request.text)
+            return ResponseModel(response=response, enhanced=False)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+```
+
+### Docker Deployment
+
+Containerize the inference service:
+
+```dockerfile
+FROM pytorch/pytorch:2.0.0-cuda11.7-cudnn8-runtime
+
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# Copy application
+COPY app.py .
+COPY atlas_inference/ ./atlas_inference/
+
+# Download models at build time
+RUN python -c "from transformers import AutoModel; \
+    AutoModel.from_pretrained('Arc-Intelligence/ATLAS-8B-Thinking')"
+
+EXPOSE 8000
+CMD ["python", "app.py"]
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Out of Memory Errors">
+    **Problem**: CUDA out of memory during inference
+
+    **Solutions**:
+    1. Enable 4-bit quantization: `load_in_4bit=True`
+    2. Use CPU offloading: `offload_folder="./offload"`
+    3. Reduce batch size: `batch_size=1`
+    4. Use smaller models or single model at a time
+  </Accordion>
+
+  <Accordion title="Slow Inference Speed">
+    **Problem**: High latency for responses
+
+    **Solutions**:
+    1. Enable Flash Attention: `use_flash_attention=True`
+    2. Use GPU instead of CPU
+    3. Cache guidance for repeated queries
+    4. Consider selective enhancement for simple queries
+  </Accordion>
+
+  <Accordion title="Poor Enhancement Quality">
+    **Problem**: Enhanced responses not significantly better
+
+    **Solutions**:
+    1. Verify correct teacher model for task type
+    2. Check student model compatibility
+    3. Adjust temperature and top_p parameters
+    4. Ensure sufficient context length
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Production Deployment" icon="rocket" href="/integration/production-deployment">
+    Scale to production environments
+  </Card>
+  <Card title="Custom Training" icon="dumbbell" href="/training/online/optimize-with-atlas">
+    Train task-specific teachers
+  </Card>
+  <Card title="API Reference" icon="code" href="/api-reference/atlas-inference">
+    Complete API documentation
+  </Card>
+  <Card title="Examples" icon="lightbulb" href="/examples/math-reasoning">
+    See ATLAS in action
+  </Card>
+</CardGroup>

@@ -1,0 +1,222 @@
+---
+title: Introduction
+description: A Hybrid RL Architecture for Compounding Intelligence in Language Models
+sidebarTitle: Introduction
+---
+
+## ATLAS: Adaptive Teaching and Learning Alignment System
+
+ATLAS is a hybrid reinforcement learning architecture that enhances language model performance through adaptive teaching protocols. The system demonstrates significant improvements across multiple evaluation metrics while maintaining computational efficiency.
+
+### Key Performance Metrics
+
+<CardGroup cols={2}>
+  <Card title="165% Performance Gain" icon="chart-line">
+    Achieved through 2-hour online optimization using reflective mutation and policy gradient updates. Total compute cost: ~$10 using Gemini Flash 2.5.
+  </Card>
+  <Card title="Efficient Teaching" icon="compress">
+    Two-pass protocol with diagnostic probe (≤50 tokens) and adaptive guidance (≤200 tokens) minimizes overhead while maximizing impact.
+  </Card>
+  <Card title="15.7% Average Accuracy" icon="bullseye">
+    Consistent improvement across Arc-ATLAS-Teach-v0 benchmark (32 samples per problem, seed=42).
+  </Card>
+  <Card title="97% Non-Degradation Rate" icon="shield">
+    Performance safety guarantee ensures outputs never fall below baseline model capabilities.
+  </Card>
+</CardGroup>
+
+<Note>
+  **Empirical validation:** See [SRE Root Cause Analysis case study](/examples/sre-root-cause-analysis) for detailed performance analysis on production debugging tasks, demonstrating systematic improvement through iterative teaching.
+</Note>
+
+## Technical Motivation
+
+Current approaches to improving language model performance face fundamental limitations:
+
+- **Fine-tuning requires** extensive domain-specific datasets and risks catastrophic forgetting
+- **Prompt engineering** provides inconsistent results and lacks systematic improvement mechanisms
+- **Retrieval augmentation** addresses knowledge gaps but not reasoning capabilities
+- **Chain-of-thought** improves step-by-step reasoning but increases token usage significantly
+
+ATLAS addresses these limitations through a novel hybrid architecture combining:
+1. **Offline RL training** for foundational skill acquisition
+2. **Online optimization** for rapid task-specific adaptation
+3. **Adaptive teaching protocols** for efficient knowledge transfer
+
+<img
+  className="block dark:hidden"
+  src="/images/ATLAS.png"
+  alt="ATLAS Architecture"
+/>
+<img
+  className="hidden dark:block"
+  src="/images/ATLAS.png"
+  alt="ATLAS Architecture"
+/>
+
+## The ATLAS Advantage
+
+### Hybrid Learning Architecture
+
+ATLAS separates complex, data-intensive offline training from lightweight, production-safe online deployment. This unique approach enables:
+
+- **Deep Foundational Skills**: Teacher agents trained with pedagogically-informed offline RL develop robust, transferable capabilities
+- **Rapid Adaptation**: Online optimization with reflective mutation adapts to live data safely and efficiently
+- **Universal Compatibility**: Works with any LLM - GPT, Claude, Llama, or custom models
+
+### Proven Results
+
+Our [foundational research on cross-domain transfer](https://github.com/Arc-Computer/ATLAS/blob/main/research/judgment-gap.md#ablation-study) demonstrates that **teacher-guided agents achieve up to 6x performance improvement compared to unguided baselines on complex coordination tasks**.
+
+<img
+  src="/images/performance-chart.png"
+  alt="ATLAS Performance Comparison"
+  className="rounded-lg"
+/>
+
+## Choose Your Path
+
+<CardGroup cols={2}>
+  <Card
+    title="Deploy Pre-trained Models"
+    icon="play"
+    href="/quickstart"
+  >
+    Start using ATLAS in minutes with our pre-trained teacher models. No training required.
+  </Card>
+  <Card
+    title="Train Custom Teachers"
+    icon="graduation-cap"
+    href="/training/offline/full-pipeline"
+  >
+    Build custom ATLAS teachers optimized for your specific domain and requirements.
+  </Card>
+</CardGroup>
+
+## Pre-trained Models Available
+
+<CardGroup cols={3}>
+  <Card
+    title="ATLAS-8B-Thinking"
+    icon="brain"
+    href="https://huggingface.co/Arc-Intelligence/ATLAS-8B-Thinking"
+  >
+    Optimized for reasoning and problem-solving tasks
+  </Card>
+  <Card
+    title="ATLAS-8B-Instruct"
+    icon="code"
+    href="https://huggingface.co/Arc-Intelligence/ATLAS-8B-Instruct"
+  >
+    Specialized for code generation and technical tasks
+  </Card>
+  <Card
+    title="Arc-ATLAS-Teach Dataset"
+    icon="database"
+    href="https://huggingface.co/datasets/Arc-Intelligence/Arc-ATLAS-Teach-v0"
+  >
+    Training dataset for building custom teachers
+  </Card>
+</CardGroup>
+
+## How ATLAS Works
+
+### Two-Pass Inference Protocol
+
+<Steps>
+  <Step title="Diagnostic Probing">
+    Teacher assesses student capability in ~50 tokens to understand strengths and weaknesses
+  </Step>
+  <Step title="Adaptive Guidance">
+    Teacher provides calibrated guidance (~200 tokens) tailored to the diagnosed capability level
+  </Step>
+  <Step title="Enhanced Response">
+    Student generates improved response using the adaptive guidance
+  </Step>
+</Steps>
+
+<img
+  src="/images/adaptive-teaching.png"
+  alt="ATLAS Two-Pass Protocol"
+  className="rounded-lg mt-6"
+/>
+
+## Key Features
+
+<AccordionGroup>
+  <Accordion title="Model-Agnostic Design" icon="plug">
+    Works seamlessly with any LLM - OpenAI GPT, Anthropic Claude, Meta Llama, or custom models. No architectural changes required.
+  </Accordion>
+  <Accordion title="Production-Ready" icon="server">
+    Lightweight inference with ~30 second execution time on T4 GPU. Designed for enterprise deployment at scale.
+  </Accordion>
+  <Accordion title="Prevents Degradation" icon="shield">
+    97% non-degradation rate ensures performance never drops below baseline, making it safe for production use.
+  </Accordion>
+  <Accordion title="Efficiency Focused" icon="gauge-high">
+    Reduces token usage by 50% while improving accuracy, lowering both costs and latency.
+  </Accordion>
+</AccordionGroup>
+
+## Quick Integration Example
+
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from examples.utils.atlas_inference import ATLASInference
+
+# Load ATLAS teacher
+teacher = AutoModelForCausalLM.from_pretrained(
+    "Arc-Intelligence/ATLAS-8B-Thinking",
+    trust_remote_code=True
+)
+
+# Wrap your existing model
+atlas = ATLASInference(
+    student_model=your_model,
+    teacher_model=teacher
+)
+
+# Run with ATLAS enhancement
+result = atlas.run_full_protocol("Your task here")
+enhanced_response = result["guided_response"]
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Quickstart Guide"
+    icon="rocket"
+    href="/quickstart"
+  >
+    Get ATLAS running in your environment in under 5 minutes
+  </Card>
+  <Card
+    title="Core Concepts"
+    icon="book"
+    href="/concepts/hybrid-learning"
+  >
+    Understand the theory behind ATLAS's breakthrough performance
+  </Card>
+  <Card
+    title="Integration Guides"
+    icon="code"
+    href="/integration/inference-only"
+  >
+    Step-by-step guides for production deployment
+  </Card>
+  <Card
+    title="Examples"
+    icon="flask"
+    href="/examples/math-reasoning"
+  >
+    Interactive demos showcasing ATLAS capabilities
+  </Card>
+</CardGroup>
+
+## Resources
+
+- [Technical Report (PDF)](/docs/ATLAS-Technical-Report.pdf) - Comprehensive methodology and analysis
+- [GitHub Repository](https://github.com/Arc-Computer/ATLAS) - Source code and issues
+- [HuggingFace Models](https://huggingface.co/Arc-Intelligence) - Pre-trained models
+- [Support Community](https://github.com/Arc-Computer/ATLAS/discussions) - Get help and share experiences

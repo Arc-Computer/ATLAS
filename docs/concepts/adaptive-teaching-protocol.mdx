@@ -1,0 +1,372 @@
+---
+title: Adaptive Teaching Protocol
+description: The two-pass diagnostic and guidance mechanism at the core of ATLAS
+sidebarTitle: Adaptive Teaching
+icon: arrows-rotate
+---
+
+## Protocol Overview
+
+The adaptive teaching protocol implements a two-pass inference mechanism that first diagnoses student capability, then provides calibrated guidance to maximize performance while preventing degradation.
+
+## Two-Pass Architecture
+
+### Pass 1: Diagnostic Probing (≤50 tokens)
+
+The teacher assesses student capability through minimal interaction:
+
+```python
+def diagnostic_probe(self, task: str, student_model: Model) -> DiagnosticResult:
+    """
+    Minimal-token assessment of student capability
+
+    Args:
+        task: Problem requiring solution
+        student_model: Model being assessed
+
+    Returns:
+        DiagnosticResult containing capability assessment
+    """
+    # Generate targeted probe
+    probe = self.create_diagnostic_probe(task)
+
+    # Collect student response with token limit
+    response = student_model.generate(
+        prompt=probe,
+        max_tokens=50,
+        temperature=0.1  # Deterministic for assessment
+    )
+
+    # Analyze response indicators
+    return DiagnosticResult(
+        reasoning_depth=self.measure_reasoning_depth(response),
+        domain_knowledge=self.assess_domain_knowledge(response),
+        error_patterns=self.identify_error_patterns(response),
+        confidence_level=self.estimate_confidence(response),
+        capability_score=self.compute_overall_capability(response)
+    )
+```
+
+### Pass 2: Adaptive Guidance (≤200 tokens)
+
+Based on diagnosis, provide targeted teaching:
+
+```python
+def adaptive_guidance(self, task: str, diagnosis: DiagnosticResult) -> str:
+    """
+    Generate capability-appropriate guidance
+
+    Returns guidance calibrated to student's diagnosed capability
+    """
+    if diagnosis.capability_score < 0.3:
+        return self.comprehensive_guidance(task, diagnosis)
+    elif diagnosis.capability_score < 0.7:
+        return self.targeted_guidance(task, diagnosis)
+    else:
+        return self.minimal_guidance(task, diagnosis)
+```
+
+## Guidance Strategies
+
+### Comprehensive Guidance (Weak Students)
+
+For students showing limited understanding:
+
+```python
+def comprehensive_guidance(self, task: str, diagnosis: DiagnosticResult) -> str:
+    """
+    Full scaffolding for weak students
+    """
+    guidance = []
+
+    # Problem decomposition
+    guidance.append(f"Break down the problem: {self.decompose_problem(task)}")
+
+    # Prerequisite knowledge
+    if diagnosis.domain_knowledge < 0.3:
+        guidance.append(f"Key concepts: {self.provide_prerequisites(task)}")
+
+    # Step-by-step methodology
+    guidance.append(f"Approach: {self.generate_methodology(task)}")
+
+    # Common pitfalls based on error patterns
+    if diagnosis.error_patterns:
+        guidance.append(f"Avoid: {self.highlight_pitfalls(diagnosis.error_patterns)}")
+
+    # Verification strategy
+    guidance.append(f"Verify by: {self.create_verification_steps(task)}")
+
+    return "\n".join(guidance)
+```
+
+### Targeted Guidance (Moderate Students)
+
+For students with partial understanding:
+
+```python
+def targeted_guidance(self, task: str, diagnosis: DiagnosticResult) -> str:
+    """
+    Strategic hints for moderate students
+    """
+    guidance = []
+
+    # Critical insight they're missing
+    key_gap = self.identify_knowledge_gap(diagnosis)
+    guidance.append(f"Key insight: {self.provide_missing_piece(task, key_gap)}")
+
+    # Correct specific misconceptions
+    if diagnosis.error_patterns:
+        guidance.append(f"Correction: {self.correct_misconception(diagnosis.error_patterns[0])}")
+
+    return "\n".join(guidance)
+```
+
+### Minimal Guidance (Strong Students)
+
+For competent students, focus on optimization:
+
+```python
+def minimal_guidance(self, task: str, diagnosis: DiagnosticResult) -> str:
+    """
+    Efficiency improvements for strong students
+    """
+    # Only intervene for edge cases or optimizations
+    edge_cases = self.identify_edge_cases(task)
+    if edge_cases:
+        return f"Consider: {edge_cases[0]}"
+
+    optimization = self.suggest_optimization(task, diagnosis)
+    if optimization:
+        return f"Optimize: {optimization}"
+
+    return ""  # No intervention needed
+```
+
+## Performance Metrics
+
+### Token Efficiency Analysis
+
+| Student Level | Probe Tokens | Guidance Tokens | Total Overhead | Performance Gain |
+|--------------|--------------|-----------------|----------------|------------------|
+| Weak | 45 | 180 | 225 | +22.3% |
+| Moderate | 42 | 120 | 162 | +15.7% |
+| Strong | 38 | 65 | 103 | +8.4% |
+
+### Adaptation Effectiveness
+
+Measured on Arc-ATLAS-Teach-v0 benchmark:
+
+```python
+def measure_adaptation_effectiveness(results: List[TeachingResult]) -> Dict:
+    """
+    Quantify how well teaching adapts to student capability
+    """
+    metrics = {
+        'correlation': pearsonr(
+            [r.diagnosis.capability_score for r in results],
+            [r.guidance_length for r in results]
+        )[0],  # Should be negative (weaker students get more guidance)
+
+        'efficiency': np.mean([
+            r.performance_gain / r.total_tokens for r in results
+        ]),  # Gain per token
+
+        'safety': np.mean([
+            1 if r.enhanced_score >= r.baseline_score else 0
+            for r in results
+        ])  # Non-degradation rate
+    }
+
+    return metrics
+```
+
+**Empirical Results:**
+- Correlation: -0.72 (strong inverse relationship)
+- Efficiency: 0.07% gain per token
+- Safety: 97% non-degradation rate
+
+## Case Study: Debugging Task
+
+Demonstrating adaptation across capability levels:
+
+### Task
+"Debug: Service returns 503 errors intermittently in production"
+
+### Adaptive Responses
+
+<Tabs>
+  <Tab title="Weak Student Diagnosis">
+    **Probe Response**: "Check if service is running"
+
+    **Capability Score**: 0.25
+
+    **Adaptive Guidance** (178 tokens):
+    ```
+    Systematic debugging approach:
+    1. First, check service mesh configuration (istioctl analyze)
+    2. Verify mTLS policies aren't conflicting
+    3. Examine traffic routing rules
+    4. Check resource limits and scaling policies
+    5. Review recent deployments for changes
+
+    Start with: kubectl get virtualservice,destinationrule -A
+    This reveals routing configuration issues that cause intermittent failures.
+    ```
+  </Tab>
+
+  <Tab title="Strong Student Diagnosis">
+    **Probe Response**: "Analyze Istio configurations and check Envoy proxy logs"
+
+    **Capability Score**: 0.85
+
+    **Adaptive Guidance** (62 tokens):
+    ```
+    Circuit breaker configuration may be too aggressive.
+    Check: outlierDetection.consecutiveErrors threshold in DestinationRule.
+    Common cause of intermittent 503s with partial traffic.
+    ```
+  </Tab>
+</Tabs>
+
+## Implementation Details
+
+### Diagnostic Probe Generation
+
+```python
+class ProbeGenerator:
+    def create_diagnostic_probe(self, task: str) -> str:
+        """
+        Generate minimal probe to assess capability
+        """
+        task_type = self.classify_task(task)
+
+        if task_type == TaskType.DEBUGGING:
+            return f"What's your first step to debug: {self.extract_problem(task)}?"
+        elif task_type == TaskType.REASONING:
+            return f"What approach would you use for: {self.simplify_problem(task)}?"
+        elif task_type == TaskType.CODING:
+            return f"What's the key challenge in: {self.extract_requirement(task)}?"
+
+        return f"How would you approach: {task[:100]}?"
+```
+
+### Capability Scoring
+
+```python
+def compute_capability_score(self, response: str, task: str) -> float:
+    """
+    Multi-factor capability assessment
+    """
+    factors = {
+        'keyword_presence': self.check_domain_keywords(response, task),
+        'reasoning_structure': self.analyze_logical_flow(response),
+        'specificity': self.measure_specificity(response),
+        'correctness': self.verify_approach_validity(response, task)
+    }
+
+    weights = {
+        'keyword_presence': 0.2,
+        'reasoning_structure': 0.3,
+        'specificity': 0.2,
+        'correctness': 0.3
+    }
+
+    return sum(factors[k] * weights[k] for k in factors)
+```
+
+## Protocol Optimization
+
+### Minimizing Token Usage
+
+<AccordionGroup>
+  <Accordion title="Probe Optimization">
+    - Use task-specific templates
+    - Limit to essential assessment
+    - Cache similar task probes
+    - Batch probe generation
+  </Accordion>
+
+  <Accordion title="Guidance Compression">
+    - Prioritize high-impact advice
+    - Use domain-specific shorthand
+    - Reference external resources
+    - Employ progressive disclosure
+  </Accordion>
+
+  <Accordion title="Adaptive Thresholds">
+    Tune capability thresholds based on:
+    - Task complexity
+    - Domain requirements
+    - Time constraints
+    - Cost considerations
+  </Accordion>
+</AccordionGroup>
+
+## Integration Patterns
+
+### Real-time Adaptation
+
+```python
+async def real_time_teaching(self, stream: AsyncIterator[str]) -> AsyncIterator[str]:
+    """
+    Adapt guidance based on streaming student output
+    """
+    buffer = []
+    async for token in stream:
+        buffer.append(token)
+
+        # Periodic capability reassessment
+        if len(buffer) % 100 == 0:
+            current_capability = self.assess_partial_response(''.join(buffer))
+            if current_capability < self.threshold:
+                # Inject corrective guidance
+                yield self.generate_correction(''.join(buffer[-100:]))
+
+        yield token
+```
+
+### Batch Processing
+
+```python
+def batch_adaptive_teaching(self, tasks: List[str], student: Model) -> List[Result]:
+    """
+    Efficient batch processing with shared diagnostics
+    """
+    # Group similar tasks
+    task_clusters = self.cluster_tasks(tasks)
+
+    results = []
+    for cluster in task_clusters:
+        # Single diagnostic for similar tasks
+        representative_diagnosis = self.diagnostic_probe(cluster[0], student)
+
+        # Apply shared guidance strategy
+        for task in cluster:
+            guidance = self.adapt_guidance_to_task(task, representative_diagnosis)
+            results.append(self.execute_with_guidance(task, guidance, student))
+
+    return results
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Reward Design" icon="trophy" href="/concepts/reward-design">
+    How teaching effectiveness is measured
+  </Card>
+  <Card title="Implementation Guide" icon="code" href="/integration/inference-only">
+    Deploy adaptive teaching
+  </Card>
+  <Card title="API Reference" icon="terminal" href="/api-reference/atlas-inference">
+    Protocol implementation details
+  </Card>
+  <Card title="Performance Analysis" icon="chart-line" href="/benchmarks/detailed-analysis">
+    Empirical validation results
+  </Card>
+</CardGroup>
+
+## References
+
+- [ATLAS Technical Report](/reference/technical-report) - Section 3.2 on two-pass protocol
+- [Teacher-Student Paradigm](/concepts/teacher-student-paradigm) - Architectural foundation
+- [First Experiment](/first-experiment) - Hands-on protocol training

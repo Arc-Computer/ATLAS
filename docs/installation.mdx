@@ -1,0 +1,325 @@
+---
+title: Installation
+description: Set up ATLAS environment with validated dependencies
+sidebarTitle: Installation
+icon: download
+---
+
+This guide covers installing ATLAS with Python 3.11/3.12, PyTorch 2.6.0, and vLLM 0.8.3.
+
+## System Requirements
+
+<CardGroup cols={2}>
+  <Card title="Minimum Requirements" icon="desktop">
+    - NVIDIA GPU with CUDA support
+    - 16GB+ system RAM
+    - 50GB+ disk space
+    - Python 3.11 or 3.12
+  </Card>
+  <Card title="Recommended Setup" icon="server">
+    - 4×H100 or 8×H100 GPUs
+    - 128GB+ system RAM
+    - 200GB+ NVMe storage
+    - Ubuntu 22.04 LTS
+  </Card>
+</CardGroup>
+
+## Prerequisites
+
+<Steps>
+  <Step title="CUDA Setup">
+    Ensure NVIDIA drivers and CUDA are installed and compatible with PyTorch 2.6.0:
+    ```bash
+    nvidia-smi  # Verify CUDA version
+    ```
+  </Step>
+
+  <Step title="Python Environment">
+    Verify Python version (3.11 or 3.12 required):
+    ```bash
+    python --version
+    ```
+  </Step>
+
+  <Step title="HuggingFace Authentication">
+    Authenticate for model and dataset access:
+    ```bash
+    huggingface-cli login
+    ```
+  </Step>
+</Steps>
+
+## Installation Methods
+
+<Tabs>
+  <Tab title="Automated (Recommended)">
+    Use our validated installation scripts for the smoothest setup:
+
+    **For Python 3.11:**
+    ```bash
+    bash scripts/install_py311.sh
+    ```
+
+    **For Python 3.12:**
+    ```bash
+    bash scripts/install_py312.sh
+    ```
+
+    These scripts automatically:
+    - Install PyTorch with CUDA 12.4 support
+    - Configure vLLM 0.8.3
+    - Set up Flash Attention
+    - Install all dependencies
+  </Tab>
+
+  <Tab title="Manual Installation">
+    For custom environments or debugging:
+
+    ```bash
+    # Install PyTorch with CUDA support
+    python -m pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu124
+
+    # Install vLLM and TensorBoard
+    python -m pip install vllm==0.8.3 tensorboard
+
+    # Install Flash Attention (for optimal performance)
+    python -m pip install flash-attn --no-build-isolation
+
+    # Install FlashInfer
+    python -m pip install flashinfer-python -i https://flashinfer.ai/whl/cu124/torch2.6/
+
+    # Install remaining dependencies
+    python -m pip install --upgrade -r requirements-py311.txt  # or requirements-py312.txt
+    ```
+  </Tab>
+
+  <Tab title="Conda Environment">
+    Create isolated environment with Conda:
+
+    ```bash
+    # Create environment
+    conda create -n atlas python=3.11
+    conda activate atlas
+
+    # Install PyTorch
+    conda install pytorch==2.6.0 pytorch-cuda=12.4 -c pytorch -c nvidia
+
+    # Run installation script
+    bash scripts/install_py311.sh
+    ```
+  </Tab>
+</Tabs>
+
+## Environment Configuration
+
+### API Keys and Tracking
+
+Configure authentication for various services:
+
+```bash
+# Required: HuggingFace for models
+export HF_TOKEN="your-huggingface-token"
+
+# Optional: Weights & Biases for experiment tracking
+export WANDB_API_KEY="your-wandb-key"
+
+# Optional: OpenAI/Gemini for online optimization
+export OPENAI_API_KEY="your-openai-key"
+export GEMINI_API_KEY="your-gemini-key"
+```
+
+<Note>
+  The training script automatically sets `HF_HUB_ENABLE_HF_TRANSFER=1` to speed up model downloads.
+</Note>
+
+### Disable Tracking
+
+To disable Weights & Biases tracking:
+
+```bash
+# In command line
+python train.py report_to=null
+
+# Or in config file
+report_to: null
+```
+
+## Verification
+
+After installation, verify your setup:
+
+<CodeGroup>
+  ```python "Quick Test"
+  # Verify core dependencies
+  import torch
+  import transformers
+  import datasets
+  import vllm
+
+  print(f"PyTorch: {torch.__version__}")
+  print(f"CUDA available: {torch.cuda.is_available()}")
+  print(f"GPU count: {torch.cuda.device_count()}")
+  print(f"Transformers: {transformers.__version__}")
+  print(f"vLLM: {vllm.__version__}")
+  ```
+
+  ```bash "CLI Verification"
+  # Check accelerate installation
+  accelerate --version
+
+  # Verify CUDA
+  python -c "import torch; print(torch.cuda.is_available())"
+
+  # Test model access
+  huggingface-cli download Arc-Intelligence/ATLAS-8B-Thinking \
+    --include "*.json" \
+    --exclude "*.safetensors"
+  ```
+</CodeGroup>
+
+## GPU Memory Management
+
+For different GPU configurations:
+
+<AccordionGroup>
+  <Accordion title="Single GPU Setup" icon="microchip">
+    For limited VRAM, use model offloading:
+    ```bash
+    # Add offload flag
+    python train.py +offload
+
+    # Or use Zero-1 optimization
+    python train.py +zero1
+    ```
+  </Accordion>
+
+  <Accordion title="Multi-GPU Setup" icon="layer-group">
+    For distributed training across multiple GPUs:
+    ```bash
+    # 4 GPUs
+    scripts/launch.sh 4 configs/run/teacher_sft.yaml
+
+    # 8 GPUs with specific configuration
+    accelerate launch --num_processes=8 train.py \
+      configs/run/teacher_sft.yaml
+    ```
+  </Accordion>
+
+  <Accordion title="Memory Optimization" icon="memory">
+    Reduce memory usage with these settings:
+    ```yaml
+    # In config file
+    per_device_train_batch_size: 1
+    gradient_checkpointing: true
+    fp16: true  # or bf16 for A100/H100
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Security Best Practices
+
+<Warning>
+  Follow these security guidelines to protect sensitive information:
+</Warning>
+
+- **Never commit secrets**: Keep tokens, `.env` files, and API keys out of version control
+- **Use environment variables**: Store `HF_TOKEN`, `WANDB_API_KEY`, etc. as environment variables
+- **Gitignore protection**: Ensure `results/`, `logs/`, `wandb/` remain in `.gitignore`
+- **Least privilege**: Restrict dataset access permissions
+- **Logout on shared machines**: Run `huggingface-cli logout` after use
+
+## Platform-Specific Notes
+
+<Tabs>
+  <Tab title="Linux">
+    Tested on Ubuntu 20.04/22.04 LTS:
+    - Ensure CUDA toolkit matches PyTorch requirements
+    - May need `sudo` for system package installations
+  </Tab>
+
+  <Tab title="macOS">
+    Limited support for Apple Silicon:
+    - CPU-only mode available
+    - Use MPS backend where supported
+    - vLLM may not be available
+  </Tab>
+
+  <Tab title="Windows WSL2">
+    Run through WSL2 for best compatibility:
+    - Install CUDA toolkit in WSL2
+    - Use Linux installation instructions
+    - Ensure WSL2 has GPU passthrough enabled
+  </Tab>
+</Tabs>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="CUDA Version Mismatch" icon="triangle-exclamation">
+    If you see CUDA errors:
+    ```bash
+    # Check CUDA version
+    nvidia-smi
+    nvcc --version
+
+    # Reinstall PyTorch with correct CUDA version
+    pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu118  # For CUDA 11.8
+    ```
+  </Accordion>
+
+  <Accordion title="Out of Memory Errors" icon="memory">
+    Reduce memory usage:
+    ```bash
+    # Use gradient checkpointing
+    python train.py gradient_checkpointing=true
+
+    # Reduce batch size
+    python train.py per_device_train_batch_size=1
+
+    # Enable CPU offloading
+    python train.py +offload
+    ```
+  </Accordion>
+
+  <Accordion title="HuggingFace Access Denied" icon="lock">
+    Ensure proper authentication:
+    ```bash
+    # Re-authenticate
+    huggingface-cli logout
+    huggingface-cli login
+
+    # Verify token
+    huggingface-cli whoami
+    ```
+  </Accordion>
+
+  <Accordion title="vLLM Installation Fails" icon="xmark">
+    Common vLLM issues:
+    ```bash
+    # Install build dependencies
+    sudo apt-get install python3-dev
+
+    # Try pre-built wheel
+    pip install https://github.com/vllm-project/vllm/releases/download/v0.8.3/vllm-0.8.3-cp311-cp311-linux_x86_64.whl
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Quickstart"
+    icon="rocket"
+    href="/quickstart"
+  >
+    Deploy ATLAS with pre-trained models
+  </Card>
+  <Card
+    title="First Experiment"
+    icon="flask"
+    href="/first-experiment"
+  >
+    Run your first ATLAS training experiment
+  </Card>
+</CardGroup>

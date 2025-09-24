@@ -1,0 +1,577 @@
+---
+title: Trainers Reference
+description: Complete reference for ATLAS trainer classes and methods
+sidebarTitle: Trainers
+icon: robot
+---
+
+## Overview
+
+ATLAS provides specialized trainer classes for different training paradigms. Each trainer extends HuggingFace's base trainer with RL-specific capabilities.
+
+![Training Pipeline](/images/Training-Pipeline.png)
+
+## Typical Usage
+
+<CodeGroup>
+```python title="Standard GRPO Training"
+from trainers import GRPOTrainer
+from configs import GRPOConfig
+
+# Initialize configuration
+config = GRPOConfig(
+    model_name_or_path="Arc-Intelligence/ATLAS-8B-Thinking",
+    learning_rate=5e-6,
+    num_train_epochs=3,
+    beta=0.04  # KL penalty
+)
+
+# Create trainer
+trainer = GRPOTrainer(
+    config=config,
+    train_dataset=train_data,
+    eval_dataset=eval_data,
+    tokenizer=tokenizer
+)
+
+# Train model
+trainer.train()
+
+# Save final model
+trainer.save_model("./output/final_model")
+```
+
+```python title="Teacher-Student Training"
+from trainers import TeacherGRPOTrainer
+from configs import TeacherGRPOConfig
+
+config = TeacherGRPOConfig(
+    teacher_model="Arc-Intelligence/ATLAS-8B-Thinking",
+    student_model="meta-llama/Llama-3.2-8B-Instruct",
+    adaptive_teaching=True
+)
+
+trainer = TeacherGRPOTrainer(
+    config=config,
+    train_dataset=train_data,
+    student_model=student_model,
+    teacher_model=teacher_model
+)
+
+# Train with adaptive protocol
+trainer.train()
+```
+
+```python title="SFT Warmup"
+from trainers import SFTTrainer
+from configs import SFTConfig
+
+# Supervised fine-tuning before RL
+trainer = SFTTrainer(
+    model=model,
+    args=training_args,
+    train_dataset=sft_dataset,
+    tokenizer=tokenizer,
+    max_seq_length=2048
+)
+
+trainer.train()
+```
+</CodeGroup>
+
+## GRPOTrainer
+
+Main trainer for Generalized Reward Policy Optimization.
+
+### Constructor
+
+```python
+class GRPOTrainer(BaseTrainer):
+    def __init__(
+        self,
+        config: GRPOConfig,
+        model: Optional[PreTrainedModel] = None,
+        ref_model: Optional[PreTrainedModel] = None,
+        tokenizer: Optional[PreTrainedTokenizer] = None,
+        train_dataset: Optional[Dataset] = None,
+        eval_dataset: Optional[Dataset] = None,
+        reward_model: Optional[PreTrainedModel] = None,
+        compute_metrics: Optional[Callable] = None,
+        callbacks: Optional[List[TrainerCallback]] = None,
+        optimizers: Tuple[torch.optim.Optimizer, torch.optim.lr_scheduler.LambdaLR] = (None, None),
+        preprocess_logits_for_metrics: Optional[Callable] = None,
+    ):
+```
+
+<AccordionGroup>
+  <Accordion title="Parameters">
+    | Parameter | Type | Description |
+    |-----------|------|-------------|
+    | `config` | GRPOConfig | Training configuration |
+    | `model` | PreTrainedModel | Model to train (policy network) |
+    | `ref_model` | PreTrainedModel | Reference model for KL penalty |
+    | `tokenizer` | PreTrainedTokenizer | Tokenizer for encoding/decoding |
+    | `train_dataset` | Dataset | Training data |
+    | `eval_dataset` | Dataset | Evaluation data |
+    | `reward_model` | PreTrainedModel | Optional external reward model |
+    | `compute_metrics` | Callable | Custom metrics function |
+    | `callbacks` | List[TrainerCallback] | Training callbacks |
+    | `optimizers` | Tuple | Custom optimizer and scheduler |
+  </Accordion>
+
+  <Accordion title="Key Methods">
+    ### train()
+    Main training loop with GRPO algorithm:
+    ```python
+    def train(
+        self,
+        resume_from_checkpoint: Optional[str] = None,
+        trial: Optional["optuna.Trial"] = None,
+        ignore_keys_for_eval: Optional[List[str]] = None,
+    ) -> TrainOutput:
+        """
+        Execute GRPO training loop
+
+        Returns:
+            TrainOutput with metrics and model state
+        """
+    ```
+
+    ### compute_loss()
+    GRPO loss computation:
+    ```python
+    def compute_loss(
+        self,
+        model: PreTrainedModel,
+        inputs: Dict[str, torch.Tensor],
+        return_outputs: bool = False
+    ) -> Union[torch.Tensor, Tuple[torch.Tensor, Dict]]:
+        """
+        Compute GRPO loss with KL penalty
+
+        Loss = -E[r(x,y) * log π(y|x)] + β * KL(π || π_ref)
+        """
+    ```
+
+    ### generate_completions()
+    Generate responses for training:
+    ```python
+    def generate_completions(
+        self,
+        prompts: List[str],
+        **generation_kwargs
+    ) -> List[str]:
+        """
+        Generate completions using current policy
+
+        Args:
+            prompts: Input prompts
+            generation_kwargs: Generation parameters
+
+        Returns:
+            List of generated completions
+        """
+    ```
+  </Accordion>
+
+  <Accordion title="Training Hooks">
+    Override these methods for custom behavior:
+
+    ```python
+    def on_epoch_begin(self):
+        """Called at the beginning of each epoch"""
+        pass
+
+    def on_step_end(self, args, state, control, **kwargs):
+        """Called at the end of each training step"""
+        # Log custom metrics
+        self.log({
+            "rewards/mean": self.current_rewards.mean(),
+            "kl_divergence": self.current_kl.mean()
+        })
+
+    def on_evaluate(self, args, state, control, metrics=None, **kwargs):
+        """Called after evaluation"""
+        # Custom evaluation logic
+        pass
+    ```
+  </Accordion>
+</AccordionGroup>
+
+**Source**: `trainers/grpo.py`
+
+## TeacherGRPOTrainer
+
+Specialized trainer for adaptive teaching with teacher-student paradigm.
+
+### Constructor
+
+```python
+class TeacherGRPOTrainer(GRPOTrainer):
+    def __init__(
+        self,
+        config: TeacherGRPOConfig,
+        teacher_model: PreTrainedModel,
+        student_model: PreTrainedModel,
+        teacher_tokenizer: PreTrainedTokenizer,
+        student_tokenizer: PreTrainedTokenizer,
+        train_dataset: Dataset,
+        eval_dataset: Optional[Dataset] = None,
+        skill_repository: Optional[SkillRepository] = None,
+        **kwargs
+    ):
+```
+
+<AccordionGroup>
+  <Accordion title="Unique Methods">
+    ### diagnostic_probe()
+    Assess student capability:
+    ```python
+    def diagnostic_probe(
+        self,
+        task: str,
+        max_tokens: int = 50
+    ) -> DiagnosticResult:
+        """
+        Probe student understanding
+
+        Returns:
+            DiagnosticResult with capability assessment
+        """
+    ```
+
+    ### generate_guidance()
+    Create adaptive teaching:
+    ```python
+    def generate_guidance(
+        self,
+        task: str,
+        diagnostic: DiagnosticResult,
+        max_tokens: int = 200
+    ) -> str:
+        """
+        Generate teaching guidance based on diagnosis
+
+        Returns:
+            Tailored teaching instructions
+        """
+    ```
+
+    ### compute_teaching_reward()
+    Calculate teaching effectiveness:
+    ```python
+    def compute_teaching_reward(
+        self,
+        baseline_score: float,
+        enhanced_score: float,
+        teaching_length: int
+    ) -> float:
+        """
+        Compute reward for teaching quality
+
+        Includes efficiency bonus and safety checks
+        """
+    ```
+  </Accordion>
+
+  <Accordion title="Teaching Protocol">
+    The two-pass protocol implementation:
+
+    ```python
+    def teaching_step(self, batch):
+        """Execute one teaching interaction"""
+
+        # Phase 1: Diagnostic
+        diagnostics = []
+        for prompt in batch["prompts"]:
+            diag = self.diagnostic_probe(prompt)
+            diagnostics.append(diag)
+
+        # Phase 2: Guidance generation
+        guidances = []
+        for prompt, diag in zip(batch["prompts"], diagnostics):
+            guidance = self.generate_guidance(prompt, diag)
+            guidances.append(guidance)
+
+        # Phase 3: Student enhancement
+        baseline_responses = self.student_model.generate(batch["prompts"])
+        enhanced_responses = self.student_model.generate(
+            batch["prompts"],
+            guidance=guidances
+        )
+
+        # Phase 4: Reward computation
+        rewards = []
+        for base, enh, guid in zip(baseline_responses, enhanced_responses, guidances):
+            reward = self.compute_teaching_reward(
+                self.score(base),
+                self.score(enh),
+                len(guid)
+            )
+            rewards.append(reward)
+
+        return rewards
+    ```
+  </Accordion>
+</AccordionGroup>
+
+**Source**: `trainers/teacher_grpo.py`
+
+## SFTTrainer
+
+Supervised fine-tuning trainer for warmup before RL.
+
+### Constructor
+
+```python
+class SFTTrainer(Trainer):
+    def __init__(
+        self,
+        model: PreTrainedModel,
+        args: TrainingArguments,
+        train_dataset: Dataset,
+        eval_dataset: Optional[Dataset] = None,
+        tokenizer: PreTrainedTokenizer,
+        data_collator: Optional[DataCollator] = None,
+        max_seq_length: int = 2048,
+        packing: bool = False,
+        formatting_func: Optional[Callable] = None,
+    ):
+```
+
+<AccordionGroup>
+  <Accordion title="Key Features">
+    - **Sequence packing**: Efficient batching of variable-length sequences
+    - **Custom formatting**: Apply templates to raw data
+    - **Gradient accumulation**: Handle large effective batch sizes
+    - **Mixed precision**: FP16/BF16 training support
+  </Accordion>
+
+  <Accordion title="Data Processing">
+    ### format_dataset()
+    Prepare data for training:
+    ```python
+    def format_dataset(self, dataset):
+        """Format dataset for SFT training"""
+
+        def formatting_func(example):
+            # Apply chat template
+            messages = example["messages"]
+            text = self.tokenizer.apply_chat_template(
+                messages,
+                tokenize=False
+            )
+            return {"text": text}
+
+        return dataset.map(formatting_func)
+    ```
+
+    ### pack_sequences()
+    Efficient sequence packing:
+    ```python
+    def pack_sequences(self, tokenized_dataset):
+        """Pack multiple sequences into single training example"""
+        # Implementation for efficient GPU utilization
+    ```
+  </Accordion>
+</AccordionGroup>
+
+**Source**: `trainers/sft.py`
+
+## Custom Trainer Implementation
+
+Create your own trainer by extending base classes:
+
+```python
+from trainers import GRPOTrainer
+import torch
+
+class CustomRewardTrainer(GRPOTrainer):
+    """Custom trainer with modified reward computation"""
+
+    def compute_rewards(self, completions, prompts):
+        """Override reward computation"""
+        rewards = []
+        for completion, prompt in zip(completions, prompts):
+            # Custom reward logic
+            reward = self.custom_reward_function(completion, prompt)
+            rewards.append(reward)
+        return torch.tensor(rewards)
+
+    def custom_reward_function(self, completion, prompt):
+        """Implement domain-specific rewards"""
+        # Example: Length penalty
+        length_penalty = min(1.0, len(completion) / 500)
+
+        # Example: Quality score
+        quality = self.quality_model(completion)
+
+        return quality * length_penalty
+```
+
+## Callbacks and Monitoring
+
+### Available Callbacks
+
+```python
+from trainers.callbacks import (
+    WandbCallback,
+    TensorBoardCallback,
+    EarlyStoppingCallback,
+    ModelCheckpointCallback
+)
+
+# Configure callbacks
+callbacks = [
+    WandbCallback(
+        project="atlas-training",
+        name="experiment-1"
+    ),
+    EarlyStoppingCallback(
+        early_stopping_patience=3,
+        early_stopping_threshold=0.001
+    ),
+    ModelCheckpointCallback(
+        save_steps=500,
+        save_total_limit=3
+    )
+]
+
+trainer = GRPOTrainer(
+    config=config,
+    callbacks=callbacks
+)
+```
+
+### Custom Metrics
+
+```python
+def compute_metrics(eval_predictions):
+    """Custom metrics computation"""
+    predictions, labels = eval_predictions
+
+    return {
+        "accuracy": accuracy_score(labels, predictions),
+        "perplexity": perplexity(predictions),
+        "diversity": diversity_score(predictions),
+        "safety_rate": safety_check(predictions)
+    }
+
+trainer = GRPOTrainer(
+    config=config,
+    compute_metrics=compute_metrics
+)
+```
+
+## Distributed Training
+
+### Multi-GPU Setup
+
+```python
+from trainers import GRPOTrainer
+from accelerate import Accelerator
+
+accelerator = Accelerator()
+
+trainer = GRPOTrainer(
+    config=config,
+    model=model,
+    accelerator=accelerator
+)
+
+# Trainer automatically handles distributed setup
+trainer.train()
+```
+
+### DeepSpeed Integration
+
+```python
+# deepspeed_config.json
+{
+    "zero_optimization": {
+        "stage": 2,
+        "offload_optimizer": {
+            "device": "cpu"
+        }
+    },
+    "fp16": {
+        "enabled": true
+    }
+}
+
+trainer = GRPOTrainer(
+    config=config,
+    deepspeed="deepspeed_config.json"
+)
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Memory Issues">
+    **Problem**: CUDA OOM during training
+
+    **Solutions**:
+    ```python
+    # Reduce batch size
+    config.per_device_train_batch_size = 1
+    config.gradient_accumulation_steps = 32
+
+    # Enable gradient checkpointing
+    config.gradient_checkpointing = True
+
+    # Use mixed precision
+    config.fp16 = True
+    ```
+  </Accordion>
+
+  <Accordion title="Slow Training">
+    **Problem**: Training is slower than expected
+
+    **Solutions**:
+    ```python
+    # Enable compilation (PyTorch 2.0+)
+    model = torch.compile(model)
+
+    # Use Flash Attention
+    config.attn_implementation = "flash_attention_2"
+
+    # Optimize data loading
+    config.dataloader_num_workers = 4
+    config.dataloader_pin_memory = True
+    ```
+  </Accordion>
+
+  <Accordion title="Unstable Training">
+    **Problem**: Loss spikes or NaN values
+
+    **Solutions**:
+    ```python
+    # Reduce learning rate
+    config.learning_rate = 1e-6
+
+    # Increase KL penalty
+    config.beta = 0.1
+
+    # Clip gradients
+    config.max_grad_norm = 0.5
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Configuration Reference" icon="sliders" href="/api-reference/configs">
+    Complete configuration options
+  </Card>
+  <Card title="RL Training Guide" icon="graduation-cap" href="/training/offline/grpo-training">
+    Step-by-step training tutorial
+  </Card>
+  <Card title="Distributed Training" icon="server" href="/training/offline/distributed-training">
+    Scale across multiple GPUs
+  </Card>
+  <Card title="Custom Implementation" icon="code" href="/examples/custom-implementation">
+    Build your own trainer
+  </Card>
+</CardGroup>

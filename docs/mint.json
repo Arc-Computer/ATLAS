@@ -1,0 +1,134 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "ATLAS",
+  "logo": {
+    "dark": "/images/Arc-Icon.png",
+    "light": "/images/Arc-Icon.png"
+  },
+  "favicon": "/images/Arc-Icon.png",
+  "colors": {
+    "primary": "#2563EB",
+    "light": "#60A5FA",
+    "dark": "#1E40AF",
+    "anchors": {
+      "from": "#2563EB",
+      "to": "#60A5FA"
+    },
+    "background": {
+      "light": "#FFFFFF",
+      "dark": "#0F0F0F"
+    }
+  },
+  "modeToggle": {
+    "default": "light"
+  },
+  "topbarLinks": [
+    {
+      "name": "GitHub",
+      "url": "https://github.com/Arc-Computer/ATLAS"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Models",
+    "url": "https://huggingface.co/Arc-Intelligence"
+  },
+  "tabs": [
+    {
+      "name": "Documentation",
+      "url": "/"
+    },
+    {
+      "name": "API Reference",
+      "url": "/api-reference"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": [
+        "introduction",
+        "quickstart",
+        "installation",
+        "first-experiment"
+      ]
+    },
+    {
+      "group": "Core Concepts",
+      "pages": [
+        "concepts/teacher-student-paradigm",
+        "concepts/adaptive-teaching-protocol",
+        "concepts/hybrid-learning",
+        "concepts/compounding-intelligence",
+        "concepts/reward-design"
+      ]
+    },
+    {
+      "group": "Examples",
+      "pages": [
+        "examples/sre-root-cause-analysis",
+        "examples/custom-implementation"
+      ]
+    },
+    {
+      "group": "Integration",
+      "pages": [
+        "integration/inference-only",
+        "integration/production-deployment"
+      ]
+    },
+    {
+      "group": "Training",
+      "pages": [
+        {
+          "group": "Online Optimization",
+          "pages": [
+            "training/online/optimize-with-atlas",
+            "training/online/skill-transfer",
+            "training/online/continuous-learning"
+          ]
+        },
+        {
+          "group": "Offline Training",
+          "pages": [
+            "training/offline/grpo-training"
+          ]
+        }
+      ]
+    },
+    {
+      "group": "Benchmarks",
+      "pages": [
+        "benchmarks/performance-results",
+        "benchmarks/evaluation-methodology",
+        "benchmarks/reproduction"
+      ]
+    },
+    {
+      "group": "Architecture",
+      "pages": [
+        "architecture/config-system"
+      ]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        "api-reference/configs",
+        "api-reference/trainers"
+      ]
+    },
+    {
+      "group": "Reference",
+      "pages": [
+        "reference/technical-report",
+        "reference/models",
+        "reference/datasets",
+        "reference/troubleshooting",
+        "reference/faq"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "github": "https://github.com/Arc-Computer/ATLAS",
+    "linkedin": "https://www.linkedin.com/company/arc-intelligence"
+  }
+}

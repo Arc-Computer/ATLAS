@@ -1,0 +1,579 @@
+---
+title: Custom Implementation Guide
+description: Build your own ATLAS integration for domain-specific tasks
+sidebarTitle: Custom Implementation
+icon: code
+---
+
+## Overview
+
+This guide shows how to integrate ATLAS into your applications, create custom evaluators, and adapt the system for domain-specific tasks. The pattern is simple: load models, run the protocol, evaluate results.
+
+![Adaptive Teaching Process](/images/adaptive-teaching.png)
+
+## Core Integration Pattern
+
+The fundamental ATLAS pattern works with any task:
+
+```python
+from atlas_inference import ATLASInference
+import torch
+
+# Initialize models
+teacher_model = "Arc-Intelligence/ATLAS-8B-Thinking"
+student_model = "meta-llama/Llama-3.2-8B-Instruct"
+
+# Create ATLAS instance
+atlas = ATLASInference(
+    teacher_model_name=teacher_model,
+    student_model_name=student_model,
+    device="cuda" if torch.cuda.is_available() else "cpu"
+)
+
+# Run the two-pass protocol
+task = "Your domain-specific task here"
+result = atlas.run_full_protocol(task)
+
+# Access results
+baseline = result['baseline_response']     # Student alone
+enhanced = result['guided_response']       # Student with teaching
+improvement = result['improvement_score']  # Performance gain
+```
+
+## Building Domain-Specific Evaluators
+
+<Steps>
+  <Step title="Define Success Metrics">
+    Create evaluators that understand your domain:
+
+    ```python
+    class DomainEvaluator:
+        """
+        Custom evaluator for your specific domain
+        """
+
+        def __init__(self, domain_config):
+            self.config = domain_config
+            self.success_patterns = self.load_patterns()
+
+        def evaluate(self, response, ground_truth=None):
+            """
+            Evaluate response quality for your domain
+
+            Returns:
+                score: float between 0 and 1
+                details: dict with specific metrics
+            """
+            score = 0.0
+            details = {}
+
+            # Domain-specific checks
+            if self.has_required_structure(response):
+                score += 0.3
+                details['structure'] = True
+
+            if self.contains_key_concepts(response):
+                score += 0.3
+                details['concepts'] = True
+
+            if self.validates_constraints(response):
+                score += 0.4
+                details['valid'] = True
+
+            return score, details
+    ```
+  </Step>
+
+  <Step title="Implement Diagnostic Strategies">
+    Customize how the teacher assesses student capability:
+
+    ```python
+    class CustomDiagnostic:
+        """
+        Domain-specific diagnostic probing
+        """
+
+        def create_probe(self, task):
+            """
+            Generate diagnostic questions for your domain
+            """
+            task_type = self.classify_task(task)
+
+            probes = {
+                'technical': "What's your approach to solving this?",
+                'analytical': "What data would you need?",
+                'creative': "What constraints should we consider?",
+                'debugging': "What would you check first?"
+            }
+
+            return probes.get(task_type, "How would you approach this?")
+
+        def assess_response(self, response):
+            """
+            Evaluate student's diagnostic response
+            """
+            indicators = {
+                'understanding': self.check_comprehension(response),
+                'methodology': self.check_approach(response),
+                'expertise': self.check_domain_knowledge(response)
+            }
+
+            # Map to capability level
+            score = sum(indicators.values()) / len(indicators)
+
+            if score < 0.3:
+                return 'weak', score
+            elif score < 0.7:
+                return 'moderate', score
+            else:
+                return 'strong', score
+    ```
+  </Step>
+
+  <Step title="Create Teaching Strategies">
+    Define how guidance adapts to student capability:
+
+    ```python
+    class AdaptiveTeachingStrategy:
+        """
+        Domain-specific teaching strategies
+        """
+
+        def generate_guidance(self, task, capability_level, diagnostic_details):
+            """
+            Create targeted teaching based on assessment
+            """
+            strategies = {
+                'weak': self.comprehensive_guidance,
+                'moderate': self.targeted_guidance,
+                'strong': self.minimal_guidance
+            }
+
+            strategy_func = strategies.get(capability_level, self.targeted_guidance)
+            return strategy_func(task, diagnostic_details)
+
+        def comprehensive_guidance(self, task, details):
+            """Full scaffolding for weak students"""
+            return f"""
+            Let's break this down step-by-step:
+            1. First, understand the problem: {self.explain_problem(task)}
+            2. Identify key components: {self.identify_components(task)}
+            3. Apply this methodology: {self.suggest_approach(task)}
+            4. Check your work: {self.verification_steps(task)}
+            """
+
+        def targeted_guidance(self, task, details):
+            """Strategic hints for moderate students"""
+            missing = self.identify_gaps(details)
+            return f"""
+            Key insight: {self.provide_missing_piece(task, missing)}
+            Consider: {self.suggest_improvement(task)}
+            """
+
+        def minimal_guidance(self, task, details):
+            """Light touch for strong students"""
+            edge_case = self.find_edge_case(task)
+            if edge_case:
+                return f"Don't forget: {edge_case}"
+            return ""
+    ```
+  </Step>
+
+  <Step title="Integrate with Production Systems">
+    Deploy ATLAS in your application:
+
+    ```python
+    from fastapi import FastAPI, HTTPException
+    from pydantic import BaseModel
+    import asyncio
+
+    app = FastAPI()
+
+    class TaskRequest(BaseModel):
+        task: str
+        use_teaching: bool = True
+        return_diagnostics: bool = False
+
+    class ATLASService:
+        def __init__(self):
+            self.atlas = ATLASInference(
+                teacher_model_name="Arc-Intelligence/ATLAS-8B-Thinking",
+                student_model_name="your-production-model"
+            )
+            self.evaluator = DomainEvaluator(your_config)
+            self.cache = {}
+
+        async def process_task(self, request: TaskRequest):
+            """
+            Process task with optional teaching enhancement
+            """
+            # Check cache
+            cache_key = hash(request.task)
+            if cache_key in self.cache:
+                return self.cache[cache_key]
+
+            # Run ATLAS protocol
+            if request.use_teaching:
+                result = await self.run_with_teaching(request.task)
+            else:
+                result = await self.run_baseline(request.task)
+
+            # Evaluate quality
+            score, details = self.evaluator.evaluate(result['response'])
+
+            # Cache if high quality
+            if score > 0.8:
+                self.cache[cache_key] = result
+
+            # Add diagnostics if requested
+            if request.return_diagnostics:
+                result['diagnostics'] = {
+                    'capability': result.get('capability_level'),
+                    'strategy': result.get('teaching_strategy'),
+                    'score': score,
+                    'details': details
+                }
+
+            return result
+
+    # Initialize service
+    atlas_service = ATLASService()
+
+    @app.post("/enhance")
+    async def enhance_task(request: TaskRequest):
+        """API endpoint for task enhancement"""
+        try:
+            result = await atlas_service.process_task(request)
+            return result
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+    ```
+  </Step>
+</Steps>
+
+## Domain-Specific Patterns
+
+### Pattern 1: Code Generation
+
+```python
+class CodeGenerationATLAS:
+    """
+    ATLAS for code generation tasks
+    """
+
+    def __init__(self):
+        self.atlas = ATLASInference(
+            teacher_model_name="Arc-Intelligence/ATLAS-8B-Instruct",
+            student_model_name="codellama/CodeLlama-7b-Instruct"
+        )
+
+    def enhance_code_generation(self, specification):
+        """
+        Generate code with teaching enhancement
+        """
+        # Add context for better teaching
+        prompt = f"""
+        Task: {specification}
+        Requirements:
+        - Include error handling
+        - Follow best practices
+        - Add type hints
+        - Include docstrings
+        """
+
+        result = self.atlas.run_full_protocol(prompt)
+
+        # Post-process to extract code
+        code = self.extract_code_blocks(result['guided_response'])
+
+        # Validate syntax
+        if self.validate_syntax(code):
+            return code
+        else:
+            # Retry with more specific guidance
+            return self.retry_with_corrections(specification, code)
+
+    def validate_syntax(self, code):
+        """Check if generated code is syntactically valid"""
+        try:
+            compile(code, '<string>', 'exec')
+            return True
+        except SyntaxError:
+            return False
+```
+
+### Pattern 2: Data Analysis
+
+```python
+class DataAnalysisATLAS:
+    """
+    ATLAS for data analysis tasks
+    """
+
+    def enhance_analysis(self, data_description, question):
+        """
+        Enhance analytical reasoning
+        """
+        # Structure the task for optimal teaching
+        task = f"""
+        Data Context: {data_description}
+        Analysis Question: {question}
+
+        Required approach:
+        1. State assumptions
+        2. Choose appropriate methods
+        3. Interpret results
+        4. Address limitations
+        """
+
+        result = self.atlas.run_full_protocol(task)
+
+        # Extract structured insights
+        analysis = self.parse_analysis(result['guided_response'])
+
+        return {
+            'assumptions': analysis.get('assumptions', []),
+            'methodology': analysis.get('methods', ''),
+            'findings': analysis.get('findings', ''),
+            'limitations': analysis.get('limitations', []),
+            'confidence': self.assess_confidence(analysis)
+        }
+```
+
+### Pattern 3: Debugging Assistant
+
+```python
+class DebuggingATLAS:
+    """
+    ATLAS for systematic debugging
+    """
+
+    def debug_issue(self, error_description, context):
+        """
+        Systematic debugging with teaching
+        """
+        # Structure for systematic investigation
+        task = f"""
+        Error: {error_description}
+        System Context: {context}
+
+        Debug systematically:
+        1. Identify error pattern
+        2. Form hypotheses
+        3. Design tests
+        4. Find root cause
+        """
+
+        result = self.atlas.run_full_protocol(task)
+
+        # Parse debugging steps
+        debug_plan = self.parse_debug_plan(result['guided_response'])
+
+        return {
+            'hypotheses': debug_plan['hypotheses'],
+            'tests': debug_plan['test_commands'],
+            'root_cause': debug_plan['root_cause'],
+            'fix': debug_plan['suggested_fix'],
+            'prevention': debug_plan['prevention_measures']
+        }
+```
+
+## Performance Optimization
+
+### Caching Strategies
+
+```python
+from functools import lru_cache
+import hashlib
+
+class CachedATLAS:
+    """
+    ATLAS with intelligent caching
+    """
+
+    def __init__(self):
+        self.atlas = ATLASInference(...)
+        self.guidance_cache = {}
+        self.ttl = 3600  # 1 hour
+
+    def get_cached_guidance(self, task):
+        """
+        Cache teaching guidance for similar tasks
+        """
+        # Create semantic hash
+        task_hash = self.semantic_hash(task)
+
+        # Check cache
+        if task_hash in self.guidance_cache:
+            cached = self.guidance_cache[task_hash]
+            if time.time() - cached['timestamp'] < self.ttl:
+                return cached['guidance']
+
+        # Generate new guidance
+        result = self.atlas.diagnostic_probe(task)
+        guidance = self.atlas.generate_guidance(task, result)
+
+        # Cache it
+        self.guidance_cache[task_hash] = {
+            'guidance': guidance,
+            'timestamp': time.time()
+        }
+
+        return guidance
+
+    def semantic_hash(self, task):
+        """
+        Create hash based on semantic content
+        """
+        # Extract key features
+        features = {
+            'length': len(task),
+            'keywords': self.extract_keywords(task),
+            'complexity': self.estimate_complexity(task)
+        }
+
+        # Create stable hash
+        feature_str = json.dumps(features, sort_keys=True)
+        return hashlib.md5(feature_str.encode()).hexdigest()
+```
+
+### Batch Processing
+
+```python
+async def batch_enhance(tasks, batch_size=4):
+    """
+    Process multiple tasks efficiently
+    """
+    results = []
+
+    for i in range(0, len(tasks), batch_size):
+        batch = tasks[i:i + batch_size]
+
+        # Process batch in parallel
+        batch_results = await asyncio.gather(*[
+            atlas.run_full_protocol(task) for task in batch
+        ])
+
+        results.extend(batch_results)
+
+    return results
+```
+
+## Monitoring and Analytics
+
+Track your custom implementation's performance:
+
+```python
+class ATLASAnalytics:
+    """
+    Track ATLAS performance in production
+    """
+
+    def __init__(self):
+        self.metrics = {
+            'total_requests': 0,
+            'improvements': [],
+            'degradations': [],
+            'teaching_strategies': {},
+            'average_latency': 0
+        }
+
+    def track_result(self, result):
+        """
+        Track enhancement results
+        """
+        self.metrics['total_requests'] += 1
+
+        improvement = result['improvement_score']
+        if improvement > 0:
+            self.metrics['improvements'].append(improvement)
+        elif improvement < 0:
+            self.metrics['degradations'].append(improvement)
+
+        strategy = result.get('teaching_strategy', 'unknown')
+        self.metrics['teaching_strategies'][strategy] = \
+            self.metrics['teaching_strategies'].get(strategy, 0) + 1
+
+    def get_summary(self):
+        """
+        Generate performance summary
+        """
+        return {
+            'requests': self.metrics['total_requests'],
+            'avg_improvement': np.mean(self.metrics['improvements']),
+            'non_degradation_rate': len(self.metrics['improvements']) /
+                                   max(1, len(self.metrics['improvements']) +
+                                       len(self.metrics['degradations'])),
+            'strategy_distribution': self.metrics['teaching_strategies']
+        }
+```
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Model Selection">
+    Choose models based on your domain:
+    - **Technical tasks**: Use ATLAS-8B-Instruct
+    - **Reasoning tasks**: Use ATLAS-8B-Thinking
+    - **Code tasks**: Pair with CodeLlama or StarCoder
+    - **Domain-specific**: Fine-tune on your data
+  </Accordion>
+
+  <Accordion title="Error Handling">
+    Implement robust error handling:
+    ```python
+    try:
+        result = atlas.run_full_protocol(task)
+    except torch.cuda.OutOfMemoryError:
+        # Fall back to CPU or smaller model
+        result = atlas_cpu.run_full_protocol(task)
+    except Exception as e:
+        # Log and return baseline
+        logger.error(f"ATLAS failed: {e}")
+        result = student_model.generate(task)
+    ```
+  </Accordion>
+
+  <Accordion title="Performance Tuning">
+    Optimize for your use case:
+    - Cache guidance for repeated task types
+    - Use batch processing for throughput
+    - Implement selective enhancement for simple tasks
+    - Monitor token usage to control costs
+  </Accordion>
+
+  <Accordion title="Testing Strategy">
+    Test your implementation thoroughly:
+    ```python
+    def test_enhancement():
+        test_cases = load_test_cases()
+
+        for case in test_cases:
+            result = atlas.run_full_protocol(case['input'])
+            score = evaluator.evaluate(result['guided_response'],
+                                      case['expected'])
+
+            assert score > case['min_score'], \
+                   f"Failed: {case['name']}"
+            assert result['improvement_score'] >= 0, \
+                   "Degradation detected"
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Offline Training" icon="dumbbell" href="/training/offline/grpo-training">
+    Train custom teacher models
+  </Card>
+  <Card title="Online Optimization" icon="bolt" href="/training/online/optimize-with-atlas">
+    Optimize for your domain
+  </Card>
+  <Card title="Production Deployment" icon="rocket" href="/integration/production-deployment">
+    Deploy at scale
+  </Card>
+  <Card title="API Reference" icon="code" href="/api-reference/atlas-inference">
+    Complete API documentation
+  </Card>
+</CardGroup>
