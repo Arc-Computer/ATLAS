@@ -197,7 +197,6 @@ When adding a new training algorithm:
 
 ### Getting Help
 
-- **Discord**: [Join our community](https://discord.gg/arc-atlas)
 - **GitHub Discussions**: For questions and ideas
 - **GitHub Issues**: For bugs and feature requests
 
@@ -223,7 +222,6 @@ By contributing, you agree that your contributions will be licensed under the Ap
 
 Feel free to ask in:
 - [GitHub Discussions](https://github.com/Arc-Computer/ATLAS/discussions)
-- [Discord Community](https://discord.gg/arc-atlas)
-- Email: opensource@arc-intelligence.com
+- [GitHub Issues](https://github.com/Arc-Computer/ATLAS/issues)
 
 Thank you for contributing to ATLAS! 🚀
