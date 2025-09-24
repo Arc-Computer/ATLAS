@@ -1,0 +1,174 @@
+---
+title: Models
+description: Pre-trained ATLAS teacher models available on Hugging Face
+sidebarTitle: Models
+icon: robot
+---
+
+## Available Models
+
+ATLAS provides pre-trained teacher models optimized for different tasks. All models are 8B parameters and trained using the GRPO algorithm with adaptive teaching objectives.
+
+## Teacher Models
+
+### ATLAS-8B-Thinking
+
+<Card title="View on Hugging Face" icon="hugging-face" href="https://huggingface.co/Arc-Intelligence/ATLAS-8B-Thinking">
+  Optimized for mathematical and logical reasoning tasks
+</Card>
+
+**Best for:**
+- Mathematical problem solving
+- Logical reasoning
+- Abstract thinking tasks
+- Scientific analysis
+
+**Usage:**
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+model = AutoModelForCausalLM.from_pretrained(
+    "Arc-Intelligence/ATLAS-8B-Thinking",
+    torch_dtype="auto",
+    device_map="auto"
+)
+tokenizer = AutoTokenizer.from_pretrained(
+    "Arc-Intelligence/ATLAS-8B-Thinking"
+)
+```
+
+**Training:**
+- Base model: Qwen2.5-7B-Instruct
+- Training method: SFT → GRPO
+- Specialization: Reasoning-heavy tasks
+
+### ATLAS-8B-Instruct
+
+<Card title="View on Hugging Face" icon="hugging-face" href="https://huggingface.co/Arc-Intelligence/ATLAS-8B-Instruct">
+  Optimized for code generation and technical instruction
+</Card>
+
+**Best for:**
+- Code generation
+- Technical documentation
+- System administration
+- API integration
+
+**Usage:**
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+model = AutoModelForCausalLM.from_pretrained(
+    "Arc-Intelligence/ATLAS-8B-Instruct",
+    torch_dtype="auto",
+    device_map="auto"
+)
+tokenizer = AutoTokenizer.from_pretrained(
+    "Arc-Intelligence/ATLAS-8B-Instruct"
+)
+```
+
+**Training:**
+- Base model: Qwen2.5-7B-Instruct
+- Training method: SFT → GRPO
+- Specialization: Instruction-following and coding
+
+## Model Selection Guide
+
+Choose the appropriate teacher model based on your task:
+
+| Task Type | Recommended Model | Reasoning |
+|-----------|-------------------|-----------|
+| Math problems | ATLAS-8B-Thinking | Specialized in step-by-step reasoning |
+| Debugging | ATLAS-8B-Instruct | Better at code understanding |
+| Data analysis | ATLAS-8B-Thinking | Strong analytical capabilities |
+| API development | ATLAS-8B-Instruct | Trained on technical documentation |
+| Logic puzzles | ATLAS-8B-Thinking | Abstract reasoning focus |
+| DevOps tasks | ATLAS-8B-Instruct | System administration expertise |
+
+## Compatible Student Models
+
+ATLAS teachers can enhance any instruction-following LLM:
+
+**Tested Student Models:**
+- Qwen/Qwen3-4B-Instruct (4B)
+- meta-llama/Llama-3.2-8B-Instruct (8B)
+- mistralai/Mixtral-8x7B-Instruct-v0.1 (47B)
+- OpenAI GPT-4 (API)
+- Anthropic Claude (API)
+
+**Requirements:**
+- Instruction-following capability
+- Context window ≥4K tokens
+- Support for system prompts (preferred)
+
+## Memory Requirements
+
+Estimated VRAM usage for inference:
+
+| Configuration | VRAM Required | Recommended Hardware |
+|--------------|--------------|---------------------|
+| Teacher only (FP16) | 16GB | RTX 4080, A5000 |
+| Teacher + Small Student | 24GB | RTX 4090, A6000 |
+| Teacher + Large Student | 40GB+ | A100, H100 |
+| Quantized (INT8) | 8GB | RTX 3080, A4000 |
+| Quantized (INT4) | 4GB | RTX 3070, T4 |
+
+## Model Versioning
+
+All models follow semantic versioning:
+
+- **Latest stable**: No suffix (recommended for production)
+- **Experimental**: `-experimental` suffix
+- **Specific versions**: `-v1.0`, `-v1.1`, etc.
+
+Check model cards on Hugging Face for:
+- Training data details
+- Performance benchmarks
+- Known limitations
+- Update changelog
+
+## Custom Model Training
+
+Train your own teacher models:
+
+```bash
+# Using pre-trained as base
+scripts/launch.sh 8 configs/run/teacher_sft.yaml \
+  model_name_or_path=Arc-Intelligence/ATLAS-8B-Thinking \
+  output_dir=my_custom_teacher
+
+# From scratch with your data
+scripts/launch.sh 8 configs/run/teacher_sft.yaml \
+  model_name_or_path=Qwen/Qwen2.5-7B-Instruct \
+  dataset_name=your_dataset
+```
+
+See [GRPO Training Guide](/training/offline/grpo-training) for detailed instructions.
+
+## License and Usage
+
+All ATLAS models are released under Apache 2.0 license for both research and commercial use.
+
+**Responsible Use:**
+- Verify outputs for critical applications
+- Monitor for potential biases
+- Respect base model licenses
+- Cite ATLAS in publications
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Start using ATLAS models
+  </Card>
+  <Card title="Datasets" icon="database" href="/reference/datasets">
+    Training and evaluation data
+  </Card>
+  <Card title="Custom Training" icon="dumbbell" href="/training/offline/grpo-training">
+    Train your own models
+  </Card>
+  <Card title="API Reference" icon="code" href="/api-reference/configs">
+    Configuration options
+  </Card>
+</CardGroup>

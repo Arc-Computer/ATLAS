@@ -1,0 +1,257 @@
+---
+title: Datasets
+description: Official ATLAS training and evaluation datasets
+sidebarTitle: Datasets
+icon: database
+---
+
+## Available Datasets
+
+ATLAS provides curated datasets for training adaptive teachers and evaluating system performance.
+
+## Primary Dataset
+
+### Arc-ATLAS-Teach-v0
+
+<Card title="View on Hugging Face" icon="hugging-face" href="https://huggingface.co/datasets/Arc-Intelligence/Arc-ATLAS-Teach-v0">
+  Comprehensive teaching interaction dataset for RL training
+</Card>
+
+**Purpose:** Train teacher models to provide adaptive guidance across diverse tasks
+
+**Statistics:**
+- **Total examples**: 100,000+ teaching interactions
+- **Task domains**: Mathematics, reasoning, coding, debugging
+- **Formats**: SFT and RL training splits
+- **Languages**: English
+
+**Data Schema:**
+
+```json
+{
+  "prompt": "The problem or task requiring solution",
+  "ground_truth": "Correct answer or solution",
+  "student_response": "Initial student attempt",
+  "teaching": "Adaptive guidance provided",
+  "enhanced_response": "Student response after teaching",
+  "baseline_score": 0.3,
+  "with_teaching_score": 0.9,
+  "reward": 0.6,
+  "problem_id": "unique_identifier",
+  "student_level": "weak|moderate|strong",
+  "domain": "math|reasoning|code|debug"
+}
+```
+
+**Loading the Dataset:**
+
+```python
+from datasets import load_dataset
+
+# Load for supervised fine-tuning
+sft_data = load_dataset(
+    "Arc-Intelligence/Arc-ATLAS-Teach-v0",
+    "sft",
+    split="train"
+)
+
+# Load for reinforcement learning
+rl_data = load_dataset(
+    "Arc-Intelligence/Arc-ATLAS-Teach-v0",
+    "rl",
+    split="train"
+)
+
+# Load validation set
+val_data = load_dataset(
+    "Arc-Intelligence/Arc-ATLAS-Teach-v0",
+    "rl",
+    split="validation"
+)
+```
+
+**File Structure:**
+```
+Arc-ATLAS-Teach-v0/
+├── training/
+│   ├── sft.jsonl         # Supervised fine-tuning data
+│   └── rl.jsonl          # Reinforcement learning data
+└── validation/
+    └── rl.jsonl          # Held-out validation
+```
+
+## Domain-Specific Subsets
+
+### Mathematics Subset
+
+**Focus:** Step-by-step mathematical reasoning
+
+**Example:**
+```json
+{
+  "prompt": "Sarah has 24 apples. She gives 1/3 to her brother...",
+  "ground_truth": "12",
+  "teaching": "Break down: 1) Calculate 1/3 of 24 = 8..."
+}
+```
+
+**Filtering:**
+```python
+math_data = dataset.filter(lambda x: x['domain'] == 'math')
+```
+
+### Code Generation Subset
+
+**Focus:** Programming tasks and debugging
+
+**Example:**
+```json
+{
+  "prompt": "Write a function to validate email addresses",
+  "ground_truth": "def validate_email(email):...",
+  "teaching": "Consider regex pattern, edge cases like..."
+}
+```
+
+**Filtering:**
+```python
+code_data = dataset.filter(lambda x: x['domain'] == 'code')
+```
+
+### SRE/Debugging Subset
+
+**Focus:** System reliability and debugging scenarios
+
+**Example:**
+```json
+{
+  "prompt": "Service returns 503 errors intermittently",
+  "ground_truth": "Check service mesh configuration...",
+  "teaching": "Systematic approach: 1) Check Istio configs..."
+}
+```
+
+**Filtering:**
+```python
+sre_data = dataset.filter(lambda x: x['domain'] == 'debug')
+```
+
+## Data Quality Metrics
+
+### Coverage Statistics
+
+| Domain | Examples | Avg Length | Unique Patterns |
+|--------|----------|------------|-----------------|
+| Mathematics | 35,000 | 250 tokens | 500+ |
+| Code Generation | 30,000 | 400 tokens | 800+ |
+| Reasoning | 25,000 | 300 tokens | 600+ |
+| Debugging | 10,000 | 350 tokens | 400+ |
+
+### Performance Baselines
+
+| Metric | Baseline | w/ Teaching | Improvement |
+|--------|----------|-------------|-------------|
+| Accuracy | 62.3% | 78.0% | +15.7% |
+| Completion | 69% | 100% | +31% |
+| Token Efficiency | 100% | 50% | -50% |
+
+## Creating Custom Datasets
+
+### Data Format Requirements
+
+Your dataset should follow this structure:
+
+```python
+{
+    "prompt": str,           # Required: Task description
+    "ground_truth": str,     # Required: Correct solution
+    "metadata": {            # Optional: Additional context
+        "difficulty": str,
+        "source": str,
+        "tags": List[str]
+    }
+}
+```
+
+### Preprocessing Pipeline
+
+```python
+from atlas_data import DataProcessor
+
+processor = DataProcessor()
+
+# Convert your data
+custom_data = processor.prepare_dataset(
+    raw_data=your_data,
+    task_type="reasoning",
+    validation_split=0.1
+)
+
+# Save in ATLAS format
+custom_data.save_to_disk("my_dataset")
+```
+
+### Quality Validation
+
+```python
+from atlas_data import DataValidator
+
+validator = DataValidator()
+
+# Check data quality
+report = validator.validate(
+    dataset=custom_data,
+    checks=[
+        "completeness",
+        "diversity",
+        "difficulty_distribution",
+        "length_statistics"
+    ]
+)
+
+print(report.summary())
+```
+
+## Contributing Data
+
+We welcome contributions to improve ATLAS datasets:
+
+1. **Format your data** according to the schema
+2. **Validate quality** using provided tools
+3. **Test with models** to ensure compatibility
+4. **Submit PR** with data and documentation
+
+See [Contributing Guidelines](https://github.com/Arc-Computer/ATLAS/blob/main/CONTRIBUTING.md) for details.
+
+## License and Citation
+
+Datasets are released under Apache 2.0 license.
+
+If you use these datasets, please cite:
+
+```bibtex
+@dataset{atlas_teach_v0,
+  title={Arc-ATLAS-Teach-v0: Adaptive Teaching Dataset},
+  author={Arc Intelligence Team},
+  year={2024},
+  publisher={Hugging Face},
+  url={https://huggingface.co/datasets/Arc-Intelligence/Arc-ATLAS-Teach-v0}
+}
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Training Guide" icon="graduation-cap" href="/training/offline/grpo-training">
+    Train models with datasets
+  </Card>
+  <Card title="Models" icon="robot" href="/reference/models">
+    Pre-trained ATLAS models
+  </Card>
+  <Card title="Custom Implementation" icon="code" href="/examples/custom-implementation">
+    Use datasets in your code
+  </Card>
+  <Card title="Technical Report" icon="file-pdf" href="/reference/technical-report">
+    Dataset methodology
+  </Card>
+</CardGroup>

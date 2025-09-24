@@ -1,0 +1,93 @@
+---
+title: Technical Report
+description: ATLAS research paper and technical specifications
+sidebarTitle: Technical Report
+icon: file-pdf
+---
+
+## Abstract
+
+ATLAS (Adaptive Teaching and Learning Alignment System) is a hybrid reinforcement learning architecture that enhances language model performance through adaptive teaching protocols. The system implements a two-phase approach: diagnostic probing to assess student capability, followed by conditional teaching that provides targeted guidance.
+
+Through extensive evaluation on mathematical reasoning, code generation, and system reliability engineering tasks, ATLAS demonstrates:
+- **15.7% average accuracy improvement** across diverse benchmarks
+- **31% increase in task completion rates**
+- **97% non-degradation guarantee** ensuring safe deployment
+- **50% reduction in token usage** through efficient teaching strategies
+
+The framework combines offline reinforcement learning for foundational skills with online optimization for task-specific adaptation, creating a practical path to continuously improving AI systems.
+
+## Full Report
+
+<Card title="Download Technical Report" icon="download" href="https://github.com/Arc-Computer/ATLAS/blob/main/docs/ATLAS-Technical-Report.pdf">
+  Access the complete 28-page technical report with detailed methodology, experiments, and results
+</Card>
+
+## Key Contributions
+
+### 1. Adaptive Teaching Protocol
+A two-pass inference mechanism that first diagnoses student capability (≤50 tokens) then provides calibrated guidance (≤200 tokens) based on the assessment.
+
+### 2. Hybrid Learning Architecture
+Separation of expensive offline RL training from lightweight online optimization, enabling rapid adaptation at ~$10 per task domain.
+
+### 3. Compounding Intelligence
+Demonstrated skill transfer across domains with up to 83% transfer efficiency, creating accumulating knowledge over time.
+
+### 4. Safety Guarantees
+Zero-reward for performance degradation ensures 97% non-degradation rate in production deployments.
+
+## Experimental Results
+
+### Performance Across Model Sizes
+
+| Student Model | Size | Baseline | w/ ATLAS | Improvement |
+|--------------|------|----------|----------|-------------|
+| Qwen3-4B | 4B | 62.3% | 78.0% | +15.7% |
+| Llama-3.1-8B | 8B | 71.2% | 85.4% | +14.2% |
+| Mixtral-8x7B | 47B | 78.5% | 89.1% | +10.6% |
+| GPT-4 | ~1.7T | 84.3% | 92.8% | +8.5% |
+
+### Domain-Specific Gains
+
+- **SRE Debugging**: Systematic improvement in root cause analysis and reduced investigation time
+- **Mathematical Reasoning**: 15.7% average gain
+- **Code Generation**: 31% completion rate improvement
+
+## Citation
+
+If you use ATLAS in your research, please cite:
+
+```bibtex
+@article{atlas2024,
+  title={ATLAS: Adaptive Teaching and Learning Alignment System for RL},
+  author={Arc Intelligence Team},
+  journal={arXiv preprint},
+  year={2024},
+  url={https://github.com/Arc-Computer/ATLAS}
+}
+```
+
+## Related Work
+
+The ATLAS framework builds on several foundational works:
+- GRPO (Group Relative Policy Optimization) for RL training
+- GEPA (Genetic Prompt Evolution Algorithm) for online optimization
+- Constitutional AI principles for safe deployment
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Models" icon="robot" href="/reference/models">
+    Pre-trained ATLAS models
+  </Card>
+  <Card title="Datasets" icon="database" href="/reference/datasets">
+    Training and evaluation data
+  </Card>
+  <Card title="Implementation" icon="code" href="/quickstart">
+    Get started with ATLAS
+  </Card>
+  <Card title="Examples" icon="lightbulb" href="/examples/sre-root-cause-analysis">
+    See ATLAS in action
+  </Card>
+</CardGroup>

@@ -1,0 +1,301 @@
+---
+title: Frequently Asked Questions
+description: Common questions about ATLAS implementation and usage
+sidebarTitle: FAQ
+icon: question
+---
+
+## General Questions
+
+### What is ATLAS?
+
+ATLAS (Adaptive Teaching and Learning Alignment System) is a framework that trains "teacher" models to improve "student" model performance through adaptive guidance. It uses a two-pass protocol: diagnostic assessment followed by targeted teaching.
+
+### How is ATLAS different from fine-tuning?
+
+Unlike fine-tuning which modifies model weights, ATLAS:
+- Preserves the student model's original capabilities
+- Works with any model without retraining
+- Adapts guidance based on student capability
+- Provides immediate enhancement without training time
+
+### What performance improvements can I expect?
+
+Based on extensive benchmarking:
+- **Average accuracy gain**: 15.7%
+- **Task completion improvement**: 31%
+- **Non-degradation guarantee**: 97%
+- **Token efficiency**: 50% reduction
+
+Results vary by task complexity and student model capability.
+
+## Hardware & Setup
+
+### What hardware do I need?
+
+**Minimum Requirements:**
+- GPU: 16GB VRAM (RTX 4080, A5000)
+- RAM: 32GB system memory
+- Storage: 100GB for models and data
+
+**Recommended for Training:**
+- GPU: 4× A100 40GB or H100 80GB
+- RAM: 128GB+ system memory
+- Storage: 500GB NVMe SSD
+
+**For Inference Only:**
+- Can run on CPU (slower)
+- 8GB VRAM with quantization
+- Cloud instances work well
+
+### Can I run ATLAS on CPU?
+
+Yes, but with limitations:
+- Inference is 10-50x slower
+- Limited to smaller models
+- Quantization recommended
+- Suitable for development/testing
+
+```python
+# CPU configuration
+atlas = ATLASInference(
+    device="cpu",
+    torch_dtype=torch.float32
+)
+```
+
+### Which models are compatible?
+
+**Teacher Models (Pre-trained):**
+- ATLAS-8B-Thinking (reasoning)
+- ATLAS-8B-Instruct (coding)
+
+**Student Models (Any LLM):**
+- Qwen series (4B-70B)
+- Llama series (7B-70B)
+- Mistral/Mixtral models
+- GPT-3.5/4 (via API)
+- Claude (via API)
+
+## Training Questions
+
+### How long does training take?
+
+**Offline RL Training:**
+- SFT warmup: 4-8 hours
+- GRPO training: 24-48 hours
+- Hardware: 4-8 H100 GPUs
+
+**Online Optimization:**
+- Time: 2-3 hours
+- Cost: ~$10 in API credits
+- No GPU required
+
+### What's the difference between online and offline training?
+
+**Offline Training (GRPO):**
+- Creates foundational teaching skills
+- Requires significant compute
+- Produces generalizable models
+- One-time investment
+
+**Online Optimization (GEPA):**
+- Adapts to specific tasks
+- Uses API-based optimization
+- Rapid iteration cycles
+- Per-task refinement
+
+### Can I train on custom data?
+
+Yes, prepare your data in this format:
+
+```json
+{
+  "prompt": "Your task or question",
+  "ground_truth": "Correct answer",
+  "metadata": {
+    "domain": "your_domain",
+    "difficulty": "easy|medium|hard"
+  }
+}
+```
+
+Then train:
+```bash
+scripts/launch.sh 8 configs/run/teacher_sft.yaml \
+  dataset_name=path/to/your/data
+```
+
+## Implementation Questions
+
+### How do I integrate ATLAS into my application?
+
+Basic integration pattern:
+
+```python
+from atlas_inference import ATLASInference
+
+# Initialize
+atlas = ATLASInference(
+    teacher_model="Arc-Intelligence/ATLAS-8B-Thinking",
+    student_model="your-model"
+)
+
+# Enhance responses
+result = atlas.run_full_protocol(task)
+enhanced_response = result['guided_response']
+```
+
+See [Custom Implementation Guide](/examples/custom-implementation) for details.
+
+### Can ATLAS work with my existing agent?
+
+Yes, ATLAS can wrap any existing agent:
+
+```bash
+scripts/openai_agent_atlas.sh configs/wrappers/your_agent.yaml
+```
+
+Supports:
+- OpenAI Assistants
+- LangChain agents
+- HTTP APIs
+- Python functions
+- CLI tools
+
+### How do I monitor performance in production?
+
+Use built-in metrics collection:
+
+```python
+from atlas_monitoring import MetricsCollector
+
+collector = MetricsCollector()
+result = atlas.run_full_protocol(task)
+collector.record(result)
+
+# View metrics
+print(collector.summary())
+```
+
+Integrates with:
+- Weights & Biases
+- TensorBoard
+- Prometheus
+- Custom logging
+
+## Performance & Optimization
+
+### Why is inference slow?
+
+Common causes and solutions:
+
+1. **Not using Flash Attention**:
+   ```python
+   config.attn_implementation = "flash_attention_2"
+   ```
+
+2. **Small batch size**:
+   ```python
+   atlas.batch_size = 8  # Process multiple requests
+   ```
+
+3. **No caching**:
+   ```python
+   atlas.enable_cache = True
+   ```
+
+4. **CPU inference**: Use GPU or quantization
+
+### How can I reduce memory usage?
+
+Progressive solutions:
+
+1. **Quantization** (75% reduction):
+   ```python
+   config.load_in_4bit = True
+   ```
+
+2. **Smaller models**: Use 4B instead of 8B
+3. **Offloading**: Move to CPU/disk
+4. **Batch size**: Reduce to 1
+
+### What if the teacher makes things worse?
+
+ATLAS has a 97% non-degradation guarantee through:
+- Zero reward for performance drops
+- Safety validation before deployment
+- Fallback to baseline response
+- Continuous monitoring
+
+If issues persist:
+- Check task-model compatibility
+- Verify data quality
+- Adjust teaching parameters
+- Use online optimization
+
+## Cost Questions
+
+### How much does ATLAS cost to run?
+
+**Training Costs:**
+- Offline RL: $100-500 in compute
+- Online optimization: ~$10 per task
+
+**Inference Costs:**
+- Self-hosted: Electricity only
+- Cloud GPU: $1-3/hour
+- API-based: $0.001-0.01 per request
+
+### Is there a cloud service?
+
+Currently ATLAS is open-source only. You can:
+- Self-host on your infrastructure
+- Use cloud GPU providers
+- Deploy on Hugging Face Spaces
+- Contact team for enterprise support
+
+## Troubleshooting
+
+### Where can I get help?
+
+1. [Troubleshooting Guide](/reference/troubleshooting)
+2. [GitHub Issues](https://github.com/Arc-Computer/ATLAS/issues)
+3. [Discord Community](https://discord.gg/arc-atlas)
+4. Email: support@arc.computer
+
+### How do I report a bug?
+
+File an issue with:
+- Error message and stack trace
+- System configuration
+- Minimal reproduction code
+- Expected vs actual behavior
+
+### Can I contribute to ATLAS?
+
+Yes! We welcome contributions:
+- Code improvements
+- Documentation
+- Bug fixes
+- New features
+- Dataset contributions
+
+See [Contributing Guide](https://github.com/Arc-Computer/ATLAS/blob/main/CONTRIBUTING.md).
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Get started with ATLAS
+  </Card>
+  <Card title="Examples" icon="lightbulb" href="/examples/sre-root-cause-analysis">
+    See ATLAS in action
+  </Card>
+  <Card title="Troubleshooting" icon="wrench" href="/reference/troubleshooting">
+    Solve common issues
+  </Card>
+  <Card title="Community" icon="discord" href="https://discord.gg/arc-atlas">
+    Join the discussion
+  </Card>
+</CardGroup>
