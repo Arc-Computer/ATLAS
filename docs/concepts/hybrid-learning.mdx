@@ -1,0 +1,227 @@
+---
+title: Hybrid Learning Architecture
+description: Understanding ATLAS's dual-phase approach to model enhancement
+sidebarTitle: Hybrid Learning
+icon: brain
+---
+
+## Architectural Overview
+
+ATLAS implements a hybrid learning architecture that separates complex offline training from lightweight online deployment. This approach addresses fundamental limitations in current language model optimization strategies.
+
+## The Two-Phase Paradigm
+
+### Phase 1: Offline Foundation Training
+
+Offline training establishes deep, generalizable skills through reinforcement learning:
+
+```
+Offline RL Training (24-48 hours)
+├── SFT Warmup: Base reasoning capabilities
+├── GRPO Training: Adaptive teaching skills
+└── Output: Teacher model with foundational knowledge
+```
+
+**Key Characteristics:**
+- **Compute-intensive**: 4-8 H100 GPUs for 2-3 days
+- **Data-rich**: Millions of teaching interactions
+- **Generalizable**: Skills transfer across domains
+- **One-time cost**: Amortized over all deployments
+
+### Phase 2: Online Optimization
+
+Online optimization adapts pre-trained teachers to specific tasks:
+
+```
+Online Adaptation (2 hours)
+├── Task Analysis: Identify performance gaps
+├── Reflective Mutation: Automatic reward engineering
+├── Policy Updates: Rapid skill refinement
+└── Output: Task-optimized teaching policy
+```
+
+**Key Characteristics:**
+- **Lightweight**: ~$10 in API costs
+- **Rapid**: 2-hour optimization cycles
+- **Safe**: Maintains non-degradation guarantee
+- **Continuous**: Improves with deployment
+
+## Technical Implementation
+
+### Offline Training Pipeline
+
+The offline phase uses GRPO (Group Relative Policy Optimization) with the following objective:
+
+```python
+def grpo_loss(logits, rewards, reference_logits, beta=0.04):
+    """
+    GRPO loss combining reward maximization with KL constraint
+
+    Args:
+        logits: Current policy outputs
+        rewards: Performance improvements from teaching
+        reference_logits: SFT baseline outputs
+        beta: KL divergence coefficient
+    """
+    policy_logprobs = F.log_softmax(logits, dim=-1)
+    reference_logprobs = F.log_softmax(reference_logits, dim=-1)
+
+    # Reward-weighted policy gradient
+    pg_loss = -(rewards * policy_logprobs).mean()
+
+    # KL divergence constraint
+    kl_loss = F.kl_div(policy_logprobs, reference_logprobs, reduction='batchmean')
+
+    return pg_loss + beta * kl_loss
+```
+
+### Online Optimization Loop
+
+The online phase implements reflective mutation for continuous improvement:
+
+```python
+class OnlineOptimizer:
+    def __init__(self, teacher_model, student_model):
+        self.teacher = teacher_model
+        self.student = student_model
+        self.skill_capsules = []
+
+    def optimize(self, task_samples):
+        for iteration in range(max_iterations):
+            # Phase 1: Evaluate current performance
+            baseline_score = self.evaluate(task_samples)
+
+            # Phase 2: Generate teaching variations
+            teaching_variants = self.reflective_mutation(
+                task_samples,
+                current_performance=baseline_score
+            )
+
+            # Phase 3: Select best teaching strategy
+            best_variant = self.select_optimal(teaching_variants)
+
+            # Phase 4: Create reusable skill capsule
+            if best_variant.improvement > threshold:
+                self.skill_capsules.append(best_variant)
+
+        return self.skill_capsules
+```
+
+## Empirical Validation
+
+### Performance Comparison
+
+| Training Approach | Time to Deploy | Performance Gain | Cost | Generalization |
+|-------------------|---------------|------------------|------|----------------|
+| Fine-tuning | 1-2 weeks | +10-15% | $1000s | Poor |
+| Few-shot prompting | Minutes | +3-5% | ~$1 | Limited |
+| ATLAS Hybrid | 2 hours* | +15.7% | ~$10 | Excellent |
+
+*With pre-trained teacher models
+
+### Case Study: SRE Task Evolution
+
+The hybrid approach demonstrates its effectiveness in the [SRE root cause analysis task](/examples/sre-root-cause-analysis):
+
+1. **Offline Foundation**: Teacher learns systematic debugging patterns
+2. **Online Adaptation**: Specializes for Kubernetes/Istio environments
+3. **Result**: Systematic improvement in root cause identification
+
+## Theoretical Foundation
+
+### Why Hybrid Learning Works
+
+The separation of offline and online phases leverages different optimization dynamics:
+
+**Offline Phase Benefits:**
+- **Exploration**: Can afford extensive trial-and-error
+- **Generalization**: Learns transferable meta-skills
+- **Stability**: Controlled environment prevents catastrophic failures
+
+**Online Phase Benefits:**
+- **Exploitation**: Focuses on task-specific optimization
+- **Efficiency**: Minimal compute requirements
+- **Adaptability**: Rapid response to new requirements
+
+### Compounding Intelligence
+
+The hybrid architecture enables "Compounding Intelligence" through:
+
+1. **Skill Accumulation**: Each task creates reusable knowledge
+2. **Transfer Learning**: Skills generalize to related problems
+3. **Continuous Improvement**: Performance increases with deployment
+
+## Implementation Guide
+
+### Setting Up Hybrid Training
+
+<Steps>
+  <Step title="Offline Foundation">
+    Train or download pre-trained teacher models:
+    ```bash
+    # Option 1: Use pre-trained
+    huggingface-cli download Arc-Intelligence/ATLAS-8B-Thinking
+
+    # Option 2: Train custom
+    scripts/launch.sh 8 configs/run/teacher_sft.yaml
+    scripts/launch_with_server.sh 4 4 configs/run/teacher_rcl.yaml
+    ```
+  </Step>
+
+  <Step title="Online Optimization">
+    Configure task-specific adaptation:
+    ```bash
+    ./scripts/openai_agent_atlas.sh configs/optimize/default.yaml \
+      task_samples=your_task_data.json \
+      optimization_steps=100 \
+      temperature=0.7
+    ```
+  </Step>
+
+  <Step title="Deploy Enhanced Model">
+    Integrate optimized teaching into production:
+    ```python
+    from atlas_inference import ATLASInference
+
+    atlas = ATLASInference(
+        teacher_model=optimized_teacher,
+        student_model=your_production_model
+    )
+    ```
+  </Step>
+</Steps>
+
+## Advantages Over Alternatives
+
+### vs. Pure Online Learning
+- **More stable**: Offline foundation prevents catastrophic forgetting
+- **More efficient**: Reuses learned skills across tasks
+- **More general**: Transfers to unseen domains
+
+### vs. Pure Offline Training
+- **More adaptive**: Quickly specializes for new tasks
+- **Lower cost**: Minimal compute for deployment
+- **Continuous improvement**: Learns from production data
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Adaptive Teaching Protocol" icon="chalkboard-user" href="/concepts/adaptive-teaching-protocol">
+    Understand the two-pass teaching mechanism
+  </Card>
+  <Card title="Compounding Intelligence" icon="layer-group" href="/concepts/compounding-intelligence">
+    Learn how skills accumulate over time
+  </Card>
+  <Card title="First Experiment" icon="flask" href="/first-experiment">
+    Run your first hybrid training pipeline
+  </Card>
+  <Card title="Architecture Details" icon="diagram-project" href="/architecture/system-overview">
+    Explore technical implementation
+  </Card>
+</CardGroup>
+
+## References
+
+- [ATLAS Technical Report](/reference/technical-report) - Sections 3.1-3.3 on hybrid architecture
+- [GRPO Algorithm](https://arxiv.org/abs/2402.03300) - Foundation for offline training
+- [Online Learning Guide](/training/online/optimize-with-atlas) - Practical implementation

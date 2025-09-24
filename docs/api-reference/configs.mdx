@@ -1,0 +1,240 @@
+---
+title: Configuration Reference
+description: Complete reference for all ATLAS configuration parameters
+sidebarTitle: Configs
+icon: sliders
+---
+
+## Overview
+
+ATLAS configurations control every aspect of training and inference. Parameters are organized into logical groups for easier navigation.
+
+![ATLAS Architecture](/images/ATLAS.png)
+
+## Typical Usage
+
+<CodeGroup>
+```python title="Basic RL Training"
+from configs import GRPOConfig
+from trainers import GRPOTrainer
+
+config = GRPOConfig(
+    model_name_or_path="Arc-Intelligence/ATLAS-8B-Thinking",
+    learning_rate=5e-6,
+    num_train_epochs=3,
+    per_device_train_batch_size=4,
+    gradient_accumulation_steps=4,
+    beta=0.04,  # KL penalty
+    temperature=0.7
+)
+
+trainer = GRPOTrainer(config)
+trainer.train()
+```
+
+```python title="Adaptive Teaching"
+from configs import TeacherGRPOConfig
+from trainers import TeacherGRPOTrainer
+
+config = TeacherGRPOConfig(
+    teacher_model="Arc-Intelligence/ATLAS-8B-Thinking",
+    student_model="meta-llama/Llama-3.2-8B-Instruct",
+    adaptive_teaching=True,
+    max_probe_tokens=50,
+    max_guidance_tokens=200,
+    efficiency_weight=1.0
+)
+
+trainer = TeacherGRPOTrainer(config)
+trainer.train()
+```
+</CodeGroup>
+
+## GRPOConfig Parameters
+
+<AccordionGroup>
+  <Accordion title="Core Training Parameters">
+    | Parameter | Type | Default | Description |
+    |-----------|------|---------|-------------|
+    | `model_name_or_path` | str | required | HuggingFace model or local path |
+    | `learning_rate` | float | 1e-6 | Initial learning rate for AdamW optimizer |
+    | `num_train_epochs` | int | 3 | Number of training epochs (inherited) |
+    | `per_device_train_batch_size` | int | 8 | Batch size per GPU/TPU core (inherited) |
+    | `gradient_accumulation_steps` | int | 1 | Steps before backward pass (inherited) |
+    | `warmup_ratio` | float | 0.1 | Ratio of warmup steps (inherited) |
+    | `weight_decay` | float | 0.01 | L2 regularization coefficient (inherited) |
+    | `max_grad_norm` | float | 1.0 | Maximum gradient norm for clipping (inherited) |
+
+    **Note**: Many parameters are inherited from `transformers.TrainingArguments`
+  </Accordion>
+
+  <Accordion title="GRPO Algorithm Parameters">
+    | Parameter | Type | Default | Description |
+    |-----------|------|---------|-------------|
+    | `beta` | float | 0.04 | KL coefficient |
+    | `temperature` | float | 0.9 | Temperature for sampling completions |
+    | `num_generations` | int | 8 | Number of generations to sample |
+    | `max_completion_length` | int | 256 | Maximum length of generated completion |
+    | `max_prompt_length` | int | 512 | Maximum prompt length (truncated left) |
+    | `reward_weights` | list[float] | None | Weights for each reward function |
+
+    **From actual source code**: `trainers/grpo_config.py`
+  </Accordion>
+
+  <Accordion title="Generation & Sampling">
+    | Parameter | Type | Default | Description |
+    |-----------|------|---------|-------------|
+    | `top_k` | int | None | Top-k sampling parameter |
+    | `top_p` | float | 1.0 | Nucleus sampling threshold |
+    | `min_p` | float | None | Minimum token probability |
+    | `repetition_penalty` | float | 1.0 | Penalty for token repetition |
+    | `generation_aggregation_steps` | int | None | Aggregates generations across steps |
+    | `shuffle_generation_inputs` | bool | False | Randomly shuffle prompts |
+
+    **From source**: Values taken directly from `grpo_config.py`
+  </Accordion>
+
+  <Accordion title="vLLM Integration">
+    | Parameter | Type | Default | Description |
+    |-----------|------|---------|-------------|
+    | `use_vllm` | bool | False | Use vLLM for generating completions |
+    | `use_vllm_server` | bool | False | Use a vLLM server for generation |
+    | `vllm_device` | str | "auto" | Device where vLLM generation runs |
+    | `vllm_gpu_memory_utilization` | float | 0.9 | GPU memory ratio for vLLM |
+    | `vllm_dtype` | str | "auto" | Data type for vLLM generation |
+    | `vllm_max_model_len` | int | None | Max model length for vLLM |
+    | `vllm_host` | str | None | Host of the vLLM server |
+    | `vllm_port` | int | None | Port of the vLLM server |
+    | `num_vllm_clients` | int | 1 | Number of vLLM clients |
+
+    **Verified from**: `grpo_config.py` lines 102-184
+  </Accordion>
+
+  <Accordion title="Memory & Training Optimization">
+    | Parameter | Type | Default | Description |
+    |-----------|------|---------|-------------|
+    | `offload_untrained_models` | bool | False | Offload reference/reward models to minimize memory |
+    | `ds3_gather_for_generation` | bool | True | Gather policy weights for generation (DeepSpeed ZeRO-3) |
+    | `backprop_accumulation_steps` | int | None | Accumulate loss during backprop computations |
+    | `backprop_accumulation_micro_batch_size` | int | None | Max per-device batch during backprop |
+    | `remove_unused_columns` | bool | False | Keep only 'prompt' column in dataset |
+
+    **Note**: Other memory options inherited from `TrainingArguments`
+  </Accordion>
+
+  <Accordion title="Teacher Training Parameters">
+    | Parameter | Type | Default | Description |
+    |-----------|------|---------|-------------|
+    | `max_probe_tokens` | int | 500 | Maximum tokens for student diagnostic probing |
+    | `student_diagnostic_template` | str | None | Template for generating student diagnostic probes |
+    | `teacher_adaptive_template` | str | None | Template for generating teacher adaptive teaching |
+    | `student_with_teaching_template` | str | None | Template for student solution with teaching |
+    | `student_baseline_template` | str | None | Template for student baseline solution |
+
+    **From source**: `grpo_config.py` lines 330-353 (teacher-specific parameters)
+  </Accordion>
+
+  <Accordion title="Logging & Checkpointing">
+    | Parameter | Type | Default | Description |
+    |-----------|------|---------|-------------|
+    | `logging_steps` | int | 10 | Log every N steps |
+    | `save_steps` | int | 500 | Save checkpoint every N steps |
+    | `eval_steps` | int | 500 | Evaluate every N steps |
+    | `save_total_limit` | int | 3 | Maximum checkpoints to keep |
+    | `load_best_model_at_end` | bool | True | Load best model after training |
+    | `metric_for_best_model` | str | "eval_reward" | Metric for model selection |
+    | `greater_is_better` | bool | True | Whether metric should increase |
+    | `report_to` | list | ["wandb"] | Logging integrations |
+
+    **Best practices:**
+    - Set `save_steps` = `eval_steps` for consistency
+    - Use `save_total_limit` to manage disk space
+    - Enable W&B for experiment tracking
+  </Accordion>
+</AccordionGroup>
+
+## Teacher Training Usage
+
+TeacherGRPOTrainer uses the same GRPOConfig but accepts additional constructor parameters:
+
+```python
+from trainers.teacher_trainers import TeacherGRPOTrainer
+from trainers.grpo_config import GRPOConfig
+
+config = GRPOConfig(
+    model_name_or_path="Arc-Intelligence/ATLAS-8B-Thinking",
+    max_probe_tokens=500,  # Teacher-specific parameter
+    learning_rate=1e-6
+)
+
+trainer = TeacherGRPOTrainer(
+    config,
+    student_model="meta-llama/Llama-3.2-8B-Instruct",  # Constructor parameter
+    # Other standard parameters...
+)
+```
+
+
+## Command-Line Overrides
+
+Any parameter can be overridden via command line:
+
+```bash
+# Override single parameter
+scripts/launch.sh 8 configs/run/teacher_sft.yaml learning_rate=1e-5
+
+# Override multiple parameters
+scripts/launch.sh 8 configs/run/teacher_sft.yaml \
+  learning_rate=1e-5 \
+  num_train_epochs=5 \
+  per_device_train_batch_size=2
+
+# Override nested parameters
+scripts/launch.sh 8 configs/run/teacher_sft.yaml \
+  generation_kwargs.temperature=0.9 \
+  generation_kwargs.top_p=0.8
+```
+
+## Configuration Usage
+
+ATLAS configurations are standard dataclasses extending `transformers.TrainingArguments`:
+
+```python
+from trainers.grpo_config import GRPOConfig
+from trainers.grpo import GRPOTrainer
+
+config = GRPOConfig(
+    model_name_or_path="Arc-Intelligence/ATLAS-8B-Thinking",
+    learning_rate=1e-6,  # Default from actual config
+    beta=0.04,  # KL coefficient
+    temperature=0.9,  # Default from actual config
+    num_generations=8  # Default from actual config
+)
+
+trainer = GRPOTrainer(config)
+trainer.train()
+```
+
+## Source Code
+
+For complete implementation details:
+- **GRPOConfig**: `trainers/grpo_config.py`
+- **GRPOTrainer**: `trainers/grpo.py`
+- **TeacherGRPOTrainer**: `trainers/teacher_trainers.py`
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Trainers Reference" icon="robot" href="/api-reference/trainers">
+    Trainer class documentation
+  </Card>
+  <Card title="Configuration Deep Dive" icon="cog" href="/architecture/config-system">
+    Understanding config composition
+  </Card>
+  <Card title="RL Training Guide" icon="graduation-cap" href="/training/offline/grpo-training">
+    Apply configs to training
+  </Card>
+  <Card title="First Experiment" icon="flask" href="/first-experiment">
+    Hands-on configuration tutorial
+  </Card>
+</CardGroup>

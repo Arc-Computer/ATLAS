@@ -1,0 +1,90 @@
+---
+title: Glossary
+description: Key terms and concepts used in ATLAS documentation
+sidebarTitle: Glossary
+icon: book
+---
+
+## Core Concepts
+
+### ATLAS
+**Adaptive Teaching and Learning Alignment System** - A continual learning framework that separates complex RL training into offline teacher preparation and online task adaptation.
+
+### Continual Learning
+The ability of an agent to improve from experience and transfer learned skills across tasks without retraining the base model weights.
+
+### Hybrid Architecture
+ATLAS's approach of separating offline RL training (for teachers) from online optimization (for task adaptation), enabling both stability and flexibility.
+
+## Training Algorithms
+
+### GRPO
+**Group Relative Policy Optimization** - The offline RL algorithm used to train ATLAS teacher models. Optimizes teaching policies through group-relative rewards with KL divergence constraints.
+
+### GEPA
+**Genetic Evolution for Prompt Adaptation** - The online optimization algorithm that rapidly adapts to specific tasks through evolutionary search without model retraining.
+
+### SFT
+**Supervised Fine-Tuning** - Initial training phase that establishes baseline capabilities before RL optimization. Required warmup step before GRPO training.
+
+## Technical Terms
+
+### Two-Pass Protocol
+ATLAS's inference pattern:
+1. **Diagnostic Probe** (≤50 tokens): Teacher assesses student capability
+2. **Adaptive Guidance** (≤200 tokens): Teacher provides calibrated assistance
+
+### Teacher Model
+Specialized 8B parameter models trained with GRPO to diagnose and guide other language models. Pre-trained versions available on HuggingFace.
+
+### Student Model
+Any language model (GPT, Claude, Llama, etc.) that receives guidance from the teacher. Does not require modification or training.
+
+### Non-Degradation Rate
+Percentage of interactions where performance remains equal to or better than baseline (target: ≥97%).
+
+### Compounding Intelligence
+The accumulation and transfer of learned skills across tasks and domains through the hybrid architecture.
+
+## Metrics
+
+### TES (Teaching Efficiency Score)
+`(accuracy_gain * completion_rate) / (teaching_tokens / 1000)`
+
+Measures the efficiency of teaching relative to token usage.
+
+### NDR (Non-Degradation Rate)
+Percentage of cases where ATLAS-enhanced response equals or exceeds baseline performance.
+
+### Learning Rate (LR)
+In ATLAS context: `Δ_performance / num_iterations`
+
+Measures how quickly the system adapts to new tasks.
+
+## Infrastructure
+
+### vLLM
+High-throughput inference server used during GRPO training for efficient generation. Handles distributed inference across GPUs.
+
+### Flash Attention
+Memory-efficient attention mechanism that speeds up training and reduces GPU memory usage. Recommended for all deployments.
+
+### KL Divergence
+Kullback-Leibler divergence - Constraint used in GRPO to prevent policy collapse by keeping the trained model close to the reference model.
+
+## Optimization Terms
+
+### Beta (β)
+KL divergence coefficient in GRPO (default: 0.04). Controls how much the policy can deviate from the reference model.
+
+### Temperature
+Sampling parameter controlling randomness in generation (default: 0.7). Higher values increase diversity.
+
+### Gradient Accumulation
+Technique to simulate larger batch sizes by accumulating gradients over multiple forward passes before updating weights.
+
+## See Also
+
+- [Technical Report](/reference/technical-report) - Detailed methodology
+- [Core Concepts](/concepts/hybrid-learning) - In-depth explanations
+- [Training Guide](/training/offline/grpo-training) - Practical implementation

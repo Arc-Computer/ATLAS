@@ -1,0 +1,82 @@
+---
+title: Introduction
+description: A Continual Learning Framework for Production LLM Agents
+sidebarTitle: Introduction
+---
+
+ATLAS (Adaptive Teaching and Learning Alignment System) is an open-source continual learning framework that enhances any language model's performance without modifying its weights.
+
+## How ATLAS Works
+
+ATLAS uses a hybrid architecture that separates complex offline reinforcement learning (to train expert **teacher** models) from hyper-efficient online optimization (to adapt to specific tasks). This enables any **student** model to achieve enhanced performance with guaranteed safety.
+
+Our system provides a production-ready solution for systematically improving model performance through adaptive teaching protocols, delivering measurable gains like **+165%** performance improvement in just 2 hours.
+
+### Key Features & Performance
+
+<CardGroup cols={2}>
+  <Card title="Hybrid Learning Architecture" icon="brain">
+    Separates heavy offline RL from light online optimization, enabling rapid, production-safe adaptation. This delivered a **+165%** performance gain in just 2 hours.
+  </Card>
+  <Card title="Adaptive Teaching Protocol" icon="arrows-rotate">
+    A two-pass system that diagnoses student capability, then provides targeted guidance. This results in a **97% non-degradation rate** and a **50% token reduction**.
+  </Card>
+  <Card title="Compounding Intelligence" icon="layer-group">
+    Systematically learns from experience to create reusable skills that transfer across domains, resulting in **15x faster incident resolution** in our SRE case study.
+  </Card>
+  <Card title="Universal Compatibility" icon="plug">
+    Enhances any student model (GPT-5, Claude-4, etc.) without modifying weights, delivering a **+15.7%** average accuracy improvement across models.
+  </Card>
+</CardGroup>
+
+## Why ATLAS?
+
+| Approach | Limitation | How ATLAS Solves It |
+| :--- | :--- | :--- |
+| **Traditional RL** | Requires massive compute; static rewards | **Hybrid Architecture:** Separates heavy offline training from light, adaptive online optimization. |
+| **Fine-Tuning** | Risks catastrophic forgetting; requires constant retraining | **Model-Agnostic Teaching:** Enhances any student model without modifying its weights, preserving all original capabilities. |
+| **Prompt Engineering** | Inconsistent, brittle, and hard to scale | **Systematic & Reproducible:** Evolves teaching strategies based on performance data, creating a durable knowledge base. |
+| **Retrieval/Memory** | Addresses knowledge gaps but not reasoning | **Improves Core Logic:** The teacher-student paradigm directly enhances the student's reasoning process. |
+
+<br />
+
+<p align="center">
+  <img
+    className="block dark:hidden"
+    src="/images/ATLAS.png"
+    alt="ATLAS Architecture"
+  />
+  <img
+    className="hidden dark:block"
+    src="/images/ATLAS.png"
+    alt="ATLAS Architecture"
+  />
+</p>
+
+## Get Started
+
+<CardGroup cols={2}>
+  <Card
+    title="Quickstart: Pre-trained Models"
+    icon="play"
+    href="/quickstart"
+  >
+    Deploy ATLAS in minutes using our pre-trained teacher models. No training required.
+  </Card>
+  <Card
+    title="Custom Training"
+    icon="graduation-cap"
+    href="/first-experiment"
+  >
+    Build a custom teacher model optimized for your specific domain and requirements.
+  </Card>
+</CardGroup>
+
+## Research & Resources
+
+Learn more about the methodology and science behind ATLAS:
+
+- [ATLAS Technical Report (PDF)](/ATLAS-Technical-Report.pdf) - Complete methodology, benchmarks, and implementation details
+- [Arc Research](https://www.arc.computer/research) - Our latest research advancing continual learning systems
+- [GitHub Repository](https://github.com/Arc-Computer/ATLAS) - Source code, examples, and issue tracking
+- [HuggingFace Models](https://huggingface.co/Arc-Intelligence) - Pre-trained teacher and student models

@@ -1,0 +1,307 @@
+---
+title: First Experiment
+description: Complete walkthrough of the ATLAS training pipeline from SFT warmup to GRPO reinforcement learning
+sidebarTitle: Custom Teacher Training
+icon: flask
+---
+
+<Note>
+**Total time**: 24-48 hours (mostly unattended training) • **Active setup time**: 30-45 minutes • **Difficulty**: Intermediate
+</Note>
+
+**TL;DR:** Phase 1 (SFT) takes ~4-6 hours to establish a baseline teacher, Phase 2 (GRPO) runs ~24-36 hours with periodic monitoring, and validation at the end confirms the 15.7% accuracy lift before you promote the checkpoint.
+
+## Overview
+
+This guide walks through a complete ATLAS training experiment, demonstrating the two-phase pipeline: supervised fine-tuning (SFT) followed by reinforcement learning with Group Relative Policy Optimization (GRPO).
+
+## Prerequisites
+
+Before starting, ensure you have:
+
+- **Hardware**: 4×H100 GPUs (minimum) or 8×H100 (recommended)
+- **Environment**: Python 3.11/3.12 with ATLAS dependencies installed (see [Installation](/installation))
+- **Authentication**: HuggingFace token with access to Arc-Intelligence datasets
+- **Storage**: ~200GB for checkpoints and logs
+
+## Phase 1: SFT Warmup
+
+The SFT phase establishes foundational reasoning capabilities before adaptive teaching training.
+
+### Configuration
+
+```yaml
+# configs/run/teacher_sft.yaml
+model_name_or_path: meta-llama/Llama-3.1-8B-Instruct
+dataset_name: Arc-Intelligence/Arc-ATLAS-Teach-v0
+dataset_config: sft
+num_train_epochs: 1
+per_device_train_batch_size: 2
+gradient_accumulation_steps: 8
+learning_rate: 2e-5
+warmup_ratio: 0.1
+output_dir: results/sft_checkpoint
+```
+
+### Execution
+
+```bash
+# Full training on 8 GPUs
+scripts/launch.sh 8 configs/run/teacher_sft.yaml \
+  output_dir=path/to/save/pre_rl_model
+
+# Memory-constrained setup (4 GPUs with offloading)
+scripts/launch.sh 4 configs/run/teacher_sft.yaml \
+  output_dir=path/to/save/pre_rl_model \
+  +offload
+```
+
+### Expected Metrics
+
+| Metric | Expected Range | Notes |
+|--------|---------------|-------|
+| Training Loss | 1.2-1.5 | Should decrease monotonically |
+| Gradient Norm | &lt;5.0 | Indicates stable training |
+| GPU Memory | 70-80GB | Per device with batch size 2 |
+| Duration | 4-6 hours | On 8×H100 setup |
+
+## Phase 2: GRPO Training
+
+The RL phase trains adaptive teaching capabilities through policy gradient optimization.
+
+### Technical Background
+
+GRPO implements the following objective function:
+
+```
+L = -E[r(y|x) * log π(y|x)] + β * KL(π || π_ref)
+```
+
+Where:
+- `r(y|x)`: Reward function based on student performance improvement
+- `π`: Current policy
+- `π_ref`: Reference policy (SFT checkpoint)
+- `β`: KL divergence coefficient (default: 0.04)
+
+### Configuration
+
+```yaml
+# configs/run/teacher_rcl.yaml
+model_name_or_path: path/to/sft_checkpoint
+dataset_name: Arc-Intelligence/Arc-ATLAS-Teach-v0
+dataset_config: rl
+num_generations: 32
+temperature: 0.7
+beta: 0.04
+degradation_penalty_multiplier: 2.0
+efficiency_weight: 0.3
+max_steps: 1000
+eval_steps: 100
+```
+
+### Launch with vLLM Server
+
+```bash
+# Allocate 4 GPUs for vLLM, 4 for training
+scripts/launch_with_server.sh 4 4 configs/run/teacher_rcl.yaml \
+  model_name_or_path=path/of/saved/pre_rl_model
+
+# Monitor server health
+curl http://localhost:8000/health
+```
+
+### Key Parameters Explained
+
+<AccordionGroup>
+  <Accordion title="num_generations">
+    Number of response samples per prompt. Higher values improve gradient estimates but increase compute cost.
+    - **Default**: 32
+    - **Range**: 16-64
+    - **Trade-off**: Quality vs. speed
+  </Accordion>
+
+  <Accordion title="temperature">
+    Sampling temperature for generation. Controls exploration vs. exploitation.
+    - **Default**: 0.7
+    - **Range**: 0.5-1.0
+    - **Effect**: Higher values increase diversity
+  </Accordion>
+
+  <Accordion title="beta">
+    KL divergence coefficient. Prevents policy collapse.
+    - **Default**: 0.04
+    - **Range**: 0.01-0.1
+    - **Warning**: Too low causes instability
+  </Accordion>
+
+  <Accordion title="degradation_penalty_multiplier">
+    Penalty for responses worse than baseline.
+    - **Default**: 2.0
+    - **Purpose**: Ensures non-degradation guarantee
+    - **Formula**: `penalty = -multiplier * performance_drop`
+  </Accordion>
+</AccordionGroup>
+
+## Monitoring Training Progress
+
+### Real-time Metrics
+
+```bash
+# TensorBoard visualization
+tensorboard --logdir results/ --port 6006
+
+# Weights & Biases (if configured)
+# Dashboard available at wandb.ai/your-project
+```
+
+### Critical Metrics to Track
+
+| Metric | Healthy Range | Warning Signs |
+|--------|--------------|---------------|
+| Reward Mean | Increasing | Plateau or decrease |
+| Non-degradation Rate | >95% | &lt;90% indicates issues |
+| KL Divergence | 0.5-2.0 | >5.0 suggests collapse |
+| GPU Utilization | >80% | &lt;50% indicates bottleneck |
+| vLLM Throughput | >1000 tok/s | &lt;500 tok/s needs optimization |
+
+### Diagnostic Commands
+
+```bash
+# Check vLLM server status
+curl http://localhost:8000/metrics
+
+# Monitor GPU usage
+nvidia-smi --query-gpu=utilization.gpu,memory.used --format=csv -l 1
+
+# Training process logs
+tail -f results/train.log
+```
+
+## Expected Outcomes
+
+After successful completion (2-3 days on 4×H100):
+
+### Performance Metrics
+- **Teaching Efficiency**: 15.7% average accuracy improvement
+- **Non-degradation Rate**: >97%
+- **Token Efficiency**: 50% reduction in response length
+- **Adaptation Speed**: &lt;10 iterations to new domains
+
+### Output Artifacts
+
+```
+results/
+├── sft_checkpoint/          # Phase 1 model
+│   ├── pytorch_model.bin
+│   └── config.json
+├── rl_checkpoint/           # Phase 2 model
+│   ├── pytorch_model.bin
+│   ├── config.json
+│   └── trainer_state.json
+├── logs/
+│   ├── train.log
+│   └── vllm_server.log
+└── metrics/
+    └── tensorboard_events
+```
+
+## Validation
+
+Verify model performance using the evaluation script:
+
+```python
+from examples.utils.atlas_inference import ATLASInference
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+# Load trained model
+teacher = AutoModelForCausalLM.from_pretrained(
+    "results/rl_checkpoint",
+    trust_remote_code=True
+)
+teacher_tokenizer = AutoTokenizer.from_pretrained(
+    "results/rl_checkpoint"
+)
+
+# Load baseline student
+student = AutoModelForCausalLM.from_pretrained(
+    "Qwen/Qwen3-4B-Instruct-2507"
+)
+student_tokenizer = AutoTokenizer.from_pretrained(
+    "Qwen/Qwen3-4B-Instruct-2507"
+)
+
+# Initialize ATLAS
+atlas = ATLASInference(
+    student_model=student,
+    student_tokenizer=student_tokenizer,
+    teacher_model=teacher,
+    teacher_tokenizer=teacher_tokenizer
+)
+
+# Test on benchmark problem
+problem = "Solve: A train travels 120 miles in 2 hours. What is its speed?"
+result = atlas.run_full_protocol(problem)
+
+print(f"Baseline: {result['baseline_response']}")
+print(f"Enhanced: {result['guided_response']}")
+print(f"Improvement: {result['learning']['improvement_score']}")
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="OOM Errors During Training">
+    ```bash
+    # Reduce batch size
+    per_device_train_batch_size: 1
+
+    # Enable gradient checkpointing
+    gradient_checkpointing: true
+
+    # Use CPU offloading
+    scripts/launch.sh 8 configs/run/teacher_sft.yaml +offload
+    ```
+  </Accordion>
+
+  <Accordion title="vLLM Server Connection Failed">
+    ```bash
+    # Check server logs
+    cat results/vllm_server.log
+
+    # Verify port availability
+    lsof -i :8000
+
+    # Restart with different port
+    vllm_port=8080 scripts/launch_with_server.sh 4 4 configs/run/teacher_rcl.yaml
+    ```
+  </Accordion>
+
+  <Accordion title="Reward Collapse">
+    - Increase `beta` to strengthen KL constraint
+    - Reduce `temperature` for more conservative sampling
+    - Check dataset quality and reward function implementation
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Online Optimization" icon="arrows-rotate" href="/training/online/optimize-with-atlas">
+    Fine-tune your trained model for specific tasks
+  </Card>
+  <Card title="Deploy to Production" icon="server" href="/deployment/inference-patterns">
+    Integrate ATLAS into your inference pipeline
+  </Card>
+  <Card title="Custom Datasets" icon="database" href="/training/offline/data-requirements">
+    Train on your domain-specific data
+  </Card>
+  <Card title="Architecture Deep Dive" icon="diagram-project" href="/architecture/system-overview">
+    Understand the technical implementation
+  </Card>
+</CardGroup>
+
+## References
+
+- [ATLAS Technical Report](/reference/technical-report) - Detailed methodology and ablations
+- [GRPO Paper](https://arxiv.org/abs/2402.03300) - Original GRPO algorithm
+- [vLLM Documentation](https://docs.vllm.ai) - Server configuration options

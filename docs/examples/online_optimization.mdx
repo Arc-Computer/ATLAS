@@ -1,0 +1,23 @@
+---
+title: "Online Optimization Demo"
+description: "A hands-on tutorial demonstrating the full ATLAS hybrid learning loop, from a pre-trained teacher to an optimized specialist."
+sidebarTitle: "Online Optimization Demo"
+icon: "bolt"
+---
+
+This tutorial demonstrates the full power of the ATLAS hybrid architecture by showcasing the online optimization loop (GEPA).
+
+You will walk through:
+1.  Using a pre-trained teacher on a challenging task.
+2.  Running the GEPA optimization script to evolve a better teaching strategy.
+3.  Validating the performance improvement with the new, specialized prompt.
+
+<Card title="Run the Interactive Demo" icon="google-colab" href="https://colab.research.google.com/github/Arc-Computer/ATLAS/blob/main/examples/online_optimization_demo.ipynb">
+  Open this tutorial in Google Colab to run it yourself with a free GPU.
+</Card>
+
+This walkthrough loads the ATLAS-8B-Thinking teacher and Qwen3-4B-Instruct student directly in Colab (choose an A100 runtime) and relies on the reflective mutation loop explained in reference/atlas-sre-diagnosis.md and docs/ATLAS-Technical-Report.pdf.
+
+### Core Workflow
+
+The notebook implements the reflective prompt evolution process described in our research, allowing you to experience how ATLAS learns and adapts in minutes.

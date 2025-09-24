@@ -1,0 +1,417 @@
+---
+title: Troubleshooting
+description: Common issues and solutions for ATLAS deployment
+sidebarTitle: Troubleshooting
+icon: wrench
+---
+
+## Common Issues
+
+This guide covers frequent problems and their solutions when working with ATLAS.
+
+## Installation Issues
+
+### CUDA Not Available
+
+**Problem:** `torch.cuda.is_available()` returns False
+
+**Solutions:**
+
+<Steps>
+  <Step title="Verify CUDA Installation">
+    ```bash
+    nvidia-smi
+    nvcc --version
+    ```
+    If not found, install CUDA 11.8+ from NVIDIA
+  </Step>
+
+  <Step title="Reinstall PyTorch with CUDA">
+    ```bash
+    pip uninstall torch torchvision torchaudio
+    pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+    ```
+  </Step>
+
+  <Step title="Check GPU Compatibility">
+    Ensure GPU compute capability ≥7.0:
+    ```python
+    import torch
+    torch.cuda.get_device_capability()
+    ```
+  </Step>
+</Steps>
+
+### Flash Attention Build Failure
+
+**Problem:** `pip install flash-attn` fails with compilation errors
+
+**Solutions:**
+- Ensure CUDA toolkit matches PyTorch version
+- Install with pre-built wheels:
+  ```bash
+  pip install flash-attn --no-build-isolation
+  ```
+- Skip Flash Attention (with performance impact):
+  ```python
+  attn_implementation="eager"  # Instead of "flash_attention_2"
+  ```
+
+### Hugging Face Access Issues
+
+**Problem:** Can't download models from Hugging Face
+
+**Solutions:**
+```bash
+# Login to Hugging Face
+huggingface-cli login
+
+# Set cache directory if disk space limited
+export HF_HOME=/path/to/cache
+
+# Use offline mode if downloaded
+export HF_DATASETS_OFFLINE=1
+export TRANSFORMERS_OFFLINE=1
+```
+
+## Memory Issues
+
+### CUDA Out of Memory
+
+**Problem:** `RuntimeError: CUDA out of memory`
+
+**Progressive Solutions:**
+
+<AccordionGroup>
+  <Accordion title="Reduce Batch Size">
+    ```python
+    config.per_device_train_batch_size = 1
+    config.gradient_accumulation_steps = 32  # Maintain effective batch size
+    ```
+  </Accordion>
+
+  <Accordion title="Enable Gradient Checkpointing">
+    ```python
+    config.gradient_checkpointing = True
+    # Trades compute for memory
+    ```
+  </Accordion>
+
+  <Accordion title="Use Mixed Precision">
+    ```python
+    config.fp16 = True  # or bf16 = True for A100/H100
+    ```
+  </Accordion>
+
+  <Accordion title="Quantization">
+    ```python
+    # 8-bit quantization
+    config.load_in_8bit = True
+
+    # 4-bit quantization
+    config.load_in_4bit = True
+    config.bnb_4bit_compute_dtype = torch.float16
+    ```
+  </Accordion>
+
+  <Accordion title="CPU Offloading">
+    ```python
+    config.offload = True
+    # Or with DeepSpeed
+    config.deepspeed = "configs/deepspeed/zero3_offload.json"
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Memory Calculation
+
+Estimate memory requirements:
+
+```python
+def estimate_memory_gb(model_params_b, batch_size, seq_length):
+    """Rough memory estimate for training"""
+    # Model weights
+    weights_gb = model_params_b * 2 / 1024  # FP16
+
+    # Activations (rough estimate)
+    activations_gb = (batch_size * seq_length * 8192 * 4) / 1e9
+
+    # Gradients and optimizer states
+    optimizer_gb = weights_gb * 4  # Adam optimizer
+
+    total_gb = weights_gb + activations_gb + optimizer_gb
+    return total_gb
+
+# Example: 8B model
+memory_needed = estimate_memory_gb(8, batch_size=4, seq_length=2048)
+print(f"Estimated memory: {memory_needed:.1f} GB")
+```
+
+## Training Issues
+
+### Loss Not Decreasing
+
+**Problem:** Training loss plateaus or increases
+
+**Diagnostic Steps:**
+
+```python
+# Check learning rate
+print(f"Current LR: {trainer.optimizer.param_groups[0]['lr']}")
+
+# Verify data loading
+sample = next(iter(train_dataloader))
+print(f"Input shape: {sample['input_ids'].shape}")
+print(f"Labels present: {'labels' in sample}")
+
+# Check gradient flow
+for name, param in model.named_parameters():
+    if param.grad is not None:
+        print(f"{name}: grad_norm={param.grad.norm().item():.4f}")
+```
+
+**Solutions:**
+- Reduce learning rate: `learning_rate=1e-6`
+- Increase warmup: `warmup_ratio=0.2`
+- Check for data issues: duplicates, incorrect labels
+- Verify loss function: ensure proper masking
+
+### NaN or Inf Loss
+
+**Problem:** Loss becomes NaN or Inf
+
+**Solutions:**
+```python
+# Clip gradients more aggressively
+config.max_grad_norm = 0.5
+
+# Reduce learning rate
+config.learning_rate = 1e-7
+
+# Check for numerical instability
+config.fp32 = True  # Use full precision temporarily
+
+# Add gradient debugging
+def check_gradients(model):
+    for name, param in model.named_parameters():
+        if param.grad is not None:
+            if torch.isnan(param.grad).any():
+                print(f"NaN gradient in {name}")
+            if torch.isinf(param.grad).any():
+                print(f"Inf gradient in {name}")
+```
+
+### Slow Training Speed
+
+**Problem:** Training is slower than expected
+
+**Performance Optimizations:**
+
+```python
+# Enable torch.compile (PyTorch 2.0+)
+model = torch.compile(model)
+
+# Use Flash Attention
+config.attn_implementation = "flash_attention_2"
+
+# Optimize data loading
+config.dataloader_num_workers = 4
+config.dataloader_pin_memory = True
+
+# Enable TF32 on Ampere GPUs
+torch.backends.cuda.matmul.allow_tf32 = True
+torch.backends.cudnn.allow_tf32 = True
+
+# Profile to find bottlenecks
+from torch.profiler import profile, ProfilerActivity
+
+with profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA]) as prof:
+    trainer.train()
+print(prof.key_averages().table(sort_by="cuda_time_total"))
+```
+
+## Inference Issues
+
+### Slow Inference
+
+**Problem:** Generation is too slow for production
+
+**Solutions:**
+
+```python
+# Use vLLM for faster inference
+from vllm import LLM, SamplingParams
+
+llm = LLM(model="Arc-Intelligence/ATLAS-8B-Thinking")
+sampling_params = SamplingParams(
+    temperature=0.7,
+    top_p=0.95,
+    max_tokens=512
+)
+
+# Batch processing
+outputs = llm.generate(prompts, sampling_params)
+
+# Or use torch.compile
+model = torch.compile(model, mode="reduce-overhead")
+
+# Enable KV cache
+model.config.use_cache = True
+```
+
+### Inconsistent Results
+
+**Problem:** Different results on each run
+
+**Solutions:**
+
+```python
+# Set seeds for reproducibility
+import random
+import numpy as np
+import torch
+
+def set_seed(seed=42):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+
+set_seed(42)
+
+# Use deterministic algorithms
+torch.use_deterministic_algorithms(True)
+torch.backends.cudnn.benchmark = False
+
+# Set temperature to 0 for deterministic generation
+generation_kwargs = {
+    "temperature": 0.0,
+    "do_sample": False
+}
+```
+
+## vLLM Server Issues
+
+### Server Won't Start
+
+**Problem:** vLLM server fails to launch
+
+**Diagnostic Commands:**
+
+```bash
+# Check if port is in use
+lsof -i :8000
+
+# Test with smaller model
+python -m vllm.entrypoints.openai.api_server \
+  --model facebook/opt-125m \
+  --port 8001
+
+# Check GPU memory
+nvidia-smi
+
+# Verify vLLM installation
+python -c "import vllm; print(vllm.__version__)"
+```
+
+**Solutions:**
+- Reduce `--gpu-memory-utilization 0.8`
+- Use smaller `--max-model-len 1024`
+- Enable `--enable-prefix-caching`
+- Try different port
+
+### Connection Refused
+
+**Problem:** Can't connect to vLLM server
+
+**Solutions:**
+
+```bash
+# Check server is running
+ps aux | grep vllm
+
+# Test connection
+curl http://localhost:8000/v1/models
+
+# Check firewall
+sudo ufw status
+
+# Use correct URL in code
+vllm_url = "http://localhost:8000/v1"  # Not https
+```
+
+## Online Optimization Issues
+
+### GEPA Not Converging
+
+**Problem:** Online optimization shows no improvement
+
+**Solutions:**
+
+```python
+# Increase population size
+config.population_size = 30
+
+# Adjust mutation temperature
+config.mutation_temperature = 0.8
+
+# Use better reflection model
+config.reflection_model = "gpt-4-turbo"
+
+# Add more diverse examples
+config.num_samples = 200
+
+# Check data quality
+validator.check_sample_diversity(samples)
+```
+
+### High API Costs
+
+**Problem:** Online optimization exceeding budget
+
+**Solutions:**
+
+```yaml
+# Reduce iterations
+max_iterations: 50  # Instead of 100
+
+# Use cheaper models
+reflection_model: "gpt-3.5-turbo"
+evaluation_model: "gpt-3.5-turbo"
+
+# Enable caching
+enable_cache: true
+cache_ttl: 3600
+
+# Smaller batches
+batch_size: 2
+```
+
+## Getting Help
+
+If these solutions don't resolve your issue:
+
+1. **Check existing issues**: [GitHub Issues](https://github.com/Arc-Computer/ATLAS/issues)
+2. **Join community**: [Discord Server](https://discord.gg/arc-atlas)
+3. **File bug report** with:
+   - Error message and stack trace
+   - System info: `python -m torch.utils.collect_env`
+   - Minimal reproduction code
+   - Configuration used
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="FAQ" icon="question" href="/reference/faq">
+    Frequently asked questions
+  </Card>
+  <Card title="Configuration" icon="sliders" href="/api-reference/configs">
+    Configuration reference
+  </Card>
+  <Card title="Community" icon="discord" href="https://discord.gg/arc-atlas">
+    Get help from community
+  </Card>
+  <Card title="GitHub Issues" icon="github" href="https://github.com/Arc-Computer/ATLAS/issues">
+    Report bugs
+  </Card>
+</CardGroup>

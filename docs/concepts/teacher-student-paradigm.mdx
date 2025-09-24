@@ -1,0 +1,305 @@
+---
+title: Teacher-Student Paradigm
+description: The foundational interaction model enabling adaptive performance enhancement
+sidebarTitle: Teacher-Student
+icon: chalkboard-user
+---
+
+## Overview
+
+The teacher-student paradigm in ATLAS establishes an asymmetric learning relationship where a specialized teacher model enhances any student model's capabilities without modifying the student's weights or architecture.
+
+## Core Architecture
+
+### Model Roles
+
+```python
+class TeacherStudentSystem:
+    """
+    Asymmetric model interaction for performance enhancement
+
+    Teacher: 8B parameter model trained for adaptive teaching
+    Student: Any LLM (4B-70B+) requiring enhancement
+    """
+
+    def __init__(self, teacher_model, student_model):
+        self.teacher = teacher_model  # ATLAS-8B-Thinking or ATLAS-8B-Instruct
+        self.student = student_model  # GPT-4, Claude, Llama, etc.
+
+    def enhance_response(self, prompt: str) -> EnhancedResponse:
+        # Step 1: Diagnostic probe
+        student_capability = self.teacher.assess_capability(prompt, self.student)
+
+        # Step 2: Adaptive guidance
+        teaching_strategy = self.teacher.generate_guidance(
+            prompt=prompt,
+            capability_level=student_capability
+        )
+
+        # Step 3: Enhanced generation
+        enhanced_output = self.student.generate(
+            prompt=prompt,
+            guidance=teaching_strategy
+        )
+
+        return EnhancedResponse(
+            baseline=self.student.generate(prompt),
+            enhanced=enhanced_output,
+            improvement=self.measure_improvement(baseline, enhanced_output)
+        )
+```
+
+## Technical Specifications
+
+### Model Requirements
+
+| Component | Specification | Purpose |
+|-----------|--------------|---------|
+| Teacher Model | 8B parameters, RL-trained | Provides adaptive guidance |
+| Student Model | Any size (4B-70B+) | Executes enhanced reasoning |
+| Context Window | 4096-32768 tokens | Accommodates teaching interaction |
+| Inference Time | +30% overhead | Two-pass protocol cost |
+
+### Capability Assessment
+
+The teacher evaluates student competence through targeted probes:
+
+```python
+def assess_capability(self, task: str, student: Model) -> CapabilityLevel:
+    """
+    Diagnostic assessment of student's task-specific capability
+
+    Returns:
+        CapabilityLevel: Enum of WEAK, MODERATE, STRONG
+    """
+    # Generate diagnostic probe (≤50 tokens)
+    probe = self.generate_probe(task)
+
+    # Collect student response
+    response = student.generate(probe, max_tokens=50)
+
+    # Analyze response quality
+    indicators = {
+        'reasoning_depth': self.analyze_reasoning(response),
+        'domain_knowledge': self.check_domain_terms(response),
+        'problem_structure': self.evaluate_structure(response),
+        'confidence': self.estimate_confidence(response)
+    }
+
+    # Classify capability level
+    if indicators['reasoning_depth'] < 0.3:
+        return CapabilityLevel.WEAK
+    elif indicators['reasoning_depth'] < 0.7:
+        return CapabilityLevel.MODERATE
+    else:
+        return CapabilityLevel.STRONG
+```
+
+## Adaptive Teaching Strategies
+
+### Strategy Selection Matrix
+
+| Student Capability | Teaching Strategy | Guidance Tokens | Focus |
+|-------------------|------------------|-----------------|-------|
+| WEAK | Comprehensive scaffolding | 200-300 | Step-by-step decomposition |
+| MODERATE | Targeted hints | 100-150 | Key insights and corrections |
+| STRONG | Minimal intervention | 50-100 | Edge case handling only |
+
+### Implementation Example
+
+```python
+def generate_guidance(self, task: str, capability: CapabilityLevel) -> str:
+    """
+    Generate capability-appropriate teaching guidance
+    """
+    if capability == CapabilityLevel.WEAK:
+        return self.comprehensive_scaffolding(task)
+    elif capability == CapabilityLevel.MODERATE:
+        return self.targeted_hints(task)
+    else:  # STRONG
+        return self.minimal_intervention(task)
+
+def comprehensive_scaffolding(self, task: str) -> str:
+    """Full problem decomposition for weak students"""
+    return f"""
+    Break this problem into steps:
+    1. Identify the core requirement: {self.extract_requirement(task)}
+    2. Gather necessary information: {self.list_prerequisites(task)}
+    3. Apply systematic approach: {self.generate_methodology(task)}
+    4. Verify solution: {self.create_verification(task)}
+    """
+
+def targeted_hints(self, task: str) -> str:
+    """Key insights for moderate students"""
+    return f"""
+    Key insight: {self.identify_critical_insight(task)}
+    Common pitfall: {self.highlight_common_error(task)}
+    """
+
+def minimal_intervention(self, task: str) -> str:
+    """Edge case awareness for strong students"""
+    return f"""
+    Consider edge case: {self.identify_edge_case(task)}
+    """
+```
+
+## Empirical Performance
+
+### Enhancement Across Student Models
+
+| Student Model | Size | Baseline | w/ ATLAS Teacher | Improvement |
+|--------------|------|----------|------------------|-------------|
+| Qwen3-4B-Instruct | 4B | 62.3% | 78.0% | +15.7% |
+| Llama-3.1-8B | 8B | 71.2% | 85.4% | +14.2% |
+| Mixtral-8x7B | 47B | 78.5% | 89.1% | +10.6% |
+| GPT-4 | ~1.7T | 84.3% | 92.8% | +8.5% |
+
+### Key Observations
+
+1. **Inverse scaling**: Smaller models benefit more from teaching
+2. **Universal compatibility**: Works with any architecture
+3. **Consistent safety**: 97% non-degradation across all models
+
+## Case Study: Mathematical Reasoning
+
+Demonstrating teacher-student interaction on a complex problem:
+
+### Task
+"A bacteria culture doubles every 3 hours. Starting with 100 bacteria, how many will there be after 15 hours?"
+
+### Interaction Flow
+
+<Tabs>
+  <Tab title="Weak Student">
+    **Diagnostic Response**: "100 × 2 × 5 = 1000"
+
+    **Teacher Guidance**:
+    ```
+    This is exponential growth, not linear multiplication.
+    Steps:
+    1. Find number of doubling periods: 15 ÷ 3 = 5
+    2. Apply exponential formula: Initial × 2^periods
+    3. Calculate: 100 × 2^5 = 100 × 32 = 3200
+    ```
+
+    **Enhanced Response**: "3200 bacteria (100 × 2^5)"
+  </Tab>
+
+  <Tab title="Strong Student">
+    **Diagnostic Response**: "Using N(t) = N₀ × 2^(t/d) where d=3"
+
+    **Teacher Guidance**:
+    ```
+    Correct approach. Verify units and edge cases.
+    ```
+
+    **Enhanced Response**: "3200 bacteria. N(15) = 100 × 2^(15/3) = 100 × 2^5 = 3200"
+  </Tab>
+</Tabs>
+
+## Integration Patterns
+
+### Pattern 1: Direct Enhancement
+
+```python
+# Immediate application for single queries
+atlas = ATLASInference(teacher, student)
+enhanced_result = atlas.run_full_protocol(user_query)
+```
+
+### Pattern 2: Batch Processing
+
+```python
+# Efficient processing of multiple queries
+batch_enhancer = BatchATLAS(teacher, student)
+enhanced_results = batch_enhancer.process_batch(
+    queries=query_list,
+    parallel=True,
+    cache_guidance=True
+)
+```
+
+### Pattern 3: Streaming Applications
+
+```python
+# Real-time enhancement for chat applications
+class StreamingATLAS:
+    def __init__(self, teacher, student):
+        self.teacher = teacher
+        self.student = student
+        self.guidance_cache = {}
+
+    async def stream_enhanced(self, prompt: str):
+        # Get guidance once
+        if prompt not in self.guidance_cache:
+            self.guidance_cache[prompt] = await self.teacher.get_guidance(prompt)
+
+        # Stream enhanced response
+        async for token in self.student.stream(prompt, self.guidance_cache[prompt]):
+            yield token
+```
+
+## Advantages
+
+### Over Fine-tuning
+- **No retraining required**: Works with frozen student models
+- **Preserves capabilities**: No catastrophic forgetting
+- **Instant deployment**: No training time or cost
+
+### Over Prompting
+- **Adaptive**: Adjusts to student capability
+- **Consistent**: Systematic improvement approach
+- **Efficient**: Optimized token usage
+
+### Over Ensemble Methods
+- **Lower latency**: Single student inference
+- **Lower cost**: No multiple model calls
+- **Better interpretability**: Clear teaching rationale
+
+## Implementation Best Practices
+
+<AccordionGroup>
+  <Accordion title="Teacher Model Selection">
+    Choose based on task type:
+    - **ATLAS-8B-Thinking**: Mathematical and logical reasoning
+    - **ATLAS-8B-Instruct**: Code generation and technical tasks
+    - **Custom trained**: Domain-specific requirements
+  </Accordion>
+
+  <Accordion title="Student Model Compatibility">
+    Verify student model supports:
+    - System prompts or instruction following
+    - Sufficient context length (>4K tokens)
+    - Deterministic generation (temperature control)
+  </Accordion>
+
+  <Accordion title="Performance Optimization">
+    - Cache teacher guidance for repeated queries
+    - Batch similar tasks together
+    - Use streaming for interactive applications
+    - Monitor token usage for cost control
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Adaptive Teaching Protocol" icon="arrows-rotate" href="/concepts/adaptive-teaching-protocol">
+    Detailed two-pass protocol mechanics
+  </Card>
+  <Card title="Integration Guide" icon="plug" href="/integration/inference-only">
+    Deploy teacher-student system
+  </Card>
+  <Card title="API Reference" icon="code" href="/api-reference/atlas-inference">
+    ATLASInference implementation
+  </Card>
+  <Card title="Benchmarks" icon="chart-line" href="/benchmarks/results-summary">
+    Performance across models
+  </Card>
+</CardGroup>
+
+## References
+
+- [ATLAS Technical Report](/reference/technical-report) - Section 3.1 on teacher-student architecture
+- [First Experiment](/first-experiment) - Hands-on teacher training
+- [Examples](/examples/math-reasoning) - Interactive demonstrations

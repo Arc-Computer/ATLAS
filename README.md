@@ -18,7 +18,9 @@
 
 ATLAS is a hybrid learning architecture that separates complex, data-intensive offline training from lightweight, production-safe online deployment. This approach creates **Compounding Intelligence**, where agents build deep, foundational skills through rigorous offline reinforcement learning (RL) and then rapidly adapt to live data in production.
 
-📄 **[Read the ATLAS Technical Report](docs/ATLAS-Technical-Report.pdf)** for comprehensive methodology, ablation studies, and detailed performance analysis.
+📄 **[Read the ATLAS Technical Report](https://docs.arc.computer/ATLAS-Technical-Report.pdf)** for comprehensive methodology, ablation studies, and detailed performance analysis.
+
+📚 **[Full Documentation](https://docs.arc.computer)** - Complete guides, API reference, and examples
 
 ---
 
@@ -59,7 +61,7 @@ The results are dramatic: our ATLAS-8B-Thinking model showed a **165% performanc
 - **~$10** in inference costs using `gemini/gemini-flash-2.5`
 - **1.97 efficiency score**, producing solutions 97% more concise than the baseline
 
-For configuration walkthroughs, explore the [Online Learning Guide](docs/guides/online-learning.md) and additional references in `docs/guides/` such as [Model Selection](docs/guides/model-selection.md) and [Distributed Training](docs/guides/distributed-training.md).
+For detailed configuration walkthroughs, explore our [complete documentation](https://docs.arc.computer).
 
 </details>
 
@@ -85,9 +87,7 @@ Leverage our pre-trained models to get value now. This path uses the online opti
     ```bash
     ./scripts/openai_agent_atlas.sh configs/wrappers/openai_existing_agent.yaml
     ```
-*Set provider credentials (e.g., `OPENAI_API_KEY`, `GEMINI_API_KEY`), ensure Python 3.11 is active, and install deps via `requirements-py311.txt` (or LiteLLM configs if swapping models). For full configuration details, see the [Online Learning Guide](docs/guides/online-learning.md).*
-
-*Related guides: [Model Selection](docs/guides/model-selection.md), [Distributed Training](docs/guides/distributed-training.md), [RL Training](docs/guides/rl-training.md).*
+*Set provider credentials (e.g., `OPENAI_API_KEY`, `GEMINI_API_KEY`), ensure Python 3.11 is active, and install deps via `requirements-py311.txt` (or LiteLLM configs if swapping models). For full configuration details, see our [documentation](https://docs.arc.computer).*
 
 ### Path B: Build a Custom Foundation (Advanced)
 
@@ -102,7 +102,7 @@ For advanced users who want to perform the full offline RL training to create a 
     ```bash
     scripts/launch_with_server.sh 1 1 configs/run/teacher_rcl.yaml report_to=null max_steps=4 eval_steps=1
     ```
-*This is a minimal smoke test. For full instructions on multi-GPU setup and production training, see the [Training Pipeline Details](#training-pipeline-details) and the [RL Training Guide](docs/guides/rl-training.md).*
+*This is a minimal smoke test. For full instructions on multi-GPU setup and production training, see the [Training Pipeline Details](#training-pipeline-details) and our [documentation](https://docs.arc.computer).*
 
 </details>
 
@@ -167,9 +167,7 @@ scripts/launch_with_server.sh 4 4 configs/run/teacher_rcl.yaml \
   model_name_or_path=path/of/saved/pre_rl_model
 ```
 
-- See [docs/guides/distributed-training.md](docs/guides/distributed-training.md) for multi-GPU setup.
-- See [docs/guides/rl-training.md](docs/guides/rl-training.md) for detailed RL parameters.
-- See [docs/guides/data-requirements.md](docs/guides/data-requirements.md) for custom dataset specifications.
+For detailed guides on multi-GPU setup, RL parameters, and custom dataset specifications, visit our [documentation](https://docs.arc.computer).
 
 <div align="center">
 <img src="public/Training-Pipeline.png" alt="ATLAS Training Pipeline - Two-phase SFT to RL workflow with adaptive teaching protocol" width="700" style="border-radius: 12px;">
@@ -201,7 +199,7 @@ scripts/launch_with_server.sh 4 4 configs/run/teacher_rcl.yaml \
 
 Server health can be verified with `curl http://$vllm_host:$vllm_port/health`. Port conflicts can be resolved by setting `vllm_port`. Authentication errors typically require `huggingface-cli login`. Memory issues can be addressed by adding `offload` to commands or reducing `per_device_train_batch_size`.
 
-For comprehensive troubleshooting, see the [docs/](docs/).
+For comprehensive troubleshooting, see our [documentation](https://docs.arc.computer).
 
 </details>
 
