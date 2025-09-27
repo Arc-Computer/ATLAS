@@ -35,11 +35,15 @@ seed_prompts:
 
     Student Proposed Approach: {approach}
 
+    Available Tools the Student Can Use:
+    {available_tools}
+
     Review their diagnostic approach and provide guidance:
     1. Point out any missed investigation steps should be consider
     2. Identify areas they should check but haven't mentioned
-    3. Suggest better techniques for this type of incident
+    3. Suggest better techniques for this type of incident using the available tools
     4. Highlight any overlooked symptoms or correlations they should investigate
+    5. Recommend specific tools from the available set that would be most effective
 
     Focus on improving their investigation approach before they execute.
     And If Student is right and not made any mistake in there apporach then agree with the approach and tell student to go ahead.

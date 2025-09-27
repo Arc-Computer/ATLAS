@@ -29,6 +29,7 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
         self.student_model = student_model
         self.user_agent_raw = user_agent
         self.user_agent = InstrumentedAgentWrapper(user_agent, framework='auto')
+        self.available_tools = self.user_agent.get_available_tools()
         self.trace_storage_path = Path(trace_storage_path)
         self.trace_storage_dir = self.trace_storage_path.parent / self.trace_storage_path.stem
         self.trace_storage_dir.mkdir(parents=True, exist_ok=True)
@@ -213,7 +214,8 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
         teacher_prompts = [
             self._safe_format(teacher_adaptive_template,
                 question=q,
-                approach=a)
+                approach=a,
+                available_tools=self.available_tools)
             for q, a in zip(questions, student_approaches)
         ]
 

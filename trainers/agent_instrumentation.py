@@ -86,6 +86,7 @@ class InstrumentedAgentWrapper:
         self.tracer = trace.get_tracer(__name__)
 
         self._setup_instrumentation()
+        self._available_tools = self._extract_available_tools()
 
     def _setup_instrumentation(self):
         if self.framework == 'crewai' or self.framework == 'auto':
@@ -94,6 +95,47 @@ class InstrumentedAgentWrapper:
                 CrewAIInstrumentor().instrument(skip_dep_check=True)
             except ImportError:
                 pass
+
+    def _extract_available_tools(self) -> str:
+        tools_info = []
+
+        if hasattr(self.user_agent, 'tools'):
+            tools = self.user_agent.tools
+            for tool in tools:
+                tool_desc = self._format_tool_info(tool)
+                if tool_desc:
+                    tools_info.append(tool_desc)
+
+        elif hasattr(self.user_agent, 'agent') and hasattr(self.user_agent.agent, 'tools'):
+            tools = self.user_agent.agent.tools
+            for tool in tools:
+                tool_desc = self._format_tool_info(tool)
+                if tool_desc:
+                    tools_info.append(tool_desc)
+
+        if not tools_info:
+            return "No tool information available."
+
+        return "\n".join(tools_info)
+
+    def _format_tool_info(self, tool) -> Optional[str]:
+        try:
+            name = getattr(tool, 'name', getattr(tool, '__name__', 'unknown'))
+            description = getattr(tool, 'description', getattr(tool, '__doc__', ''))
+
+            if hasattr(tool, 'args_schema') and tool.args_schema:
+                schema = tool.args_schema
+                if hasattr(schema, 'schema'):
+                    params = schema.schema().get('properties', {})
+                    param_str = ', '.join([f"{k}: {v.get('type', 'any')}" for k, v in params.items()])
+                    return f"- {name}({param_str}): {description}"
+
+            return f"- {name}: {description}"
+        except Exception:
+            return None
+
+    def get_available_tools(self) -> str:
+        return self._available_tools
 
     def __call__(self, prompts: List[str]) -> tuple[List[str], List[str]]:
         responses = []
