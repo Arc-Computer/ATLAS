@@ -38,7 +38,14 @@ ATLAS's inference pattern:
 Specialized 8B parameter models trained with GRPO to diagnose and guide other language models. Pre-trained versions available on HuggingFace.
 
 ### Student Model
-Any language model (GPT, Claude, Llama, etc.) that receives guidance from the teacher. Does not require modification or training.
+Any language model, agent, or AI system that receives guidance from the ATLAS teacher. This includes:
+- Commercial LLMs (GPT, Claude, Gemini)
+- Open models (Llama, Mistral, Qwen)
+- Your custom agents (OpenAI Assistants, LangChain, AutoGen)
+- API endpoints or services
+- CLI-based tools or scripts
+
+The student model remains unchanged - ATLAS enhances its responses through external guidance, not modification.
 
 ### Non-Degradation Rate
 Percentage of interactions where performance remains equal to or better than baseline (target: ≥97%).
