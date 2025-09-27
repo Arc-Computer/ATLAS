@@ -49,6 +49,108 @@ class TeacherStudentSystem:
         )
 ```
 
+## Student Model Examples
+
+### Real-World Student Models
+
+ATLAS can enhance any of these "student" models in production:
+
+#### API-Based Students
+```python
+# OpenAI GPT models
+student = OpenAI(api_key="your-key", model="gpt-4")
+
+# Claude models  
+student = Anthropic(api_key="your-key", model="claude-3-sonnet")
+
+# Gemini models
+student = GoogleGenerativeAI(api_key="your-key", model="gemini-pro")
+```
+
+#### Self-Hosted Students
+```python
+# Llama models
+student = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-3.2-8B-Instruct")
+
+# Qwen models
+student = AutoModelForCausalLM.from_pretrained("Qwen/Qwen3-4B-Instruct") 
+
+# Mistral models
+student = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-Instruct-v0.3")
+
+# Your custom fine-tuned model
+student = AutoModelForCausalLM.from_pretrained("your-org/your-domain-model")
+```
+
+#### Agent-Based Students
+```python
+# LangChain agents
+from langchain.agents import create_openai_functions_agent
+student_agent = create_openai_functions_agent(llm, tools, prompt)
+
+# Custom agents
+class YourCustomAgent:
+    def __call__(self, query: str) -> str:
+        # Your agent logic
+        return response
+
+student = YourCustomAgent()
+```
+
+## Concrete Teaching Examples
+
+### Example 1: Math Problem (Student = GPT-3.5)
+
+**Task:** "A bat and a ball cost $1.10 in total. The bat costs $1.00 more than the ball. How much does the ball cost?"
+
+**Student (GPT-3.5) Response:**
+```
+The ball costs $0.10. Since the bat costs $1.00 more, the bat costs $1.10.
+Total: $0.10 + $1.10 = $1.20 ❌
+```
+
+**Teacher Assessment:** WEAK (common error, needs step-by-step guidance)
+
+**Teacher Guidance:** 
+```
+Let me help you set up the equations correctly:
+- Let x = ball price
+- Then bat price = x + $1.00  
+- Total: x + (x + $1.00) = $1.10
+
+Solve for x step by step.
+```
+
+**Student with Teaching:**
+```
+Let x = ball price
+Bat price = x + $1.00
+Total: x + (x + $1.00) = $1.10
+2x + $1.00 = $1.10
+2x = $0.10
+x = $0.05
+
+The ball costs $0.05 ✅
+```
+
+### Example 2: Code Debugging (Student = Claude)
+
+**Task:** "Find the bug in this Python function"
+
+**Student (Claude) Response:** *Identifies syntax issues but misses logic error*
+
+**Teacher Assessment:** MODERATE (good syntax knowledge, needs logic focus)
+
+**Teacher Guidance:** 
+```
+Good catch on syntax. Now examine the loop logic:
+- What happens when the list is empty?
+- Check the boundary conditions in your iteration
+- Trace through with a simple example
+```
+
+**Student with Teaching:** *Finds both syntax and logic errors*
+
 ## Technical Specifications
 
 ### Model Requirements

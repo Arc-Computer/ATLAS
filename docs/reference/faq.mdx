@@ -81,6 +81,16 @@ atlas = ATLASInference(
 
 ### How long does training take?
 
+#### Complete Time Breakdown
+
+| Phase | Duration | Hardware | Active Time | Notes |
+|-------|----------|----------|-------------|--------|
+| **Quick Start (Pre-trained)** | 5 mins | Any GPU | 5 mins | Just download models |
+| **Online Optimization** | 2 hours | API only | 10 mins | Mostly automated |
+| **Custom SFT Training** | 4-8 hours | 4-8 H100s | 30 mins | Mostly unattended |
+| **Full GRPO Training** | 24-48 hours | 4-8 H100s | 2 hours | Periodic monitoring |
+| **Domain Specialization** | 1-3 days | 4-8 H100s | 4 hours | Custom data prep |
+
 **Offline RL Training:**
 - SFT warmup: 4-8 hours
 - GRPO training: 24-48 hours

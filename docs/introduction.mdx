@@ -6,6 +6,26 @@ sidebarTitle: Introduction
 
 ATLAS (Adaptive Teaching and Learning Alignment System) is an open-source continual learning framework that enhances any language model's performance without modifying its weights.
 
+## Key Terminology
+
+### What is a "Student" in ATLAS?
+
+A **student** is any existing language model that you want to enhance with ATLAS. This can be:
+- **Your current production model** (GPT-4, Claude, Gemini)
+- **Open-source models** (Llama, Qwen, Mistral)  
+- **Your fine-tuned models** (custom domain-specific LLMs)
+- **Any API-based LLM** that accepts text prompts
+
+The student model remains **completely unchanged** - ATLAS doesn't modify its weights, architecture, or training. Instead, a specialized **teacher** model provides adaptive guidance to help the student perform better on your specific tasks.
+
+### What is a "Teacher" in ATLAS?
+
+A **teacher** is a specialized 8B parameter model trained specifically to enhance other models' performance. Teachers:
+- **Diagnose student capabilities** on each task
+- **Generate targeted guidance** adapted to the student's skill level
+- **Provide strategic hints** without giving away answers
+- **Are domain-specific** (reasoning, coding, etc.)
+
 ## How ATLAS Works
 
 ATLAS uses a hybrid architecture that separates complex offline reinforcement learning (to train expert **teacher** models) from hyper-efficient online optimization (to adapt to specific tasks). This enables any **student** model to achieve enhanced performance with guaranteed safety.

@@ -10,6 +10,17 @@ icon: flask
 </Note>
 
 **TL;DR:** Phase 1 (SFT) takes ~4-6 hours to establish a baseline teacher, Phase 2 (GRPO) runs ~24-36 hours with periodic monitoring, and validation at the end confirms the 15.7% accuracy lift before you promote the checkpoint.
+## ⏱️ Quick Reference: Time Investment
+
+| What You Do | How Long | When |
+|-------------|----------|------|
+| **Initial setup** | 30-45 minutes | Start |
+| **Launch SFT training** | 5 minutes | Hour 0 |
+| **Monitor SFT (optional)** | 10 minutes | Hours 2, 4, 6 |
+| **Launch GRPO training** | 10 minutes | Hour 6-8 |
+| **Monitor GRPO (optional)** | 15 minutes | Every 8 hours |
+| **Validation & testing** | 30 minutes | End |
+| **Total active time** | ~2 hours | Over 1-2 days |
 
 ## Overview
 

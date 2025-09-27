@@ -7,6 +7,15 @@ icon: rocket
 
 There are two primary paths for getting started with ATLAS. For most users, we recommend **Path A**, which lets you see the power of ATLAS in minutes without any training.
 
+## ⏱️ Time to Get Up and Running
+
+| Path | Setup Time | Results Time | Total Time | Skill Level |
+|------|------------|--------------|------------|-------------|
+| **Path A: Pre-trained** | 5 mins | 2 hours* | **~2.5 hours** | Beginner |
+| **Path B: Custom Training** | 45 mins | 24-48 hours | **~2 days** | Advanced |
+
+*Path A optimization is optional but recommended for best results
+
 ## Path A: Use Pre-trained Models (Recommended)
 
 This path uses our pre-trained ATLAS teacher models to enhance your existing student models. It delivers immediate results with minimal setup.
@@ -62,7 +71,42 @@ This process costs approximately $10 in API inference fees and completes in abou
 
 ### 3. Integrate into Your Application
 
-Wrap your existing agent or model with the `ATLASInference` class to apply teaching in production.
+After optimization, you can integrate ATLAS in multiple ways depending on your existing setup:
+
+#### Option A: Wrap Your Existing Agent
+
+If you already have an agent or application, ATLAS can wrap it without any changes to your code:
+
+```bash
+# Wrap any OpenAI-compatible agent
+scripts/openai_agent_atlas.sh configs/wrappers/openai_agent.yaml
+
+# Wrap a LangChain agent  
+scripts/openai_agent_atlas.sh configs/wrappers/langchain_agent.yaml
+
+# Wrap a custom HTTP API
+scripts/openai_agent_atlas.sh configs/wrappers/http_api.yaml
+
+# Wrap a Python function
+scripts/openai_agent_atlas.sh configs/wrappers/python_function.yaml
+```
+
+Example wrapper configuration:
+```yaml
+# configs/wrappers/your_agent.yaml
+agent_type: "openai_assistant"
+agent_config:
+  api_key: "${OPENAI_API_KEY}"
+  assistant_id: "asst_your_assistant_id"
+  model: "gpt-4"
+  
+teacher_model: "Arc-Intelligence/ATLAS-8B-Thinking"
+optimization_target: "accuracy"
+```
+
+#### Option B: Direct Integration
+
+For tighter integration, use the `ATLASInference` class directly in your code:
 
 ```python
 from examples.utils.atlas_inference import ATLASInference
@@ -78,6 +122,21 @@ atlas = ATLASInference(
 result = atlas.run_full_protocol("Your production query here")
 
 print(f"Enhanced Response: {result['guided_response']}")
+```
+
+#### Option C: API-Based Integration
+
+If your student model is API-based (OpenAI, Claude, etc.):
+
+```python
+# For API models, you only need the teacher locally
+atlas = ATLASInference(
+    student_api_client=your_openai_client,  # OpenAI/Claude/etc client
+    teacher_model_name="Arc-Intelligence/ATLAS-8B-Thinking"
+)
+
+result = atlas.run_full_protocol("Your query", student_model="gpt-4")
+enhanced_response = result['guided_response']
 ```
 
 ## Path B: Train a Custom Teacher (Advanced)
