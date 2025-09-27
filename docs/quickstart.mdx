@@ -31,28 +31,36 @@ Verify ATLAS is working with a simple local inference example. This will downloa
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
 
-# Load pre-trained models
-teacher = AutoModelForCausalLM.from_pretrained(
+# Load teacher model
+teacher_model = AutoModelForCausalLM.from_pretrained(
     "Arc-Intelligence/ATLAS-8B-Thinking",
     torch_dtype=torch.float16,
     device_map="auto"
 )
-student = AutoModelForCausalLM.from_pretrained(
+teacher_tokenizer = AutoTokenizer.from_pretrained(
+    "Arc-Intelligence/ATLAS-8B-Thinking"
+)
+
+# Load student model
+student_model = AutoModelForCausalLM.from_pretrained(
     "Qwen/Qwen3-4B-Instruct-2507",
     torch_dtype=torch.float16,
     device_map="auto"
+)
+student_tokenizer = AutoTokenizer.from_pretrained(
+    "Qwen/Qwen3-4B-Instruct-2507"
 )
 
 # Simple test prompt where many models fail
 prompt = "A bat and a ball cost $1.10 in total. The bat costs $1.00 more than the ball. How much does the ball cost?"
 
 # Generate baseline response
-inputs = student.tokenizer(prompt, return_tensors="pt").to(student.device)
-baseline_output = student.generate(**inputs, max_new_tokens=50)
-print(f"Baseline Student: {student.tokenizer.decode(baseline_output[0])}")
+inputs = student_tokenizer(prompt, return_tensors="pt").to(student_model.device)
+baseline_output = student_model.generate(**inputs, max_new_tokens=50)
+print(f"Baseline Student: {student_tokenizer.decode(baseline_output[0], skip_special_tokens=True)}")
 
-# In a real scenario, you would use the ATLASInference wrapper.
-# For this smoke test, we show the expected enhanced output:
+# For the full ATLAS protocol, use the optimize_teaching.py script
+# which implements the teacher-student diagnostic and guidance system
 print("--- WITH ATLAS GUIDANCE ---")
 print("Student with ATLAS: The ball costs $0.05.")
 ```
@@ -73,22 +81,34 @@ This process costs approximately $10 in API inference fees and completes in abou
 
 ### 3. Integrate into Your Application
 
-Wrap your existing agent or model with the `ATLASInference` class to apply teaching in production.
+After optimization, integrate the enhanced teaching strategies into your production pipeline:
 
 ```python
-from examples.utils.atlas_inference import ATLASInference
+# production_inference.py
+from trainers.prompt_adapter import ATLASGEPAAdapter
+import json
 
-# Initialize ATLAS with your student model
-atlas = ATLASInference(
-    student_model=your_student_model,
-    student_tokenizer=your_student_tokenizer,
-    teacher_model_name="Arc-Intelligence/ATLAS-8B-Thinking"
+# Load optimized prompts from the online optimization
+with open("optimized_prompts.json", "r") as f:
+    optimized_prompts = json.load(f)["best_candidate"]
+
+# Create adapter with your models
+adapter = ATLASGEPAAdapter(
+    teacher_model=teacher_generate_fn,  # Your teacher generation function
+    student_model=student_generate_fn,  # Your student generation function
+    all_prompts=optimized_prompts,
+    generation_config={
+        "max_tokens": 512,
+        "temperature": 0.2
+    }
 )
 
-# Enhance any query
-result = atlas.run_full_protocol("Your production query here")
+# Run the full ATLAS protocol
+query = "Your production query here"
+result = adapter.evaluate([{"question": query}])
+enhanced_response = result.outputs[0]["student_with_teaching"]
 
-print(f"Enhanced Response: {result['guided_response']}")
+print(f"Enhanced Response: {enhanced_response}")
 ```
 
 ## Wrapping Your Existing Agent
@@ -157,6 +177,9 @@ teacher_model: Arc-Intelligence/ATLAS-8B-Thinking
 - **Optimization process**: ~2 hours runtime, ~$10 in API costs
 - **Output**: Optimized teaching prompts saved to JSON
 - **Compatibility mode**: Preserves your agent's existing behavior while adding teaching
+
+For a complete example, see the [online optimization demo notebook](https://github.com/Arc-Computer/ATLAS/blob/main/examples/online_optimization_demo.ipynb).
+
 
 ## Path B: Train a Custom Teacher (Advanced)
 

@@ -19,7 +19,7 @@ This guide walks through a complete ATLAS training experiment, demonstrating the
 
 Before starting, ensure you have:
 
-- **Hardware**: 4×H100 GPUs (minimum) or 8×H100 (recommended)
+- **Hardware**: 2× GPUs minimum (1 for vLLM, 1 for training), 4-8×H100 GPUs recommended (40GB+ VRAM each)
 - **Environment**: Python 3.11/3.12 with ATLAS dependencies installed (see [Installation](/installation))
 - **Authentication**: HuggingFace token with access to Arc-Intelligence datasets
 - **Storage**: ~200GB for checkpoints and logs
@@ -46,12 +46,20 @@ output_dir: results/sft_checkpoint
 ### Execution
 
 ```bash
-# Full training on 8 GPUs
+# Minimum setup (2 GPUs)
+scripts/launch.sh 2 configs/run/teacher_sft.yaml \
+  output_dir=path/to/save/pre_rl_model
+
+# Recommended setup (4 GPUs)
+scripts/launch.sh 4 configs/run/teacher_sft.yaml \
+  output_dir=path/to/save/pre_rl_model
+
+# Full production setup (8 GPUs)
 scripts/launch.sh 8 configs/run/teacher_sft.yaml \
   output_dir=path/to/save/pre_rl_model
 
-# Memory-constrained setup (4 GPUs with offloading)
-scripts/launch.sh 4 configs/run/teacher_sft.yaml \
+# Memory-constrained with offloading
+scripts/launch.sh 2 configs/run/teacher_sft.yaml \
   output_dir=path/to/save/pre_rl_model \
   +offload
 ```
@@ -102,7 +110,15 @@ eval_steps: 100
 ### Launch with vLLM Server
 
 ```bash
-# Allocate 4 GPUs for vLLM, 4 for training
+# Minimum setup (2 GPUs total: 1 for vLLM, 1 for training)
+scripts/launch_with_server.sh 1 1 configs/run/teacher_rcl.yaml \
+  model_name_or_path=path/of/saved/pre_rl_model
+
+# Recommended setup (4 GPUs: 2 for vLLM, 2 for training)
+scripts/launch_with_server.sh 2 2 configs/run/teacher_rcl.yaml \
+  model_name_or_path=path/of/saved/pre_rl_model
+
+# Full production setup (8 GPUs: 4 for vLLM, 4 for training)
 scripts/launch_with_server.sh 4 4 configs/run/teacher_rcl.yaml \
   model_name_or_path=path/of/saved/pre_rl_model
 
@@ -179,13 +195,18 @@ tail -f results/train.log
 
 ## Expected Outcomes
 
-After successful completion (2-3 days on 4×H100):
+After successful completion:
 
-### Performance Metrics
+### Training Duration
+- **2× GPUs**: 4-5 days
+- **4× GPUs**: 2-3 days
+- **8× H100**: 24-36 hours
+
+### Performance Metrics (from ATLAS Technical Report)
 - **Teaching Efficiency**: 15.7% average accuracy improvement
-- **Non-degradation Rate**: >97%
-- **Token Efficiency**: 50% reduction in response length
-- **Adaptation Speed**: &lt;10 iterations to new domains
+- **Non-degradation Rate**: 97%
+- **Token Efficiency**: 50% reduction in response length (4k → 2k tokens)
+- **Completion Rate**: 31% improvement (69% → 100%)
 
 ### Output Artifacts
 
@@ -210,41 +231,49 @@ results/
 Verify model performance using the evaluation script:
 
 ```python
-from examples.utils.atlas_inference import ATLASInference
 from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
 
-# Load trained model
-teacher = AutoModelForCausalLM.from_pretrained(
+# Load trained teacher model
+teacher_model = AutoModelForCausalLM.from_pretrained(
     "results/rl_checkpoint",
-    trust_remote_code=True
+    trust_remote_code=True,
+    torch_dtype=torch.float16,
+    device_map="auto"
 )
 teacher_tokenizer = AutoTokenizer.from_pretrained(
     "results/rl_checkpoint"
 )
 
-# Load baseline student
-student = AutoModelForCausalLM.from_pretrained(
-    "Qwen/Qwen3-4B-Instruct-2507"
+# Load baseline student model
+student_model = AutoModelForCausalLM.from_pretrained(
+    "Qwen/Qwen3-4B-Instruct-2507",
+    torch_dtype=torch.float16,
+    device_map="auto"
 )
 student_tokenizer = AutoTokenizer.from_pretrained(
     "Qwen/Qwen3-4B-Instruct-2507"
 )
 
-# Initialize ATLAS
-atlas = ATLASInference(
-    student_model=student,
-    student_tokenizer=student_tokenizer,
-    teacher_model=teacher,
-    teacher_tokenizer=teacher_tokenizer
-)
-
-# Test on benchmark problem
+# Test problem
 problem = "Solve: A train travels 120 miles in 2 hours. What is its speed?"
-result = atlas.run_full_protocol(problem)
 
-print(f"Baseline: {result['baseline_response']}")
-print(f"Enhanced: {result['guided_response']}")
-print(f"Improvement: {result['learning']['improvement_score']}")
+# Get baseline student response
+inputs = student_tokenizer(problem, return_tensors="pt").to(student_model.device)
+baseline_output = student_model.generate(**inputs, max_new_tokens=100, temperature=0.7)
+baseline_response = student_tokenizer.decode(baseline_output[0], skip_special_tokens=True)
+
+# Get teacher-guided response (using ATLAS protocol)
+# In production, use optimize_teaching.py for full protocol
+teacher_inputs = teacher_tokenizer(
+    f"Guide the student on: {problem}",
+    return_tensors="pt"
+).to(teacher_model.device)
+teacher_output = teacher_model.generate(**teacher_inputs, max_new_tokens=200, temperature=0.7)
+guidance = teacher_tokenizer.decode(teacher_output[0], skip_special_tokens=True)
+
+print(f"Baseline: {baseline_response}")
+print(f"Teacher guidance: {guidance}")
 ```
 
 ## Troubleshooting
@@ -258,8 +287,8 @@ print(f"Improvement: {result['learning']['improvement_score']}")
     # Enable gradient checkpointing
     gradient_checkpointing: true
 
-    # Use CPU offloading
-    scripts/launch.sh 8 configs/run/teacher_sft.yaml +offload
+    # Use CPU offloading (minimum 2 GPUs)
+    scripts/launch.sh 2 configs/run/teacher_sft.yaml +offload
     ```
   </Accordion>
 
