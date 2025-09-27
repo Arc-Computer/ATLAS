@@ -32,7 +32,7 @@ class TerminalDisplay:
     def _print_header(self):
         """Print the application header"""
         print("\n" + "="*80)
-        print(f"🚀 ATLAS Teaching Optimization System")
+        print(f"ATLAS Teaching Optimization System")
         print(f"Real-time Training Monitor")
         print("="*80 + "\n")
 
@@ -143,25 +143,37 @@ class TerminalDisplay:
         delta_str = f"+{delta:.3f}" if delta >= 0 else f"{delta:.3f}"
 
         if delta > 0:
-            status = "✓ Improved"
+            status = "Improved"
         elif delta < 0:
-            status = "✗ Declined"
+            status = "Declined"
         else:
-            status = "– Same"
+            status = "Same"
 
         print(f"│ {eval_num:^8} │ {baseline_score:^12.3f} │ {teaching_score:^12.3f} │ "
               f"{delta_str:^10} │ {status:^15} │")
 
     def _print_metrics(self, metrics: Dict[str, Any]):
-        """Print metrics panel"""
-        print(f"\n📊 Performance Metrics")
+        """Print metrics panel with 4 separate RIM rewards"""
+        print(f"\nPerformance Metrics")
         print("─" * 40)
 
+        if metrics.get('accuracy') is not None:
+            print(f"Accuracy:     {metrics['accuracy']:.3f}")
+
+        if metrics.get('helpfulness') is not None:
+            print(f"Helpfulness:  {metrics['helpfulness']:.3f}")
+
+        if metrics.get('process') is not None:
+            print(f"Process:      {metrics['process']:.3f}")
+
+        if metrics.get('diagnostic') is not None:
+            print(f"Diagnostic:   {metrics['diagnostic']:.3f}")
+
         if metrics.get('avg_reward') is not None:
-            print(f"📈 Reward: {metrics['avg_reward']:.3f}")
+            print(f"Combined:     {metrics['avg_reward']:.3f}")
 
         if metrics.get('token_savings') is not None:
-            print(f"💾 Token Savings: {metrics['token_savings']:.1f}%")
+            print(f"Token Savings: {metrics['token_savings']:.1f}%")
 
         print("─" * 40)
 
@@ -176,7 +188,7 @@ class TerminalDisplay:
                 text
             )
         else:
-            print(f"\n🎓 Student generating diagnostic approach...")
+            print(f"\nStudent generating diagnostic approach...")
 
     def update_teacher_guidance(self, text: str, sample_num: int = 1, total: int = 1):
         """Display teacher guidance"""
@@ -189,7 +201,7 @@ class TerminalDisplay:
                 text
             )
         else:
-            print(f"\n👨‍🏫 Teacher reviewing student's approach...")
+            print(f"\nTeacher reviewing student's approach...")
 
     def update_student_with_teaching(self, text: str, sample_num: int = 1, total: int = 1):
         """Display student with teaching output"""
@@ -202,7 +214,7 @@ class TerminalDisplay:
                 self._format_json_output(text)
             )
         else:
-            print(f"\n📚 Student executing task with teacher's guidance...")
+            print(f"\nStudent executing task with teacher's guidance...")
 
     def update_baseline(self, text: str):
         """Display baseline output"""
@@ -215,14 +227,14 @@ class TerminalDisplay:
                 self._format_json_output(text)
             )
         else:
-            print(f"\n📊 Student executing task without guidance (baseline)...")
+            print(f"\nStudent executing task without guidance (baseline)...")
 
     def update_reflection_prompts(self, prompts: Dict[str, str]):
         """Display reflection model prompts in boxes"""
         if not self.verbose:
             return
 
-        self._print_section_header("Reflection Model Prompts", "💭")
+        self._print_section_header("Reflection Model Prompts", ">")
 
         # Display each prompt in its own box
         for key, value in prompts.items():
@@ -254,13 +266,13 @@ class TerminalDisplay:
         if not self.verbose:
             return
 
-        print(f"\n✅ Iteration {iteration} Complete")
+        print(f"\nIteration {iteration} Complete")
 
         if metrics:
             self._print_metrics(metrics)
 
         elapsed = (datetime.now() - self.start_time).total_seconds()
-        print(f"⏱️  Time Elapsed: {elapsed:.1f}s")
+        print(f"Time Elapsed: {elapsed:.1f}s")
         print("="*80)
 
     def show_final_summary(self):
@@ -272,7 +284,7 @@ class TerminalDisplay:
         avg_teaching = sum(self.scores['teaching']) / len(self.scores['teaching'])
         avg_improvement = avg_teaching - avg_baseline
 
-        print(f"\n📈 FINAL SUMMARY")
+        print(f"\nFINAL SUMMARY")
         print("="*80)
         print(f"Total Evaluations: {len(self.scores['baseline'])}")
         print(f"Average Baseline Score: {avg_baseline:.3f}")

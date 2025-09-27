@@ -7,6 +7,7 @@ from .extraction_utils import ATLASExtractionUtils
 from RIM.reward_adapter import RIMReward
 from .prompt_adapter import ATLASDataInst, ATLASTrajectory, ATLASRolloutOutput
 from .terminal_display import DisplayManager
+from .agent_instrumentation import InstrumentedAgentWrapper
 
 
 class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRolloutOutput]):
@@ -26,7 +27,8 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
     ):
         self.teacher_model = teacher_model
         self.student_model = student_model
-        self.user_agent = user_agent
+        self.user_agent_raw = user_agent
+        self.user_agent = InstrumentedAgentWrapper(user_agent, framework='auto')
         self.trace_storage_path = Path(trace_storage_path)
         self.trace_storage_dir = self.trace_storage_path.parent / self.trace_storage_path.stem
         self.trace_storage_dir.mkdir(parents=True, exist_ok=True)
@@ -248,9 +250,11 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
         if self.display_manager:
             self.display_manager.update("student_with_teaching", text="")
 
-        enhanced_responses = self.user_agent(enhanced_prompts)
+        enhanced_responses, enhanced_trajectories = self.user_agent(enhanced_prompts)
         if not isinstance(enhanced_responses, list):
             enhanced_responses = [enhanced_responses]
+        if not isinstance(enhanced_trajectories, list):
+            enhanced_trajectories = [enhanced_trajectories]
 
         if enhanced_responses and self.display_manager:
             self.display_manager.update("student_with_teaching", text=str(enhanced_responses[0]))
@@ -258,9 +262,11 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
         if self.display_manager:
             self.display_manager.update("baseline", text="")
 
-        baseline_responses = self.user_agent(questions)
+        baseline_responses, baseline_trajectories = self.user_agent(questions)
         if not isinstance(baseline_responses, list):
             baseline_responses = [baseline_responses]
+        if not isinstance(baseline_trajectories, list):
+            baseline_trajectories = [baseline_trajectories]
 
         if baseline_responses and self.display_manager:
             self.display_manager.update("baseline", text=str(baseline_responses[0]))
@@ -283,7 +289,7 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
             ground_truths=ground_truths,
             student_plans=[approach for approach in student_approaches],
             teacher_traces=teacher_responses,
-            student_traces=enhanced_responses,
+            student_traces=enhanced_trajectories,
             return_info_dict=True,
         )
 
@@ -318,6 +324,10 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
         avg_score = sum(scores) / len(scores) if scores else 0
 
         metrics_dict = {
+            "accuracy": detailed_metrics.get('accuracy', 0.0),
+            "helpfulness": detailed_metrics.get('helpfulness', 0.0),
+            "process": detailed_metrics.get('process', 0.0),
+            "diagnostic": detailed_metrics.get('diagnostic', 0.0),
             "avg_reward": avg_score,
             "token_savings": token_reduction
         }
@@ -389,13 +399,22 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
                 'student_with_teaching_template': "Optimize how teaching guidance is integrated into responses."
             }
 
+            component_reward_focus = {
+                'teacher_adaptive_template': ['helpfulness', 'diagnostic'],
+                'student_diagnostic_template': ['diagnostic'],
+                'student_with_teaching_template': ['accuracy', 'process']
+            }
+
             goal = target_config.get('reflection_goal') or \
                    self.reflection_instructions.get(component) or \
                    default_goals.get(component, f"Optimize {component} for better performance")
 
+            relevant_rewards = component_reward_focus.get(component, ['accuracy', 'helpfulness', 'process', 'diagnostic'])
+
             items.append({
                 "OPTIMIZATION_TARGET": component,
-                "GOAL": goal
+                "GOAL": goal,
+                "RELEVANT_RIM_REWARDS": relevant_rewards
             })
 
             if eval_batch.trajectories:

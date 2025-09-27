@@ -148,16 +148,30 @@ A larger model will review uncertain cases.
 
 Output JSON: {{"principles": [{{"name": str, "weight": float, "description": str}}], "score": float, "rationale": str, "uncertainty": float}}""",
 
-            'process': """Role: Planning quality judge. Apply {constitution_principles}.
-Task: Compare {student_plan} to requirements from {question} and {ground_truth}.
+            'process': """Role: Execution trajectory quality judge. Apply {constitution_principles}.
+Task: Evaluate how well student executed their plan with teaching guidance.
 
-Step 1: Generate 2-3 principles most relevant for evaluating plan quality.
+Context:
+- Question: {question}
+- Ground Truth: {ground_truth}
+- Initial Plan: {student_plan}
+- Teaching Guidance: {teacher_trace}
+- Execution Trajectory: {student_trace}
+
+The trajectory shows step-by-step what the student actually did during execution.
+
+Step 1: Generate 2-3 principles most relevant for evaluating execution quality.
+Consider:
+- Did student follow their initial plan?
+- Did student apply the teaching guidance effectively?
+- Were reasoning steps clear and logical?
+- Did student use appropriate tools/methods?
 Assign weight (0.0 to 1.0) to each principle. Weights must sum to 1.0.
 
-Step 2: Evaluate the plan against each principle.
+Step 2: Evaluate the execution trajectory against each principle.
 
 Step 3: Provide final score 0.0 to 1.0 based on principle-guided evaluation.
-In rationale, state how plan performs on each principle and WHY you gave this score.
+In rationale, state how execution performs on each principle and WHY you gave this score.
 
 IMPORTANT: If uncertain, report uncertainty > 0.3.
 A larger model will review uncertain cases.
