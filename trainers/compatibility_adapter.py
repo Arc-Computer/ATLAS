@@ -4,7 +4,7 @@ from typing import Any, Callable, Dict, List, Optional, Union
 
 from gepa.core.adapter import GEPAAdapter, EvaluationBatch
 from .extraction_utils import ATLASExtractionUtils
-from .online_teaching_reward import OnlineTeachingReward
+from RIM.reward_adapter import RIMReward
 from .prompt_adapter import ATLASDataInst, ATLASTrajectory, ATLASRolloutOutput
 from .terminal_display import DisplayManager
 
@@ -275,38 +275,45 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
         enhanced_tokens = sum(count_tokens(resp) for resp in enhanced_responses)
         token_reduction = ((baseline_tokens - enhanced_tokens) / baseline_tokens * 100) if baseline_tokens > 0 else 0
 
-        if self.evaluation_config:
-            from .configurable_evaluator import ConfigurableEvaluator
-            reward_calculator = ConfigurableEvaluator(self.evaluation_config)
-        else:
-            class SimpleTokenizer:
-                def encode(self, text):
-                    return text.split()
-            reward_calculator = OnlineTeachingReward(tokenizer=SimpleTokenizer())
+        reward_calculator = RIMReward(config_path='configs/rim_config.yaml')
 
-
-        rewards = reward_calculator(
+        _, info_dicts = reward_calculator(
             prompts=questions,
             completions=teacher_responses,
-            solutions=enhanced_responses,
             ground_truths=ground_truths,
-            questions=questions,
+            student_plans=[approach for approach in student_approaches],
+            teacher_traces=teacher_responses,
+            student_traces=enhanced_responses,
+            return_info_dict=True,
         )
 
         detailed_metrics = {}
-        if hasattr(reward_calculator, 'last_metrics'):
-            detailed_metrics = reward_calculator.last_metrics
+        for judge in ['accuracy', 'helpfulness', 'process', 'diagnostic']:
+            judge_rewards = [info['rewards'].get(judge, 0.0) for info in info_dicts]
+            if judge_rewards:
+                detailed_metrics[judge] = sum(judge_rewards) / len(judge_rewards)
 
         for i in range(len(batch)):
+            rim_rewards = info_dicts[i]['rewards']
+
+            combined_score = (
+                rim_rewards.get('accuracy', 0.0) +
+                rim_rewards.get('helpfulness', 0.0) +
+                rim_rewards.get('process', 0.0) +
+                rim_rewards.get('diagnostic', 0.0)
+            ) / 4
+
             output = {
                 "student_approach": student_approaches[i],
                 "teacher_response": teacher_responses[i],
                 "student_with_teaching": enhanced_responses[i],
                 "student_baseline": baseline_responses[i],
-                "reward": rewards[i],
+                "combined_score": combined_score,
+                "rim_rewards": rim_rewards,
+                "rim_explanations": info_dicts[i]['explanations'],
             }
             outputs.append(output)
-            scores.append(rewards[i])
+            scores.append(combined_score)
 
         avg_score = sum(scores) / len(scores) if scores else 0
 
@@ -396,6 +403,9 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
                     teacher_response = trajectory.get("teacher_response", "")
                     teaching_content = ATLASExtractionUtils.extract_teaching_content(teacher_response)
 
+                    rim_rewards = trajectory.get("rim_rewards", {})
+                    rim_explanations = trajectory.get("rim_explanations", {})
+
                     item = {
                         "Inputs": {
                             "question": trajectory["question"],
@@ -412,6 +422,8 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
                         },
                         "Performance": {
                             "score": score,
+                            "rim_rewards": rim_rewards,
+                            "rim_explanations": rim_explanations,
                         }
                     }
                     items.append(item)

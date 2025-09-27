@@ -5,6 +5,6 @@ try:
     from .data_reward_scorer import (
         DataScorerArgs, DataTeacherRewardScorer,
         DataConcatenatorArgs, DataCompletionConcatenator)
-    from .teacher_rewards import AdaptiveTeachingReward
+    from RIM.reward_adapter import RIMReward
 except ImportError:
     pass
