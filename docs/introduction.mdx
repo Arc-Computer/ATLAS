@@ -6,6 +6,25 @@ sidebarTitle: Introduction
 
 ATLAS (Adaptive Teaching and Learning Alignment System) is an open-source continual learning framework that enhances any language model's performance without modifying its weights.
 
+## Pre-trained Models vs Custom Training
+
+<CardGroup cols={2}>
+  <Card title="Pre-trained ATLAS Models" icon="box">
+    **When to use**: 99% of use cases
+    - Works across all domains out-of-the-box
+    - Adapts to your specific tasks via online optimization
+    - No training infrastructure required
+    - Available immediately on HuggingFace
+  </Card>
+  <Card title="Custom Teacher Training" icon="graduation-cap">
+    **When needed**: Specialized domains
+    - Proprietary knowledge not in public models
+    - Regulatory compliance requirements
+    - Extreme performance optimization needs
+    - Requires multi-GPU setup for best performance
+  </Card>
+</CardGroup>
+
 ## How ATLAS Works
 
 ATLAS uses a hybrid architecture that separates complex offline reinforcement learning (to train expert **teacher** models) from hyper-efficient online optimization (to adapt to specific tasks). This enables any **student** model to achieve enhanced performance with guaranteed safety.

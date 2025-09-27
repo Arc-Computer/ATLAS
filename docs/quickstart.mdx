@@ -7,6 +7,17 @@ icon: rocket
 
 There are two primary paths for getting started with ATLAS. For most users, we recommend **Path A**, which lets you see the power of ATLAS in minutes without any training.
 
+<Info>
+**Time to First Value**:
+- 5 minutes: Verify ATLAS works with smoke test
+- 30 minutes: Integrate with your existing agent
+- 2 hours: Optimize for your specific use case (+165% performance)
+</Info>
+
+<Note>
+**Quick Terminology**: In ATLAS, a "student" is any LLM or agent you want to enhance - GPT, Claude, Gemini, your custom API, etc. The "teacher" (our pre-trained ATLAS model) guides your student without modifying it.
+</Note>
+
 ## Path A: Use Pre-trained Models (Recommended)
 
 This path uses our pre-trained ATLAS teacher models to enhance your existing student models. It delivers immediate results with minimal setup.
@@ -80,9 +91,76 @@ result = atlas.run_full_protocol("Your production query here")
 print(f"Enhanced Response: {result['guided_response']}")
 ```
 
+## Wrapping Your Existing Agent
+
+ATLAS can enhance any existing AI system through configuration-based integration. Here are the three verified integration patterns:
+
+### HTTP API Integration
+
+If your agent exposes an HTTP endpoint, configure ATLAS to enhance it:
+
+```yaml
+# configs/wrappers/your_agent.yaml
+user_agent:
+  type: custom
+  config:
+    integration_type: http_api
+    endpoint: "http://localhost:8000/chat"
+    prompt_field: "message"
+    response_field: "response"
+    headers:
+      Authorization: "Bearer YOUR_API_KEY"
+
+teacher_model: Arc-Intelligence/ATLAS-8B-Thinking
+trainset: arc-atlas-rl
+```
+
+Run optimization:
+```bash
+./scripts/openai_agent_atlas.sh configs/wrappers/your_agent.yaml
+```
+
+### Python Function Integration
+
+For Python-based agents, wrap your function directly:
+
+```yaml
+# configs/wrappers/python_agent.yaml
+user_agent:
+  type: custom
+  config:
+    integration_type: python_function
+    module_path: "/path/to/your/agent.py"
+    function_name: "generate"
+
+teacher_model: Arc-Intelligence/ATLAS-8B-Thinking
+```
+
+### OpenAI Assistant Integration
+
+For OpenAI Assistants, use the built-in wrapper:
+
+```yaml
+# configs/wrappers/openai_assistant.yaml
+user_agent:
+  type: openai_assistant
+  config:
+    assistant_id: "asst_xxx"  # Your assistant ID
+    api_key: "${OPENAI_API_KEY}"
+
+teacher_model: Arc-Intelligence/ATLAS-8B-Thinking
+```
+
+### Production Considerations
+
+- **Configuration-based**: All integrations use YAML configs for easy deployment
+- **Optimization process**: ~2 hours runtime, ~$10 in API costs
+- **Output**: Optimized teaching prompts saved to JSON
+- **Compatibility mode**: Preserves your agent's existing behavior while adding teaching
+
 ## Path B: Train a Custom Teacher (Advanced)
 
-This path is for advanced users who need to train a new ATLAS teacher model from scratch on domain-specific data. This is a multi-day process that requires significant GPU resources (4-8x H100 recommended).
+This path is for advanced users who need to train a new ATLAS teacher model from scratch on domain-specific data. Requires multi-GPU infrastructure (4-8x H100 recommended for optimal performance).
 
 <Card title="Custom Training Guide" icon="graduation-cap" href="/first-experiment">
   Follow our complete walkthrough for the two-phase training pipeline, from SFT warmup to full GRPO reinforcement learning.
