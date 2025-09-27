@@ -55,7 +55,7 @@ Let's dissect a complete experiment configuration to understand composition:
       - override /trainer: teacher_grpo  # Algorithm choice
       - override /model: qwen3_8b        # Model architecture
       - override /data: arc_atlas_rl     # Dataset selection
-      - override /reward: adaptive_teaching  # Reward function
+      - override /reward: rim_teaching       # Reward system
     ```
 
     Each `override` line pulls in a complete configuration module:
@@ -117,21 +117,17 @@ Let's dissect a complete experiment configuration to understand composition:
     - `max_length`: Maximum sequence length (memory impact)
   </Accordion>
 
-  <Accordion title="reward: adaptive_teaching">
-    Defines the reward function for RL:
+  <Accordion title="reward: rim_teaching">
+    This override activates the ensemble reward system. Rather than setting scalar multipliers, the config selects which Hydra file describes the judges and which prompt templates feed the teaching loop.
 
     ```yaml
-    # configs/reward/adaptive_teaching.yaml
-    degradation_penalty_multiplier: 2.0
-    efficiency_weight: 1.0
-    baseline_threshold: 0.5
-    max_probe_tokens: 500
+    # configs/trainer/reward/rim_teaching.yaml
+    teacher_reward:
+      _target_: RIM.reward_adapter.RIMReward
+      config_path: configs/rim_config.yaml
     ```
 
-    **Tuning guide**:
-    - `efficiency_weight`: Higher values favor concise teaching
-    - `baseline_threshold`: Minimum performance for rewards
-    - See [Reward Design](/concepts/reward-design) for theory
+    Explain the motivation before editing. Pointing `config_path` at `configs/rim_config.yaml` enables all four judges, while `configs/rim_offline_config.yaml` narrows the evaluation to helpfulness and process for cheaper sweeps. After the change, consult the [Reward System](/concepts/reward-design) page to confirm how temperatures, variance thresholds, and anti-gaming settings influence escalation.
   </Accordion>
 </AccordionGroup>
 

@@ -35,7 +35,7 @@ class ModelInterface:
 
             if content is None:
                 print("WARNING: Content is None")
-                return json.dumps({"score_a": 0.5, "score_b": 0.5, "explanation": "Empty response", "uncertainty": 1.0})
+                return json.dumps(self._default_error_payload("Empty response"))
 
             return content
 
@@ -43,7 +43,18 @@ class ModelInterface:
             print(f"ERROR calling {model_name}: {e}")
             import traceback
             traceback.print_exc()
-            return json.dumps({"score_a": 0.5, "score_b": 0.5, "explanation": f"Model error: {str(e)}", "uncertainty": 1.0})
+            return json.dumps(self._default_error_payload(f"Model error: {str(e)}"))
+
+    def _default_error_payload(self, message: str) -> Dict[str, Any]:
+        return {
+            "score": 0.0,
+            "score_a": 0.0,
+            "score_b": 0.0,
+            "rationale": message,
+            "explanation": message,
+            "uncertainty": 1.0,
+            "principles": []
+        }
 
 
 model_interface = ModelInterface()

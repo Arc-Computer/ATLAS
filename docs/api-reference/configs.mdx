@@ -32,20 +32,39 @@ trainer = GRPOTrainer(config)
 trainer.train()
 ```
 
+Use Hydra overrides to switch between reward presets when launching from the command line:
+
+```bash
+scripts/launch_with_server.sh 4 4 configs/run/teacher_rcl.yaml \
+  reward=trainer/reward/rim_teaching
+```
+
+When instantiating a trainer directly in Python, create the reward adapter yourself and pass it as the `reward_funcs` argument.
+
 ```python title="Adaptive Teaching"
 from configs import TeacherGRPOConfig
 from trainers import TeacherGRPOTrainer
+from RIM.reward_adapter import RIMReward
 
 config = TeacherGRPOConfig(
-    teacher_model="Arc-Intelligence/ATLAS-8B-Thinking",
-    student_model="meta-llama/Llama-3.2-8B-Instruct",
-    adaptive_teaching=True,
+    model_name_or_path="Arc-Intelligence/ATLAS-8B-Thinking",
+    num_train_epochs=3,
     max_probe_tokens=50,
-    max_guidance_tokens=200,
-    efficiency_weight=1.0
+    max_guidance_tokens=200
 )
 
-trainer = TeacherGRPOTrainer(config)
+reward_fn = RIMReward(config_path="configs/rim_config.yaml")
+
+trainer = TeacherGRPOTrainer(
+    model=config.model_name_or_path,
+    reward_funcs=reward_fn,
+    args=config,
+    train_dataset=train_data,
+    eval_dataset=eval_data,
+    processing_class=tokenizer,
+    student_model="meta-llama/Llama-3.2-8B-Instruct"
+)
+
 trainer.train()
 ```
 </CodeGroup>
@@ -152,6 +171,27 @@ trainer.train()
     - Enable W&B for experiment tracking
   </Accordion>
 </AccordionGroup>
+
+## Reward System Parameters
+
+The reward ensemble is configured through Hydra rather than direct constructor arguments. Before editing YAML, decide which judges you need and how aggressively you want to escalate to the large arbiter. Once the intent is clear, update the `rim` block in the referenced config file.
+
+```yaml
+# configs/rim_config.yaml
+rim:
+  temperatures: [0.2, 0.5, 0.8]
+  variance_threshold: 0.15
+  active_judges:
+    accuracy: true
+    helpfulness: true
+    process: true
+    diagnostic: true
+  anti_gaming:
+    enabled: true
+    cap_score: 0.3
+```
+
+Lower temperatures concentrate the judges around deterministic reasoning, while higher values encourage diverse principle discovery. The variance threshold controls escalation sensitivity: smaller numbers escalate more often, improving correctness at the cost of latency. Disabling a judge removes that dimension from the combined score but still records explanations for active ones. Anti-gaming caps anomalous scores when judges detect contradictions or safety violations.
 
 ## Teacher Training Usage
 

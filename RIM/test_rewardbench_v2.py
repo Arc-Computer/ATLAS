@@ -4,13 +4,113 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 from datasets import load_dataset
 import numpy as np
-from typing import Dict
-from RIM.rim import RewardInterpretationModel
+from typing import Dict, List, Any
+from RIM.judges import AccuracyJudge
+from RIM.model_interface import model_interface
 import json
 import yaml
 import os
 import logging
 from datetime import datetime
+
+
+def evaluate_pairwise_accuracy(trajectory: Dict[str, str], judge: AccuracyJudge, rim_config: Dict[str, Any]) -> Dict[str, Any]:
+    temperatures: List[float] = rim_config['temperatures']
+    variance_threshold: float = rim_config['variance_threshold']
+    small_model: str = rim_config['models']['small_model']
+    large_model: str = rim_config['models']['large_model']
+    default_max_tokens = rim_config.get('model_configs', {}).get('default', {}).get('max_tokens', 32768)
+    large_max_tokens = rim_config.get('model_configs', {}).get('large', {}).get('max_tokens', 32768)
+
+    samples: List[Dict[str, Any]] = []
+
+    for temperature in temperatures:
+        def model_fn(prompt: str, temp: float) -> str:
+            return model_interface.call_model(
+                model_name=small_model,
+                prompt=prompt,
+                temperature=temp,
+                max_tokens=default_max_tokens
+            )
+
+        result = judge.evaluate(trajectory, model_fn, temperature)
+        result['temperature'] = temperature
+        samples.append(result)
+
+    if not samples:
+        return {
+            'score_a': 0.0,
+            'score_b': 0.0,
+            'explanation': 'No valid evaluations produced',
+            'uncertainty': 1.0,
+            'principles': []
+        }
+
+    score_diffs = [sample.get('score_a', 0.0) - sample.get('score_b', 0.0) for sample in samples]
+    variance = np.std(score_diffs)
+    max_uncertainty = max(sample.get('uncertainty', 0.5) for sample in samples)
+
+    if variance <= variance_threshold and max_uncertainty <= 0.3:
+        return min(samples, key=lambda s: s.get('uncertainty', 0.5))
+
+    meta_prompt = build_pairwise_meta_prompt(trajectory, samples)
+    response = model_interface.call_model(
+        model_name=large_model,
+        prompt=meta_prompt,
+        temperature=0.3,
+        max_tokens=large_max_tokens
+    )
+
+    try:
+        parsed = json.loads(response)
+    except json.JSONDecodeError:
+        parsed = {
+            'score_a': 0.0,
+            'score_b': 0.0,
+            'explanation': 'Failed to parse large judge response',
+            'uncertainty': 1.0,
+            'principles': []
+        }
+
+    return {
+        'score_a': parsed.get('score_a', 0.0),
+        'score_b': parsed.get('score_b', 0.0),
+        'explanation': parsed.get('explanation', parsed.get('rationale', '')),
+        'uncertainty': parsed.get('uncertainty', 0.5),
+        'principles': parsed.get('principles', [])
+    }
+
+
+def build_pairwise_meta_prompt(trajectory: Dict[str, str], samples: List[Dict[str, Any]]) -> str:
+    samples_text = "\n\n".join([
+        (
+            f"Evaluation {idx + 1} (temperature {sample.get('temperature', 0.0):.2f}):\n"
+            f"Principles: {json.dumps(sample.get('principles', []))}\n"
+            f"Scores -> Response A: {sample.get('score_a', 0.0):.2f}, Response B: {sample.get('score_b', 0.0):.2f}\n"
+            f"Uncertainty: {sample.get('uncertainty', 0.5):.2f}\n"
+            f"Explanation: {sample.get('explanation', '')}"
+        )
+        for idx, sample in enumerate(samples)
+    ])
+
+    return f"""Multiple principle-based judges evaluated two candidate responses but reached disagreement or high uncertainty. Consolidate their reasoning and produce a final decision.
+
+Prompt: {trajectory.get('prompt', '')}
+
+Response A: {trajectory.get('response_a', '')}
+
+Response B: {trajectory.get('response_b', '')}
+
+Previous evaluations:
+{samples_text}
+
+Instructions:
+1. Identify the most reliable principles across the evaluations or draft improved principles if necessary.
+2. Compare both responses against those principles.
+3. Explain clearly which response is preferred and why.
+4. Provide calibrated uncertainty in [0.0, 1.0]; values >0.3 indicate remaining doubt.
+
+Output JSON only: {{"principles": [{{"name": str, "weight": float, "description": str}}], "score_a": float, "score_b": float, "explanation": str, "uncertainty": float}}"""
 
 
 def test_rim_on_rewardbench(num_samples: int = 100):
@@ -36,7 +136,8 @@ def test_rim_on_rewardbench(num_samples: int = 100):
     with open('configs/rim_config.yaml', 'r') as f:
         config = yaml.safe_load(f)
 
-    rim = RewardInterpretationModel(config['rim'])
+    accuracy_judge = AccuracyJudge()
+    rim_config = config['rim']
 
     correct = 0
     total = 0
@@ -57,10 +158,11 @@ def test_rim_on_rewardbench(num_samples: int = 100):
         }
 
         try:
-            config['rim']['active_judges'] = {'accuracy': True, 'helpfulness': False, 'process': False, 'diagnostic': False}
-            rim.active_judges = config['rim']['active_judges']
-
-            result = rim._evaluate_single_reward(trajectory, 'accuracy')
+            result = evaluate_pairwise_accuracy(
+                trajectory=trajectory,
+                judge=accuracy_judge,
+                rim_config=rim_config
+            )
 
             score_chosen = result['score_a']
             score_rejected = result['score_b']

@@ -284,6 +284,9 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
         token_reduction = ((baseline_tokens - enhanced_tokens) / baseline_tokens * 100) if baseline_tokens > 0 else 0
 
         reward_calculator = RIMReward(config_path='configs/rim_config.yaml')
+        active_judges = [
+            judge for judge, active in reward_calculator.rim.active_judges.items() if active
+        ]
 
         _, info_dicts = reward_calculator(
             prompts=questions,
@@ -296,8 +299,8 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
         )
 
         detailed_metrics = {}
-        for judge in ['accuracy', 'helpfulness', 'process', 'diagnostic']:
-            judge_rewards = [info['rewards'].get(judge, 0.0) for info in info_dicts]
+        for judge in active_judges:
+            judge_rewards = [info['rewards'][judge] for info in info_dicts if judge in info['rewards']]
             if judge_rewards:
                 detailed_metrics[judge] = sum(judge_rewards) / len(judge_rewards)
 
@@ -305,11 +308,8 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
             rim_rewards = info_dicts[i]['rewards']
 
             combined_score = (
-                rim_rewards.get('accuracy', 0.0) +
-                rim_rewards.get('helpfulness', 0.0) +
-                rim_rewards.get('process', 0.0) +
-                rim_rewards.get('diagnostic', 0.0)
-            ) / 4
+                sum(rim_rewards.get(judge, 0.0) for judge in active_judges) / len(active_judges)
+            ) if active_judges else 0.0
 
             output = {
                 "student_approach": student_approaches[i],
@@ -326,13 +326,15 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
         avg_score = sum(scores) / len(scores) if scores else 0
 
         metrics_dict = {
-            "accuracy": detailed_metrics.get('accuracy', 0.0),
-            "helpfulness": detailed_metrics.get('helpfulness', 0.0),
-            "process": detailed_metrics.get('process', 0.0),
-            "diagnostic": detailed_metrics.get('diagnostic', 0.0),
             "avg_reward": avg_score,
             "token_savings": token_reduction
         }
+
+        for judge in ['accuracy', 'helpfulness', 'process', 'diagnostic']:
+            if judge in detailed_metrics:
+                metrics_dict[judge] = detailed_metrics[judge]
+            else:
+                metrics_dict[judge] = 0.0
 
 
         if self.display_manager:
@@ -351,7 +353,7 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
                     "student_baseline": baseline_responses[i],
                     "student_with_teaching": enhanced_responses[i],
                     "ground_truth": ground_truths[i],
-                    "reward": rewards[i],
+                    "reward": scores[i],
                     "token_usage": {
                         "baseline_tokens": count_tokens(baseline_responses[i]),
                         "enhanced_tokens": count_tokens(enhanced_responses[i]),
