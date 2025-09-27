@@ -19,7 +19,7 @@ The reward system's evaluation process is a multi-step workflow designed to bala
   </Step>
 
   <Step title="2. Principle-Guided Rationale">
-    A core feature of the system is its explainability. Each judge is required by its prompt (defined in `RIM/judges.py`) to first generate a set of evaluation principles and weights (e.g., "Factual Accuracy: 0.6, Conciseness: 0.4") before assigning a score. This ensures every judgment is auditable and based on a clear, explicit rationale.
+    A core feature of the system is its explainability. Judges are required by their prompts (defined in `RIM/judges.py`) to provide a structured rationale for their scores. For instance, the `AccuracyJudge` must first generate and weigh a set of evaluation principles, making its final score fully auditable, while other judges like `HelpfulnessJudge` return different structured outputs like an `evidence` list.
   </Step>
 
   <Step title="3. Uncertainty & Disagreement Check">
@@ -80,40 +80,65 @@ For different use cases, such as offline training where only process and helpful
 
 The primary entry point for developers is the `RIMReward` class in `RIM/reward_adapter.py`. This class wraps the entire evaluation workflow.
 
+### Offline RL Training
+
+In a typical offline training run, you don't call the reward system directly. Instead, you instantiate it and pass it as an argument to the `GRPOTrainer`. The trainer then handles calling it with batches of data during the RL loop.
+
 ```python
-from trainers.reward_adapter import RIMReward
-from trainers.grpo_config import GRPOConfig
+# In a real training script (like train.py):
 
-# The reward system is typically initialized within a trainer
-# This example shows a simplified standalone usage
+from trainers.grpo import GRPOTrainer
+from RIM.reward_adapter import RIMReward
+from datasets import load_dataset
 
-# 1. Initialize the reward system with a configuration
-# This will load the models and settings from the specified YAML
+# 1. Load your training configuration (e.g., from Hydra)
+# grpo_config = ...
+# train_dataset = ...
+
+# 2. Instantiate the reward system
 reward_system = RIMReward(config_path='configs/rim_config.yaml')
 
-# 2. Prepare the data for evaluation
-# The system expects a "trajectory" of the interaction
-trajectory = {
-    "prompt": "A bat and a ball cost $1.10 in total. The bat costs $1.00 more than the ball. How much does the ball cost?",
-    "response_a": "The ball costs $0.10.", # The 'chosen' or better response
-    "response_b": "The ball costs $0.05."  # The 'rejected' or worse response
-}
+# 3. Initialize the GRPOTrainer
+# Note: The first argument is the model, `args` takes the config,
+# and the reward system is passed in a list to `reward_funcs`.
+trainer = GRPOTrainer(
+    model="path/to/your/teacher_model",
+    args=grpo_config,
+    reward_funcs=[reward_system],
+    train_dataset=train_dataset,
+    # ... other standard trainer arguments
+)
 
-# 3. Call the evaluation function
-# In a real scenario, this is called by the trainer with batches of data
-# The system automatically handles which judges to run based on the config
-# and whether the trajectory is pairwise (has response_a/b) or single-response
-evaluation_result = reward_system.rim.evaluate(trajectory)
-
-# 4. Inspect the results
-# The result contains scores and rich explanations for each active judge
-print(evaluation_result)
-# {
-#   'rewards': {'accuracy': 0.9},
-#   'explanations': {'accuracy': 'Response B correctly identifies the price of the ball...'}
-# }
+# 4. Start the training
+# The trainer will now use the multi-agent reward system internally
+trainer.train()
 ```
-When used within the ATLAS training loop, the `RIMReward` callable returns a final scalar reward for the RL algorithm and a detailed `info_dict` containing all per-judge scores and text rationales, which are logged for experiment tracking.
+
+### Online Optimization
+
+In the online optimization workflow (`optimize_teaching.py`), the reward system serves as a pluggable evaluation function. While the default process uses a `reflection_lm` to guide prompt evolution, the underlying `ATLASGEPAAdapter` is designed to use our reward system as the fitness function for its genetic algorithm. This allows you to optimize teaching prompts directly against the multi-dimensional scores produced by the reward system.
+
+```python
+# In optimize_teaching.py, the adapter can be configured
+# to use the reward system as its primary metric.
+
+from RIM.reward_adapter import RIMReward
+from trainers.prompt_adapter import ATLASGEPAAdapter
+
+# 1. Instantiate the reward system
+reward_system = RIMReward(config_path='configs/rim_config.yaml')
+
+# 2. Pass it to the adapter for online optimization
+adapter = ATLASGEPAAdapter(
+    teacher_model=teacher_model,
+    student_model=student_model,
+    reward_function=reward_system, # Using the reward system as the metric
+    # ... other adapter arguments
+)
+
+# 3. The gepa.optimize function will now use the reward system's
+# output to score and evolve the prompt candidates.
+```
 
 ## Extending the System
 
