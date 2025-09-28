@@ -1,368 +1,159 @@
 ---
-title: Reward Design
-description: The mathematical foundation for measuring and optimizing teaching effectiveness
-sidebarTitle: Reward Design
+title: The ATLAS Reward System
+description: How the ATLAS reward ensemble evaluates accuracy, teaching quality, process, and diagnostics.
+sidebarTitle: Reward System
 icon: trophy
 ---
 
-## Overview
+The ATLAS reward system is an evaluation framework designed for robustness, explainability, and cost-efficiency. It replaces a single, monolithic reward model with a multi-agent ensemble of "judges" that work together to score agent performance. The system operates on a two-tier protocol: an ensemble of efficient, small language models performs an initial evaluation, and any contentious or low-confidence results are automatically escalated to a larger, more capable arbiter model.
 
-The reward system in ATLAS quantifies teaching effectiveness through a carefully designed function that balances performance improvement, safety guarantees, and efficiency. This design directly shapes the teacher's behavior during reinforcement learning.
+This architecture provides developers with clear, principle-driven rationales for every score, calibrated uncertainty estimates, and state-of-the-art accuracy, as validated by its **93.7%** performance on the RewardBenchV2 benchmark.
 
-## Reward Function Architecture
+## Architectural Flow
 
-### Core Implementation
+The reward system's evaluation process is a multi-step workflow designed to balance cost and accuracy, as implemented in `RIM/rim.py`.
 
-The reward function implements a multi-objective optimization:
+<Steps>
+  <Step title="1. Ensemble Evaluation">
+    An evaluation begins with the **Tier 1 Small-Judge Ensemble**. As defined in `configs/rim_config.yaml`, a pool of efficient models (e.g., `gemini/gemini-2.5-flash`) are called in parallel. Each judge receives the same input but is run at a different temperature (e.g., `[0.2, 0.5, 0.8]`) to produce a diverse set of initial judgments.
+  </Step>
+
+  <Step title="2. Principle-Guided Rationale">
+    A core feature of the system is its explainability. Judges are required by their prompts (defined in `RIM/judges.py`) to provide a structured rationale for their scores. For instance, the `AccuracyJudge` must first generate and weigh a set of evaluation principles, making its final score fully auditable, while other judges like `HelpfulnessJudge` return different structured outputs like an `evidence` list.
+  </Step>
+
+  <Step title="3. Uncertainty & Disagreement Check">
+    Once the ensemble judgments are collected, the system checks for ambiguity. Escalation to the next tier is triggered if either of these conditions is met:
+    - **High Disagreement:** The standard deviation of scores from the ensemble exceeds the `variance_threshold` (e.g., `0.15`).
+    - **Low Confidence:** Any individual judge reports a high self-assessed `uncertainty` score (e.g., `> 0.3`).
+  </Step>
+
+  <Step title="4. Escalation to Arbiter">
+    If a case is flagged, it is escalated to the **Tier 2 Arbiter**. A detailed **meta-prompt** is constructed, containing the original inputs plus the full set of principles, scores, and rationales from the Tier 1 ensemble. This gives the larger, more capable model (e.g., `gemini/gemini-2.5-pro`) complete context to make a final, informed decision. If no flags are raised, the most confident judgment from the Tier 1 ensemble is used, saving cost and time.
+  </Step>
+</Steps>
+
+![ATLAS Reward System Architecture](/images/reward-system-design.png)
+
+## Reward Dimensions
+
+The system is designed to be flexible, evaluating interactions across four key dimensions. Each dimension is implemented as a separate `Judge` class in `RIM/judges.py` and can be toggled in the configuration.
+
+| Judge | Purpose | ATLAS Use Case |
+| :--- | :--- | :--- |
+| **`AccuracyJudge`** | Measures factual correctness and alignment with ground truth. | Foundational check for all tasks; primary judge for pairwise benchmarking. |
+| **`HelpfulnessJudge`** | Assesses if teacher guidance caused a positive change in student performance. | Core reward signal for training the Teacher model to be effective. |
+| **`ProcessJudge`** | Evaluates the quality and coherence of a student's plan or reasoning steps. | Rewards the Teacher for guiding students toward better problem-solving strategies. |
+| **`DiagnosticJudge`** | Judges whether the teacher correctly identified the student's underlying flaws. | Rewards the Teacher for accurate diagnostic capabilities. |
+
+## Configuration for Developers
+
+Developers can tune the reward system's behavior via `configs/rim_config.yaml` without changing code. This allows for easy adaptation to different tasks and cost constraints.
+
+```yaml title="configs/rim_config.yaml"
+rim:
+  # Controls the diversity of the Tier 1 ensemble
+  temperatures: [0.2, 0.5, 0.8]
+
+  # Sets the sensitivity for escalation due to judge disagreement
+  variance_threshold: 0.15
+
+  # Defines the models for the two-tier system
+  models:
+    small_model: "gemini/gemini-2.5-flash"
+    large_model: "gemini/gemini-2.5-pro"
+
+  # Toggle which reward dimensions to compute for a given run
+  active_judges:
+    accuracy: true
+    helpfulness: true
+    process: true
+    diagnostic: true
+
+  # Configure parallel execution for the ensemble
+  parallel_execution:
+    max_workers: 8
+```
+For different use cases, such as offline training where only process and helpfulness matter, you can create or use an alternative configuration file (e.g., `rim_offline_config.yaml`) that sets the `accuracy` and `diagnostic` flags to `false`.
+
+## Using the Reward System in Code
+
+The primary entry point for developers is the `RIMReward` class in `RIM/reward_adapter.py`. This class wraps the entire evaluation workflow.
+
+### Offline RL Training
+
+In a typical offline training run, you don't call the reward system directly. Instead, you instantiate it and pass it as an argument to the `GRPOTrainer`. The trainer then handles calling it with batches of data during the RL loop.
 
 ```python
-class AdaptiveTeachingReward:
-    """
-    Reward function for ATLAS teacher training
+# In a real training script (like train.py):
 
-    Source: trainers/teacher_rewards.py
-    """
+from trainers.grpo import GRPOTrainer
+from RIM.reward_adapter import RIMReward
+from datasets import load_dataset
 
-    def compute_reward(self,
-                      baseline_score: float,
-                      enhanced_score: float,
-                      teaching_length: int,
-                      efficiency_weight: float = 1.0) -> float:
-        """
-        Calculate reward based on performance delta and efficiency
+# 1. Load your training configuration (e.g., from Hydra)
+# grpo_config = ...
+# train_dataset = ...
 
-        Args:
-            baseline_score: Student performance without teaching
-            enhanced_score: Student performance with teaching
-            teaching_length: Tokens used for guidance
-            efficiency_weight: Scaling factor for efficiency bonus
+# 2. Instantiate the reward system
+reward_system = RIMReward(config_path='configs/rim_config.yaml')
 
-        Returns:
-            Reward signal for GRPO optimization
-        """
-        # Performance delta
-        delta = enhanced_score - baseline_score
+# 3. Initialize the GRPOTrainer
+# Note: The first argument is the model, `args` takes the config,
+# and the reward system is passed in a list to `reward_funcs`.
+trainer = GRPOTrainer(
+    model="path/to/your/teacher_model",
+    args=grpo_config,
+    reward_funcs=[reward_system],
+    train_dataset=train_dataset,
+    # ... other standard trainer arguments
+)
 
-        # Safety: Zero reward for degradation
-        if delta < 0:
-            return 0.0
-
-        # Efficiency bonus: Prefer concise teaching
-        efficiency_bonus = 100 / (100 + teaching_length)
-
-        # No improvement but correct: Partial reward
-        if delta == 0 and enhanced_score > 0.5:
-            return 0.5 * (1 + efficiency_weight * efficiency_bonus)
-
-        # Performance improvement: Full reward
-        return delta * (1 + efficiency_weight * efficiency_bonus)
+# 4. Start the training
+# The trainer will now use the multi-agent reward system internally
+trainer.train()
 ```
 
-### Mathematical Formulation
+### Online Optimization
 
-The reward function R(s, a) can be expressed as:
-
-```
-R(s, a) = {
-    0,                                           if Δ < 0 (degradation)
-    0.5 × (1 + λ × ε),                         if Δ = 0 ∧ P > 0.5 (maintained)
-    Δ × (1 + λ × ε),                           if Δ > 0 (improvement)
-}
-
-Where:
-- Δ = P_enhanced - P_baseline (performance delta)
-- ε = 100 / (100 + L) (efficiency factor)
-- λ = efficiency weight (default: 1.0)
-- L = teaching length in tokens
-```
-
-## Design Principles
-
-### 1. Non-Degradation Guarantee
-
-Zero reward for performance drops ensures safety:
+In the online optimization workflow (`optimize_teaching.py`), the reward system serves as a pluggable evaluation function. While the default process uses a `reflection_lm` to guide prompt evolution, the underlying `ATLASGEPAAdapter` is designed to use our reward system as the fitness function for its genetic algorithm. This allows you to optimize teaching prompts directly against the multi-dimensional scores produced by the reward system.
 
 ```python
-def validate_non_degradation(results: List[TeachingResult]) -> float:
-    """
-    Measure non-degradation rate across teaching interactions
-    """
-    non_degraded = [
-        r for r in results
-        if r.enhanced_score >= r.baseline_score
-    ]
-    return len(non_degraded) / len(results)
+# In optimize_teaching.py, the adapter can be configured
+# to use the reward system as its primary metric.
+
+from RIM.reward_adapter import RIMReward
+from trainers.prompt_adapter import ATLASGEPAAdapter
+
+# 1. Instantiate the reward system
+reward_system = RIMReward(config_path='configs/rim_config.yaml')
+
+# 2. Pass it to the adapter for online optimization
+adapter = ATLASGEPAAdapter(
+    teacher_model=teacher_model,
+    student_model=student_model,
+    reward_function=reward_system, # Using the reward system as the metric
+    # ... other adapter arguments
+)
+
+# 3. The gepa.optimize function will now use the reward system's
+# output to score and evolve the prompt candidates.
 ```
 
-**Empirical Result**: 97% non-degradation rate
+## Extending the System
 
-### 2. Efficiency Incentive
+The prompt-based design makes the reward system highly extensible. To add a new evaluation dimension (e.g., "Creativity"), a developer only needs to:
+1.  Create a new `CreativityJudge` class in `RIM/judges.py` that defines the evaluation prompt.
+2.  Add `creativity: true` to the `active_judges` section in the YAML configuration.
 
-The efficiency bonus encourages concise guidance:
+No changes to the core `rim.py` evaluation logic are needed. This allows for rapid adaptation to new domains and evaluation criteria.
 
-| Teaching Length | Efficiency Bonus | Effective Multiplier |
-|----------------|------------------|---------------------|
-| 50 tokens | 0.667 | 1.667× |
-| 100 tokens | 0.500 | 1.500× |
-| 200 tokens | 0.333 | 1.333× |
-| 300 tokens | 0.250 | 1.250× |
+## Performance Snapshot
 
-### 3. Performance Correlation
+Our reward system achieves a state-of-the-art **93.7%** overall accuracy on the RewardBenchV2 benchmark. This accuracy stems from our systems-based architecture, which outperforms single-model evaluators. 
 
-Direct coupling between improvement and reward:
+The value of the architecture is best seen in the performance uplift it provides to its components. The system's Tier 1 judge, `gemini-2.5-flash`, scores 77.7% on its own. By integrating it into our ensemble-and-escalation framework, the system achieves a **16-point performance increase**. This highlights how the system's design creates a result that is greater than the sum of its parts.
 
-```python
-def analyze_reward_correlation(training_data: List[Episode]) -> Dict:
-    """
-    Analyze relationship between rewards and outcomes
-    """
-    improvements = [e.performance_delta for e in training_data]
-    rewards = [e.reward for e in training_data]
+![ATLAS Reward System Performance on RewardBench V2](/images/Atlas-reward-system-bench.png)
 
-    return {
-        'pearson_r': pearsonr(improvements, rewards)[0],  # Expected: >0.8
-        'spearman_rho': spearmanr(improvements, rewards)[0],
-        'kendall_tau': kendalltau(improvements, rewards)[0]
-    }
-```
-
-## Configuration Parameters
-
-### Standard Configuration
-
-```yaml
-# configs/trainer/reward/adaptive_teaching.yaml
-degradation_penalty_multiplier: 2.0  # For future negative reward experiments
-efficiency_weight: 1.0                # Standard efficiency scaling
-max_probe_tokens: 500                 # Diagnostic probe limit
-baseline_threshold: 0.5               # Minimum correctness for partial reward
-```
-
-### Experimental Variations
-
-<Tabs>
-  <Tab title="High Efficiency">
-    ```yaml
-    efficiency_weight: 2.0  # Strong preference for conciseness
-    max_probe_tokens: 200   # Tighter token constraints
-    ```
-    **Effect**: 65% reduction in average guidance length
-  </Tab>
-
-  <Tab title="Safety Focus">
-    ```yaml
-    degradation_penalty_multiplier: 5.0  # Heavy degradation penalty
-    baseline_threshold: 0.7               # Higher correctness requirement
-    ```
-    **Effect**: 99.2% non-degradation but slower learning
-  </Tab>
-
-  <Tab title="Performance Max">
-    ```yaml
-    efficiency_weight: 0.5   # Relaxed efficiency constraint
-    max_probe_tokens: 1000   # Allow thorough diagnosis
-    ```
-    **Effect**: +18.3% accuracy but 2x token usage
-  </Tab>
-</Tabs>
-
-## Reward Shaping Strategies
-
-### Progressive Curriculum
-
-Adjust rewards during training phases:
-
-```python
-def curriculum_reward_schedule(epoch: int, base_config: RewardConfig) -> RewardConfig:
-    """
-    Progressive reward shaping across training
-    """
-    if epoch < 10:
-        # Early: Focus on safety
-        return RewardConfig(
-            efficiency_weight=0.5,
-            degradation_penalty_multiplier=3.0
-        )
-    elif epoch < 20:
-        # Middle: Balance all objectives
-        return base_config
-    else:
-        # Late: Optimize efficiency
-        return RewardConfig(
-            efficiency_weight=1.5,
-            degradation_penalty_multiplier=1.0
-        )
-```
-
-### Domain-Specific Rewards
-
-Customize rewards for different task types:
-
-```python
-class DomainAdaptiveReward(AdaptiveTeachingReward):
-    def compute_reward(self, task_type: str, **kwargs) -> float:
-        base_reward = super().compute_reward(**kwargs)
-
-        if task_type == "debugging":
-            # Prioritize correctness over efficiency
-            return base_reward * 1.2 if kwargs['enhanced_score'] > 0.9 else base_reward
-
-        elif task_type == "reasoning":
-            # Balance all factors equally
-            return base_reward
-
-        elif task_type == "coding":
-            # Heavy efficiency emphasis
-            efficiency_multiplier = 150 / (100 + kwargs['teaching_length'])
-            return base_reward * efficiency_multiplier
-```
-
-## Empirical Analysis
-
-### Reward Distribution
-
-Analysis of 10,000 training episodes:
-
-```python
-def analyze_reward_distribution(episodes: List[Episode]) -> Dict:
-    rewards = [e.reward for e in episodes]
-
-    return {
-        'mean': np.mean(rewards),           # 0.42
-        'std': np.std(rewards),              # 0.31
-        'zero_rewards': sum(r == 0 for r in rewards) / len(rewards),  # 12%
-        'max_rewards': sum(r > 0.8 for r in rewards) / len(rewards),  # 18%
-        'quartiles': np.percentile(rewards, [25, 50, 75])  # [0.15, 0.38, 0.61]
-    }
-```
-
-### Learning Dynamics
-
-Reward progression during training:
-
-| Training Phase | Avg Reward | Efficiency | Non-Degradation |
-|---------------|------------|------------|-----------------|
-| Epoch 1-5 | 0.23 | 0.42 | 89% |
-| Epoch 6-10 | 0.38 | 0.58 | 94% |
-| Epoch 11-20 | 0.51 | 0.71 | 97% |
-| Epoch 21-30 | 0.56 | 0.82 | 97% |
-
-## Optimization Impact
-
-### GRPO Integration
-
-The reward signal directly influences policy updates:
-
-```python
-def grpo_policy_update(self, trajectories: List[Trajectory]) -> Dict:
-    """
-    Update policy using reward-weighted gradients
-    """
-    for trajectory in trajectories:
-        # Compute advantages using rewards
-        advantages = self.compute_advantages(trajectory.rewards)
-
-        # Weight log probabilities by advantages
-        weighted_logprobs = trajectory.logprobs * advantages
-
-        # Policy gradient step
-        loss = -weighted_logprobs.mean()
-        loss.backward()
-
-    return {'loss': loss.item(), 'mean_reward': np.mean([t.rewards for t in trajectories])}
-```
-
-### Convergence Analysis
-
-<AccordionGroup>
-  <Accordion title="Reward Convergence">
-    Training typically converges when:
-    - Mean reward plateaus around 0.55-0.60
-    - Non-degradation rate exceeds 95%
-    - Efficiency bonus stabilizes at 0.7-0.8
-  </Accordion>
-
-  <Accordion title="Failure Modes">
-    Common issues and solutions:
-    - **Reward hacking**: Teacher provides generic advice → Add diversity penalty
-    - **Over-verbose teaching**: Ignoring efficiency → Increase efficiency_weight
-    - **Under-teaching**: Minimal intervention → Reduce efficiency_weight
-  </Accordion>
-
-  <Accordion title="Hyperparameter Sensitivity">
-    Most sensitive parameters:
-    1. efficiency_weight: ±0.5 changes behavior significantly
-    2. baseline_threshold: ±0.2 affects partial reward frequency
-    3. max_probe_tokens: ±200 impacts diagnosis quality
-  </Accordion>
-</AccordionGroup>
-
-## Advanced Techniques
-
-### Multi-Objective Optimization
-
-```python
-class MultiObjectiveReward:
-    """
-    Extended reward with multiple objectives
-    """
-    def compute_reward(self, result: TeachingResult) -> float:
-        objectives = {
-            'performance': result.performance_delta,
-            'efficiency': 100 / (100 + result.teaching_length),
-            'diversity': self.compute_diversity(result.guidance),
-            'correctness': result.enhanced_score,
-            'safety': 1.0 if result.performance_delta >= 0 else 0.0
-        }
-
-        weights = {
-            'performance': 0.35,
-            'efficiency': 0.25,
-            'diversity': 0.15,
-            'correctness': 0.20,
-            'safety': 0.05
-        }
-
-        return sum(objectives[k] * weights[k] for k in objectives)
-```
-
-### Inverse Reinforcement Learning
-
-Learn rewards from expert demonstrations:
-
-```python
-def learn_reward_function(expert_demos: List[Demonstration]) -> RewardFunction:
-    """
-    Infer reward function from expert teaching examples
-    """
-    features = extract_features(expert_demos)
-    rewards = estimate_rewards(expert_demos)
-
-    # Learn linear combination of features
-    weights = np.linalg.lstsq(features, rewards, rcond=None)[0]
-
-    return lambda state, action: np.dot(extract_state_features(state, action), weights)
-```
-
-## Next Steps
-
-<CardGroup cols={2}>
-  <Card title="RL Training Guide" icon="robot" href="/training/offline/grpo-training">
-    How rewards guide GRPO optimization
-  </Card>
-  <Card title="Performance Benchmarks" icon="chart-line" href="/benchmarks/performance-results">
-    Reward impact on final metrics
-  </Card>
-  <Card title="Custom Rewards" icon="code" href="/api-reference/trainers">
-    Implement domain-specific rewards
-  </Card>
-  <Card title="Technical Report" icon="file-pdf" href="/reference/technical-report">
-    Theoretical foundations
-  </Card>
-</CardGroup>
-
-## References
-
-- [ATLAS Technical Report](/reference/technical-report) - Section 3.3 on reward design
-- [GRPO Paper](https://arxiv.org/abs/2402.03300) - Policy gradient foundations
-- [Adaptive Teaching Protocol](/concepts/adaptive-teaching-protocol) - How rewards shape teaching behavior
+For a full analysis, see the complete [Technical Report](../REWARD_SYSTEM_TECHNICAL_REPORT).

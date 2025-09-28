@@ -4,9 +4,10 @@ from typing import Any, Callable, Dict, List, Optional, Union
 
 from gepa.core.adapter import GEPAAdapter, EvaluationBatch
 from .extraction_utils import ATLASExtractionUtils
-from .online_teaching_reward import OnlineTeachingReward
+from RIM.reward_adapter import RIMReward
 from .prompt_adapter import ATLASDataInst, ATLASTrajectory, ATLASRolloutOutput
 from .terminal_display import DisplayManager
+from .agent_instrumentation import InstrumentedAgentWrapper
 
 
 class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRolloutOutput]):
@@ -26,7 +27,9 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
     ):
         self.teacher_model = teacher_model
         self.student_model = student_model
-        self.user_agent = user_agent
+        self.user_agent_raw = user_agent
+        self.user_agent = InstrumentedAgentWrapper(user_agent, framework='auto')
+        self.available_tools = self.user_agent.get_available_tools()
         self.trace_storage_path = Path(trace_storage_path)
         self.trace_storage_dir = self.trace_storage_path.parent / self.trace_storage_path.stem
         self.trace_storage_dir.mkdir(parents=True, exist_ok=True)
@@ -211,7 +214,8 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
         teacher_prompts = [
             self._safe_format(teacher_adaptive_template,
                 question=q,
-                approach=a)
+                approach=a,
+                available_tools=self.available_tools)
             for q, a in zip(questions, student_approaches)
         ]
 
@@ -248,9 +252,11 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
         if self.display_manager:
             self.display_manager.update("student_with_teaching", text="")
 
-        enhanced_responses = self.user_agent(enhanced_prompts)
+        enhanced_responses, enhanced_trajectories = self.user_agent(enhanced_prompts)
         if not isinstance(enhanced_responses, list):
             enhanced_responses = [enhanced_responses]
+        if not isinstance(enhanced_trajectories, list):
+            enhanced_trajectories = [enhanced_trajectories]
 
         if enhanced_responses and self.display_manager:
             self.display_manager.update("student_with_teaching", text=str(enhanced_responses[0]))
@@ -258,9 +264,11 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
         if self.display_manager:
             self.display_manager.update("baseline", text="")
 
-        baseline_responses = self.user_agent(questions)
+        baseline_responses, baseline_trajectories = self.user_agent(questions)
         if not isinstance(baseline_responses, list):
             baseline_responses = [baseline_responses]
+        if not isinstance(baseline_trajectories, list):
+            baseline_trajectories = [baseline_trajectories]
 
         if baseline_responses and self.display_manager:
             self.display_manager.update("baseline", text=str(baseline_responses[0]))
@@ -275,38 +283,45 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
         enhanced_tokens = sum(count_tokens(resp) for resp in enhanced_responses)
         token_reduction = ((baseline_tokens - enhanced_tokens) / baseline_tokens * 100) if baseline_tokens > 0 else 0
 
-        if self.evaluation_config:
-            from .configurable_evaluator import ConfigurableEvaluator
-            reward_calculator = ConfigurableEvaluator(self.evaluation_config)
-        else:
-            class SimpleTokenizer:
-                def encode(self, text):
-                    return text.split()
-            reward_calculator = OnlineTeachingReward(tokenizer=SimpleTokenizer())
+        reward_calculator = RIMReward(config_path='configs/rim_config.yaml')
+        active_judges = [
+            judge for judge, active in reward_calculator.rim.active_judges.items() if active
+        ]
 
-
-        rewards = reward_calculator(
+        _, info_dicts = reward_calculator(
             prompts=questions,
             completions=teacher_responses,
-            solutions=enhanced_responses,
             ground_truths=ground_truths,
-            questions=questions,
+            student_plans=[approach for approach in student_approaches],
+            teacher_traces=teacher_responses,
+            student_traces=enhanced_trajectories,
+            return_info_dict=True,
         )
 
         detailed_metrics = {}
-        if hasattr(reward_calculator, 'last_metrics'):
-            detailed_metrics = reward_calculator.last_metrics
+        for judge in active_judges:
+            judge_rewards = [info['rewards'][judge] for info in info_dicts if judge in info['rewards']]
+            if judge_rewards:
+                detailed_metrics[judge] = sum(judge_rewards) / len(judge_rewards)
 
         for i in range(len(batch)):
+            rim_rewards = info_dicts[i]['rewards']
+
+            combined_score = (
+                sum(rim_rewards.get(judge, 0.0) for judge in active_judges) / len(active_judges)
+            ) if active_judges else 0.0
+
             output = {
                 "student_approach": student_approaches[i],
                 "teacher_response": teacher_responses[i],
                 "student_with_teaching": enhanced_responses[i],
                 "student_baseline": baseline_responses[i],
-                "reward": rewards[i],
+                "combined_score": combined_score,
+                "rim_rewards": rim_rewards,
+                "rim_explanations": info_dicts[i]['explanations'],
             }
             outputs.append(output)
-            scores.append(rewards[i])
+            scores.append(combined_score)
 
         avg_score = sum(scores) / len(scores) if scores else 0
 
@@ -314,6 +329,12 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
             "avg_reward": avg_score,
             "token_savings": token_reduction
         }
+
+        for judge in ['accuracy', 'helpfulness', 'process', 'diagnostic']:
+            if judge in detailed_metrics:
+                metrics_dict[judge] = detailed_metrics[judge]
+            else:
+                metrics_dict[judge] = 0.0
 
 
         if self.display_manager:
@@ -332,7 +353,7 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
                     "student_baseline": baseline_responses[i],
                     "student_with_teaching": enhanced_responses[i],
                     "ground_truth": ground_truths[i],
-                    "reward": rewards[i],
+                    "reward": scores[i],
                     "token_usage": {
                         "baseline_tokens": count_tokens(baseline_responses[i]),
                         "enhanced_tokens": count_tokens(enhanced_responses[i]),
@@ -382,19 +403,31 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
                 'student_with_teaching_template': "Optimize how teaching guidance is integrated into responses."
             }
 
+            component_reward_focus = {
+                'teacher_adaptive_template': ['helpfulness', 'diagnostic'],
+                'student_diagnostic_template': ['diagnostic'],
+                'student_with_teaching_template': ['accuracy', 'process']
+            }
+
             goal = target_config.get('reflection_goal') or \
                    self.reflection_instructions.get(component) or \
                    default_goals.get(component, f"Optimize {component} for better performance")
 
+            relevant_rewards = component_reward_focus.get(component, ['accuracy', 'helpfulness', 'process', 'diagnostic'])
+
             items.append({
                 "OPTIMIZATION_TARGET": component,
-                "GOAL": goal
+                "GOAL": goal,
+                "RELEVANT_RIM_REWARDS": relevant_rewards
             })
 
             if eval_batch.trajectories:
                 for trajectory, score in zip(eval_batch.trajectories, eval_batch.scores):
                     teacher_response = trajectory.get("teacher_response", "")
                     teaching_content = ATLASExtractionUtils.extract_teaching_content(teacher_response)
+
+                    rim_rewards = trajectory.get("rim_rewards", {})
+                    rim_explanations = trajectory.get("rim_explanations", {})
 
                     item = {
                         "Inputs": {
@@ -412,6 +445,8 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
                         },
                         "Performance": {
                             "score": score,
+                            "rim_rewards": rim_rewards,
+                            "rim_explanations": rim_explanations,
                         }
                     }
                     items.append(item)

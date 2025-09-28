@@ -315,6 +315,10 @@ TeacherGRPOTrainer extends GRPOTrainer to implement the two-pass teaching protoc
   </Accordion>
 </AccordionGroup>
 
+### Reward System Integration
+
+TeacherGRPOTrainer expects `reward_funcs` to supply the evaluation signal. When you pass an instance of `RIMReward`, each call returns both the aggregated reward and an information dictionary containing per-judge scores, principles, and rationales. The trainer logs these details under `rim_rewards` and `rim_explanations`, making it possible to inspect accuracy, helpfulness, process, and diagnostic scores separately. To switch configurations during an experiment, update the Hydra override so that `RIMReward` loads either `configs/rim_config.yaml` or `configs/rim_offline_config.yaml`. The trainer does not need any code changes when you modify judge prompts, thresholds, or model choices.
+
 **Source**: `trainers/teacher_grpo.py`
 
 ## SFTTrainer

@@ -1,0 +1,35 @@
+rim:
+  temperatures: [0.2, 0.5, 0.8]
+  variance_threshold: 0.15
+
+  models:
+    small_model: "gemini/gemini-2.5-flash"
+    large_model: "gemini/gemini-2.5-pro"
+
+  active_judges:
+    accuracy: false
+    helpfulness: true
+    process: true
+    diagnostic: false
+
+  model_configs:
+    default:
+      max_tokens: 32768
+      response_format: "json"
+    large:
+      max_tokens: 32768
+      response_format: "json"
+
+  consistency_rules:
+    alignment_completeness_bound: 0.1
+    completeness_helpfulness_threshold: 0.5
+    understanding_helpfulness_bound: 0.1
+    contradiction_penalty: 0.2
+    safety_violation_penalty: 0.2
+
+  anti_gaming:
+    enabled: true
+    cap_score: 0.3
+
+  parallel_execution:
+    max_workers: 8

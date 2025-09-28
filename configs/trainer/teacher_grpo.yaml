@@ -1,6 +1,6 @@
 defaults:
   - grpo
-  - reward@_global_: adaptive_teaching
+  - reward@_global_: rim_teaching
   - _self_
 
 trainer_log_name: teacher_grpo_rw_${reward_log_name}
@@ -21,7 +21,6 @@ trainer_args:
   student_diagnostic_template: ${student_diagnostic_template}
   teacher_adaptive_template: ${teacher_adaptive_template}
   student_with_teaching_template: ${student_with_teaching_template}
-  student_baseline_template: ${student_baseline_template}
 
 trainer:
   _target_: trainers.TeacherGRPOTrainer

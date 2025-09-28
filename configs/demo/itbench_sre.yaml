@@ -27,53 +27,6 @@ data:
   columns:
     question: "alerts"
 
-
-evaluation:
-  evaluation_model: gpt-5
-
-  metrics:
-    - name: root_cause_identification
-      description: "Correctly identifies the root cause entity"
-      weight: 0.4
-      criteria: |
-        Evaluate if the agent correctly identifies the root cause entity from the incident.
-        - Score 1.0 if the exact root cause entity is identified and marked as root_cause: true
-        - Score 0.7 if the root cause entity is identified but not properly marked
-        - Score 0.3 if a related entity is identified that's close to the root cause
-        - Score 0.0 if the root cause is completely wrong or missing
-
-    - name: fault_propagation_chain
-      description: "Traces the complete fault propagation path"
-      weight: 0.3
-      criteria: |
-        Evaluate the completeness and accuracy of the fault propagation chain.
-        - Score based on percentage of correct propagation links identified
-        - Each correct source->target relationship counts
-        - Consider partial credit for chains that are directionally correct
-        - Check if the chain logically connects the root cause to the symptoms
-
-    - name: json_structure_validity
-      description: "Outputs valid JSON with required fields"
-      weight: 0.2
-      criteria: |
-        Evaluate if the output is properly structured JSON.
-        - Must contain 'entities' array with at least one entity
-        - Must contain 'propagations' array (can be empty if no propagation)
-        - Each entity must have 'id' field
-        - Root cause entity should have 'root_cause: true'
-        - Each propagation must have 'source' and 'target' fields
-
-    - name: diagnostic_completeness
-      description: "Includes all relevant entities and relationships"
-      weight: 0.1
-      criteria: |
-        Evaluate the overall completeness of the diagnosis.
-        - Are all affected entities identified?
-        - Are the relationships between entities captured?
-        - Is sufficient detail provided for actionable diagnosis?
-        - Score based on coverage compared to ground truth
-
-
 seed_prompts:
   teacher_adaptive_template: |
     You are a adaptive teacher reviewing a student for SRE tasks diagnostic approach.
@@ -82,11 +35,15 @@ seed_prompts:
 
     Student Proposed Approach: {approach}
 
+    Available Tools the Student Can Use:
+    {available_tools}
+
     Review their diagnostic approach and provide guidance:
     1. Point out any missed investigation steps should be consider
     2. Identify areas they should check but haven't mentioned
-    3. Suggest better techniques for this type of incident
+    3. Suggest better techniques for this type of incident using the available tools
     4. Highlight any overlooked symptoms or correlations they should investigate
+    5. Recommend specific tools from the available set that would be most effective
 
     Focus on improving their investigation approach before they execute.
     And If Student is right and not made any mistake in there apporach then agree with the approach and tell student to go ahead.
@@ -147,65 +104,86 @@ optimization_targets:
 
 reflection_instructions:
   teacher_adaptive_template: |
-    You are optimizing the teacher's guidance for incident diagnosis.
+    OPTIMIZATION TARGET: teacher_adaptive_template
+    GOAL: Improve teaching effectiveness for SRE incident diagnosis
 
-    CURRENT ITERATION RESULTS:
-    Performance: {performance_data}
-
-    The current teaching template is:
+    CURRENT TEMPLATE:
     {current_template}
 
-    METRICS ANALYSIS:
-    - JSON correctness: {metrics[json_correctness]} (Need: 1.0 for perfect match with ground truth)
+    ITERATION RESULTS:
+    {performance_data}
 
-    The student is struggling with the above metrics.
+    RIM EVALUATION ANALYSIS:
+    Each sample includes RIM evaluation with:
+    - rim_rewards: Scores for accuracy, helpfulness, process, diagnostic
+    - rim_explanations: Principle-based reasoning for each score
+
+    INSTRUCTIONS:
+    1. Review RIM explanations for helpfulness and diagnostic scores
+    2. Identify which principles are consistently violated in low-scoring examples
+    3. Find patterns: What teaching approaches led to principle violations?
+    4. Note which principles were satisfied in high-scoring examples
 
     TASK: Generate an IMPROVED teaching template that:
-    1. Addresses the specific metric failures above
-    2. Provides more explicit guidance where scores are low
-    3. Includes concrete examples of what to look for
-    4. Ensures the student produces proper JSON with all required fields
+    - Addresses principle violations identified by RIM
+    - Incorporates patterns from high-scoring examples
+    - Ensures teaching satisfies the principles RIM uses for evaluation
 
-    Return ONLY the improved template text, maintaining the {question} and {baseline_response} placeholders.
+    Return ONLY the improved template text, maintaining {question} and {approach} placeholders.
 
   student_diagnostic_template: |
-    You are optimizing the student's initial diagnostic approach.
+    OPTIMIZATION TARGET: student_diagnostic_template
+    GOAL: Improve initial diagnostic approach for SRE incidents
 
-    CURRENT ITERATION RESULTS:
-    Performance: {performance_data}
-
-    Current diagnostic template:
+    CURRENT TEMPLATE:
     {current_template}
 
-    ANALYSIS OF FAILURES:
-    The student's diagnosis is missing key elements. Improve the template to ensure:
-    1. All entities are identified with proper IDs
-    2. Root cause is correctly marked (root_cause: true)
-    3. Propagation chains are complete with source/target/condition/effect
-    4. Output is valid JSON matching the expected schema
+    ITERATION RESULTS:
+    {performance_data}
 
-    TASK: Generate an IMPROVED diagnostic template that produces better initial diagnosis.
-    Focus on systematic investigation and proper JSON formatting.
+    RIM EVALUATION ANALYSIS:
+    Each sample includes RIM evaluation with:
+    - rim_rewards: Scores for accuracy, helpfulness, process, diagnostic
+    - rim_explanations: Principle-based reasoning for each score
 
-    Return ONLY the improved template text, maintaining the {question} placeholder.
+    INSTRUCTIONS:
+    1. Review RIM explanations for process scores
+    2. Identify which principles for plan quality are violated
+    3. Find patterns: What aspects of diagnostic approach led to low process scores?
+    4. Note which principles were satisfied in high-scoring diagnostic approaches
+
+    TASK: Generate an IMPROVED diagnostic template that:
+    - Addresses process principle violations identified by RIM
+    - Ensures diagnostic approach satisfies RIM's evaluation principles
+    - Leads to higher process scores by meeting principle requirements
+
+    Return ONLY the improved template text, maintaining {question} placeholder.
 
   student_with_teaching_template: |
-    You are optimizing how the student applies teaching.
+    OPTIMIZATION TARGET: student_with_teaching_template
+    GOAL: Improve how teaching is integrated into student response
 
-    CURRENT ITERATION RESULTS:
-    Performance with teaching: {performance_data}
-
-    Current template for applying teaching:
+    CURRENT TEMPLATE:
     {current_template}
 
-    ANALYSIS:
-    The student is not effectively using the teacher's guidance.
+    ITERATION RESULTS:
+    {performance_data}
+
+    RIM EVALUATION ANALYSIS:
+    Each sample includes RIM evaluation with:
+    - rim_rewards: Scores for accuracy, helpfulness, process, diagnostic
+    - rim_explanations: Principle-based reasoning for each score
+
+    INSTRUCTIONS:
+    1. Review RIM explanations for accuracy and helpfulness scores
+    2. Identify cases where teaching was provided but not effectively applied
+    3. Find patterns: Why did some students integrate teaching better than others?
+    4. Note which principles were satisfied when teaching was well-integrated
 
     TASK: Generate an IMPROVED template that:
-    1. Explicitly instructs the student to follow each teaching point
-    2. Ensures the student produces complete JSON output
-    3. Emphasizes checking for root causes and full propagation chains
-    4. Results in higher metric scores
+    - Addresses principle violations in how teaching is applied
+    - Ensures student effectively integrates teacher guidance
+    - Leads to higher accuracy and helpfulness scores
 
     Return ONLY the improved template text, maintaining {question} and {teaching} placeholders.
 

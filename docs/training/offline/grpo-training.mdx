@@ -236,23 +236,37 @@ gradient_accumulation_steps: 4  # Effective batch size multiplier
 gradient_checkpointing: true    # Memory vs compute tradeoff
 ```
 
-### Reward Function Configuration
+### Reward System Configuration
 
-Customize rewards for your use case:
+GRPO now consumes scores from the principle-based reward system. Instead of tuning scalar weights, point the trainer at the appropriate Hydra file and let the ensemble manage disagreement and escalation. The entry point lives in `configs/trainer/reward/rim_teaching.yaml`; it tells the trainer which reward adapter to instantiate and where to find the judge configuration.
 
 ```yaml
-# configs/reward/adaptive_teaching.yaml
-# Core reward components
-degradation_penalty_multiplier: 2.0  # Penalty for performance drops
-efficiency_weight: 1.0              # Reward for concise teaching
-baseline_threshold: 0.5             # Minimum performance for rewards
+# configs/trainer/reward/rim_teaching.yaml
+teacher_reward:
+  _target_: RIM.reward_adapter.RIMReward
+  config_path: configs/rim_offline_config.yaml
 
-# Advanced settings
-diversity_bonus: 0.1                # Encourage varied strategies
-consistency_weight: 0.2             # Reward stable performance
-max_probe_tokens: 50               # Diagnostic limit
-max_guidance_tokens: 200           # Teaching limit
+student_diagnostic_template: |
+  ...
 ```
+
+Offline runs lean on helpfulness and process, so `configs/rim_offline_config.yaml` disables accuracy and diagnostic while leaving temperatures, variance thresholds, and anti-gaming rules untouched. When you need the full four-judge evaluation, switch the `config_path` to `configs/rim_config.yaml`; no other part of the training script changes.
+
+Always explain the intention before editing the YAML. Lowering the variance threshold forces more escalations to the large judge. Raising it reduces cost but risks missing nuanced disagreements. The same pattern applies to temperature lists: fewer temperatures make the ensemble faster but less diverse.
+
+```yaml
+# configs/rim_config.yaml
+rim:
+  temperatures: [0.2, 0.5, 0.8]
+  variance_threshold: 0.15
+  active_judges:
+    accuracy: true
+    helpfulness: true
+    process: true
+    diagnostic: true
+```
+
+During training, monitor `rim_rewards` and `rim_explanations` in the logs. These fields carry the per-dimension scores and accompanying explanations so you can spot prompt regressions or misconfigured thresholds without replaying trajectories.
 
 ## Advanced Training Techniques
 
