@@ -150,10 +150,12 @@ No changes to the core `rim.py` evaluation logic are needed. This allows for rap
 
 ## Performance Snapshot
 
-Our reward system achieves a state-of-the-art **93.7%** overall accuracy on the RewardBenchV2 benchmark. This accuracy stems from our systems-based architecture, which outperforms single-model evaluators. 
+Our reward system achieves a state-of-the-art **93.7%** overall accuracy on the RewardBenchV2 benchmark. This accuracy stems from our systems-based architecture, which outperforms single-model evaluators.
 
 The value of the architecture is best seen in the performance uplift it provides to its components. The system's Tier 1 judge, `gemini-2.5-flash`, scores 77.7% on its own. By integrating it into our ensemble-and-escalation framework, the system achieves a **16-point performance increase**. This highlights how the system's design creates a result that is greater than the sum of its parts.
 
-![ATLAS Reward System Performance on RewardBench V2](/images/Atlas-reward-system-bench.png)
+![ATLAS Reward System Leaderboard on RewardBench V2](/images/reward-leaderboard.png)
+
+![ATLAS Performance by Category](/images/atlas-categories.png)
 
 For a full analysis, see the complete [Technical Report](../REWARD_SYSTEM_TECHNICAL_REPORT).
