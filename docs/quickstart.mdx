@@ -30,6 +30,7 @@ python examples/quickstart/evaluate.py \
 ```
 
 The script prints the baseline response, teacher guidance, the improved response, and RIM scores. Configure models or token limits with CLI flags when needed.
+Make sure you export both `OPENAI_API_KEY` and `GEMINI_API_KEY` before running the command.
 
 ## Path A: Use Pre-trained Models (Recommended)
 
@@ -83,14 +84,19 @@ print("Student with ATLAS: The ball costs $0.05.")
 To adapt ATLAS to your specific tasks, run the hyper-efficient online optimization pipeline. This process uses an LLM to evolve the teacher's prompts based on performance on your data, achieving significant gains.
 
 ```bash
-# Set your API credentials (e.g., OpenAI, Gemini)
+# Set the same credentials used in the quick evaluation
 export OPENAI_API_KEY="your-key-here"
+export GEMINI_API_KEY="your-gemini-key"
+
+# Optionally pin the models the optimizer will call
+export TEACHER_MODEL=gpt-4.1
+export STUDENT_MODEL=gpt-4o-mini
 
 # Run the optimization script
-./scripts/openai_agent_atlas.sh configs/optimize/default.yaml
+./scripts/openai_agent_atlas.sh configs/wrappers/openai_existing_agent.yaml
 ```
 
-This process costs approximately $10 in API inference fees and completes in about 2 hours, delivering up to a 165% performance improvement.
+You can also start from `configs/examples/quickstart.yaml`, which reuses the same wrapper with minimal overrides. The optimization loop evaluates up to 40 candidate prompts (≈$10 in API costs) and writes the best teaching strategy to `optimized_prompts.json`.
 
 ### 3. Integrate into Your Application
 

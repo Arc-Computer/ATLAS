@@ -6,7 +6,7 @@
 <br>
 [![ATLAS-8B-Thinking](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-ATLAS--8B--Thinking-blue)](https://huggingface.co/Arc-Intelligence/ATLAS-8B-Thinking)
 [![ATLAS-8B-Instruct](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-ATLAS--8B--Instruct-blue)](https://huggingface.co/Arc-Intelligence/ATLAS-8B-Instruct)
-[![Arc-ATLAS-Teach Dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-Arc--ATLAS--Teach-green)](https://huggingface.co/datasets/Arc-Intelligence/Arc-ATLAS-Teach-v0)
+[![Arc-ATLAS-Teach Dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-Arc--ATLAS--Teach-green)](https://huggingface.co/datasets/Arc-Intelligence/Arc-ATLAS-Teach-v1)
 
 </div>
 
@@ -70,6 +70,8 @@ Start by measuring how much a GPT-5 teacher and the ATLAS reward system improve 
 ### Part B · ~2 hours (optional) — Run GEPA Prompt Optimization
 Reuse the proven compatibility config and let GEPA evolve the teaching prompts.
 
+Before you start, make sure the same keys from Part A are exported—`OPENAI_API_KEY` for model calls and `GEMINI_API_KEY` for the reward judges.
+
 ```bash
 # Optionally pin the models the script will call
 export TEACHER_MODEL=gpt-4.1
@@ -94,13 +96,7 @@ That evaluate → optimize → train arc is the “self-improvement at scale” 
 
 ---
 
-## Repo Map
-- `examples/quickstart/` – scripts and docs for the fast evaluation loop.
-- `configs/` – datasets, wrapper configs, optimization recipes (see `configs/README.md`).
-- `trainers/` – core ATLAS logic: GEPA engine, adapters, instrumentation.
-- `custom_data/` – dataset loaders and utilities.
-- `wrappers/` – integrations that wrap external agents/models.
-- `docs/` – full documentation site sources.
+For a deeper tour of the codebase, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
