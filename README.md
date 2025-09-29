@@ -19,7 +19,7 @@ ATLAS is an architecture for production teams that need AI agents to improve fro
 
 Together, they form the complete learning loop shown below.
 
-Teams have deployed this loop in dual-control environments and high-stakes operations, pairing ATLAS with human supervisors to ship reliable agents in production ([Introducing ATLAS](https://www.arc.computer/blog/introducing-atlas), [Navigating Dual-Control Environments](https://www.arc.computer/blog/navigating-dual-control-environments)). The system captures interaction data, scores it for quality, adapts the models, and redeploys the improved version.
+ATLAS is designed for building production AI systems that compound knowledge over time. Rather than treating agents as static and stateless, ATLAS provides the framework for a dynamic learning loop. Interaction traces stream into the reward system, the learning engine upgrades the teacher–student core, and the refreshed policy is redeployed so production agents get demonstrably sharper with every episode. This enables the system to build a durable library of domain expertise instead of relearning the same fixes repeatedly. To learn more, read about our production use cases ([Introducing ATLAS](https://www.arc.computer/blog/introducing-atlas), [ATLAS SRE Diagnosis](https://www.arc.computer/blog/atlas-sre-diagnosis)) and the research that underpins the framework, from our reward system ([ATLAS Reward System](https://www.arc.computer/blog/ATLAS-Reward-System)) to our online optimization results ([Supercharging RL with Online Optimization](https://www.arc.computer/blog/supercharging-rl-with-online-optimization)).
 
 <div align="center">
 <img src="public/system-architecture.png" alt="ATLAS System Architecture Diagram" width="800" style="border-radius: 12px;">
