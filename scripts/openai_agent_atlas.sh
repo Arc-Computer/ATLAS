@@ -1,7 +1,16 @@
 #!/bin/bash
 
 if [ -f .env ]; then
-    export $(grep -v '^#' .env | xargs)
+    while IFS="=" read -r raw_key raw_value; do
+        key=$(echo "$raw_key" | xargs)
+        value=$(echo "$raw_value" | sed 's/[#].*$//' | xargs)
+        if [ -z "$key" ] || [[ "$key" == \#* ]]; then
+            continue
+        fi
+        if [ -z "${!key}" ]; then
+            export "${key}=${value}"
+        fi
+    done < .env
     echo "Loaded environment variables from .env"
 fi
 

@@ -10,13 +10,31 @@ from datasets import load_dataset
 
 
 def load_arc_atlas_dataset_from_hf() -> List[ATLASDataInst]:
-    dataset = load_dataset("Arc-Intelligence/Arc-ATLAS-Teach-v0", data_files="training/rl.jsonl", split="train")
+    dataset = load_dataset("Arc-Intelligence/Arc-ATLAS-Teach-v1", data_files="curriculum/arc_atlas_teach_rl.jsonl", split="train")
     result = []
     for example in dataset:
+        question = (
+            example.get("prompt")
+            or example.get("problem_text")
+            or example.get("question")
+            or example.get("input")
+            or ""
+        )
+        ground_truth = (
+            example.get("ground_truth")
+            or example.get("answer")
+            or example.get("solution")
+            or ""
+        )
+        additional_context = {
+            k: example[k]
+            for k in ["student_approach", "teacher_diagnosis", "teacher_teaching"]
+            if k in example
+        }
         result.append({
-            "question": example["prompt"],
-            "ground_truth": example["ground_truth"],
-            "additional_context": {},
+            "question": question,
+            "ground_truth": ground_truth,
+            "additional_context": additional_context,
         })
         
     return result

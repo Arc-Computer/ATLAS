@@ -18,6 +18,19 @@ There are two primary paths for getting started with ATLAS. For most users, we r
 **Quick Terminology**: In ATLAS, a "student" is any LLM or agent you want to enhance - GPT, Claude, Gemini, your custom API, etc. The "teacher" (our pre-trained ATLAS model) guides your student without modifying it.
 </Note>
 
+## Quick Evaluation (5 minutes)
+
+If you want to validate the teacher + reward loop before running the full pipeline, run:
+
+```bash
+python examples/quickstart/evaluate.py \
+  --question "Masha braided her dolls' hair..." \
+  --teacher-model gpt-5 \
+  --student-model gpt-4o-mini
+```
+
+The script prints the baseline response, teacher guidance, the improved response, and RIM scores. Configure models or token limits with CLI flags when needed.
+
 ## Path A: Use Pre-trained Models (Recommended)
 
 This path uses our pre-trained ATLAS teacher models to enhance your existing student models. It delivers immediate results with minimal setup.
