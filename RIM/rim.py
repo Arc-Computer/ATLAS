@@ -103,6 +103,9 @@ class RewardInterpretationModel:
         explanation = response.get('rationale', response.get('explanation', ''))
         principles = response.get('principles', [])
 
+        if response.get('_fallback'):
+            return None
+
         if not isinstance(score, (int, float)) or not isinstance(uncertainty, (int, float)):
             return None
 
@@ -329,5 +332,6 @@ Output JSON: {{"principles": [{{"name": str, "weight": float, "description": str
             return {
                 'score': 0.0,
                 'rationale': 'Failed to parse model response',
-                'uncertainty': 1.0
+                'uncertainty': 1.0,
+                '_fallback': True,
             }

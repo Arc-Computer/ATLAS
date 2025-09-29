@@ -132,14 +132,18 @@ print(f"Enhanced Response: {enhanced_response}")
 
 ## Wrapping Your Existing Agent
 
-ATLAS can enhance any existing AI system through configuration-based integration. Here are the three verified integration patterns:
+ATLAS can enhance any existing AI system through configuration-based integration. Start by copying the compatibility wrapper and editing the `user_agent` block:
+
+```bash
+cp configs/wrappers/openai_existing_agent.yaml configs/wrappers/your_agent.yaml
+```
+
+Then adapt one of the patterns below.
 
 ### HTTP API Integration
 
-If your agent exposes an HTTP endpoint, configure ATLAS to enhance it:
-
 ```yaml
-# configs/wrappers/your_agent.yaml
+# configs/wrappers/your_agent.yaml  (HTTP API variant)
 user_agent:
   type: custom
   config:
@@ -154,17 +158,10 @@ teacher_model: Arc-Intelligence/ATLAS-8B-Thinking
 trainset: arc-atlas-rl
 ```
 
-Run optimization:
-```bash
-./scripts/openai_agent_atlas.sh configs/wrappers/your_agent.yaml
-```
-
 ### Python Function Integration
 
-For Python-based agents, wrap your function directly:
-
 ```yaml
-# configs/wrappers/python_agent.yaml
+# configs/wrappers/your_agent.yaml  (Python function variant)
 user_agent:
   type: custom
   config:
@@ -177,10 +174,8 @@ teacher_model: Arc-Intelligence/ATLAS-8B-Thinking
 
 ### OpenAI Assistant Integration
 
-For OpenAI Assistants, use the built-in wrapper:
-
 ```yaml
-# configs/wrappers/openai_assistant.yaml
+# configs/wrappers/your_agent.yaml  (OpenAI Assistant variant)
 user_agent:
   type: openai_assistant
   config:
@@ -188,6 +183,12 @@ user_agent:
     api_key: "${OPENAI_API_KEY}"
 
 teacher_model: Arc-Intelligence/ATLAS-8B-Thinking
+```
+
+Run optimization:
+
+```bash
+./scripts/openai_agent_atlas.sh configs/wrappers/your_agent.yaml
 ```
 
 ### Production Considerations

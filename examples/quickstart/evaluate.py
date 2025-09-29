@@ -3,7 +3,12 @@
 
 import argparse
 import os
+import sys
+from pathlib import Path
 from typing import List, Sequence
+
+if __package__ in {None, ""}:
+    sys.path.append(str(Path(__file__).resolve().parents[2]))
 
 from openai import OpenAI
 
