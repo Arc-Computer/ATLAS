@@ -31,6 +31,65 @@ Teams have deployed this loop in dual-control environments and high-stakes opera
 
 📚 **[Full Documentation](https://docs.arc.computer)** for complete guides, API reference, and examples.
 
+
+---
+
+## Quickstart — Evaluate, Then Optimize
+
+Start by measuring how much a GPT-5 teacher and the ATLAS reward system improve one of your agents. Once you see the delta, graduate to the full GEPA optimization loop.
+
+### Part A · 5 minutes — Score Baseline vs Teaching
+1. Install dependencies (Python 3.11+):
+   ```bash
+   pip install -r requirements-py312.txt
+   ```
+2. Set credentials (OpenAI for models, Gemini for the reward judge):
+   ```bash
+   export OPENAI_API_KEY=sk-...
+   export GEMINI_API_KEY=your_gemini_key
+   ```
+3. Run the quick evaluator. It captures a baseline response, asks a GPT-5 teacher for guidance, has the student retry with the teaching, and scores both with `RIMReward`.
+   ```bash
+   python examples/quickstart/evaluate.py \
+     --question "Masha braided her dolls' hair..." \
+     --teacher-model gpt-5 \
+     --student-model gpt-4o-mini
+   ```
+   Example output:
+   ```text
+   ========================================================================
+   Baseline student answer:
+   ...
+   Reward (baseline): 0.342
+   Reward (with teaching): 0.781
+   Delta: +0.439
+   ========================================================================
+   ```
+   Change `--student-model` if you want to evaluate a different agent (any OpenAI Responses-compatible model).
+
+### Part B · ~2 hours (optional) — Run GEPA Prompt Optimization
+Reuse the proven compatibility config and let GEPA evolve the teaching prompts.
+
+```bash
+# Optionally pin the models the script will call
+export TEACHER_MODEL=gpt-4.1
+export STUDENT_MODEL=gpt-4o-mini
+
+./scripts/openai_agent_atlas.sh configs/wrappers/openai_existing_agent.yaml
+```
+You can also start from `configs/examples/quickstart.yaml`, which reuses the same wrapper with minimal overrides.
+OpenAI currently limits Assistants to GPT-4.x models, so the GEPA wrapper defaults to `gpt-4.1` (or you can set `TEACHER_MODEL` to `Arc-Intelligence/ATLAS-8B-Thinking`).
+This loop iterates up to 40 evaluations (≈$10 in API spend) and writes the best prompts to `optimized_prompts.json`. Attach those prompts to your agent once you’re ready for deployment.
+---
+
+## Repo Map
+- `examples/quickstart/` – scripts and docs for the fast evaluation loop.
+- `configs/` – datasets, wrapper configs, optimization recipes (see `configs/README.md`).
+- `trainers/` – core ATLAS logic: GEPA engine, adapters, instrumentation.
+- `custom_data/` – dataset loaders and utilities.
+- `wrappers/` – integrations that wrap external agents/models.
+- `docs/` – full documentation site sources.
+
 ---
 
 ## Implementation Paths
@@ -67,8 +126,9 @@ Use the **Reward System (RIM)** to evaluate agent performance with state-of-the-
   # Evaluate any interaction
   evaluation = reward_system.evaluate(prompt="<user_prompt>", response="<agent_response>")
   print(f"Score: {evaluation.score}, Rationale: {evaluation.rationale}")
+  print(f"Per-judge scores: {evaluation.judge_scores}")
   ```
-- **Expected Outcome**: A JSON object containing a reward score (0.0-1.0) and a detailed rationale. The system achieves 93.7% accuracy on RewardBench V2, outperforming all public models. Benchmarks and judge configuration are detailed in [ATLAS Reward System](https://www.arc.computer/blog/atlas-reward-system).
+- **Expected Outcome**: A lightweight result object exposing the aggregated score, rationale, and per-judge details. Advanced callers can inspect `evaluation.extra["info"]` for the raw judge payload. For batched or high-throughput evaluation, call the `RIMReward` instance directly with lists of prompts and completions. The quickstart script prints aggregated and per-judge scores by default; pass `--verbose-judges` to surface full judge traces. The system achieves 93.7% accuracy on RewardBench V2, outperforming all public models. Benchmarks and judge configuration are detailed in [ATLAS Reward System](https://www.arc.computer/blog/atlas-reward-system).
 
 ### Path 3 — Build a Custom Teacher Model
 
