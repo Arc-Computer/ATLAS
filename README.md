@@ -1,12 +1,10 @@
-# ATLAS: A Continual Learning Architecture for Production AI
+# ATLAS: A Continual Learning Framework for Production AI Agents
 
 <div align="center">
 
 <img src="public/ATLAS.png" alt="ATLAS Hero" width="900" style="border-radius: 12px;">
 <br>
-[![ATLAS-8B-Thinking](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-ATLAS--8B--Thinking-blue)](https://huggingface.co/Arc-Intelligence/ATLAS-8B-Thinking)
-[![ATLAS-8B-Instruct](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-ATLAS--8B--Instruct-blue)](https://huggingface.co/Arc-Intelligence/ATLAS-8B-Instruct)
-[![Arc-ATLAS-Teach Dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-Arc--ATLAS--Teach-green)](https://huggingface.co/datasets/Arc-Intelligence/Arc-ATLAS-Teach-v1)
+[![ATLAS-8B-Thinking](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-ATLAS--8B--Thinking-blue)](https://huggingface.co/Arc-Intelligence/ATLAS-8B-Thinking) [![ATLAS-8B-Instruct](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-ATLAS--8B--Instruct-blue)](https://huggingface.co/Arc-Intelligence/ATLAS-8B-Instruct) [![Arc-ATLAS-Teach Dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-Arc--ATLAS--Teach-green)](https://huggingface.co/datasets/Arc-Intelligence/Arc-ATLAS-Teach-v1) [![Docs](https://img.shields.io/badge/Docs-latest-green)](https://docs.arc.computer) [![Python 3.11 | 3.12](https://img.shields.io/badge/Python-3.11%20%7C%203.12-blue)](#installation)
 
 </div>
 
@@ -14,18 +12,20 @@ ATLAS is an architecture for production teams that need AI agents to improve fro
 
 1.  **Reasoning Core**: A Teacher-Student model pair that enhances agent capabilities.
 2.  **Reward System (RIM)**: Turns implicit and explicit user feedback (edits, approvals, tool usage) into a dense reward signal.
-3.  **Learning Engine**: Uses online (GEPA) and offline (GRPO) methods to update models based on rewards.
+3.  **Learning Engine**: Uses online methods like **GEPA** (Genetic-Pareto, a reflective prompt optimizer) and offline methods like **GRPO** (Group Relative Policy Optimization) to update models based on rewards.
 4.  **Persistent Memory**: Stores all interactions for analysis and retraining.
 
 Together, they form the complete learning loop shown below.
-
-ATLAS is designed for building production AI systems that compound knowledge over time. Rather than treating agents as static and stateless, ATLAS provides the framework for a dynamic learning loop. Interaction traces stream into the reward system, the learning engine upgrades the teacher–student core, and the refreshed policy is redeployed so production agents get demonstrably sharper with every episode. This enables the system to build a durable library of domain expertise instead of relearning the same fixes repeatedly. To learn more, read about our production use cases ([Introducing ATLAS](https://www.arc.computer/blog/introducing-atlas), [ATLAS SRE Diagnosis](https://www.arc.computer/blog/atlas-sre-diagnosis)) and the research that underpins the framework, from our reward system ([ATLAS Reward System](https://www.arc.computer/blog/ATLAS-Reward-System)) to our online optimization results ([Supercharging RL with Online Optimization](https://www.arc.computer/blog/supercharging-rl-with-online-optimization)).
 
 <div align="center">
 <img src="public/system-architecture.png" alt="ATLAS System Architecture Diagram" width="800" style="border-radius: 12px;">
 <br>
 <em>Figure: ATLAS keeps the agent in a learn–evaluate–update cycle.</em>
 </div>
+
+ATLAS is designed for building production AI systems that compound knowledge over time. Rather than treating agents as static and stateless, ATLAS provides the framework for a dynamic learning loop. Interaction traces stream into the reward system, the learning engine upgrades the teacher–student core, and the refreshed policy is redeployed so production agents get demonstrably sharper with every episode. This enables the system to build a durable library of domain expertise instead of relearning the same fixes repeatedly. 
+
+To learn more, read about our production use cases ([Introducing ATLAS](https://www.arc.computer/blog/introducing-atlas), [ATLAS SRE Diagnosis](https://www.arc.computer/blog/atlas-sre-diagnosis)) and the research that underpins the framework, from our reward system ([ATLAS Reward System](https://www.arc.computer/blog/ATLAS-Reward-System)) to our online optimization results ([Supercharging RL with Online Optimization](https://www.arc.computer/blog/supercharging-rl-with-online-optimization)).
 
 📄 **[Read the ATLAS Technical Report](https://docs.arc.computer/technical-report)** for comprehensive methodology and performance analysis.
 
@@ -74,8 +74,8 @@ Before you start, make sure the same keys from Part A are exported—`OPENAI_API
 
 ```bash
 # Optionally pin the models the script will call
-export TEACHER_MODEL=gpt-4.1
-export STUDENT_MODEL=gpt-4o-mini
+export TEACHER_MODEL=gpt-5
+export STUDENT_MODEL=gpt-5-mini
 
 ./scripts/openai_agent_atlas.sh configs/wrappers/openai_existing_agent.yaml
 ```
