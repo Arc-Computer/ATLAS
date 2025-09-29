@@ -126,7 +126,12 @@ def evaluate_question(
     )
 
     baseline_eval = reward.evaluate(prompt=question, response=baseline)
-    enhanced_eval = reward.evaluate(prompt=question, response=enhanced)
+    enhanced_eval = reward.evaluate(
+        prompt=question,
+        response=enhanced,
+        baseline_solutions=baseline,
+        teacher_traces=teaching,
+    )
 
     divider = "=" * 72
     print(divider)
