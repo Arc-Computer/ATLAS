@@ -82,6 +82,18 @@ OpenAI currently limits Assistants to GPT-4.x models, so the GEPA wrapper defaul
 This loop iterates up to 40 evaluations (≈$10 in API spend) and writes the best prompts to `optimized_prompts.json`. Attach those prompts to your agent once you’re ready for deployment.
 ---
 
+## How the Continual Loop Fits Together
+
+Each quickstart mode taps into the same learning cycle:
+
+1. **Evaluate (examples/quickstart/evaluate.py)** – capture baseline and teacher-guided traces, then use the RIM judges to quantify the lift. Nothing feeds back yet; this is your observation step.
+2. **Optimize (GEPA configs)** – reuse those reward deltas as fitness so the prompt optimizer keeps proposing better teaching strategies. Teacher prompts change, student responses improve, rewards climb.
+3. **Train (GRPO runs)** – when you need more than prompt tweaks, use the judged data to update the teacher weights themselves. New data → judges score it → teacher adapts → optimized prompts guide the student → repeat.
+
+That evaluate → optimize → train arc is the “self-improvement at scale” loop: fresh interactions enter RIM, the reward signal decides what to keep or discard, and ATLAS updates the components that do the teaching so the deployed agent never goes stale.
+
+---
+
 ## Repo Map
 - `examples/quickstart/` – scripts and docs for the fast evaluation loop.
 - `configs/` – datasets, wrapper configs, optimization recipes (see `configs/README.md`).
