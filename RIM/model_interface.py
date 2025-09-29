@@ -13,10 +13,15 @@ class ModelInterface:
     def call_model(self, model_name: str, prompt: str, temperature: float = 0.5, max_tokens: int = 500) -> str:
         return self._call_litellm(model_name, prompt, temperature, max_tokens)
 
+    def _is_verbose(self) -> bool:
+        value = os.getenv("RIM_VERBOSE", "0")
+        return value.lower() not in {"0", "false", "no", ""}
+
     def _call_litellm(self, model_name: str, prompt: str, temperature: float, max_tokens: int) -> str:
         try:
-            print(f"\n=== Calling {model_name} ===")
-            print(f"Temperature: {temperature}, Max tokens: {max_tokens}")
+            if self._is_verbose():
+                print(f"\n=== Calling {model_name} ===")
+                print(f"Temperature: {temperature}, Max tokens: {max_tokens}")
 
             response = completion(
                 model=model_name,
@@ -26,15 +31,18 @@ class ModelInterface:
                 response_format={"type": "json_object"}
             )
 
-            print(f"Response object: {response}")
-            print(f"Choices: {response.choices}")
+            if self._is_verbose():
+                print(f"Response object: {response}")
+                print(f"Choices: {response.choices}")
 
             content = response.choices[0].message.content
-            print(f"Content: {content}")
-            print(f"Content type: {type(content)}")
+            if self._is_verbose():
+                print(f"Content: {content}")
+                print(f"Content type: {type(content)}")
 
             if content is None:
-                print("WARNING: Content is None")
+                if self._is_verbose():
+                    print("WARNING: Content is None")
                 return json.dumps(self._default_error_payload("Empty response"))
 
             return content

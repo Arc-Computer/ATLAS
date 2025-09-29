@@ -1,8 +1,20 @@
+from dataclasses import dataclass
 from typing import List, Dict, Any, Tuple, Optional
 import yaml
 from pathlib import Path
 from RIM.rim import RewardInterpretationModel
 from RIM.judges import AccuracyJudge, HelpfulnessJudge, ProcessJudge, DiagnosticJudge
+
+
+@dataclass
+class RIMEvaluation:
+    """Structured result for single-sample reward evaluations."""
+
+    score: float
+    rationale: str
+    judge_scores: Dict[str, float]
+    judge_explanations: Dict[str, str]
+    extra: Optional[Dict[str, Any]] = None
 
 
 class RIMReward:
@@ -87,6 +99,81 @@ class RIMReward:
 
         return combined_rewards
 
+    def evaluate(
+        self,
+        prompt: str,
+        response: str,
+        **kwargs
+    ) -> RIMEvaluation:
+        """Evaluate a single prompt/response pair and return structured results.
+
+        This is a thin wrapper around the batched ``__call__`` interface used by
+        training pipelines. It exists for developer ergonomics in quickstarts or
+        ad-hoc evaluations where batching is unnecessary.
+        """
+
+        batched_keys = {
+            'ground_truths',
+            'baseline_solutions',
+            'student_plans',
+            'teacher_traces',
+            'student_traces',
+        }
+
+        call_kwargs = {}
+        for key, value in kwargs.items():
+            if key in batched_keys and not isinstance(value, list):
+                call_kwargs[key] = [value]
+            else:
+                call_kwargs[key] = value
+
+        return_raw_tensors = call_kwargs.pop('return_raw_tensors', False)
+
+        if return_raw_tensors:
+            rewards, info_dict, raw_tensors = self(
+                prompts=[prompt],
+                completions=[response],
+                return_info_dict=True,
+                return_raw_tensors=True,
+                **call_kwargs
+            )
+        else:
+            rewards, info_dict = self(
+                prompts=[prompt],
+                completions=[response],
+                return_info_dict=True,
+                **call_kwargs
+            )
+            raw_tensors = None
+
+        score = rewards[0] if rewards else 0.0
+        sample_info = info_dict[0] if info_dict else {'rewards': {}, 'explanations': {}}
+
+        judge_scores = sample_info.get('rewards', {}) or {}
+        judge_explanations = sample_info.get('explanations', {}) or {}
+
+        active_judges = [
+            judge for judge, active in self.rim.active_judges.items()
+            if active and judge in judge_explanations
+        ]
+        if not active_judges:
+            active_judges = list(judge_explanations.keys())
+
+        rationale_parts = [
+            f"{judge}: {judge_explanations[judge]}".strip()
+            for judge in active_judges
+            if judge in judge_explanations and judge_explanations[judge]
+        ]
+        rationale = "\n".join(part for part in rationale_parts if part).strip()
+
+        return RIMEvaluation(
+            score=score,
+            rationale=rationale,
+            judge_scores=judge_scores,
+            judge_explanations=judge_explanations,
+            extra={'raw_tensors': raw_tensors, 'info': sample_info}
+        )
+
     def _get_reward_descriptions(self) -> Dict[str, str]:
         return {
             'accuracy': 'Measures alignment between student answer and ground truth',
@@ -128,4 +215,3 @@ class RIMReward:
                     trajectory[key] = kwargs[key][index]
 
         return trajectory
-

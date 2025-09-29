@@ -54,7 +54,18 @@ class RewardInterpretationModel:
                 executor.submit(self._run_small_model, trajectory, reward_type, temp)
                 for temp in self.temperatures
             ]
-            samples = [future.result() for future in as_completed(futures)]
+            for future in as_completed(futures):
+                sample = future.result()
+                if sample is not None:
+                    samples.append(sample)
+
+        if not samples:
+            return self._escalate_to_large_model(
+                trajectory,
+                reward_type,
+                samples=[],
+                failure_reason="tier1_no_valid_samples",
+            )
 
         scores = [s.score for s in samples]
         uncertainties = [s.uncertainty for s in samples]
@@ -76,30 +87,87 @@ class RewardInterpretationModel:
         else:
             return self._escalate_to_large_model(trajectory, reward_type, samples)
 
-    def _run_small_model(self, trajectory: Dict[str, Any], reward_type: str, temperature: float) -> RewardSample:
+    def _run_small_model(self, trajectory: Dict[str, Any], reward_type: str, temperature: float) -> RewardSample | None:
         small_model = self.models['small_model']
 
         prompt = self._build_judge_prompt(trajectory, reward_type)
-        response = self._call_model(small_model, prompt, temperature)
+        response = self._normalize_model_output(
+            self._call_model(small_model, prompt, temperature)
+        )
+
+        if response is None:
+            return None
+
+        score = response.get('score')
+        uncertainty = response.get('uncertainty')
+        explanation = response.get('rationale', response.get('explanation', ''))
+        principles = response.get('principles', [])
+
+        if response.get('_fallback'):
+            return None
+
+        if not isinstance(score, (int, float)) or not isinstance(uncertainty, (int, float)):
+            return None
+
+        if not isinstance(explanation, str):
+            explanation = ''
+        if not isinstance(principles, list):
+            principles = []
 
         return RewardSample(
-            principles=response.get('principles', []),
-            score=response.get('score', 0.0),
-            explanation=response.get('rationale', response.get('explanation', '')),
-            uncertainty=response.get('uncertainty', 0.5),
+            principles=principles,
+            score=score,
+            explanation=explanation,
+            uncertainty=uncertainty,
             temperature=temperature
         )
 
-    def _escalate_to_large_model(self, trajectory: Dict[str, Any], reward_type: str, samples: List[RewardSample]) -> Dict[str, Any]:
+    def _escalate_to_large_model(
+        self,
+        trajectory: Dict[str, Any],
+        reward_type: str,
+        samples: List[RewardSample],
+        failure_reason: str | None = None,
+    ) -> Dict[str, Any]:
         large_model = self.models['large_model']
 
-        meta_prompt = self._build_meta_prompt(trajectory, reward_type, samples)
-        response = self._call_model(large_model, meta_prompt, 0.3)
+        meta_prompt = self._build_meta_prompt(trajectory, reward_type, samples, failure_reason)
+        response = self._normalize_model_output(
+            self._call_model(large_model, meta_prompt, 0.3)
+        )
+
+        if response is None:
+            return {
+                'score': 0.0,
+                'explanation': 'Large-judge escalation failed to produce a valid response.'
+                + (f" Reason: {failure_reason}" if failure_reason else ''),
+            }
+
+        score = response.get('score')
+        if not isinstance(score, (int, float)):
+            score = 0.0
+
+        explanation = response.get('rationale', response.get('explanation', ''))
+        if not isinstance(explanation, str):
+            explanation = ''
+
+        if failure_reason:
+            explanation = f"[{failure_reason}] {explanation}".strip()
 
         return {
-            'score': response.get('score', 0.0),
-            'explanation': response.get('rationale', response.get('explanation', ''))
+            'score': score,
+            'explanation': explanation
         }
+
+    def _normalize_model_output(self, output: Any) -> Dict[str, Any] | None:
+        if isinstance(output, str):
+            try:
+                output = json.loads(output)
+            except json.JSONDecodeError:
+                return None
+        if not isinstance(output, dict):
+            return None
+        return output
 
     def _build_judge_prompt(self, trajectory: Dict[str, Any], reward_type: str) -> str:
         base_prompt = self._get_base_prompt(reward_type)
@@ -197,15 +265,30 @@ Output JSON: {{"principles": [{{"name": str, "weight": float, "description": str
 
         return prompts[reward_type]
 
-    def _build_meta_prompt(self, trajectory: Dict[str, Any], reward_type: str, samples: List[RewardSample]) -> str:
-        samples_text = "\n\n".join([
-            f"Evaluation {i+1}:\nPrinciples: {json.dumps(s.principles)}\nScore: {s.score:.2f}\nUncertainty: {s.uncertainty:.2f}\nRationale: {s.explanation}"
-            for i, s in enumerate(samples)
-        ])
+    def _build_meta_prompt(
+        self,
+        trajectory: Dict[str, Any],
+        reward_type: str,
+        samples: List[RewardSample],
+        failure_reason: str | None = None,
+    ) -> str:
+        if samples:
+            samples_text = "\n\n".join([
+                f"Evaluation {i+1}:\nPrinciples: {json.dumps(s.principles)}\nScore: {s.score:.2f}\nUncertainty: {s.uncertainty:.2f}\nRationale: {s.explanation}"
+                for i, s in enumerate(samples)
+            ])
+        else:
+            if failure_reason:
+                samples_text = (
+                    "Tier-1 judges failed to produce parsable outputs."
+                    " Escalating directly to the arbiter model."
+                )
+            else:
+                samples_text = "Tier-1 judge outputs unavailable."
 
         return f"""Previous evaluations show disagreement or uncertainty about this response.
 
-Three evaluations with principles and reasoning:
+Tier-1 evaluations (each includes principles, score, uncertainty, rationale):
 
 {samples_text}
 
@@ -249,5 +332,6 @@ Output JSON: {{"principles": [{{"name": str, "weight": float, "description": str
             return {
                 'score': 0.0,
                 'rationale': 'Failed to parse model response',
-                'uncertainty': 1.0
+                'uncertainty': 1.0,
+                '_fallback': True,
             }

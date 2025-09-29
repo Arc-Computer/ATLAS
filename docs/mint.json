@@ -111,6 +111,7 @@
     {
       "group": "Architecture",
       "pages": [
+        "architecture/system-overview",
         "architecture/config-system"
       ]
     },

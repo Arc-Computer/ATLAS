@@ -92,7 +92,10 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
             'timeout': self.generation_config.get('timeout', 300),
         }
 
-        if 'gpt-5' in model.lower() or 'o1' in model.lower():
+        if 'o1' in model.lower():
+            completion_params['max_completion_tokens'] = self.generation_config.get('max_tokens', 2048)
+            completion_params['reasoning_effort'] = self.generation_config.get('reasoning_effort', 'medium')
+        elif 'gpt-5' in model.lower():
             completion_params['max_completion_tokens'] = self.generation_config.get('max_tokens', 2048)
             completion_params['reasoning_effort'] = self.generation_config.get('reasoning_effort', 'medium')
         else:

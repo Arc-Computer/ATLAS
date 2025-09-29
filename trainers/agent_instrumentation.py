@@ -13,7 +13,19 @@ class TrajectoryExtractor:
         trajectory_steps = []
 
         for span in spans:
-            span_dict = span.to_json() if hasattr(span, 'to_json') else {}
+            if hasattr(span, "to_json"):
+                span_json = span.to_json()
+                if isinstance(span_json, str):
+                    try:
+                        span_dict = json.loads(span_json)
+                    except json.JSONDecodeError:
+                        span_dict = {}
+                else:
+                    span_dict = span_json
+            elif isinstance(span, dict):
+                span_dict = span
+            else:
+                span_dict = {}
 
             operation = span_dict.get('attributes', {}).get('gen_ai.operation.name', 'unknown')
 

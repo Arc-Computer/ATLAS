@@ -1,117 +1,186 @@
-# ATLAS: A Hybrid RL Architecture for Compounding Intelligence
-
-<p align="center">
-  <b>Hybrid offline RL + online optimization for adaptive teacher agents. Enterprise-ready, fast to deploy, and developer-friendly.</b>
-</p>
+# ATLAS: A Continual Learning Framework for Production AI Agents
 
 <div align="center">
 
-[![ATLAS-8B-Thinking](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-ATLAS--8B--Thinking-blue)](https://huggingface.co/Arc-Intelligence/ATLAS-8B-Thinking)
-[![ATLAS-8B-Instruct](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-ATLAS--8B--Instruct-blue)](https://huggingface.co/Arc-Intelligence/ATLAS-8B-Instruct)
-[![Arc-ATLAS-Teach Dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-Arc--ATLAS--Teach-green)](https://huggingface.co/datasets/Arc-Intelligence/Arc-ATLAS-Teach-v0)
-
-<img src="public/ATLAS.png" alt="ATLAS - Adaptive Teaching and Learning Alignment System" width="1000" style="border-radius: 12px;">
+<img src="public/ATLAS.png" alt="ATLAS Hero" width="900" style="border-radius: 12px;">
+<br>
+[![ATLAS-8B-Thinking](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-ATLAS--8B--Thinking-blue)](https://huggingface.co/Arc-Intelligence/ATLAS-8B-Thinking) [![ATLAS-8B-Instruct](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-ATLAS--8B--Instruct-blue)](https://huggingface.co/Arc-Intelligence/ATLAS-8B-Instruct) [![Arc-ATLAS-Teach Dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-Arc--ATLAS--Teach-green)](https://huggingface.co/datasets/Arc-Intelligence/Arc-ATLAS-Teach-v1) [![Docs](https://img.shields.io/badge/Docs-latest-green)](https://docs.arc.computer) [![Python 3.11 | 3.12](https://img.shields.io/badge/Python-3.11%20%7C%203.12-blue)](#installation)
 
 </div>
 
----
+ATLAS is an architecture for production teams that need AI agents to improve from user interactions and feedback *after* deployment. It wraps any existing agent framework with the components required to create a closed-loop, continual learning system:
 
-ATLAS is a hybrid learning architecture that separates complex, data-intensive offline training from lightweight, production-safe online deployment. This approach creates **Compounding Intelligence**, where agents build deep, foundational skills through rigorous offline reinforcement learning (RL) and then rapidly adapt to live data in production.
+1.  **Reasoning Core**: A Teacher-Student model pair that enhances agent capabilities.
+2.  **Reward System (RIM)**: Turns implicit and explicit user feedback (edits, approvals, tool usage) into a dense reward signal.
+3.  **Learning Engine**: Uses online methods like **GEPA** (Genetic-Pareto, a reflective prompt optimizer) and offline methods like **GRPO** (Group Relative Policy Optimization) to update models based on rewards.
+4.  **Persistent Memory**: Stores all interactions for analysis and retraining.
 
-📄 **[Read the ATLAS Technical Report](https://docs.arc.computer/ATLAS-Technical-Report.pdf)** for comprehensive methodology, ablation studies, and detailed performance analysis.
-
-📚 **[Full Documentation](https://docs.arc.computer)** - Complete guides, API reference, and examples
-
----
-
-## The ATLAS Hybrid Learning Architecture
-
-<details open>
-<summary><strong>Part 1: Offline Foundation — Building Generalizable Skills</strong></summary>
-
-The foundation of ATLAS is a unique, pedagogically-informed offline RL framework that instills deep, foundational knowledge into "Teacher" agents. This process creates robust, transferable skills that generalize across domains.
-
-Our foundational research proved this works: **an agent taught a single foundational skill becomes ~6x better at performing a completely unrelated, complex enterprise task.**
-
-This robust foundation delivers consistent and reliable performance improvements across student models:
+Together, they form the complete learning loop shown below.
 
 <div align="center">
-<img src="public/performance-chart.png" alt="Student Performance: ATLAS Teacher+Student vs Student Alone - showing accuracy gains and completion rates" width="700" style="border-radius: 12px;">
+<img src="public/system-architecture.png" alt="ATLAS System Architecture Diagram" width="800" style="border-radius: 12px;">
+<br>
+<em>Figure: ATLAS keeps the agent in a learn–evaluate–update cycle.</em>
 </div>
 
-| Metric                | Teacher+Student | Student Alone | Improvement | 
-| --------------------- | --------------- | ------------- | ----------- | 
-| **Average accuracy**  | +15.7%          | baseline      | **+15.7%**  | 
-| **Maximum improvement** | +29.6%          | -             | **+29.6%**  | 
-| **Completion rate**   | ~100%           | ~69%          | **+31%**    | 
-| **Response efficiency** | ~2k tokens      | ~4k tokens    | **-50%**    | 
+ATLAS is designed for building production AI systems that compound knowledge over time. Rather than treating agents as static and stateless, ATLAS provides the framework for a dynamic learning loop. Interaction traces stream into the reward system, the learning engine upgrades the teacher–student core, and the refreshed policy is redeployed so production agents get demonstrably sharper with every episode. This enables the system to build a durable library of domain expertise instead of relearning the same fixes repeatedly. 
 
-</details>
+To learn more, read about our production use cases ([Introducing ATLAS](https://www.arc.computer/blog/introducing-atlas), [ATLAS SRE Diagnosis](https://www.arc.computer/blog/atlas-sre-diagnosis)) and the research that underpins the framework, from our reward system ([ATLAS Reward System](https://www.arc.computer/blog/ATLAS-Reward-System)) to our online optimization results ([Supercharging RL with Online Optimization](https://www.arc.computer/blog/supercharging-rl-with-online-optimization)).
 
-<details open>
-<summary><strong>Part 2: Online Optimization — Amplifying Value in Production</strong></summary>
+📄 **[Read the ATLAS Technical Report](https://docs.arc.computer/technical-report)** for comprehensive methodology and performance analysis.
 
-We supercharge these powerful foundation models in production with a hyper-efficient online loop. Using a process called **reflective mutation**, ATLAS automates reward engineering and adapts to live data safely and efficiently. This allows us to pre-train "Teacher" models that solve the cold-start problem for new tasks and customers.
+📚 **[Full Documentation](https://docs.arc.computer)** for complete guides, API reference, and examples.
 
-The results are dramatic: our ATLAS-8B-Thinking model showed a **165% performance gain in just 2 hours of online optimization.**
-
-![ATLAS Online Learning Improvement](public/atlas-online-learning.png)
-
-- **~2 hours** total optimization time
-- **~$10** in inference costs using `gemini/gemini-flash-2.5`
-- **1.97 efficiency score**, producing solutions 97% more concise than the baseline
-
-For detailed configuration walkthroughs, explore our [complete documentation](https://docs.arc.computer).
-
-</details>
 
 ---
 
-## Getting Started: Choose Your Path
+## Quickstart — Evaluate, Then Optimize
 
-<details open>
-<summary><strong>Paths to Production</strong></summary>
+Start by measuring how much a GPT-5 teacher and the ATLAS reward system improve one of your agents. Once you see the delta, graduate to the full GEPA optimization loop.
 
-### Path A: Deploy & Optimize Immediately (Low-Friction)
+### Part A · 5 minutes — Score Baseline vs Teaching
+1. Install dependencies (Python 3.11+):
+   ```bash
+   pip install -r requirements-py312.txt
+   ```
+2. Set credentials (OpenAI for models, Gemini for the reward judge):
+   ```bash
+   export OPENAI_API_KEY=sk-...
+   export GEMINI_API_KEY=your_gemini_key
+   ```
+3. Run the quick evaluator. It captures a baseline response, asks a GPT-5 teacher for guidance, has the student retry with the teaching, and scores both with `RIMReward`.
+   ```bash
+   python examples/quickstart/evaluate.py \
+     --question "Masha braided her dolls' hair..." \
+     --teacher-model gpt-5 \
+     --student-model gpt-4o-mini
+   ```
+   Example output:
+   ```text
+   ========================================================================
+   Baseline student answer:
+   ...
+   Reward (baseline): 0.342
+   Reward (with teaching): 0.781
+   Delta: +0.439
+   ========================================================================
+   ```
+   Change `--student-model` if you want to evaluate a different agent (any OpenAI Responses-compatible model).
 
-Leverage our pre-trained models to get value now. This path uses the online optimization loop to adapt a powerful Teacher model to your specific tasks.
+### Part B · ~2 hours (optional) — Run GEPA Prompt Optimization
+Reuse the proven compatibility config and let GEPA evolve the teaching prompts.
 
-1.  **Optimize ATLAS Prompts:**
-    Use this command to run the online optimization pipeline with the default Teacher and Student models.
-    ```bash
-    ./scripts/openai_agent_atlas.sh configs/optimize/default.yaml
-    ```
+Before you start, make sure the same keys from Part A are exported—`OPENAI_API_KEY` for model calls and `GEMINI_API_KEY` for the reward judges.
 
-2.  **Wrap Your Own Agent:**
-    This script wraps an existing agent (e.g., an OpenAI Assistant or custom API) in the ATLAS teaching framework for optimization.
-    ```bash
-    ./scripts/openai_agent_atlas.sh configs/wrappers/openai_existing_agent.yaml
-    ```
-*Set provider credentials (e.g., `OPENAI_API_KEY`, `GEMINI_API_KEY`), ensure Python 3.11 is active, and install deps via `requirements-py311.txt` (or LiteLLM configs if swapping models). For full configuration details, see our [documentation](https://docs.arc.computer).*
+```bash
+# Optionally pin the models the script will call
+export TEACHER_MODEL=gpt-5
+export STUDENT_MODEL=gpt-5-mini
 
-### Path B: Build a Custom Foundation (Advanced)
+./scripts/openai_agent_atlas.sh configs/wrappers/openai_existing_agent.yaml
+```
+You can also start from `configs/examples/quickstart.yaml`, which reuses the same wrapper with minimal overrides.
+OpenAI currently limits Assistants to GPT-4.x models, so the GEPA wrapper defaults to `gpt-4.1` (or you can set `TEACHER_MODEL` to `Arc-Intelligence/ATLAS-8B-Thinking`).
+This loop iterates up to 40 evaluations (≈$10 in API spend) and writes the best prompts to `optimized_prompts.json`. Attach those prompts to your agent once you’re ready for deployment.
+---
 
-For advanced users who want to perform the full offline RL training to create a custom Teacher model.
+## How the Continual Loop Fits Together
 
-1.  **SFT Warmup (1 epoch):**
-    ```bash
-    scripts/launch.sh 1 configs/run/teacher_sft.yaml report_to=null save_final_model=false num_train_epochs=1
-    ```
+Each quickstart mode taps into the same learning cycle:
 
-2.  **RL Training with vLLM (4 steps):**
-    ```bash
-    scripts/launch_with_server.sh 1 1 configs/run/teacher_rcl.yaml report_to=null max_steps=4 eval_steps=1
-    ```
-*This is a minimal smoke test. For full instructions on multi-GPU setup and production training, see the [Training Pipeline Details](#training-pipeline-details) and our [documentation](https://docs.arc.computer).*
+1. **Evaluate (examples/quickstart/evaluate.py)** – capture baseline and teacher-guided traces, then use the RIM judges to quantify the lift. Nothing feeds back yet; this is your observation step.
+2. **Optimize (GEPA configs)** – reuse those reward deltas as fitness so the prompt optimizer keeps proposing better teaching strategies. Teacher prompts change, student responses improve, rewards climb.
+3. **Train (GRPO runs)** – when you need more than prompt tweaks, use the judged data to update the teacher weights themselves. New data → judges score it → teacher adapts → optimized prompts guide the student → repeat.
+
+That evaluate → optimize → train arc is the “self-improvement at scale” loop: fresh interactions enter RIM, the reward signal decides what to keep or discard, and ATLAS updates the components that do the teaching so the deployed agent never goes stale.
+
+---
+
+For a deeper tour of the codebase, see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+---
+
+## Implementation Paths
+
+Each path maps to a component of the architecture, allowing you to adopt ATLAS incrementally.
+
+### Path 1 — Adapt an Existing Agent in Hours
+
+Use the **Learning Engine (GEPA)** and a pre-trained **Reasoning Core** to optimize your existing agent for a specific task. This is the most common starting point. See the [Online Optimization Guide](https://docs.arc.computer/training/online/optimize-with-atlas) for more.
+
+- **Prerequisites**: An agent accessible via API, Python function, or OpenAI Assistant ID. API key for a reflection model (e.g., OpenAI, Gemini).
+- **Command**:
+  ```bash
+  # Set API key for the reflection model
+  export OPENAI_API_KEY="your-key-here"
+
+  # This script wraps an existing agent and optimizes it
+  ./scripts/openai_agent_atlas.sh configs/wrappers/openai_existing_agent.yaml
+  ```
+- **Expected Outcome**: A set of optimized teaching prompts in `optimized_prompts.json`. This process takes ~2 hours and costs ~$10 in API fees, delivering a performance improvement of up to +165% (measured as reward delta on evaluation tasks). See [Supercharging RL with Online Optimization](https://www.arc.computer/blog/supercharging-rl-with-online-optimization) for experimental setup.
+
+### Path 2 — Deploy a Standalone Reward System
+
+Use the **Reward System (RIM)** to evaluate agent performance with state-of-the-art accuracy. This is useful for benchmarking or generating high-quality data for fine-tuning. Learn more in the [Reward System Documentation](https://docs.arc.computer/concepts/reward-design).
+
+- **Prerequisites**: Python environment and API access for judge models (e.g., Gemini).
+- **Code**:
+  ```python
+  from RIM.reward_adapter import RIMReward
+
+  # Initialize the reward system from its config file
+  reward_system = RIMReward(config_path='configs/rim_config.yaml')
+
+  # Evaluate any interaction
+  evaluation = reward_system.evaluate(prompt="<user_prompt>", response="<agent_response>")
+  print(f"Score: {evaluation.score}, Rationale: {evaluation.rationale}")
+  print(f"Per-judge scores: {evaluation.judge_scores}")
+  ```
+- **Expected Outcome**: A lightweight result object exposing the aggregated score, rationale, and per-judge details. Advanced callers can inspect `evaluation.extra["info"]` for the raw judge payload. For batched or high-throughput evaluation, call the `RIMReward` instance directly with lists of prompts and completions. The quickstart script prints aggregated and per-judge scores by default; pass `--verbose-judges` to surface full judge traces. The system achieves 93.7% accuracy on RewardBench V2, outperforming all public models. Benchmarks and judge configuration are detailed in [ATLAS Reward System](https://www.arc.computer/blog/atlas-reward-system).
+
+### Path 3 — Build a Custom Teacher Model
+
+Use the full **Learning Engine (GRPO)** to train a new **Reasoning Core** from scratch on your own data. This is for advanced use cases requiring deep domain specialization. Follow the [Custom Teacher Training Guide](https://docs.arc.computer/first-experiment).
+
+- **Prerequisites**: Multi-GPU environment (4-8x A100/H100 recommended).
+- **Commands (Minimal Smoke Test)**:
+  ```bash
+  # Phase 1: SFT Warmup (1 epoch)
+  scripts/launch.sh 1 configs/run/teacher_sft.yaml report_to=null save_final_model=false num_train_epochs=1
+
+  # Phase 2: RL Training with vLLM (4 steps)
+  scripts/launch_with_server.sh 1 1 configs/run/teacher_rcl.yaml report_to=null max_steps=4 eval_steps=1
+  ```
+- **Expected Outcome**: A custom-trained teacher model checkpoint. A full training run can achieve a +15.7% average accuracy lift on student agents.
+
+---
+
+## Core Distinctions
+
+<details>
+<summary><strong>Why not just fine-tune?</strong></summary>
+
+Fine-tuning (or RLHF) creates a static, updated version of a model. It is compute-intensive and risks catastrophic forgetting. When the world changes, you must repeat the entire process.
+
+ATLAS creates a **dynamic, continual learning loop**. The teacher-student architecture separates foundational knowledge from task-specific adaptation. This means:
+- **No Catastrophic Forgetting**: The student model's weights are never changed, preserving its original capabilities.
+- **Rapid Adaptation**: The online learning loop adapts to new tasks in hours, not weeks.
+- **Compounding Knowledge**: Skills learned from one task can be reapplied to others, creating a library of reusable "skill capsules."
+
+</details>
+
+<details>
+<summary><strong>Production Notes</strong></summary>
+
+- **Observability**: The system is designed for production monitoring. Log reward scores, KL divergence, and non-degradation rates to track performance. Integrate with Prometheus or Datadog.
+- **Failure Modes**: The most common failure mode is a reward collapse during RL training. This is mitigated by tuning the `beta` (KL divergence) parameter in `teacher_grpo.yaml` to prevent the policy from deviating too far from its reference.
+- **Hardware**: Offline training runs on 8xA100 (40GB) or equivalent. Online optimization is API-driven and requires no specialized hardware. Inference can run on a single 16GB GPU.
 
 </details>
 
 ---
 
 ## Installation
-
-<details open>
-<summary><strong>Environment Setup</strong></summary>
 
 Conda is recommended for environment management. The repository has been validated with Python 3.11 and 3.12.
 
@@ -124,89 +193,13 @@ bash scripts/install_py311.sh
 ```sh
 bash scripts/install_py312.sh
 ```
-
-</details>
-
----
-
-
-## Core Concepts
-
-<details open>
-<summary><strong>Key Ideas</strong></summary>
-
-- **Teacher-Student Architecture**: ATLAS trains "teacher" models that can assess any "student" model's capability and provide conditional guidance to maximize performance.
-- **Diagnostic Probing**: Teachers assess student understanding through minimal interaction (≤50 tokens) before providing guidance, enabling capability-adapted teaching.
-- **Adaptive Teaching**: Based on diagnosed capability, teachers provide targeted instruction—minimal intervention for strong students, comprehensive scaffolding for weak students.
-- **Training Methodology**: A two-phase SFT→RL pipeline where teachers learn optimal teaching strategies through reward signals based on student performance and efficiency.
-
-<div align="center">
-<img src="public/adaptive-teaching.png" alt="ATLAS Two-Pass Inference Protocol - Diagnostic probing followed by adaptive teaching based on capability assessment" width="700" style="border-radius: 12px;">
-</div>
-
-</details>
-
----
-
-## Training Pipeline Details
-
-<details open>
-<summary><strong>Offline RL Workflow</strong></summary>
-
-ATLAS uses a two-phase SFT→RL pipeline managed via [Hydra](https://hydra.cc/) configs. Training is scalable from a single GPU to distributed setups with DeepSpeed.
-
-A full production training run on 8×H100 infrastructure looks like this:
-
-
-```sh
-# Phase 1: SFT Warmup
-scripts/launch.sh 8 configs/run/teacher_sft.yaml output_dir=path/to/save/pre_rl_model
-
-# Phase 2: RL Training
-scripts/launch_with_server.sh 4 4 configs/run/teacher_rcl.yaml \
-  model_name_or_path=path/of/saved/pre_rl_model
-```
-
-For detailed guides on multi-GPU setup, RL parameters, and custom dataset specifications, visit our [documentation](https://docs.arc.computer).
-
-<div align="center">
-<img src="public/Training-Pipeline.png" alt="ATLAS Training Pipeline - Two-phase SFT to RL workflow with adaptive teaching protocol" width="700" style="border-radius: 12px;">
-</div>
-
-</details>
-
----
-
-## Project Structure & Configs
-
-<details open>
-<summary><strong>Repo Layout</strong></summary>
-
-- `train.py`: Main entry point for all experiments.
-- `configs/`: Modular Hydra configurations.
-- `trainers/`: Core training logic including GRPO, teacher rewards, and vLLM integration.
-- `custom_data/`: Dataset handlers and formatting.
-- `scripts/`: Installation and utility scripts.
-
-</details>
-
----
-
-## Troubleshooting
-
-<details open>
-<summary><strong>Common Issues</strong></summary>
-
-Server health can be verified with `curl http://$vllm_host:$vllm_port/health`. Port conflicts can be resolved by setting `vllm_port`. Authentication errors typically require `huggingface-cli login`. Memory issues can be addressed by adding `offload` to commands or reducing `per_device_train_batch_size`.
-
-For comprehensive troubleshooting, see our [documentation](https://docs.arc.computer).
-
-</details>
+For detailed setup, see the [Installation Guide](https://docs.arc.computer/installation).
 
 ---
 
 ## Citation
 
+If you use ATLAS in your research, please cite:
 ```bibtex
 @article{atlas2025,
   title     = {ATLAS: A Hybrid RL Architecture for Compounding Intelligence},

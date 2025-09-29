@@ -18,6 +18,20 @@ There are two primary paths for getting started with ATLAS. For most users, we r
 **Quick Terminology**: In ATLAS, a "student" is any LLM or agent you want to enhance - GPT, Claude, Gemini, your custom API, etc. The "teacher" (our pre-trained ATLAS model) guides your student without modifying it.
 </Note>
 
+## Quick Evaluation (5 minutes)
+
+If you want to validate the teacher + reward loop before running the full pipeline, run:
+
+```bash
+python examples/quickstart/evaluate.py \
+  --question "Masha braided her dolls' hair..." \
+  --teacher-model gpt-5 \
+  --student-model gpt-4o-mini
+```
+
+The script prints the baseline response, teacher guidance, the improved response, and RIM scores. Configure models or token limits with CLI flags when needed.
+Make sure you export both `OPENAI_API_KEY` and `GEMINI_API_KEY` before running the command.
+
 ## Path A: Use Pre-trained Models (Recommended)
 
 This path uses our pre-trained ATLAS teacher models to enhance your existing student models. It delivers immediate results with minimal setup.
@@ -70,14 +84,19 @@ print("Student with ATLAS: The ball costs $0.05.")
 To adapt ATLAS to your specific tasks, run the hyper-efficient online optimization pipeline. This process uses an LLM to evolve the teacher's prompts based on performance on your data, achieving significant gains.
 
 ```bash
-# Set your API credentials (e.g., OpenAI, Gemini)
+# Set the same credentials used in the quick evaluation
 export OPENAI_API_KEY="your-key-here"
+export GEMINI_API_KEY="your-gemini-key"
+
+# Optionally pin the models the optimizer will call
+export TEACHER_MODEL=gpt-4.1
+export STUDENT_MODEL=gpt-4o-mini
 
 # Run the optimization script
-./scripts/openai_agent_atlas.sh configs/optimize/default.yaml
+./scripts/openai_agent_atlas.sh configs/wrappers/openai_existing_agent.yaml
 ```
 
-This process costs approximately $10 in API inference fees and completes in about 2 hours, delivering up to a 165% performance improvement.
+You can also start from `configs/examples/quickstart.yaml`, which reuses the same wrapper with minimal overrides. The optimization loop evaluates up to 40 candidate prompts (≈$10 in API costs) and writes the best teaching strategy to `optimized_prompts.json`.
 
 ### 3. Integrate into Your Application
 
@@ -113,14 +132,18 @@ print(f"Enhanced Response: {enhanced_response}")
 
 ## Wrapping Your Existing Agent
 
-ATLAS can enhance any existing AI system through configuration-based integration. Here are the three verified integration patterns:
+ATLAS can enhance any existing AI system through configuration-based integration. Start by copying the compatibility wrapper and editing the `user_agent` block:
+
+```bash
+cp configs/wrappers/openai_existing_agent.yaml configs/wrappers/your_agent.yaml
+```
+
+Then adapt one of the patterns below.
 
 ### HTTP API Integration
 
-If your agent exposes an HTTP endpoint, configure ATLAS to enhance it:
-
 ```yaml
-# configs/wrappers/your_agent.yaml
+# configs/wrappers/your_agent.yaml  (HTTP API variant)
 user_agent:
   type: custom
   config:
@@ -135,17 +158,10 @@ teacher_model: Arc-Intelligence/ATLAS-8B-Thinking
 trainset: arc-atlas-rl
 ```
 
-Run optimization:
-```bash
-./scripts/openai_agent_atlas.sh configs/wrappers/your_agent.yaml
-```
-
 ### Python Function Integration
 
-For Python-based agents, wrap your function directly:
-
 ```yaml
-# configs/wrappers/python_agent.yaml
+# configs/wrappers/your_agent.yaml  (Python function variant)
 user_agent:
   type: custom
   config:
@@ -158,10 +174,8 @@ teacher_model: Arc-Intelligence/ATLAS-8B-Thinking
 
 ### OpenAI Assistant Integration
 
-For OpenAI Assistants, use the built-in wrapper:
-
 ```yaml
-# configs/wrappers/openai_assistant.yaml
+# configs/wrappers/your_agent.yaml  (OpenAI Assistant variant)
 user_agent:
   type: openai_assistant
   config:
@@ -169,6 +183,12 @@ user_agent:
     api_key: "${OPENAI_API_KEY}"
 
 teacher_model: Arc-Intelligence/ATLAS-8B-Thinking
+```
+
+Run optimization:
+
+```bash
+./scripts/openai_agent_atlas.sh configs/wrappers/your_agent.yaml
 ```
 
 ### Production Considerations

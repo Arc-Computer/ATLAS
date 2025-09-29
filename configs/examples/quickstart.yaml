@@ -1,0 +1,12 @@
+# Lightweight config that reuses the proven OpenAI compatibility wrapper.
+# Run with:
+#   ./scripts/openai_agent_atlas.sh configs/examples/quickstart.yaml
+# or override TEACHER_MODEL / STUDENT_MODEL via environment variables.
+
+defaults:
+  - ../wrappers/openai_existing_agent
+
+# Override only the fields you need. Examples:
+# teacher_model: gpt-4.1
+# student_model: gpt-4o-mini
+# max_metric_calls: 40
