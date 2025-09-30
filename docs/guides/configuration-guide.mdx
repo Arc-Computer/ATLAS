@@ -33,14 +33,14 @@ configs/
 ```
 
 <Note>
-**For Hackathon Use:** Start with `wrappers/` and `optimize/`. The `model/`, `run/`, and `trainer/` directories are for advanced RL training (see [Architecture docs](/architecture/config-system)).
+**For Getting Started:** Start with `wrappers/` and `optimize/`. The `model/`, `run/`, and `trainer/` directories are for advanced RL training (see [Architecture docs](/architecture/config-system)).
 </Note>
 
 ## Common Configurations
 
 ### Wrapping Your Existing Agent
 
-The most common hackathon task is integrating ATLAS with your existing agent. All integration configs live in `configs/wrappers/`.
+A common starting point is integrating ATLAS with your existing agent. All integration configs live in `configs/wrappers/`.
 
 <Tabs>
   <Tab title="HTTP API">
@@ -228,7 +228,7 @@ Once you have your agent wrapped, configure GEPA optimization in `configs/optimi
 
 <Tabs>
   <Tab title="API Models (No GPU)">
-    Use API models for optimization (recommended for hackathons):
+    Use API models for optimization (recommended for getting started):
 
     ```yaml
     # configs/optimize/my_api_optimization.yaml
@@ -485,7 +485,7 @@ generation_config:
 
 wandb:
   enabled: true
-  project: my-hackathon-project
+  project: my-atlas-project
   tags:
     - experiment-1
 ```
@@ -553,7 +553,7 @@ seed_prompts:
 
   <Accordion title="GEPA Parameters">
     **`max_metric_calls`**: Optimization budget (default: 50)
-    - Hackathon: 20-50 iterations (~$5-10)
+    - Development: 20-50 iterations (~$5-10)
     - Production: 100-200 iterations (~$20-40)
 
     **`gepa_config.candidate_selection_strategy`**: How to select candidates
@@ -596,7 +596,7 @@ seed_prompts:
     ```yaml
     wandb:
       enabled: true
-      project: hackathon-atlas
+      project: atlas-development
       tags:
         - experiment-1
         - baseline
