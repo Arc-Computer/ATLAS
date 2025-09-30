@@ -16,8 +16,9 @@ user_agent:
     input_key: "alerts"
     process_response: "json"
     suppress_output: true
+    capture_output_to_file: "traces/agent_execution.log"
 
-max_examples: 5
+max_examples: 1
 
 data_source:
   type: itbench_scenarios
@@ -29,7 +30,7 @@ data:
 
 seed_prompts:
   teacher_adaptive_template: |
-    You are a adaptive teacher reviewing a student for SRE tasks diagnostic approach.
+    You are an adaptive teacher reviewing a student's SRE diagnostic approach.
 
     Incident Details: {question}
 
@@ -38,27 +39,49 @@ seed_prompts:
     Available Tools the Student Can Use:
     {available_tools}
 
-    Review their diagnostic approach and provide guidance:
-    1. Point out any missed investigation steps should be consider
-    2. Identify areas they should check but haven't mentioned
-    3. Suggest better techniques for this type of incident using the available tools
-    4. Highlight any overlooked symptoms or correlations they should investigate
-    5. Recommend specific tools from the available set that would be most effective
+    Your role is to ONLY correct mistakes and address misconceptions. DO NOT:
+    - Praise correct steps or thinking
+    - Restate what the student already knows
+    - Provide unnecessary elaboration
 
-    Focus on improving their investigation approach before they execute.
-    And If Student is right and not made any mistake in there apporach then agree with the approach and tell student to go ahead.
-    Wrap your teaching in <teaching> tags.
+    ONLY provide guidance if you identify:
+    1. Missing critical investigation steps
+    2. Wrong assumptions or misconceptions about the problem
+    3. Inefficient tool usage when better alternatives exist
+    4. Overlooked symptoms that could change the diagnosis
+    5. Logical errors in their diagnostic reasoning
+
+    If the student's approach is correct and complete, simply respond:
+    <teaching>
+    Everything looks good. Proceed with your approach.
+    </teaching>
+
+    If corrections are needed, be direct and specific:
+    <teaching>
+    [Only list the specific mistakes and corrections needed]
+    </teaching>
 
   student_diagnostic_template: |
     You are an SRE agent investigating: {question}
 
-    List your diagnostic steps concisely:
-    - Key entities to check
-    - Fault propagation path
-    - Critical metrics/logs
+    Provide your thinking and diagnostic plan:
 
-    Be brief and direct. No explanations needed. 
-    And if you are confuse on any part ask the teacher for which you are providing the apporach.
+    MY THINKING:
+    - What I believe is happening based on the symptoms
+    - Why I think this is the root cause
+    - My hypothesis about the fault propagation chain
+    - Assumptions I'm making about the system
+
+    MY DIAGNOSTIC PLAN:
+    - Step 1: [What to check] because [why this matters]
+    - Step 2: [Next investigation] based on [expected finding]
+    - Step 3: [Tool to use] to verify [hypothesis]
+
+    TOOLS I WILL USE:
+    - Which specific tools and why each is relevant
+    - Expected outputs that would confirm/refute my hypothesis
+
+    Share your reasoning so the teacher can guide your thought process, not just your actions.
 
   student_with_teaching_template: |
     You are an SRE agent investigating a production incident.
@@ -92,7 +115,7 @@ seed_prompts:
 optimization_targets:
   teacher_adaptive_template:
     optimize: true
-    reflection_goal: "Improve SRE agent's ability to identify root causes and fault propagation chains"
+    reflection_goal: "Focus only on correcting mistakes and misconceptions, avoid praising correct steps"
 
   student_diagnostic_template:
     optimize: true
@@ -105,7 +128,7 @@ optimization_targets:
 reflection_instructions:
   teacher_adaptive_template: |
     OPTIMIZATION TARGET: teacher_adaptive_template
-    GOAL: Improve teaching effectiveness for SRE incident diagnosis
+    GOAL: Create a teacher that ONLY corrects mistakes, never praises correct work
 
     CURRENT TEMPLATE:
     {current_template}
@@ -118,16 +141,19 @@ reflection_instructions:
     - rim_rewards: Scores for accuracy, helpfulness, process, diagnostic
     - rim_explanations: Principle-based reasoning for each score
 
+    KEY PRINCIPLE: The teacher should be minimalist - only speak when there's an error to correct.
+
     INSTRUCTIONS:
-    1. Review RIM explanations for helpfulness and diagnostic scores
-    2. Identify which principles are consistently violated in low-scoring examples
-    3. Find patterns: What teaching approaches led to principle violations?
-    4. Note which principles were satisfied in high-scoring examples
+    1. Review helpfulness scores - HIGH scores mean teacher correctly identified what needed fixing
+    2. Look for cases where teacher gave unnecessary praise or elaboration (low helpfulness)
+    3. Identify when teacher said "everything looks good" vs provided corrections
+    4. Note if corrections were specific and actionable vs vague
 
     TASK: Generate an IMPROVED teaching template that:
-    - Addresses principle violations identified by RIM
-    - Incorporates patterns from high-scoring examples
-    - Ensures teaching satisfies the principles RIM uses for evaluation
+    - ONLY provides feedback when student makes mistakes
+    - Says "Everything looks good. Proceed." when approach is correct
+    - Never praises, restates, or elaborates on correct thinking
+    - Focuses purely on error correction and misconception addressing
 
     Return ONLY the improved template text, maintaining {question} and {approach} placeholders.
 
@@ -195,7 +221,7 @@ output: traces/itbench_optimized.json
 compatibility_mode: true
 
 gepa_config:
-  reflection_minibatch_size: 5
+  reflection_minibatch_size: 1
   candidate_selection_strategy: pareto
   skip_perfect_score: false
   perfect_score: 1.0

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 Terminal Display Manager for ATLAS Teaching Optimization
-Inspired by CrewAI's clean terminal output formatting
+for clean terminal output formatting
 """
 
 import sys
@@ -18,7 +18,7 @@ init(autoreset=True)
 
 
 class TerminalDisplay:
-    """Clean terminal display manager with CrewAI-style formatting"""
+    """Clean terminal display manager"""
 
     def __init__(self, verbose: bool = True):
         self.verbose = verbose
@@ -210,7 +210,7 @@ class TerminalDisplay:
 
         if text:
             self._print_box(
-                "ENHANCED APPROACH",
+                "STUDENT APPROACH",
                 self._format_json_output(text)
             )
         else:
@@ -226,6 +226,7 @@ class TerminalDisplay:
                 "BASELINE OUTPUT",
                 self._format_json_output(text)
             )
+            print(f"\nReward System evaluating responses...")
         else:
             print(f"\nStudent executing task without guidance (baseline)...")
 
@@ -274,6 +275,23 @@ class TerminalDisplay:
         elapsed = (datetime.now() - self.start_time).total_seconds()
         print(f"Time Elapsed: {elapsed:.1f}s")
         print("="*80)
+
+    def show_rim_evaluation(self, rewards: Dict[str, float], explanations: Dict[str, str]):
+        """Display RIM evaluation rewards and explanations in boxes"""
+        if not self.verbose:
+            return
+
+        self._print_section_header("Reward System Evaluation Results", ">")
+
+        for reward_name in ['accuracy', 'helpfulness', 'process', 'diagnostic']:
+            if reward_name in rewards:
+                score = rewards[reward_name]
+                explanation = explanations.get(reward_name, "No explanation available")
+
+                box_content = f"Score: {score:.3f}\n\n{explanation}"
+
+                title = f"{reward_name.upper()} EVALUATION"
+                self._print_box(title, box_content)
 
     def show_final_summary(self):
         """Show final summary statistics"""
@@ -354,6 +372,11 @@ class DisplayManager:
             self.display.show_comparison_results(
                 kwargs.get('baseline_score', 0.0),
                 kwargs.get('teaching_score', 0.0)
+            )
+        elif update_type == "rim_evaluation":
+            self.display.show_rim_evaluation(
+                kwargs.get('rewards', {}),
+                kwargs.get('explanations', {})
             )
         elif update_type == "progress":
             self.display.update_progress(

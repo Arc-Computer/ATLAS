@@ -184,10 +184,22 @@ class RewardInterpretationModel:
 
     def _get_base_prompt(self, reward_type: str) -> str:
         prompts = {
-            'accuracy': """Role: Expert fact-checker. Apply {constitution_principles}.
-Task: Compare {student_answer} to {ground_truth} for factual alignment.
+            'accuracy': """Role: Expert solution evaluator. Apply {constitution_principles}.
+Task: Evaluate correctness of {student_answer} compared to {ground_truth}.
 
-Step 1: Generate 2-3 principles most relevant for evaluating this response.
+Context:
+- Question/Problem: {question}
+- Student's Final Answer: {student_answer}
+- Expected Solution: {ground_truth}
+
+For structured outputs (JSON/code), check structural correctness AND semantic accuracy.
+
+Step 1: Generate 2-3 principles for evaluating accuracy.
+Consider:
+- Correctness of root cause identification
+- Accuracy of fault propagation chains
+- Completeness of the solution
+- Proper format and structure
 Assign weight (0.0 to 1.0) to each principle. Weights must sum to 1.0.
 
 Step 2: Evaluate the response against each principle.
@@ -201,15 +213,33 @@ A larger model will review uncertain cases.
 Output JSON: {{"principles": [{{"name": str, "weight": float, "description": str}}], "score": float, "rationale": str, "uncertainty": float}}""",
 
             'helpfulness': """Role: Teaching effectiveness judge. Apply {constitution_principles}.
-Task: Assess if {teacher_trace} caused improvement from {student_baseline_answer} to {student_answer}.
+Task: Evaluate if the teacher's guidance was helpful based on the student's final performance.
 
-Step 1: Generate 2-3 principles most relevant for evaluating teaching effectiveness.
+Context:
+- Question: {question}
+- Student's Initial Plan: {student_plan}
+- Teacher's Guidance: {teacher_trace}
+- Student's Final Answer: {student_answer}
+- Ground Truth: {ground_truth}
+
+IMPORTANT: Compare student's final answer to ground truth. If the answer is incorrect,
+consider what the teacher missed or failed to address in their guidance.
+
+Step 1: Generate 2-3 principles for evaluating teaching helpfulness.
+Consider:
+- Did teacher identify the critical gaps that would lead to correct answer?
+- If student's answer is wrong, what did teacher fail to catch or teach?
+- Was the guidance specific and actionable enough?
+- Did the teaching address the actual problems that led to errors?
 Assign weight (0.0 to 1.0) to each principle. Weights must sum to 1.0.
 
-Step 2: Evaluate the teaching intervention against each principle.
+Step 2: Evaluate the teaching against each principle, considering the outcome.
+- If student succeeded: Was it because of good teaching?
+- If student failed: What did the teacher miss?
 
 Step 3: Provide final score 0.0 to 1.0 based on principle-guided evaluation.
-In rationale, state how teaching performs on each principle and WHY you gave this score.
+Low scores if teaching missed critical issues that led to wrong answers.
+High scores only if teaching addressed the key gaps effectively.
 
 IMPORTANT: If uncertain, report uncertainty > 0.3.
 A larger model will review uncertain cases.
@@ -246,16 +276,28 @@ A larger model will review uncertain cases.
 
 Output JSON: {{"principles": [{{"name": str, "weight": float, "description": str}}], "score": float, "rationale": str, "uncertainty": float}}""",
 
-            'diagnostic': """Role: Teacher understanding judge. Apply {constitution_principles}.
-Task: Judge if teacher correctly identified flaws in {student_plan}.
+            'diagnostic': """Role: Student diagnostic quality judge. Apply {constitution_principles}.
+Task: Evaluate the quality of the student's initial diagnostic approach and problem-solving plan.
 
-Step 1: Generate 2-3 principles most relevant for evaluating teacher understanding.
+Context:
+- Question/Problem: {question}
+- Student's Diagnostic Approach: {student_plan}
+- Ground Truth (for reference): {ground_truth}
+
+Evaluate how well the student diagnosed the problem and planned their investigation.
+
+Step 1: Generate 2-3 principles for evaluating diagnostic quality.
+Consider:
+- Did student correctly identify key symptoms and potential root causes?
+- Is the diagnostic approach systematic and logical?
+- Did student plan to use appropriate tools and methods?
+- Are the investigation steps comprehensive and well-reasoned?
 Assign weight (0.0 to 1.0) to each principle. Weights must sum to 1.0.
 
-Step 2: Evaluate the teacher's diagnosis against each principle.
+Step 2: Evaluate the student's diagnostic approach against each principle.
 
 Step 3: Provide final score 0.0 to 1.0 based on principle-guided evaluation.
-In rationale, state how diagnosis performs on each principle and WHY you gave this score.
+In rationale, state how the diagnostic approach performs on each principle and WHY you gave this score.
 
 IMPORTANT: If uncertain, report uncertainty > 0.3.
 A larger model will review uncertain cases.

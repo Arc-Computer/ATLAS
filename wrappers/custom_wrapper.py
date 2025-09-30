@@ -102,7 +102,12 @@ class CustomWrapper:
             stderr_content = captured_stderr.getvalue()
 
             if self.config.get("capture_output_to_file"):
-                with open(self.config["capture_output_to_file"], "a") as f:
+                # Ensure directory exists
+                import os
+                log_file = self.config["capture_output_to_file"]
+                os.makedirs(os.path.dirname(log_file), exist_ok=True)
+
+                with open(log_file, "a") as f:
                     f.write(f"=== Agent Output ===\n")
                     f.write(stdout_content)
                     if stderr_content:

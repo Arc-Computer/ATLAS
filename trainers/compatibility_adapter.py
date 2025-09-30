@@ -293,7 +293,7 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
 
         _, info_dicts = reward_calculator(
             prompts=questions,
-            completions=teacher_responses,
+            completions=enhanced_responses,
             ground_truths=ground_truths,
             student_plans=[approach for approach in student_approaches],
             teacher_traces=teacher_responses,
@@ -341,6 +341,13 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
 
 
         if self.display_manager:
+            if info_dicts and len(info_dicts) > 0:
+                rim_rewards = info_dicts[0].get('rewards', {})
+                rim_explanations = info_dicts[0].get('explanations', {})
+                self.display_manager.update("rim_evaluation",
+                    rewards=rim_rewards,
+                    explanations=rim_explanations)
+
             self.display_manager.update("iteration_complete",
                 iteration=self.eval_count,
                 score=avg_score,
@@ -357,6 +364,10 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
                     "student_with_teaching": enhanced_responses[i],
                     "ground_truth": ground_truths[i],
                     "reward": scores[i],
+                    "student_trace": enhanced_trajectories[i] if i < len(enhanced_trajectories) else "",
+                    "baseline_trace": baseline_trajectories[i] if i < len(baseline_trajectories) else "",
+                    "rim_rewards": info_dicts[i]['rewards'] if i < len(info_dicts) else {},
+                    "rim_explanations": info_dicts[i]['explanations'] if i < len(info_dicts) else {},
                     "token_usage": {
                         "baseline_tokens": count_tokens(baseline_responses[i]),
                         "enhanced_tokens": count_tokens(enhanced_responses[i]),
@@ -407,7 +418,7 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
             }
 
             component_reward_focus = {
-                'teacher_adaptive_template': ['helpfulness', 'diagnostic'],
+                'teacher_adaptive_template': ['helpfulness'],
                 'student_diagnostic_template': ['diagnostic'],
                 'student_with_teaching_template': ['accuracy', 'process']
             }
