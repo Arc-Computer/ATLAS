@@ -140,13 +140,116 @@ adapter = ATLASGEPAAdapter(
 # output to score and evolve the prompt candidates.
 ```
 
-## Extending the System
+## Customizing Judge Behavior
 
-The prompt-based design makes the reward system highly extensible. To add a new evaluation dimension (e.g., "Creativity"), a developer only needs to:
-1.  Create a new `CreativityJudge` class in `RIM/judges.py` that defines the evaluation prompt.
-2.  Add `creativity: true` to the `active_judges` section in the YAML configuration.
+Judge behavior is controlled by **Python code in `RIM/judges.py`**, not YAML configuration. The config file only toggles which judges are active.
 
-No changes to the core `rim.py` evaluation logic are needed. This allows for rapid adaptation to new domains and evaluation criteria.
+### Modifying Existing Judge Prompts
+
+To customize how a judge evaluates (e.g., change what AccuracyJudge prioritizes), edit the `_build_prompt` method in `RIM/judges.py`:
+
+```python
+# RIM/judges.py
+class AccuracyJudge:
+    def _build_prompt(self, inputs: Dict[str, Any]) -> str:
+        # Customize this string to change evaluation criteria
+        return f"""Evaluate these two responses to the given prompt.
+
+Prompt: {inputs.get('prompt', '')}
+
+Response A: {inputs.get('response_a', '')}
+Response B: {inputs.get('response_b', '')}
+
+Step 1: Generate 2-3 principles that are most relevant for evaluating these responses.
+For each principle, assign a weight (percentage from 0.0 to 1.0) based on its importance.
+The weights should sum to 1.0.
+
+Step 2: Evaluate both responses against each principle.
+
+Step 3: Provide final scores from 0.0 to 1.0 for each response.
+
+Output JSON only: {{"principles": [{{"name": str, "weight": float, "description": str}}], "score_a": float, "score_b": float, "explanation": str, "uncertainty": float}}"""
+```
+
+Modify the prompt text to emphasize different criteria, add constraints, or change the evaluation structure.
+
+### Adding a New Judge
+
+To add a new evaluation dimension (e.g., "Creativity"):
+
+**Step 1: Create the judge class in `RIM/judges.py`:**
+
+```python
+# RIM/judges.py
+class CreativityJudge:
+    def __init__(self):
+        self.name = 'creativity'
+
+    def evaluate(self, inputs: Dict[str, Any], model_fn, temperature: float) -> Dict[str, Any]:
+        prompt = self._build_prompt(inputs)
+        response = model_fn(prompt, temperature)
+        return self._parse_response(response)
+
+    def _build_prompt(self, inputs: Dict[str, Any]) -> str:
+        return f"""Evaluate the creativity of this response.
+
+Question: {inputs.get('question', '')}
+Response: {inputs.get('response', '')}
+
+Score creativity from 0.0 (formulaic) to 1.0 (highly creative).
+
+Output JSON only: {{"score": float, "rationale": str, "uncertainty": float}}"""
+
+    def _parse_response(self, response: str) -> Dict[str, Any]:
+        try:
+            data = json.loads(response)
+            return {
+                'score': data.get('score', 0.0),
+                'rationale': data.get('rationale', ''),
+                'uncertainty': data.get('uncertainty', 0.5)
+            }
+        except:
+            return {'score': 0.0, 'rationale': 'Parse error', 'uncertainty': 1.0}
+```
+
+**Step 2: Register the judge in `RIM/reward_adapter.py`:**
+
+```python
+# RIM/reward_adapter.py
+from RIM.judges import AccuracyJudge, HelpfulnessJudge, ProcessJudge, DiagnosticJudge, CreativityJudge
+
+class RIMReward:
+    def __init__(self, ...):
+        # Add your new judge here
+        self.judges = {
+            'accuracy': AccuracyJudge(),
+            'helpfulness': HelpfulnessJudge(),
+            'process': ProcessJudge(),
+            'diagnostic': DiagnosticJudge(),
+            'creativity': CreativityJudge()  # New judge
+        }
+```
+
+**Step 3: Enable in `configs/rim_config.yaml`:**
+
+```yaml
+active_judges:
+  accuracy: true
+  helpfulness: true
+  process: true
+  diagnostic: true
+  creativity: true  # Enable new judge
+```
+
+### Judge Class Structure
+
+Every judge must implement:
+- `__init__()`: Set `self.name`
+- `evaluate()`: Call `_build_prompt()`, invoke model, return parsed result
+- `_build_prompt()`: Return the LLM prompt string
+- `_parse_response()`: Parse JSON response into dict with `score`, `rationale`, `uncertainty`
+
+The YAML config controls which judges run, but **all prompt logic lives in Python code**.
 
 ## Performance Snapshot
 
