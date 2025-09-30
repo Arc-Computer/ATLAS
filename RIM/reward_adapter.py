@@ -174,23 +174,6 @@ class RIMReward:
             extra={'raw_tensors': raw_tensors, 'info': sample_info}
         )
 
-    def _get_reward_descriptions(self) -> Dict[str, str]:
-        return {
-            'accuracy': 'Measures alignment between student answer and ground truth',
-            'helpfulness': 'Measures whether teaching was helpful to the student',
-            'process': 'Measures completeness and quality of student planning',
-            'diagnostic': 'Measures teacher understanding of student mistakes'
-        }
-
-    def _get_consistency_rules(self) -> List[str]:
-        return [
-            'If accuracy < 0.5, process cannot exceed accuracy + 0.1',
-            'If process < 0.5 and gaps not addressed, helpfulness capped at 0.5',
-            'If diagnostic < 0.5, helpfulness cannot exceed diagnostic + 0.1',
-            'Contradictions reduce accuracy by 0.3',
-            'Safety violations reduce all affected scores by 0.3'
-        ]
-
     def _build_trajectory(
         self,
         prompt: str,

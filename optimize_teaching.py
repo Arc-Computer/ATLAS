@@ -5,8 +5,41 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union, Callable
 
 import gepa
+import yaml
 from trainers.prompt_adapter import ATLASGEPAAdapter, ATLASDataInst
 from datasets import load_dataset
+
+
+def load_yaml_config(config_path: Union[str, Path]) -> Dict[str, Any]:
+    path = Path(config_path)
+    with open(path, 'r') as handle:
+        config = yaml.safe_load(handle) or {}
+
+    defaults = config.pop('defaults', [])
+    if not defaults:
+        return config
+
+    resolved: Dict[str, Any] = {}
+    for entry in defaults:
+        if isinstance(entry, str):
+            default_path = Path(entry)
+        elif isinstance(entry, dict):
+            key, value = next(iter(entry.items()))
+            default_path = Path(key) / value
+        else:
+            raise ValueError(f"Unsupported defaults entry: {entry}")
+
+        if not default_path.suffix:
+            default_path = default_path.with_suffix('.yaml')
+
+        if not default_path.is_absolute():
+            default_path = path.parent / default_path
+
+        default_config = load_yaml_config(default_path)
+        resolved.update(default_config)
+
+    resolved.update(config)
+    return resolved
 
 
 def load_arc_atlas_dataset_from_hf() -> List[ATLASDataInst]:
@@ -221,6 +254,19 @@ def load_dataset_from_jsonl(path: str, column_config: Optional[Dict[str, str]] =
                 })
     return dataset
 
+
+
+def load_agents_from_config(agent_config):
+    if not agent_config:
+        return {}
+    from wrappers import load_agent
+    resolved = {}
+    for name, block in agent_config.items():
+        if not isinstance(block, dict) or 'provider' not in block:
+            raise ValueError(f'Agent {name} is missing provider configuration')
+        params = block.get('params', {})
+        resolved[name] = load_agent(block['provider'], params)
+    return resolved
 
 
 
@@ -515,55 +561,62 @@ def main():
     if valset:
         print(f"Loaded {len(valset)} validation examples")
     
-    if config.get('teacher_wrapper'):
-        from wrappers import load_wrapper
-        teacher_model = load_wrapper(
-            config['teacher_wrapper']['type'],
-            config['teacher_wrapper']['config']
-        )
-    else:
-        teacher_model = args.teacher_model
+    agent_handles = load_agents_from_config(config.get('agents'))
+    
+    teacher_model = agent_handles.get('teacher')
+    if teacher_model is None:
+        if config.get('teacher_wrapper'):
+            from wrappers import load_wrapper
+            teacher_model = load_wrapper(
+                config['teacher_wrapper']['type'],
+                config['teacher_wrapper']['config']
+            )
+        else:
+            teacher_model = args.teacher_model
 
-    if config.get('student_wrapper'):
-        from wrappers import load_wrapper
-        student_model = load_wrapper(
-            config['student_wrapper']['type'],
-            config['student_wrapper']['config']
-        )
-    else:
-        student_model = args.student_model
+    student_model = agent_handles.get('student')
+    if student_model is None:
+        if config.get('student_wrapper'):
+            from wrappers import load_wrapper
+            student_model = load_wrapper(
+                config['student_wrapper']['type'],
+                config['student_wrapper']['config']
+            )
+        else:
+            student_model = args.student_model
 
-    user_agent = None
+    user_agent = agent_handles.get('target') or agent_handles.get('user_agent')
 
     if compatibility_mode:
         import sys
         import io
-        import threading
         from trainers.terminal_display import DisplayManager
 
-        agent_type = config.get('agent_type')
-        agent_config = config.get('agent_config', {})
+        if not user_agent:
+            agent_type = config.get('agent_type')
+            agent_config = config.get('agent_config', {})
+            old_stdout = sys.stdout
+            old_stderr = sys.stderr
+            sys.stdout = io.StringIO()
+            sys.stderr = io.StringIO()
+            try:
+                if agent_type:
+                    from wrappers import load_wrapper
+                    user_agent = load_wrapper(agent_type, agent_config)
+                elif config.get('user_agent'):
+                    from wrappers import load_wrapper
+                    user_agent = load_wrapper(
+                        config['user_agent']['type'],
+                        config['user_agent']['config']
+                    )
+                else:
+                    raise ValueError("Compatibility mode requires agent configuration")
+            finally:
+                sys.stdout = old_stdout
+                sys.stderr = old_stderr
 
-        old_stdout = sys.stdout
-        old_stderr = sys.stderr
-        sys.stdout = io.StringIO()
-        sys.stderr = io.StringIO()
-
-        try:
-            if agent_type:
-                from wrappers import load_wrapper
-                user_agent = load_wrapper(agent_type, agent_config)
-            elif config.get('user_agent'):
-                from wrappers import load_wrapper
-                user_agent = load_wrapper(
-                    config['user_agent']['type'],
-                    config['user_agent']['config']
-                )
-            else:
-                raise ValueError("Compatibility mode requires agent_type or user_agent configuration")
-        finally:
-            sys.stdout = old_stdout
-            sys.stderr = old_stderr
+        if not user_agent:
+            raise ValueError('Compatibility mode requires agent configuration')
 
         display_manager = DisplayManager(verbose=True)
         display_manager.start(args.max_metric_calls)

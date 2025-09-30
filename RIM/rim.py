@@ -2,6 +2,7 @@ import numpy as np
 import json
 from typing import Dict, List, Any, Tuple
 from dataclasses import dataclass
+from RIM.judge_specs import get_judge_prompt, parse_judge_payload
 import asyncio
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -160,14 +161,7 @@ class RewardInterpretationModel:
         }
 
     def _normalize_model_output(self, output: Any) -> Dict[str, Any] | None:
-        if isinstance(output, str):
-            try:
-                output = json.loads(output)
-            except json.JSONDecodeError:
-                return None
-        if not isinstance(output, dict):
-            return None
-        return output
+        return parse_judge_payload(output)
 
     def _build_judge_prompt(self, trajectory: Dict[str, Any], reward_type: str) -> str:
         base_prompt = self._get_base_prompt(reward_type)
@@ -183,129 +177,7 @@ class RewardInterpretationModel:
         )
 
     def _get_base_prompt(self, reward_type: str) -> str:
-        prompts = {
-            'accuracy': """Role: Expert solution evaluator. Apply {constitution_principles}.
-Task: Evaluate correctness of {student_answer} compared to {ground_truth}.
-
-Context:
-- Question/Problem: {question}
-- Student's Final Answer: {student_answer}
-- Expected Solution: {ground_truth}
-
-For structured outputs (JSON/code), check structural correctness AND semantic accuracy.
-
-Step 1: Generate 2-3 principles for evaluating accuracy.
-Consider:
-- Correctness of root cause identification
-- Accuracy of fault propagation chains
-- Completeness of the solution
-- Proper format and structure
-Assign weight (0.0 to 1.0) to each principle. Weights must sum to 1.0.
-
-Step 2: Evaluate the response against each principle.
-
-Step 3: Provide final score 0.0 to 1.0 based on principle-guided evaluation.
-In rationale, state how response performs on each principle and WHY you gave this score.
-
-IMPORTANT: If uncertain, report uncertainty > 0.3.
-A larger model will review uncertain cases.
-
-Output JSON: {{"principles": [{{"name": str, "weight": float, "description": str}}], "score": float, "rationale": str, "uncertainty": float}}""",
-
-            'helpfulness': """Role: Teaching effectiveness judge. Apply {constitution_principles}.
-Task: Evaluate if the teacher's guidance was helpful based on the student's final performance.
-
-Context:
-- Question: {question}
-- Student's Initial Plan: {student_plan}
-- Teacher's Guidance: {teacher_trace}
-- Student's Final Answer: {student_answer}
-- Ground Truth: {ground_truth}
-
-IMPORTANT: Compare student's final answer to ground truth. If the answer is incorrect,
-consider what the teacher missed or failed to address in their guidance.
-
-Step 1: Generate 2-3 principles for evaluating teaching helpfulness.
-Consider:
-- Did teacher identify the critical gaps that would lead to correct answer?
-- If student's answer is wrong, what did teacher fail to catch or teach?
-- Was the guidance specific and actionable enough?
-- Did the teaching address the actual problems that led to errors?
-Assign weight (0.0 to 1.0) to each principle. Weights must sum to 1.0.
-
-Step 2: Evaluate the teaching against each principle, considering the outcome.
-- If student succeeded: Was it because of good teaching?
-- If student failed: What did the teacher miss?
-
-Step 3: Provide final score 0.0 to 1.0 based on principle-guided evaluation.
-Low scores if teaching missed critical issues that led to wrong answers.
-High scores only if teaching addressed the key gaps effectively.
-
-IMPORTANT: If uncertain, report uncertainty > 0.3.
-A larger model will review uncertain cases.
-
-Output JSON: {{"principles": [{{"name": str, "weight": float, "description": str}}], "score": float, "rationale": str, "uncertainty": float}}""",
-
-            'process': """Role: Execution trajectory quality judge. Apply {constitution_principles}.
-Task: Evaluate how well student executed their plan with teaching guidance.
-
-Context:
-- Question: {question}
-- Ground Truth: {ground_truth}
-- Initial Plan: {student_plan}
-- Teaching Guidance: {teacher_trace}
-- Execution Trajectory: {student_trace}
-
-The trajectory shows step-by-step what the student actually did during execution.
-
-Step 1: Generate 2-3 principles most relevant for evaluating execution quality.
-Consider:
-- Did student follow their initial plan?
-- Did student apply the teaching guidance effectively?
-- Were reasoning steps clear and logical?
-- Did student use appropriate tools/methods?
-Assign weight (0.0 to 1.0) to each principle. Weights must sum to 1.0.
-
-Step 2: Evaluate the execution trajectory against each principle.
-
-Step 3: Provide final score 0.0 to 1.0 based on principle-guided evaluation.
-In rationale, state how execution performs on each principle and WHY you gave this score.
-
-IMPORTANT: If uncertain, report uncertainty > 0.3.
-A larger model will review uncertain cases.
-
-Output JSON: {{"principles": [{{"name": str, "weight": float, "description": str}}], "score": float, "rationale": str, "uncertainty": float}}""",
-
-            'diagnostic': """Role: Student diagnostic quality judge. Apply {constitution_principles}.
-Task: Evaluate the quality of the student's initial diagnostic approach and problem-solving plan.
-
-Context:
-- Question/Problem: {question}
-- Student's Diagnostic Approach: {student_plan}
-- Ground Truth (for reference): {ground_truth}
-
-Evaluate how well the student diagnosed the problem and planned their investigation.
-
-Step 1: Generate 2-3 principles for evaluating diagnostic quality.
-Consider:
-- Did student correctly identify key symptoms and potential root causes?
-- Is the diagnostic approach systematic and logical?
-- Did student plan to use appropriate tools and methods?
-- Are the investigation steps comprehensive and well-reasoned?
-Assign weight (0.0 to 1.0) to each principle. Weights must sum to 1.0.
-
-Step 2: Evaluate the student's diagnostic approach against each principle.
-
-Step 3: Provide final score 0.0 to 1.0 based on principle-guided evaluation.
-In rationale, state how the diagnostic approach performs on each principle and WHY you gave this score.
-
-IMPORTANT: If uncertain, report uncertainty > 0.3.
-A larger model will review uncertain cases.
-
-Output JSON: {{"principles": [{{"name": str, "weight": float, "description": str}}], "score": float, "rationale": str, "uncertainty": float}}"""
-        }
-
-        return prompts[reward_type]
+        return get_judge_prompt(reward_type)
 
     def _build_meta_prompt(
         self,

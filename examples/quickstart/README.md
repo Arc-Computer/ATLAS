@@ -22,3 +22,4 @@ Use the optional flags to change models or token limits. When ready for full pro
 ```bash
 ./scripts/openai_agent_atlas.sh configs/wrappers/openai_existing_agent.yaml
 ```
+Update `agents.target` in the YAML to point at your production connector before running the script.

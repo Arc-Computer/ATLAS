@@ -24,6 +24,7 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
         evaluation_config: Optional[Dict[str, Any]] = None,
         optimization_targets: Optional[Dict[str, Any]] = None,
         student_model: Optional[Union[str, Callable]] = None,
+        reward_config_path: str = 'configs/rim_config.yaml',
     ):
         self.teacher_model = teacher_model
         self.student_model = student_model
@@ -49,6 +50,8 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
         if isinstance(student_model, str):
             import litellm
             self.student_model = lambda prompts: self._litellm_generate(litellm, student_model, prompts)
+
+        self.reward_calculator = RIMReward(config_path=reward_config_path)
 
     def _safe_format(self, template_str: str, **kwargs) -> str:
         try:
@@ -163,6 +166,72 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
         return responses[0] if single else responses
 
 
+    def _format_judge_line(self, judge: str, score: float, explanation: str, contextual: bool = False) -> str:
+        label = judge.replace('_', ' ').title()
+        if contextual:
+            label = f"{label} (context)"
+        explanation = explanation.strip() if explanation else ""
+        base = f"{label}: {score:.2f}"
+        return f"{base} — {explanation}" if explanation else base
+
+    def _render_rim_feedback(
+        self,
+        rim_rewards: Dict[str, float],
+        rim_explanations: Dict[str, str],
+        focus_judges: List[str]
+    ) -> List[str]:
+        lines: List[str] = []
+        included = set()
+
+        for judge in focus_judges or []:
+            if judge in rim_rewards:
+                lines.append(
+                    self._format_judge_line(
+                        judge,
+                        rim_rewards[judge],
+                        rim_explanations.get(judge, "")
+                    )
+                )
+                included.add(judge)
+
+        if 'diagnostic' in rim_rewards and 'diagnostic' not in included:
+            lines.append(
+                self._format_judge_line(
+                    'diagnostic',
+                    rim_rewards['diagnostic'],
+                    rim_explanations.get('diagnostic', ''),
+                    contextual=True
+                )
+            )
+            included.add('diagnostic')
+
+        active_judges = [
+            judge for judge, active in self.reward_calculator.rim.active_judges.items() if active
+        ]
+
+        for judge in active_judges:
+            if judge in rim_rewards and judge not in included:
+                lines.append(
+                    self._format_judge_line(
+                        judge,
+                        rim_rewards[judge],
+                        rim_explanations.get(judge, '')
+                    )
+                )
+                included.add(judge)
+
+        for judge, score in rim_rewards.items():
+            if judge not in included:
+                lines.append(
+                    self._format_judge_line(
+                        judge,
+                        score,
+                        rim_explanations.get(judge, '')
+                    )
+                )
+
+        return lines or ["No RIM feedback captured."]
+
     def evaluate(
         self,
         batch: List[ATLASDataInst],
@@ -276,22 +345,14 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
         if baseline_responses and self.display_manager:
             self.display_manager.update("baseline", text=str(baseline_responses[0]))
 
-        baseline_solutions = ATLASExtractionUtils.extract_solutions(baseline_responses)
-        enhanced_solutions = ATLASExtractionUtils.extract_solutions(enhanced_responses)
-
-        def count_tokens(text):
+        def _count_tokens(text: str) -> int:
             return len(text.split())
 
-        baseline_tokens = sum(count_tokens(resp) for resp in baseline_responses)
-        enhanced_tokens = sum(count_tokens(resp) for resp in enhanced_responses)
+        baseline_tokens = sum(_count_tokens(resp) for resp in baseline_responses)
+        enhanced_tokens = sum(_count_tokens(resp) for resp in enhanced_responses)
         token_reduction = ((baseline_tokens - enhanced_tokens) / baseline_tokens * 100) if baseline_tokens > 0 else 0
 
-        reward_calculator = RIMReward(config_path='configs/rim_config.yaml')
-        active_judges = [
-            judge for judge, active in reward_calculator.rim.active_judges.items() if active
-        ]
-
-        _, info_dicts = reward_calculator(
+        _, info_dicts = self.reward_calculator(
             prompts=questions,
             completions=enhanced_responses,
             ground_truths=ground_truths,
@@ -300,6 +361,10 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
             student_traces=enhanced_trajectories,
             return_info_dict=True,
         )
+
+        active_judges = [
+            judge for judge, active in self.reward_calculator.rim.active_judges.items() if active
+        ]
 
         detailed_metrics = {}
         for judge in active_judges:
@@ -404,6 +469,9 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
         reflective_data = {}
 
         for component in components_to_update:
+            if component == 'student_diagnostic_template':
+                continue
+
             target_config = self.optimization_targets.get(component, {})
 
             if not target_config.get('optimize', True):
@@ -418,9 +486,9 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
             }
 
             component_reward_focus = {
-                'teacher_adaptive_template': ['helpfulness'],
-                'student_diagnostic_template': ['diagnostic'],
-                'student_with_teaching_template': ['accuracy', 'process']
+                'teacher_adaptive_template': ['helpfulness', 'process', 'accuracy'],
+                'student_diagnostic_template': ['diagnostic', 'process', 'accuracy'],
+                'student_with_teaching_template': ['accuracy', 'process', 'helpfulness']
             }
 
             goal = target_config.get('reflection_goal') or \
@@ -428,6 +496,7 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
                    default_goals.get(component, f"Optimize {component} for better performance")
 
             relevant_rewards = component_reward_focus.get(component, ['accuracy', 'helpfulness', 'process', 'diagnostic'])
+            relevant_rewards = list(dict.fromkeys(relevant_rewards))
 
             items.append({
                 "OPTIMIZATION_TARGET": component,
@@ -442,6 +511,12 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
 
                     rim_rewards = trajectory.get("rim_rewards", {})
                     rim_explanations = trajectory.get("rim_explanations", {})
+
+                    summary_lines = self._render_rim_feedback(
+                        rim_rewards,
+                        rim_explanations,
+                        relevant_rewards
+                    )
 
                     item = {
                         "Inputs": {
@@ -461,6 +536,7 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
                             "score": score,
                             "rim_rewards": rim_rewards,
                             "rim_explanations": rim_explanations,
+                            "rim_feedback_summary": summary_lines,
                         }
                     }
                     items.append(item)

@@ -4,19 +4,19 @@ defaults:
 max_metric_calls: 5
 capture_traces: true
 
-user_agent:
-  type: custom
-  config:
-    integration_type: python_function
-    module_path: "ITBench-SRE-Agent/src/lumyn/crew.py"
-    module_base_path: "ITBench-SRE-Agent/src"
-    class_name: "LumynCrew"
-    function_name: "kickoff"
-    process_input: "dict_wrapper"
-    input_key: "alerts"
-    process_response: "json"
-    suppress_output: true
-    capture_output_to_file: "traces/agent_execution.log"
+agents:
+  target:
+    provider: python.callable
+    params:
+      module_path: "ITBench-SRE-Agent/src/lumyn/crew.py"
+      module_base_path: "ITBench-SRE-Agent/src"
+      class_name: "LumynCrew"
+      function_name: "kickoff"
+      process_input: "dict_wrapper"
+      input_key: "alerts"
+      process_response: "json"
+      suppress_output: true
+      capture_output_to_file: "traces/agent_execution.log"
 
 max_examples: 1
 

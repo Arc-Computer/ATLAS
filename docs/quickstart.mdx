@@ -132,7 +132,7 @@ print(f"Enhanced Response: {enhanced_response}")
 
 ## Wrapping Your Existing Agent
 
-ATLAS can enhance any existing AI system through configuration-based integration. Start by copying the compatibility wrapper and editing the `user_agent` block:
+ATLAS can enhance any existing AI system through configuration-based integration. Copy the compatibility wrapper and customize the `agents.target` block:
 
 ```bash
 cp configs/wrappers/openai_existing_agent.yaml configs/wrappers/your_agent.yaml
@@ -143,16 +143,15 @@ Then adapt one of the patterns below.
 ### HTTP API Integration
 
 ```yaml
-# configs/wrappers/your_agent.yaml  (HTTP API variant)
-user_agent:
-  type: custom
-  config:
-    integration_type: http_api
-    endpoint: "http://localhost:8000/chat"
-    prompt_field: "message"
-    response_field: "response"
-    headers:
-      Authorization: "Bearer YOUR_API_KEY"
+agents:
+  target:
+    provider: http.api
+    params:
+      endpoint: "http://localhost:8000/chat"
+      prompt_field: "message"
+      response_field: "response"
+      headers:
+        Authorization: "Bearer YOUR_API_KEY"
 
 teacher_model: Arc-Intelligence/ATLAS-8B-Thinking
 trainset: arc-atlas-rl
@@ -161,13 +160,12 @@ trainset: arc-atlas-rl
 ### Python Function Integration
 
 ```yaml
-# configs/wrappers/your_agent.yaml  (Python function variant)
-user_agent:
-  type: custom
-  config:
-    integration_type: python_function
-    module_path: "/path/to/your/agent.py"
-    function_name: "generate"
+agents:
+  target:
+    provider: python.callable
+    params:
+      module_path: "/path/to/your/agent.py"
+      function_name: "generate"
 
 teacher_model: Arc-Intelligence/ATLAS-8B-Thinking
 ```
@@ -175,12 +173,12 @@ teacher_model: Arc-Intelligence/ATLAS-8B-Thinking
 ### OpenAI Assistant Integration
 
 ```yaml
-# configs/wrappers/your_agent.yaml  (OpenAI Assistant variant)
-user_agent:
-  type: openai_assistant
-  config:
-    assistant_id: "asst_xxx"  # Your assistant ID
-    api_key: "${OPENAI_API_KEY}"
+agents:
+  target:
+    provider: openai.assistant
+    params:
+      assistant_id: "asst_xxx"
+      api_key: "${OPENAI_API_KEY}"
 
 teacher_model: Arc-Intelligence/ATLAS-8B-Thinking
 ```
