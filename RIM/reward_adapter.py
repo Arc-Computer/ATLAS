@@ -71,6 +71,7 @@ class RIMReward:
             )
 
             result = self.rim.evaluate(trajectory)
+            self._apply_consistency_rules(result['rewards'], result['explanations'])
 
             for judge in result['rewards']:
                 if judge in all_rewards:
@@ -98,6 +99,42 @@ class RIMReward:
             return combined_rewards, info_dict
 
         return combined_rewards
+
+
+    def _apply_consistency_rules(self, rewards: Dict[str, float], explanations: Dict[str, str]) -> None:
+        if not rewards:
+            return
+
+        def _clamp(value: float) -> float:
+            return max(0.0, min(1.0, value))
+
+        def _update(judge: str, value: float, note: str) -> None:
+            rewards[judge] = _clamp(value)
+            if not note:
+                return
+            explanation = explanations.get(judge, '')
+            note_text = f"[Consistency] {note}"
+            explanations[judge] = f"{explanation}\n{note_text}".strip() if explanation else note_text
+
+        accuracy = rewards.get('accuracy')
+        process = rewards.get('process')
+        helpfulness = rewards.get('helpfulness')
+        diagnostic = rewards.get('diagnostic')
+
+        if accuracy is not None and process is not None and accuracy < process - 0.1:
+            _update('process', min(process, accuracy + 0.1), 'Process capped by accuracy + 0.1')
+            process = rewards.get('process')
+
+        if process is not None and helpfulness is not None and process < 0.5 and helpfulness > 0.5:
+            _update('helpfulness', min(helpfulness, 0.5), 'Helpfulness limited when process < 0.5')
+            helpfulness = rewards.get('helpfulness')
+
+        if diagnostic is not None and helpfulness is not None and diagnostic < helpfulness - 0.1:
+            _update('helpfulness', min(helpfulness, diagnostic + 0.1), 'Helpfulness capped by diagnostic + 0.1')
+
+        for judge in ('accuracy', 'process', 'helpfulness', 'diagnostic'):
+            if judge in rewards:
+                rewards[judge] = _clamp(rewards[judge])
 
     def evaluate(
         self,
@@ -173,23 +210,6 @@ class RIMReward:
             judge_explanations=judge_explanations,
             extra={'raw_tensors': raw_tensors, 'info': sample_info}
         )
-
-    def _get_reward_descriptions(self) -> Dict[str, str]:
-        return {
-            'accuracy': 'Measures alignment between student answer and ground truth',
-            'helpfulness': 'Measures whether teaching was helpful to the student',
-            'process': 'Measures completeness and quality of student planning',
-            'diagnostic': 'Measures teacher understanding of student mistakes'
-        }
-
-    def _get_consistency_rules(self) -> List[str]:
-        return [
-            'If accuracy < 0.5, process cannot exceed accuracy + 0.1',
-            'If process < 0.5 and gaps not addressed, helpfulness capped at 0.5',
-            'If diagnostic < 0.5, helpfulness cannot exceed diagnostic + 0.1',
-            'Contradictions reduce accuracy by 0.3',
-            'Safety violations reduce all affected scores by 0.3'
-        ]
 
     def _build_trajectory(
         self,

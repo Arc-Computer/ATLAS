@@ -2,9 +2,16 @@
 
 | File | Use Case |
 |------|----------|
-| `openai_existing_agent.yaml` | Compatibility mode that wraps an existing OpenAI agent (Responses/Assistants). Ideal for GEPA optimization after the quick evaluation. |
-| `openai_config.yaml` | Creates both teacher and student wrappers using OpenAI models (Responses API). Useful when you want ATLAS to instantiate both ends. |
+| `openai_existing_agent.yaml` | Compatibility harness for an existing production agent defined through the `agents.target` block. |
+| `openai_config.yaml` | Runs ATLAS with both teacher and student hosted through OpenAI Assistants using the `agents` schema. |
 
-To integrate a different agent, copy `openai_existing_agent.yaml` (e.g., `cp configs/wrappers/openai_existing_agent.yaml configs/wrappers/your_agent.yaml`) and adjust the `user_agent` block. The wrappers support HTTP APIs, Python functions, and OpenAI Assistants—see the docs for concrete examples.
+All wrapper configs share the `agents:` map. Each entry specifies a `provider` and a `params` dictionary that plugs into the wrapper registry located at `wrappers/providers/`.
 
-Wrapper types map to implementations in `wrappers/openai/` or `wrappers/custom_wrapper.py`.
+Built-in providers:
+- `openai.assistant`
+- `openai.sdk`
+- `http.api`
+- `python.callable`
+- `cli.command`
+
+Copy one of the configs, adjust the providers you need, and point the optimization script at the new file.

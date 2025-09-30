@@ -1,23 +1,23 @@
 defaults:
   - ../optimize/default
 
-teacher_wrapper:
-  type: openai_assistant
-  config:
-    name: "ATLAS Teacher"
-    instructions: |
-      You are an expert teacher. Analyze approaches and provide teaching.
-      Wrap teaching in <teaching> tags.
-    model: ${TEACHER_MODEL}
-    api_key: ${OPENAI_API_KEY}
-
-student_wrapper:
-  type: openai_assistant
-  config:
-    name: "ATLAS Student"
-    instructions: "Work through problems step by step."
-    model: ${STUDENT_MODEL}
-    api_key: ${OPENAI_API_KEY}
+agents:
+  teacher:
+    provider: openai.assistant
+    params:
+      name: "ATLAS Teacher"
+      instructions: |
+        You are an expert teacher. Analyze approaches and provide teaching.
+        Wrap teaching in <teaching> tags.
+      model: ${TEACHER_MODEL}
+      api_key: ${OPENAI_API_KEY}
+  student:
+    provider: openai.assistant
+    params:
+      name: "ATLAS Student"
+      instructions: "Work through problems step by step."
+      model: ${STUDENT_MODEL}
+      api_key: ${OPENAI_API_KEY}
 
 max_examples: 5
 max_metric_calls: 50

@@ -79,6 +79,8 @@ export STUDENT_MODEL=gpt-5-mini
 
 ./scripts/openai_agent_atlas.sh configs/wrappers/openai_existing_agent.yaml
 ```
+The config relies on the agents registry; edit `agents.target` inside the YAML to match your production connector.
+
 You can also start from `configs/examples/quickstart.yaml`, which reuses the same wrapper with minimal overrides.
 OpenAI currently limits Assistants to GPT-4.x models, so the GEPA wrapper defaults to `gpt-4.1` (or you can set `TEACHER_MODEL` to `Arc-Intelligence/ATLAS-8B-Thinking`).
 This loop iterates up to 40 evaluations (≈$10 in API spend) and writes the best prompts to `optimized_prompts.json`. Attach those prompts to your agent once you’re ready for deployment.
@@ -117,6 +119,7 @@ Use the **Learning Engine (GEPA)** and a pre-trained **Reasoning Core** to optim
   # This script wraps an existing agent and optimizes it
   ./scripts/openai_agent_atlas.sh configs/wrappers/openai_existing_agent.yaml
   ```
+  Update `agents.target` in the config with your production connector before running the script.
 - **Expected Outcome**: A set of optimized teaching prompts in `optimized_prompts.json`. This process takes ~2 hours and costs ~$10 in API fees, delivering a performance improvement of up to +165% (measured as reward delta on evaluation tasks). See [Supercharging RL with Online Optimization](https://www.arc.computer/blog/supercharging-rl-with-online-optimization) for experimental setup.
 
 ### Path 2 — Deploy a Standalone Reward System
