@@ -189,6 +189,15 @@ Run optimization:
 ./scripts/openai_agent_atlas.sh configs/wrappers/your_agent.yaml
 ```
 
+<Info>
+**Data sources:** The optimization script can fetch evaluation scenarios from more than just JSONL files. Set `data_source.type` in your YAML to choose one of the built-in loaders:
+- `file` — local JSONL on disk (default).
+- `http_api` — call a REST endpoint; optional transform directives remap the payload to `question` / `ground_truth` fields.
+- `prometheus_alerts` — pull active alerts from a Prometheus server.
+- `itbench_scenarios` — load ITBench incident specs and associated ground truths.
+- `custom_function` — point to any Python module and function that returns example dictionaries.
+</Info>
+
 ### Production Considerations
 
 - **Configuration-based**: All integrations use YAML configs for easy deployment
