@@ -62,6 +62,12 @@
       ]
     },
     {
+      "group": "Guides",
+      "pages": [
+        "guides/configuration-guide"
+      ]
+    },
+    {
       "group": "Examples & Case Studies",
       "pages": [
         "examples/online_optimization",
@@ -103,7 +109,6 @@
     {
       "group": "Benchmarks",
       "pages": [
-        "benchmarks/performance-results",
         "benchmarks/evaluation-methodology",
         "benchmarks/reproduction"
       ]
