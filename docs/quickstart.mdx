@@ -29,7 +29,8 @@ python examples/quickstart/evaluate.py \
   --student-model gpt-4o-mini
 ```
 
-The script prints the baseline response, teacher guidance, the improved response, and RIM scores. Configure models or token limits with CLI flags when needed.
+The script prints the baseline response, teacher guidance, the improved response, and [RIM (Reward System)](/concepts/reward-design) scores that measure the quality improvement. Configure models or token limits with CLI flags when needed.
+
 Make sure you export both `OPENAI_API_KEY` and `GEMINI_API_KEY` before running the command.
 
 ## Path A: Use Pre-trained Models (Recommended)
@@ -84,7 +85,7 @@ export OPENAI_API_KEY="your-key-here"
 export GEMINI_API_KEY="your-gemini-key"
 
 # Optionally pin the models the optimizer will call
-export TEACHER_MODEL=gpt-4.1
+export TEACHER_MODEL=gpt-5
 export STUDENT_MODEL=gpt-4o-mini
 
 # Run the optimization script

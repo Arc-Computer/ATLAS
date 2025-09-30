@@ -222,7 +222,7 @@ For different GPU configurations:
     Single GPU is supported for inference only. For RL training, use model offloading:
     ```bash
     # Inference only with single GPU
-    python smoke_test.py  # Uses pre-trained models
+    python examples/quickstart/evaluate.py  # Quick evaluation test
 
     # For training with limited VRAM (requires 2+ GPUs)
     python train.py +offload
