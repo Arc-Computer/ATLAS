@@ -1,569 +1,540 @@
 ---
-title: Optimize with ATLAS
-description: Rapidly enhance model performance with online optimization in 2 hours
-sidebarTitle: Quick Optimization
+title: Optimize with GEPA
+description: Rapidly enhance teaching prompts with GEPA optimization in 2 hours (~$10)
+sidebarTitle: GEPA Optimization
 icon: bolt
 ---
 
 ## Overview
 
-Online optimization allows you to enhance any model's performance on specific tasks in just 2 hours using API-based training. This approach leverages pre-trained ATLAS teachers and reflective mutation for rapid improvement.
+GEPA (Genetic-Pareto) optimization evolves ATLAS teaching prompts using reflective mutation to achieve +165% performance gains in ~2 hours with only $10 in API costs. This hyper-efficient online learning method adapts pre-trained teachers to your specific domain without requiring RL training infrastructure.
 
 ![Online Learning Architecture](/images/atlas-online-learning.png)
 
+<Info>
+**What is GEPA?** GEPA is an external optimization package (https://github.com/gepa-ai/gepa) that uses LLM-based reflection and Pareto-efficient evolutionary search to evolve prompts. ATLAS uses GEPA to optimize teaching strategies. See [What is GEPA?](/concepts/what-is-gepa) for details.
+</Info>
+
 ## Prerequisites
 
-- OpenAI API key (for optimization agent)
-- Pre-trained ATLAS teacher model
-- Task-specific evaluation data
-- ~$10 in API credits
+- Python 3.11+
+- OpenAI API key (for teacher/student models)
+- Gemini API key (for RIM reward judges)
+- ~$10 in API credits for ~40 optimization iterations
 
 ## Quick Start
 
 <Steps>
-  <Step title="Set Up Environment">
-    Configure API credentials and install dependencies:
+  <Step title="Install ATLAS">
+    Clone and install the complete framework:
 
     ```bash
-    # Set API key
-    export OPENAI_API_KEY="your-api-key"
-
-    # Install requirements
-    pip install openai transformers accelerate
-    pip install atlas-online  # Coming soon to PyPI
+    git clone https://github.com/Arc-Computer/ATLAS
+    cd ATLAS
+    pip install -r requirements-py312.txt
     ```
 
-    <Note>
-    Online optimization uses GPT-4 for reflective mutation. Ensure your API key has sufficient credits.
-    </Note>
+    This installs:
+    - `gepa` package (prompt optimizer)
+    - `trainers.prompt_adapter` (ATLAS adapter)
+    - `RIM.reward_adapter` (reward system)
   </Step>
 
-  <Step title="Prepare Task Data">
-    Create evaluation samples for your specific task:
+  <Step title="Set API Keys">
+    Configure your credentials:
+
+    ```bash
+    export OPENAI_API_KEY="sk-..."
+    export GEMINI_API_KEY="your-gemini-key"
+
+    # Optionally pin specific models
+    export TEACHER_MODEL=gpt-5
+    export STUDENT_MODEL=gpt-4o-mini
+    ```
+  </Step>
+
+  <Step title="Run GEPA Optimization">
+    Execute the optimization script with a wrapper config:
+
+    ```bash
+    ./scripts/openai_agent_atlas.sh configs/wrappers/openai_existing_agent.yaml
+    ```
+
+    This runs the GEPA loop:
+    1. **Evaluate** baseline teaching prompts on dataset
+    2. **Reflect** on failures using GPT-4 to propose improvements
+    3. **Mutate** prompts based on reflection insights
+    4. **Select** best performers via Pareto frontier
+    5. **Iterate** for ~40 rounds (~$10, ~2 hours)
+
+    Output: `optimized_prompts.json` with best teaching strategies
+  </Step>
+
+  <Step title="Deploy Optimized Prompts">
+    Use the evolved teaching strategies in production:
 
     ```python
-    # task_samples.json
-    [
-        {
-            "prompt": "Debug: Service returns 503 errors intermittently",
-            "expected_response": "Check service mesh configuration, verify mTLS policies...",
-            "domain": "sre"
-        },
-        {
-            "prompt": "Optimize this SQL query for better performance",
-            "expected_response": "Add index on join columns, use EXPLAIN ANALYZE...",
-            "domain": "database"
+    import json
+    from trainers.prompt_adapter import ATLASGEPAAdapter
+
+    # Load optimized prompts from GEPA
+    with open("optimized_prompts.json", "r") as f:
+        result = json.load(f)
+        optimized_prompts = result["best_candidate"]
+
+    # Create adapter with optimized teaching
+    adapter = ATLASGEPAAdapter(
+        teacher_model="gpt-5",
+        student_model="gpt-4o-mini",
+        all_prompts=optimized_prompts,
+        generation_config={
+            "max_tokens": 512,
+            "diagnostic_max_tokens": 100,
+            "temperature": 0.7
         }
-        # Add 10-20 diverse examples
-    ]
-    ```
-
-    <Warning>
-    Use representative samples that cover edge cases. Quality matters more than quantity.
-    </Warning>
-  </Step>
-
-  <Step title="Run Online Optimization">
-    Execute the optimization script:
-
-    ```bash
-    ./scripts/openai_agent_atlas.sh \
-      configs/optimize/default.yaml \
-      task_samples=task_samples.json \
-      num_iterations=100 \
-      temperature=0.7
-    ```
-
-    The optimization process:
-    1. Evaluates baseline performance
-    2. Generates teaching variations
-    3. Tests improvements
-    4. Creates skill capsules
-  </Step>
-
-  <Step title="Deploy Optimized Model">
-    Use the enhanced teaching strategies:
-
-    ```python
-    from atlas_online import OnlineATLAS
-
-    # Load optimized teaching
-    atlas = OnlineATLAS.from_optimization(
-        "optimization_results/best_strategy.json"
     )
 
-    # Apply to new queries
-    response = atlas.enhance(
-        "Debug: Database connection pool exhausted"
+    # Run on new queries
+    question = "Debug intermittent 503 errors in production"
+    result = adapter.evaluate(
+        batch=[{"question": question, "ground_truth": ""}],
+        candidate=optimized_prompts
     )
+
+    enhanced_response = result.outputs[0]["student_with_teaching"]
+    print(f"Enhanced: {enhanced_response}")
     ```
   </Step>
 </Steps>
 
-## Optimization Algorithm
+## Real Implementation: optimize_teaching.py
 
-### Reflective Mutation Process
-
-The online optimization uses reflective mutation to evolve teaching strategies:
+The actual GEPA optimization is powered by `optimize_teaching.py` in the repository root. Here's how it works:
 
 ```python
-class ReflectiveMutation:
-    """
-    Evolutionary optimization for teaching strategies
-    """
+# optimize_teaching.py (simplified)
+import gepa
+from trainers.prompt_adapter import ATLASGEPAAdapter
+from RIM.reward_adapter import RIMReward
+from datasets import load_dataset
 
-    def __init__(self, evaluator, mutation_agent):
-        self.evaluator = evaluator
-        self.mutation_agent = mutation_agent  # GPT-4
-        self.population = []
+# Load dataset
+dataset = load_dataset("Arc-Intelligence/Arc-ATLAS-Teach-v1", split="train")
+trainset = [
+    {
+        "question": ex["prompt"],
+        "ground_truth": ex["ground_truth"],
+        "additional_context": {}
+    }
+    for ex in dataset
+]
 
-    def optimize(self, task_samples, num_iterations=100):
-        """
-        Main optimization loop
-        """
-        for iteration in range(num_iterations):
-            # Step 1: Evaluate current strategies
-            scores = self.evaluate_population(task_samples)
+# Create ATLAS adapter
+adapter = ATLASGEPAAdapter(
+    teacher_model="gpt-5",
+    student_model="gpt-4o-mini",
+    reward_function=None,  # Uses default OnlineTeachingReward
+    trace_storage_path="traces/gepa_traces.jsonl",
+    all_prompts={},
+    generation_config={
+        "max_tokens": 512,
+        "diagnostic_max_tokens": 100,
+        "temperature": 0.7
+    }
+)
 
-            # Step 2: Select best performers
-            elite = self.select_elite(scores)
+# Define seed prompts (starting point)
+seed_prompts = {
+    "teacher_adaptive_template": """You are an expert teacher.
+The student gave this response: {baseline_response}
 
-            # Step 3: Generate mutations
-            mutations = self.mutate_strategies(elite)
+To the question: {question}
 
-            # Step 4: Update population
-            self.population = elite + mutations
+Provide focused teaching to help them improve.
+Wrap teaching in <teaching> tags.""",
 
-            # Step 5: Log progress
-            self.log_iteration(iteration, scores)
+    "student_diagnostic_template": """Show your approach to solving: {question}
+Explain your thinking in under 500 tokens.""",
 
-        return self.get_best_strategy()
+    "student_with_teaching_template": """Question: {question}
 
-    def mutate_strategies(self, strategies):
-        """
-        Use LLM to intelligently mutate teaching strategies
-        """
-        mutations = []
-        for strategy in strategies:
-            prompt = f"""
-            Current teaching strategy:
-            {strategy}
+Teaching: {teaching}
 
-            Performance: {strategy.score}
-            Failures: {strategy.failure_cases}
+Apply the teaching step-by-step. Put final answer in <solution> tags."""
+}
 
-            Generate an improved variant that addresses the failures.
-            """
+# Define reflection LLM (analyzes failures and proposes improvements)
+import litellm
+def reflection_lm(prompt: str) -> str:
+    response = litellm.completion(
+        model="gpt-4",
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=32768,
+        temperature=0.7
+    )
+    return response.choices[0].message.content
 
-            mutation = self.mutation_agent.generate(prompt)
-            mutations.append(mutation)
+# Run GEPA optimization
+result = gepa.optimize(
+    seed_candidate=seed_prompts,
+    trainset=trainset[:10],  # Use subset for faster iteration
+    valset=trainset[:10],
+    adapter=adapter,
+    reflection_lm=reflection_lm,
+    max_metric_calls=40,  # ~$10 budget
+    candidate_selection_strategy="pareto",
+    skip_perfect_score=False,
+    reflection_minibatch_size=5,
+    module_selector="single",
+    display_progress_bar=True
+)
 
-        return mutations
+print(f"Best score: {result.best_score}")
+print(f"Improvement: {result.best_score - initial_score:+.3f}")
+
+# Save optimized prompts
+with open("optimized_prompts.json", "w") as f:
+    json.dump({
+        "best_candidate": result.best_candidate,
+        "best_score": result.best_score,
+        "pareto_frontier": result.pareto_frontier
+    }, f, indent=2)
 ```
 
-### Performance Tracking
+## How GEPA Works
 
-Monitor optimization progress in real-time:
+GEPA evolves prompts through reflective mutation:
 
+### 1. Evaluation Phase
 ```python
-class OptimizationMonitor:
-    def __init__(self):
-        self.metrics = {
-            'iteration': [],
-            'best_score': [],
-            'mean_score': [],
-            'diversity': []
-        }
+# Adapter evaluates teaching prompts on dataset
+scores = []
+for example in trainset:
+    # Run full ATLAS protocol
+    result = adapter.evaluate(
+        batch=[example],
+        candidate=current_prompts
+    )
+    scores.append(result.scores[0])
 
-    def update(self, iteration, population):
-        scores = [p.score for p in population]
-        self.metrics['iteration'].append(iteration)
-        self.metrics['best_score'].append(max(scores))
-        self.metrics['mean_score'].append(np.mean(scores))
-        self.metrics['diversity'].append(self.compute_diversity(population))
-
-    def plot_convergence(self):
-        """Visualize optimization progress"""
-        import matplotlib.pyplot as plt
-
-        plt.figure(figsize=(12, 4))
-
-        plt.subplot(1, 3, 1)
-        plt.plot(self.metrics['iteration'], self.metrics['best_score'])
-        plt.xlabel('Iteration')
-        plt.ylabel('Best Score')
-        plt.title('Optimization Progress')
-
-        plt.subplot(1, 3, 2)
-        plt.plot(self.metrics['iteration'], self.metrics['mean_score'])
-        plt.xlabel('Iteration')
-        plt.ylabel('Mean Score')
-        plt.title('Population Performance')
-
-        plt.subplot(1, 3, 3)
-        plt.plot(self.metrics['iteration'], self.metrics['diversity'])
-        plt.xlabel('Iteration')
-        plt.ylabel('Diversity')
-        plt.title('Strategy Diversity')
-
-        plt.tight_layout()
-        plt.savefig('optimization_progress.png')
+mean_score = sum(scores) / len(scores)
 ```
 
-## Configuration Options
+### 2. Reflection Phase
+```python
+# LLM analyzes failures and proposes improvements
+reflection_prompt = f"""
+Current teaching prompt:
+{current_prompts["teacher_adaptive_template"]}
 
-### Optimization Parameters
+Performance: {mean_score:.3f}
+
+Failed examples:
+{format_failures(low_scoring_examples)}
+
+Analyze what went wrong and propose an improved prompt.
+"""
+
+improvement_suggestion = reflection_lm(reflection_prompt)
+```
+
+### 3. Mutation Phase
+```python
+# Generate mutated prompt based on reflection
+mutation_prompt = f"""
+Original prompt: {current_prompt}
+Reflection: {improvement_suggestion}
+
+Generate an improved variant that addresses the identified issues.
+Output only the new prompt.
+"""
+
+mutated_prompt = reflection_lm(mutation_prompt)
+```
+
+### 4. Selection Phase
+```python
+# Pareto frontier: keep prompts that are best on at least one metric
+population = [original, mutated_1, mutated_2, ...]
+pareto_frontier = select_pareto_optimal(population, metrics=["accuracy", "helpfulness"])
+
+# These become the parents for next generation
+elite_prompts = pareto_frontier[:5]
+```
+
+## Configuration System
+
+ATLAS uses YAML configs for all settings. The wrapper configs define how to connect your agent:
+
+<Info>
+See the [Configuration Guide](/guides/configuration-guide) for complete config examples, troubleshooting, and decision guides for choosing the right config files.
+</Info>
 
 ```yaml
-# configs/optimize/default.yaml
-optimization:
-  num_iterations: 100        # Total optimization steps
-  population_size: 20        # Strategies per generation
-  elite_ratio: 0.2          # Top performers to keep
-  mutation_rate: 0.8        # Probability of mutation
-  crossover_rate: 0.3       # Probability of combining strategies
+# configs/wrappers/openai_existing_agent.yaml
+user_agent:
+  type: custom
+  config:
+    integration_type: http_api
+    endpoint: "http://localhost:8000/chat"
+    prompt_field: "message"
+    response_field: "response"
 
-evaluation:
-  batch_size: 4             # Parallel evaluations
-  timeout: 30               # Seconds per evaluation
-  success_threshold: 0.7    # Minimum acceptable score
+teacher_model: gpt-5
+student_model: gpt-4o-mini
 
-mutation_agent:
-  model: "gpt-4-turbo"      # Mutation generation model
-  temperature: 0.7          # Creativity level
-  max_tokens: 500           # Response length limit
+# Dataset
+trainset: arc-atlas-rl
+max_examples: 10
 
-constraints:
-  max_teaching_tokens: 200  # Guidance length limit
-  min_improvement: 0.05     # Required improvement
-  safety_check: true        # Verify non-degradation
+# GEPA settings
+max_metric_calls: 40  # ~$10 budget
+reflection_lm: gpt-4
+
+gepa_config:
+  candidate_selection_strategy: pareto
+  reflection_minibatch_size: 5
+  module_selector: single
+  display_progress_bar: true
+
+generation_config:
+  max_tokens: 512
+  diagnostic_max_tokens: 100
+  temperature: 0.7
 ```
 
-### Task-Specific Configurations
+## Wrapper Integration Types
+
+ATLAS can wrap any existing agent through configs:
 
 <Tabs>
-  <Tab title="SRE Tasks">
+  <Tab title="HTTP API">
     ```yaml
-    # configs/optimize/sre.yaml
-    task_specific:
-      domain: "site_reliability"
-      keywords: ["kubernetes", "istio", "monitoring", "debugging"]
-      success_metrics:
-        - "root_cause_identified"
-        - "mitigation_proposed"
-        - "prevention_suggested"
-
-    evaluation:
-      success_threshold: 0.8  # Higher bar for critical tasks
-      timeout: 45              # More time for complex analysis
+    user_agent:
+      type: custom
+      config:
+        integration_type: http_api
+        endpoint: "http://localhost:8000/chat"
+        prompt_field: "message"
+        response_field: "response"
+        headers:
+          Authorization: "Bearer ${API_KEY}"
+        timeout: 300
     ```
   </Tab>
 
-  <Tab title="Code Generation">
+  <Tab title="Python Function">
     ```yaml
-    # configs/optimize/coding.yaml
-    task_specific:
-      domain: "programming"
-      languages: ["python", "javascript", "rust"]
-      success_metrics:
-        - "syntax_correct"
-        - "logic_sound"
-        - "edge_cases_handled"
-
-    constraints:
-      max_teaching_tokens: 300  # Allow longer explanations
-      include_examples: true     # Show code samples
+    user_agent:
+      type: custom
+      config:
+        integration_type: python_function
+        module_path: "/path/to/agent.py"
+        function_name: "generate_response"
     ```
   </Tab>
 
-  <Tab title="Math Reasoning">
+  <Tab title="CLI Command">
     ```yaml
-    # configs/optimize/math.yaml
-    task_specific:
-      domain: "mathematics"
-      topics: ["algebra", "calculus", "statistics"]
-      success_metrics:
-        - "correct_answer"
-        - "valid_reasoning"
-        - "step_by_step_shown"
+    user_agent:
+      type: custom
+      config:
+        integration_type: cli_command
+        command: "python agent.py '{prompt}'"
+    ```
+  </Tab>
 
-    mutation_agent:
-      temperature: 0.5  # More deterministic for math
-      verify_calculations: true
+  <Tab title="OpenAI Model">
+    ```yaml
+    # No user_agent needed - just specify student model
+    student_model: gpt-4o-mini
+    teacher_model: gpt-5
     ```
   </Tab>
 </Tabs>
 
-## Advanced Techniques
+## Advanced: Custom Datasets
 
-### Skill Composition
-
-Combine multiple optimized skills:
+Load your own data for domain-specific optimization:
 
 ```python
-class SkillComposer:
-    """
-    Combine specialized skills for complex tasks
-    """
-
-    def __init__(self):
-        self.skills = {}
-
-    def load_skill(self, name, path):
-        """Load optimized skill from file"""
-        with open(path) as f:
-            self.skills[name] = json.load(f)
-
-    def compose(self, task):
-        """
-        Select and combine relevant skills
-        """
-        # Identify required skills
-        required_skills = self.analyze_task(task)
-
-        # Combine teaching strategies
-        combined_strategy = self.merge_strategies(
-            [self.skills[s] for s in required_skills]
-        )
-
-        return combined_strategy
-
-    def merge_strategies(self, strategies):
-        """
-        Intelligently merge multiple strategies
-        """
-        merged = {
-            'diagnostic_approach': self.merge_diagnostics(strategies),
-            'teaching_pattern': self.merge_patterns(strategies),
-            'safety_checks': self.merge_safety(strategies)
-        }
-        return merged
+# custom_data.jsonl format
+{"question": "Your task here", "ground_truth": "Expected output"}
+{"question": "Another task", "ground_truth": "Another output"}
 ```
 
-### Continuous Learning
-
-Implement online learning in production:
-
-```python
-class ContinuousOptimizer:
-    """
-    Continuously improve from production feedback
-    """
-
-    def __init__(self, atlas_instance):
-        self.atlas = atlas_instance
-        self.feedback_buffer = []
-        self.optimization_threshold = 100  # Feedback samples
-
-    async def collect_feedback(self, query, response, user_rating):
-        """Collect production feedback"""
-        self.feedback_buffer.append({
-            'query': query,
-            'response': response,
-            'rating': user_rating,
-            'timestamp': time.time()
-        })
-
-        # Trigger optimization when threshold reached
-        if len(self.feedback_buffer) >= self.optimization_threshold:
-            await self.trigger_optimization()
-
-    async def trigger_optimization(self):
-        """Run optimization on collected feedback"""
-        # Convert feedback to training samples
-        samples = self.prepare_samples(self.feedback_buffer)
-
-        # Run online optimization
-        optimizer = ReflectiveMutation(self.atlas)
-        improved_strategy = optimizer.optimize(samples, num_iterations=50)
-
-        # Update production model
-        self.atlas.update_strategy(improved_strategy)
-
-        # Clear buffer
-        self.feedback_buffer = []
-
-    def prepare_samples(self, feedback):
-        """Convert feedback to optimization samples"""
-        samples = []
-        for item in feedback:
-            if item['rating'] >= 4:  # Positive examples
-                samples.append({
-                    'prompt': item['query'],
-                    'expected_response': item['response'],
-                    'weight': item['rating'] / 5.0
-                })
-        return samples
+```yaml
+# Config with custom data
+data_source:
+  type: file
+  path: "custom_data.jsonl"
+  columns:
+    question: "question"
+    answer: "ground_truth"
 ```
 
-### A/B Testing Strategies
-
-Test optimized strategies in production:
+Or use the API dynamically:
 
 ```python
-class StrategyABTest:
-    """
-    A/B test teaching strategies
-    """
+from optimize_teaching import run_gepa_optimization
 
-    def __init__(self, baseline_strategy, optimized_strategy):
-        self.strategies = {
-            'baseline': baseline_strategy,
-            'optimized': optimized_strategy
-        }
-        self.results = {
-            'baseline': {'success': 0, 'total': 0},
-            'optimized': {'success': 0, 'total': 0}
-        }
+# Load your custom dataset
+custom_trainset = [
+    {"question": q, "ground_truth": a, "additional_context": {}}
+    for q, a in your_data
+]
 
-    def select_strategy(self, user_id):
-        """Deterministic strategy selection"""
-        # Use hash for consistent assignment
-        if hash(user_id) % 2 == 0:
-            return 'baseline'
-        return 'optimized'
-
-    def process_request(self, user_id, query):
-        """Process with selected strategy"""
-        strategy_name = self.select_strategy(user_id)
-        strategy = self.strategies[strategy_name]
-
-        response = strategy.enhance(query)
-
-        # Track for analysis
-        self.results[strategy_name]['total'] += 1
-
-        return response
-
-    def analyze_results(self):
-        """Statistical significance testing"""
-        from scipy.stats import chi2_contingency
-
-        # Prepare contingency table
-        observed = [
-            [self.results['baseline']['success'],
-             self.results['baseline']['total'] - self.results['baseline']['success']],
-            [self.results['optimized']['success'],
-             self.results['optimized']['total'] - self.results['optimized']['success']]
-        ]
-
-        chi2, p_value, dof, expected = chi2_contingency(observed)
-
-        return {
-            'p_value': p_value,
-            'significant': p_value < 0.05,
-            'baseline_rate': self.results['baseline']['success'] / max(1, self.results['baseline']['total']),
-            'optimized_rate': self.results['optimized']['success'] / max(1, self.results['optimized']['total'])
-        }
-```
-
-## Monitoring and Debugging
-
-### Real-time Monitoring
-
-Track optimization metrics:
-
-```python
-import wandb
-
-# Initialize W&B
-wandb.init(
-    project="atlas-online",
-    config={
-        "optimization_type": "reflective_mutation",
-        "task_domain": "sre",
-        "num_iterations": 100
+# Run optimization
+result = run_gepa_optimization(
+    teacher_model="gpt-5",
+    student_model="gpt-4o-mini",
+    trainset=custom_trainset[:20],
+    valset=custom_trainset[20:30],
+    max_metric_calls=40,
+    reflection_lm="gpt-4",
+    trace_storage_path="traces/custom_opt.jsonl",
+    seed_prompts=seed_prompts,
+    all_prompts={},
+    gepa_config={
+        "candidate_selection_strategy": "pareto",
+        "skip_perfect_score": False,
+        "reflection_minibatch_size": 5
+    },
+    generation_config={
+        "max_tokens": 512,
+        "diagnostic_max_tokens": 100,
+        "temperature": 0.7
     }
 )
-
-# Log during optimization
-for iteration in range(num_iterations):
-    metrics = optimizer.step()
-
-    wandb.log({
-        "iteration": iteration,
-        "best_score": metrics["best_score"],
-        "mean_score": metrics["mean_score"],
-        "diversity": metrics["diversity"],
-        "api_cost": metrics["api_cost"]
-    })
 ```
 
-### Debugging Failed Optimizations
+## Monitoring Optimization Progress
+
+The optimizer displays real-time progress:
+
+```
+Iteration 1/40: Best score: 0.342 | Mean: 0.312 | Elite: 5
+Iteration 2/40: Best score: 0.389 | Mean: 0.351 | Elite: 5
+...
+Iteration 40/40: Best score: 0.781 | Mean: 0.712 | Elite: 5
+
+✓ Optimization complete!
+Best score: 0.781 (+0.439 improvement)
+Saved to: optimized_prompts.json
+```
+
+Traces are saved to `traces/gepa_traces.jsonl` for analysis:
+
+```bash
+# View traces
+tail -f traces/gepa_traces.jsonl
+
+# Analyze prompt evolution
+ls traces/gepa_traces/prompt_evolution/
+# prompts_eval_0001.json
+# prompts_eval_0002.json
+# ...
+```
+
+## Cost Estimation
+
+Typical costs for 40 iterations:
+
+| Component | Model | Calls | Cost |
+|-----------|-------|-------|------|
+| Student baseline | gpt-4o-mini | 40 × 10 examples | ~$0.50 |
+| Teacher guidance | gpt-5 | 40 × 10 examples | ~$4.00 |
+| Student enhanced | gpt-4o-mini | 40 × 10 examples | ~$0.50 |
+| Reflection LLM | gpt-4 | 40 iterations | ~$4.00 |
+| RIM judges | Gemini Flash | 40 × 10 × 2 | ~$1.00 |
+| **Total** | | | **~$10.00** |
+
+Reduce costs by:
+- Using fewer examples (`max_examples: 5`)
+- Fewer iterations (`max_metric_calls: 20`)
+- Smaller models for reflection (`gpt-4o-mini`)
+
+## Performance Expectations
+
+Real results from case study ([full details](/examples/online-optimization-case-study)):
+
+- **Initial score**: -0.2 (generic prompt actually hurt performance)
+- **Final score**: 1.479 after 40 iterations
+- **Improvement**: +165% vs baseline
+- **Time**: ~2 hours
+- **Cost**: ~$10
+
+Typical optimization curve:
+- Iterations 1-10: Rapid initial gains (+30-50%)
+- Iterations 11-30: Incremental improvements (+10-20%)
+- Iterations 31-40: Refinement and convergence (+5-10%)
+
+## Troubleshooting
 
 <AccordionGroup>
-  <Accordion title="Optimization Not Converging">
-    **Problem**: Score plateaus early
+  <Accordion title="GEPA not improving after many iterations">
+    **Problem**: Scores plateau or oscillate
 
     **Solutions**:
-    ```python
-    # Increase diversity
-    config.mutation_rate = 0.9
-    config.population_size = 30
+    1. Check reflection LLM is analyzing failures (enable `verbose=True`)
+    2. Verify seed prompts aren't already optimal (try worse starting points)
+    3. Increase `reflection_minibatch_size` to show more diverse failures
+    4. Try different `temperature` for reflection LLM (0.7-1.0)
+  </Accordion>
 
-    # Add random exploration
-    config.exploration_rate = 0.2
+  <Accordion title="ImportError: No module named 'gepa'">
+    **Problem**: GEPA package not installed
 
-    # Use different mutation model
-    config.mutation_agent.model = "gpt-4-turbo"
+    **Solution**: Install from requirements:
+    ```bash
+    pip install -r requirements-py312.txt
+    ```
+    Or directly:
+    ```bash
+    pip install gepa
     ```
   </Accordion>
 
-  <Accordion title="High API Costs">
-    **Problem**: Exceeding budget
+  <Accordion title="Optimization too slow / expensive">
+    **Problem**: Taking >3 hours or costing >$15
 
     **Solutions**:
-    ```python
-    # Reduce population size
-    config.population_size = 10
-
-    # Use caching
-    config.enable_cache = True
-
-    # Batch evaluations
-    config.evaluation.batch_size = 8
-    ```
+    1. Reduce dataset size: `max_examples: 5`
+    2. Reduce iterations: `max_metric_calls: 20`
+    3. Use parallel evaluation: `max_litellm_workers: 20`
+    4. Cache baseline responses (already implemented in adapter)
   </Accordion>
 
-  <Accordion title="Poor Generalization">
-    **Problem**: Overfitting to samples
+  <Accordion title="Wrapper not calling my agent">
+    **Problem**: Agent endpoint not being invoked
 
     **Solutions**:
-    ```python
-    # Add more diverse samples
-    # Use cross-validation
-    config.validation_split = 0.2
-
-    # Regularize strategies
-    config.constraints.complexity_penalty = 0.1
-    ```
+    1. Test endpoint manually: `curl http://localhost:8000/chat -d '{"message":"test"}'`
+    2. Check field names match your API: `prompt_field`, `response_field`
+    3. Verify auth headers are correct
+    4. Enable debug logging: `export RIM_VERBOSE=1`
   </Accordion>
 </AccordionGroup>
-
-## Cost Analysis
-
-Typical costs for online optimization:
-
-| Task Complexity | Iterations | API Calls | Estimated Cost |
-|----------------|------------|-----------|----------------|
-| Simple | 50 | ~500 | $2-3 |
-| Moderate | 100 | ~1500 | $5-8 |
-| Complex | 200 | ~3000 | $10-15 |
-| Expert | 500 | ~7500 | $25-35 |
 
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="Continuous Learning" icon="infinity" href="/training/online/continuous-learning">
-    Implement production learning loops
+  <Card title="What is GEPA?" icon="lightbulb" href="/concepts/what-is-gepa">
+    Understand the optimization algorithm
   </Card>
-  <Card title="Production Deployment" icon="server" href="/integration/production-deployment">
-    Deploy optimized models
+  <Card title="Case Study: +165% Gain" icon="chart-line" href="/examples/online-optimization-case-study">
+    See real results from GEPA optimization
   </Card>
-  <Card title="Offline Training" icon="dumbbell" href="/training/offline/grpo-training">
-    Train custom teachers
+  <Card title="Inference Integration" icon="play" href="/integration/inference-only">
+    Use optimized prompts in production
   </Card>
-  <Card title="Examples" icon="lightbulb" href="/examples/online-optimization-case-study">
-    See optimization results
+  <Card title="Full Training" icon="dumbbell" href="/first-experiment">
+    Train custom teachers with GRPO
   </Card>
 </CardGroup>
+
+## Related Resources
+
+- **GEPA Package**: https://github.com/gepa-ai/gepa
+- **Research Blog**: [Supercharging RL with Online Optimization](https://www.arc.computer/blog/supercharging-rl-with-online-optimization)
+- **Interactive Demo**: [Colab Notebook](https://colab.research.google.com/github/Arc-Computer/ATLAS/blob/main/examples/online_optimization_demo.ipynb)

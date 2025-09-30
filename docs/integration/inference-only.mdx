@@ -1,493 +1,476 @@
 ---
 title: Inference-Only Integration
-description: Deploy ATLAS teaching capabilities without training infrastructure
+description: Deploy ATLAS teaching capabilities using API models without training infrastructure
 sidebarTitle: Inference Only
 icon: play
 ---
 
 <Note>
-**Setup time**: 30 minutes • **Reading time**: 10 minutes • **Difficulty**: Beginner
+**Setup time**: 5 minutes • **Reading time**: 10 minutes • **Difficulty**: Beginner
 </Note>
 
 ## Overview
 
-The simplest way to leverage ATLAS is through inference-only integration. This approach uses pre-trained teacher models to enhance any student model's performance without requiring training infrastructure.
+The simplest way to leverage ATLAS is through API-based inference. This approach uses the ATLAS protocol with any API-compatible models (OpenAI, Anthropic, Gemini, etc.) to enhance your agent's performance without requiring local infrastructure or training.
+
+This is the fastest path to seeing ATLAS in action and is production-ready for API-based agents.
 
 ## Prerequisites
 
-- Python 3.8+
-- PyTorch 2.0+
-- Transformers library
-- 16GB+ GPU memory (or CPU with sufficient RAM)
-- Pre-trained ATLAS teacher model
+- Python 3.11+
+- OpenAI API key (or other provider)
+- Gemini API key (for RIM reward scoring)
+- ~$10 in API credits for evaluation and optimization
 
-## Installation
+## Quick Start (5 Minutes)
 
 <Steps>
   <Step title="Install Dependencies">
-    Install the minimal requirements for inference:
+    Clone the repository and install requirements:
 
     ```bash
-    pip install torch transformers accelerate
-    pip install atlas-inference  # Coming soon to PyPI
+    git clone https://github.com/Arc-Computer/ATLAS
+    cd ATLAS
+    pip install -r requirements-py312.txt
     ```
 
     <Note>
-    For CPU inference, install PyTorch without CUDA:
-    ```bash
-    pip install torch --index-url https://download.pytorch.org/whl/cpu
-    ```
+    This installs the ATLAS framework with all dependencies including the RIM reward system and GEPA optimizer.
     </Note>
   </Step>
 
-  <Step title="Download Teacher Models">
-    Choose and download a pre-trained teacher model:
+  <Step title="Set API Keys">
+    Configure your API credentials:
 
-    ```python
-    from transformers import AutoModelForCausalLM, AutoTokenizer
-
-    # For reasoning tasks
-    teacher_model = AutoModelForCausalLM.from_pretrained(
-        "Arc-Intelligence/ATLAS-8B-Thinking",
-        torch_dtype="auto",
-        device_map="auto"
-    )
-    teacher_tokenizer = AutoTokenizer.from_pretrained(
-        "Arc-Intelligence/ATLAS-8B-Thinking"
-    )
-
-    # For coding tasks
-    # teacher_model = AutoModelForCausalLM.from_pretrained(
-    #     "Arc-Intelligence/ATLAS-8B-Instruct",
-    #     torch_dtype="auto",
-    #     device_map="auto"
-    # )
+    ```bash
+    export OPENAI_API_KEY="sk-..."
+    export GEMINI_API_KEY="your-gemini-key"
     ```
 
-    <Warning>
-    Models are ~16GB each. Ensure sufficient disk space and bandwidth.
-    </Warning>
+    <Info>
+    OpenAI is used for teacher/student models. Gemini is used for the RIM reward judges that score improvements.
+    </Info>
   </Step>
 
-  <Step title="Initialize Student Model">
-    Load your existing model as the student:
+  <Step title="Run Quick Evaluation">
+    Test the teacher-student protocol with RIM scoring:
 
-    ```python
-    # Example with Llama 3
-    student_model = AutoModelForCausalLM.from_pretrained(
-        "meta-llama/Llama-3.2-8B-Instruct",
-        torch_dtype="auto",
-        device_map="auto"
-    )
-    student_tokenizer = AutoTokenizer.from_pretrained(
-        "meta-llama/Llama-3.2-8B-Instruct"
-    )
+    ```bash
+    python examples/quickstart/evaluate.py \
+      --question "Masha braided her dolls' hair..." \
+      --teacher-model gpt-5 \
+      --student-model gpt-4o-mini
     ```
-  </Step>
 
-  <Step title="Create ATLAS Inference Pipeline">
-    Initialize the teaching system:
+    This runs the full ATLAS protocol:
+    1. Gets baseline student response
+    2. Teacher provides guidance
+    3. Student retries with teaching
+    4. RIM judges score both responses
 
-    ```python
-    from atlas_inference import ATLASInference
+    Expected output:
+    ```text
+    ========================================================================
+    Baseline student answer:
+    [Student's initial attempt]
 
-    atlas = ATLASInference(
-        teacher_model=teacher_model,
-        teacher_tokenizer=teacher_tokenizer,
-        student_model=student_model,
-        student_tokenizer=student_tokenizer,
-        device="cuda"  # or "cpu"
-    )
+    Teacher guidance:
+    [Teacher's diagnostic feedback]
+
+    Student with teaching:
+    [Student's improved response]
+    ========================================================================
+    Reward (baseline): 0.342
+    Reward (with teaching): 0.781
+    Delta: +0.439
+    ========================================================================
     ```
   </Step>
 </Steps>
 
-## Basic Usage
+## Real Code Examples
 
-### Single Query Enhancement
+All examples below use **actual working code** from the ATLAS repository.
 
-Enhance a single response with the two-pass protocol:
+### Example 1: Single Question Evaluation
 
-```python
-def enhance_response(query: str) -> dict:
-    """Run the complete ATLAS protocol"""
-
-    # Run adaptive teaching protocol
-    result = atlas.run_full_protocol(query)
-
-    return {
-        "baseline": result.baseline_response,
-        "enhanced": result.enhanced_response,
-        "improvement": result.improvement_score,
-        "guidance": result.teaching_guidance
-    }
-
-# Example usage
-query = "Explain how a transformer attention mechanism works"
-result = enhance_response(query)
-
-print(f"Baseline: {result['baseline'][:200]}...")
-print(f"Enhanced: {result['enhanced'][:200]}...")
-print(f"Improvement: {result['improvement']:.1%}")
-```
-
-### Batch Processing
-
-Process multiple queries efficiently:
+Using the verified `examples/quickstart/evaluate.py` pattern:
 
 ```python
-queries = [
-    "Debug this Python code that's causing a memory leak",
-    "Explain the CAP theorem in distributed systems",
-    "Write a function to validate email addresses"
+#!/usr/bin/env python
+"""Evaluate baseline vs teacher-guided response with RIM scoring."""
+
+from openai import OpenAI
+from RIM.reward_adapter import RIMReward
+
+client = OpenAI()
+reward = RIMReward(config_path='configs/rim_config.yaml')
+
+question = "A bat and ball cost $1.10 total. The bat costs $1.00 more than the ball. How much does the ball cost?"
+
+# Step 1: Get baseline response
+baseline_messages = [
+    {"role": "system", "content": "You are a helpful agent. Explain your reasoning."},
+    {"role": "user", "content": question}
 ]
+baseline_response = client.responses.create(
+    model="gpt-4o-mini",
+    input=baseline_messages,
+    max_output_tokens=512
+)
+baseline = baseline_response.output[0].text
 
-results = atlas.batch_enhance(
-    queries=queries,
-    batch_size=4,
-    show_progress=True
+# Step 2: Teacher provides guidance
+teacher_messages = [
+    {
+        "role": "system",
+        "content": "You are an expert teacher. Analyze the student's attempt and provide concise teaching in <teaching> tags."
+    },
+    {
+        "role": "user",
+        "content": f"Question: {question}\n\nStudent attempt:\n{baseline}\n\nProvide focused guidance."
+    }
+]
+teaching_response = client.responses.create(
+    model="gpt-5",
+    input=teacher_messages,
+    max_output_tokens=512
+)
+teaching = teaching_response.output[0].text
+
+# Step 3: Student retries with teaching
+enhanced_messages = [
+    {"role": "system", "content": "Apply the teaching to solve the problem."},
+    {"role": "user", "content": f"Question: {question}\n\nTeaching:\n{teaching}\n\nSolve step-by-step and put answer in <solution> tags."}
+]
+enhanced_response = client.responses.create(
+    model="gpt-4o-mini",
+    input=enhanced_messages,
+    max_output_tokens=512
+)
+enhanced = enhanced_response.output[0].text
+
+# Step 4: Score with RIM
+baseline_eval = reward.evaluate(prompt=question, response=baseline)
+enhanced_eval = reward.evaluate(
+    prompt=question,
+    response=enhanced,
+    baseline_solutions=baseline,
+    teacher_traces=teaching
 )
 
-for query, result in zip(queries, results):
-    print(f"Query: {query[:50]}...")
-    print(f"Improvement: {result.improvement_score:.1%}\n")
+print(f"Baseline score: {baseline_eval.score:.3f}")
+print(f"Enhanced score: {enhanced_eval.score:.3f}")
+print(f"Improvement: {enhanced_eval.score - baseline_eval.score:+.3f}")
 ```
 
-## Advanced Integration Patterns
+<Note>
+This uses OpenAI's Responses API (required for gpt-5 access). If you don't have access, see the Chat Completions fallback below.
+</Note>
 
-### Pattern 1: Streaming Applications
+### Example 2: Chat Completions API Fallback
 
-Integrate with chat applications using streaming:
+For standard OpenAI models without Responses API access:
 
 ```python
-async def stream_enhanced_response(query: str):
-    """Stream tokens with real-time enhancement"""
+from openai import OpenAI
+from RIM.reward_adapter import RIMReward
 
-    # Get teaching guidance once
-    guidance = await atlas.get_guidance_async(query)
+client = OpenAI()
+reward = RIMReward(config_path='configs/rim_config.yaml')
 
-    # Stream enhanced response
-    async for token in atlas.stream_with_guidance(query, guidance):
-        yield token
-
-# Usage in async context
-async for token in stream_enhanced_response("How do I optimize this SQL query?"):
-    print(token, end="", flush=True)
-```
-
-### Pattern 2: Selective Enhancement
-
-Only enhance responses when needed:
-
-```python
-class SelectiveATLAS:
-    def __init__(self, atlas_instance, complexity_threshold=0.7):
-        self.atlas = atlas_instance
-        self.threshold = complexity_threshold
-
-    def should_enhance(self, query: str) -> bool:
-        """Determine if query needs enhancement"""
-        complexity = self.atlas.assess_complexity(query)
-        return complexity > self.threshold
-
-    def process(self, query: str) -> str:
-        if self.should_enhance(query):
-            result = self.atlas.run_full_protocol(query)
-            return result.enhanced_response
-        else:
-            # Direct student response for simple queries
-            return self.atlas.get_student_response(query)
-
-# Only enhance complex queries
-selective = SelectiveATLAS(atlas)
-response = selective.process("What is 2+2?")  # Direct response
-response = selective.process("Explain quantum entanglement")  # Enhanced
-```
-
-### Pattern 3: Caching and Optimization
-
-Implement caching for repeated queries:
-
-```python
-from functools import lru_cache
-import hashlib
-
-class CachedATLAS:
-    def __init__(self, atlas_instance):
-        self.atlas = atlas_instance
-        self.guidance_cache = {}
-
-    def _hash_query(self, query: str) -> str:
-        """Create cache key for query"""
-        return hashlib.md5(query.encode()).hexdigest()
-
-    def enhance_with_cache(self, query: str) -> str:
-        """Enhanced response with guidance caching"""
-        cache_key = self._hash_query(query)
-
-        # Reuse guidance for similar queries
-        if cache_key not in self.guidance_cache:
-            self.guidance_cache[cache_key] = self.atlas.generate_guidance(query)
-
-        guidance = self.guidance_cache[cache_key]
-        return self.atlas.apply_guidance(query, guidance)
-
-# Efficient for repeated similar queries
-cached_atlas = CachedATLAS(atlas)
-```
-
-## Configuration Options
-
-### Memory Optimization
-
-Configure for different memory constraints:
-
-<Tabs>
-  <Tab title="High Memory (40GB+)">
-    ```python
-    atlas = ATLASInference(
-        teacher_model=teacher_model,
-        student_model=student_model,
-        torch_dtype=torch.bfloat16,
-        device_map="auto",
-        max_memory={0: "40GB"}
+def call_chat_api(messages, model="gpt-4o-mini", max_tokens=512):
+    """Helper for standard Chat Completions API."""
+    response = client.chat.completions.create(
+        model=model,
+        messages=messages,
+        max_tokens=max_tokens,
+        temperature=0.7
     )
-    ```
-  </Tab>
+    return response.choices[0].message.content
 
-  <Tab title="Medium Memory (24GB)">
-    ```python
-    atlas = ATLASInference(
-        teacher_model=teacher_model,
-        student_model=student_model,
-        torch_dtype=torch.float16,
-        load_in_8bit=True,
-        device_map="auto"
-    )
-    ```
-  </Tab>
+question = "Debug why this service returns 503 errors intermittently."
 
-  <Tab title="Low Memory (<16GB)">
-    ```python
-    atlas = ATLASInference(
-        teacher_model=teacher_model,
-        student_model=student_model,
-        torch_dtype=torch.float16,
-        load_in_4bit=True,
-        offload_folder="./offload",
-        device_map="auto"
-    )
-    ```
-  </Tab>
-</Tabs>
+# Baseline
+baseline = call_chat_api([
+    {"role": "system", "content": "You are an SRE assistant."},
+    {"role": "user", "content": question}
+])
 
-### Protocol Parameters
+# Teacher guidance
+teaching = call_chat_api([
+    {"role": "system", "content": "You are an expert SRE teacher. Provide diagnostic guidance in <teaching> tags."},
+    {"role": "user", "content": f"Question: {question}\n\nStudent said:\n{baseline}\n\nWhat should they check?"}
+], model="gpt-4o")
 
-Fine-tune the teaching protocol:
+# Enhanced response
+enhanced = call_chat_api([
+    {"role": "user", "content": f"Question: {question}\n\nGuidance:\n{teaching}\n\nProvide detailed solution."}
+])
 
-```python
-atlas = ATLASInference(
-    teacher_model=teacher_model,
-    student_model=student_model,
-    # Protocol settings
-    max_probe_tokens=50,      # Diagnostic probe limit
-    max_guidance_tokens=200,  # Teaching guidance limit
-    temperature=0.7,          # Generation temperature
-    top_p=0.95,              # Nucleus sampling
-    # Safety settings
-    enable_safety_checks=True,
-    min_baseline_score=0.3,   # Minimum acceptable baseline
-    # Performance settings
-    batch_size=4,
-    use_flash_attention=True
-)
+# Score improvement
+baseline_score = reward.evaluate(prompt=question, response=baseline).score
+enhanced_score = reward.evaluate(prompt=question, response=enhanced, baseline_solutions=baseline, teacher_traces=teaching).score
+
+print(f"Improvement: {enhanced_score - baseline_score:+.3f}")
 ```
 
-## Performance Monitoring
+### Example 3: Batch Evaluation
 
-### Metrics Collection
-
-Track enhancement effectiveness:
+Process multiple questions efficiently:
 
 ```python
-class MetricsCollector:
-    def __init__(self):
-        self.metrics = []
+from openai import OpenAI
+from RIM.reward_adapter import RIMReward
+from typing import List, Dict
 
-    def record(self, result):
-        self.metrics.append({
-            "timestamp": time.time(),
-            "baseline_score": result.baseline_score,
-            "enhanced_score": result.enhanced_score,
-            "improvement": result.improvement_score,
-            "tokens_used": result.total_tokens,
-            "latency_ms": result.latency * 1000
+client = OpenAI()
+reward = RIMReward(config_path='configs/rim_config.yaml')
+
+def evaluate_batch(questions: List[str], teacher_model="gpt-5", student_model="gpt-4o-mini") -> List[Dict]:
+    """Evaluate multiple questions with ATLAS protocol."""
+    results = []
+
+    for question in questions:
+        # Run protocol (same as Example 1)
+        baseline = client.responses.create(
+            model=student_model,
+            input=[{"role": "user", "content": question}],
+            max_output_tokens=512
+        ).output[0].text
+
+        teaching = client.responses.create(
+            model=teacher_model,
+            input=[{
+                "role": "user",
+                "content": f"Provide teaching for: {question}\nStudent said: {baseline}"
+            }],
+            max_output_tokens=200
+        ).output[0].text
+
+        enhanced = client.responses.create(
+            model=student_model,
+            input=[{"role": "user", "content": f"{question}\nTeaching: {teaching}"}],
+            max_output_tokens=512
+        ).output[0].text
+
+        # Score both
+        baseline_eval = reward.evaluate(prompt=question, response=baseline)
+        enhanced_eval = reward.evaluate(prompt=question, response=enhanced, baseline_solutions=baseline, teacher_traces=teaching)
+
+        results.append({
+            "question": question,
+            "baseline_score": baseline_eval.score,
+            "enhanced_score": enhanced_eval.score,
+            "delta": enhanced_eval.score - baseline_eval.score
         })
 
-    def summary(self):
-        if not self.metrics:
-            return {}
+    return results
 
-        improvements = [m["improvement"] for m in self.metrics]
-        return {
-            "mean_improvement": np.mean(improvements),
-            "median_improvement": np.median(improvements),
-            "non_degradation_rate": sum(i >= 0 for i in improvements) / len(improvements),
-            "avg_latency_ms": np.mean([m["latency_ms"] for m in self.metrics])
-        }
+# Test on multiple questions
+questions = [
+    "Explain transformer attention mechanisms",
+    "Debug a memory leak in this Python code",
+    "Optimize this SQL query for performance"
+]
 
-# Usage
-collector = MetricsCollector()
-result = atlas.run_full_protocol(query)
-collector.record(result)
-print(collector.summary())
+results = evaluate_batch(questions)
+avg_improvement = sum(r["delta"] for r in results) / len(results)
+print(f"Average improvement: {avg_improvement:+.3f}")
 ```
 
-### Debugging
+## Using RIM Reward for Custom Scoring
 
-Enable verbose logging for troubleshooting:
+The RIM reward system can evaluate any agent's output quality:
 
 ```python
-import logging
+from RIM.reward_adapter import RIMReward
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("atlas_inference")
+# Initialize with config
+reward = RIMReward(config_path='configs/rim_config.yaml')
 
-atlas = ATLASInference(
-    teacher_model=teacher_model,
-    student_model=student_model,
-    verbose=True,  # Enable detailed logging
-    debug_mode=True  # Save intermediate outputs
+# Score a single response
+result = reward.evaluate(
+    prompt="What causes database deadlocks?",
+    response="Deadlocks occur when two transactions wait for each other's locks..."
 )
 
-# Debug output will show:
-# - Diagnostic probe and response
-# - Capability assessment
-# - Generated guidance
-# - Final enhancement
+print(f"Quality score: {result.score:.3f}")
+print(f"Judge breakdown: {result.judge_scores}")
+print(f"Rationale:\n{result.rationale}")
+
+# Score with ground truth (for accuracy)
+result_with_gt = reward.evaluate(
+    prompt="What is 2+2?",
+    response="The answer is 4",
+    ground_truths=["4"]
+)
+
+# Score with baseline comparison (for improvement measurement)
+result_with_baseline = reward.evaluate(
+    prompt="Explain recursion",
+    response="Recursion is when a function calls itself with a base case...",
+    baseline_solutions="Recursion is when code repeats."
+)
 ```
 
-## Production Deployment
+<Info>
+RIM uses multiple judge models (accuracy, helpfulness, process, diagnostic) to provide comprehensive scoring. See [Reward Design](/concepts/reward-design) for details.
+</Info>
 
-### API Server Example
+## Integration with Production Agents
 
-Deploy as a REST API service:
+### Pattern 1: REST API Enhancement
+
+Wrap your existing API endpoint with ATLAS teaching:
 
 ```python
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-import uvicorn
+from openai import OpenAI
+from RIM.reward_adapter import RIMReward
 
 app = FastAPI()
+client = OpenAI()
+reward = RIMReward(config_path='configs/rim_config.yaml')
 
 class QueryRequest(BaseModel):
-    text: str
-    enhance: bool = True
+    question: str
+    use_teaching: bool = True
 
-class ResponseModel(BaseModel):
-    response: str
-    enhanced: bool
-    improvement: float = None
+@app.post("/query")
+async def handle_query(request: QueryRequest):
+    """Endpoint that optionally uses ATLAS teaching."""
 
-@app.on_event("startup")
-async def load_models():
-    global atlas
-    # Initialize models once
-    atlas = ATLASInference(...)
+    if not request.use_teaching:
+        # Direct response
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": request.question}]
+        )
+        return {"response": response.choices[0].message.content}
 
-@app.post("/generate", response_model=ResponseModel)
-async def generate(request: QueryRequest):
-    try:
-        if request.enhance:
-            result = atlas.run_full_protocol(request.text)
-            return ResponseModel(
-                response=result.enhanced_response,
-                enhanced=True,
-                improvement=result.improvement_score
-            )
-        else:
-            response = atlas.get_student_response(request.text)
-            return ResponseModel(response=response, enhanced=False)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    # ATLAS protocol
+    baseline = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": request.question}]
+    ).choices[0].message.content
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    teaching = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[{
+            "role": "user",
+            "content": f"Provide teaching for: {request.question}\nStudent said: {baseline}"
+        }]
+    ).choices[0].message.content
+
+    enhanced = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": f"{request.question}\nTeaching: {teaching}"}]
+    ).choices[0].message.content
+
+    return {
+        "response": enhanced,
+        "teaching": teaching,
+        "baseline": baseline
+    }
 ```
 
-### Docker Deployment
+### Pattern 2: Agent Wrapper
 
-Containerize the inference service:
+Use the wrapper configuration system for seamless integration:
 
-```dockerfile
-FROM pytorch/pytorch:2.0.0-cuda11.7-cudnn8-runtime
+```yaml
+# configs/wrappers/my_agent.yaml
+user_agent:
+  type: custom
+  config:
+    integration_type: http_api
+    endpoint: "http://localhost:8000/chat"
+    prompt_field: "message"
+    response_field: "response"
 
-WORKDIR /app
-
-# Install dependencies
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-
-# Copy application
-COPY app.py .
-COPY atlas_inference/ ./atlas_inference/
-
-# Download models at build time
-RUN python -c "from transformers import AutoModel; \
-    AutoModel.from_pretrained('Arc-Intelligence/ATLAS-8B-Thinking')"
-
-EXPOSE 8000
-CMD ["python", "app.py"]
+teacher_model: gpt-5
+trainset: arc-atlas-rl
+max_examples: 10
 ```
 
-## Troubleshooting
+Then optimize with GEPA:
+
+```bash
+./scripts/openai_agent_atlas.sh configs/wrappers/my_agent.yaml
+```
+
+This evolves optimized teaching prompts saved to `optimized_prompts.json`.
+
+## Hardware Requirements
 
 <AccordionGroup>
-  <Accordion title="Out of Memory Errors">
-    **Problem**: CUDA out of memory during inference
+  <Accordion title="API-Only (Recommended for Inference)">
+    **Requirements**: None (all computation via API)
 
-    **Solutions**:
-    1. Enable 4-bit quantization: `load_in_4bit=True`
-    2. Use CPU offloading: `offload_folder="./offload"`
-    3. Reduce batch size: `batch_size=1`
-    4. Use smaller models or single model at a time
+    **Cost**: ~$0.10-0.50 per query with teaching (varies by model)
+
+    **Best for**: Production deployments, rapid prototyping, development
   </Accordion>
 
-  <Accordion title="Slow Inference Speed">
-    **Problem**: High latency for responses
+  <Accordion title="Local Models (Advanced)">
+    **Requirements**:
+    - 1 GPU with 24GB+ VRAM (for 8B teacher + 8B student)
+    - PyTorch 2.0+
+    - Transformers library
 
-    **Solutions**:
-    1. Enable Flash Attention: `use_flash_attention=True`
-    2. Use GPU instead of CPU
-    3. Cache guidance for repeated queries
-    4. Consider selective enhancement for simple queries
-  </Accordion>
+    **Cost**: $0 per query (after model download)
 
-  <Accordion title="Poor Enhancement Quality">
-    **Problem**: Enhanced responses not significantly better
+    **Best for**: Privacy-sensitive deployments, high-volume usage
 
-    **Solutions**:
-    1. Verify correct teacher model for task type
-    2. Check student model compatibility
-    3. Adjust temperature and top_p parameters
-    4. Ensure sufficient context length
+    Note: Local model setup requires additional configuration. See the full training documentation for details.
   </Accordion>
 </AccordionGroup>
 
 ## Next Steps
 
 <CardGroup cols={2}>
+  <Card title="Optimize Teaching Prompts" icon="bolt" href="/training/online/optimize-with-atlas">
+    Use GEPA to evolve better teaching strategies (+165% performance)
+  </Card>
+  <Card title="RIM Reward System" icon="scale-balanced" href="/concepts/reward-design">
+    Understand how ATLAS measures improvement
+  </Card>
   <Card title="Production Deployment" icon="rocket" href="/integration/production-deployment">
     Scale to production environments
   </Card>
-  <Card title="Custom Training" icon="dumbbell" href="/training/online/optimize-with-atlas">
-    Train task-specific teachers
-  </Card>
-  <Card title="API Reference" icon="code" href="/api-reference/atlas-inference">
-    Complete API documentation
-  </Card>
-  <Card title="Online Optimization Demo" icon="bolt" href="/examples/online_optimization">
-    See ATLAS in action
+  <Card title="Working Examples" icon="code" href="/examples/online_optimization">
+    See complete end-to-end demos
   </Card>
 </CardGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="AttributeError: 'OpenAI' object has no attribute 'responses'">
+    **Problem**: You don't have access to the Responses API (required for gpt-5)
+
+    **Solution**: Use the Chat Completions API fallback shown in Example 2 above, or request Responses API access from OpenAI.
+  </Accordion>
+
+  <Accordion title="RIM judges returning all 0.5 scores">
+    **Problem**: Reward judges can't differentiate quality
+
+    **Solutions**:
+    1. Check that responses contain substantive content (not just "yes" or "no")
+    2. Verify ground truths are provided when available
+    3. Ensure baseline comparisons are included
+    4. Check RIM config has correct judge models
+  </Accordion>
+
+  <Accordion title="Teaching not improving student responses">
+    **Problem**: Delta scores are near zero or negative
+
+    **Solutions**:
+    1. Verify teacher model is stronger than student (e.g., gpt-5 > gpt-4o-mini)
+    2. Check teaching actually contains guidance (not just repeating the question)
+    3. Ensure student prompt includes the teaching content
+    4. Try running GEPA optimization to improve teaching prompts
+  </Accordion>
+</AccordionGroup>

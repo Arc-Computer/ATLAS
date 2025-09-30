@@ -58,7 +58,14 @@
         "concepts/teacher-student-paradigm",
         "concepts/adaptive-teaching-protocol",
         "concepts/hybrid-learning",
-        "concepts/reward-design"
+        "concepts/reward-design",
+        "concepts/what-is-gepa"
+      ]
+    },
+    {
+      "group": "Guides",
+      "pages": [
+        "guides/configuration-guide"
       ]
     },
     {
@@ -103,7 +110,6 @@
     {
       "group": "Benchmarks",
       "pages": [
-        "benchmarks/performance-results",
         "benchmarks/evaluation-methodology",
         "benchmarks/reproduction"
       ]

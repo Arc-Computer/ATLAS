@@ -50,16 +50,23 @@ Results vary by task complexity and student model capability.
 
 ### Can I run ATLAS on CPU?
 
-Yes, but with limitations:
-- Inference is 10-50x slower
-- Limited to smaller models
+Yes, with API-based models you need no GPU at all. For local model inference:
+- CPU inference is 10-50x slower than GPU
+- Limited to smaller models (4B-8B)
 - Quantization recommended
 - Suitable for development/testing
 
 ```python
-# CPU configuration
-atlas = ATLASInference(
-    device="cpu",
+# API-based (no GPU needed)
+from openai import OpenAI
+client = OpenAI()
+# Use teacher/student via API calls
+
+# For local models on CPU
+from transformers import AutoModelForCausalLM
+model = AutoModelForCausalLM.from_pretrained(
+    "Arc-Intelligence/ATLAS-8B-Thinking",
+    device_map="cpu",
     torch_dtype=torch.float32
 )
 ```
@@ -130,23 +137,37 @@ scripts/launch.sh 8 configs/run/teacher_sft.yaml \
 
 ### How do I integrate ATLAS into my application?
 
-Basic integration pattern:
+Use the ATLAS teaching protocol with real imports:
 
 ```python
-from atlas_inference import ATLASInference
+from openai import OpenAI
+from RIM.reward_adapter import RIMReward
 
-# Initialize
-atlas = ATLASInference(
-    teacher_model="Arc-Intelligence/ATLAS-8B-Thinking",
-    student_model="your-model"
-)
+client = OpenAI()
 
-# Enhance responses
-result = atlas.run_full_protocol(task)
-enhanced_response = result['guided_response']
+# Step 1: Get baseline from your student model
+baseline_response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[{"role": "user", "content": task}]
+).choices[0].message.content
+
+# Step 2: Get teaching from teacher model
+teaching = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[{
+        "role": "user",
+        "content": f"Provide teaching for: {task}\nStudent said: {baseline_response}"
+    }]
+).choices[0].message.content
+
+# Step 3: Student applies teaching
+enhanced_response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[{"role": "user", "content": f"{task}\nTeaching: {teaching}"}]
+).choices[0].message.content
 ```
 
-See [Custom Implementation Guide](/examples/custom-implementation) for details.
+See [Inference Integration Guide](/integration/inference-only) for complete examples.
 
 ### Can ATLAS work with my existing agent?
 
@@ -165,24 +186,33 @@ Supports:
 
 ### How do I monitor performance in production?
 
-Use built-in metrics collection:
+Use RIM reward scoring to track quality:
 
 ```python
-from atlas_monitoring import MetricsCollector
+from RIM.reward_adapter import RIMReward
 
-collector = MetricsCollector()
-result = atlas.run_full_protocol(task)
-collector.record(result)
+reward = RIMReward(config_path='configs/rim_config.yaml')
 
-# View metrics
-print(collector.summary())
+# Track each request
+baseline_eval = reward.evaluate(prompt=task, response=baseline_response)
+enhanced_eval = reward.evaluate(
+    prompt=task,
+    response=enhanced_response,
+    baseline_solutions=baseline_response,
+    teacher_traces=teaching
+)
+
+# Log metrics
+print(f"Baseline: {baseline_eval.score:.3f}")
+print(f"Enhanced: {enhanced_eval.score:.3f}")
+print(f"Delta: {enhanced_eval.score - baseline_eval.score:+.3f}")
 ```
 
-Integrates with:
+RIM scores can be logged to:
 - Weights & Biases
 - TensorBoard
 - Prometheus
-- Custom logging
+- Custom logging systems
 
 ## Performance & Optimization
 

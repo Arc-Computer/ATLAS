@@ -13,32 +13,74 @@ This guide shows how to integrate ATLAS into your applications, create custom ev
 
 ## Core Integration Pattern
 
-The fundamental ATLAS pattern works with any task:
+The fundamental ATLAS protocol works with any models via API calls:
 
 ```python
-from atlas_inference import ATLASInference
-import torch
+from openai import OpenAI
+from RIM.reward_adapter import RIMReward
 
-# Initialize models
-teacher_model = "Arc-Intelligence/ATLAS-8B-Thinking"
-student_model = "meta-llama/Llama-3.2-8B-Instruct"
+client = OpenAI()
+reward = RIMReward(config_path='configs/rim_config.yaml')
 
-# Create ATLAS instance
-atlas = ATLASInference(
-    teacher_model_name=teacher_model,
-    student_model_name=student_model,
-    device="cuda" if torch.cuda.is_available() else "cpu"
-)
+def run_atlas_protocol(task: str, teacher_model: str = "gpt-5", student_model: str = "gpt-4o-mini"):
+    """Run the full ATLAS teaching protocol."""
 
-# Run the two-pass protocol
-task = "Your domain-specific task here"
-result = atlas.run_full_protocol(task)
+    # Step 1: Get baseline student response
+    baseline_response = client.responses.create(
+        model=student_model,
+        input=[{"role": "user", "content": task}],
+        max_output_tokens=512
+    ).output[0].text
 
-# Access results
-baseline = result['baseline_response']     # Student alone
-enhanced = result['guided_response']       # Student with teaching
-improvement = result['improvement_score']  # Performance gain
+    # Step 2: Teacher provides guidance
+    teaching_response = client.responses.create(
+        model=teacher_model,
+        input=[{
+            "role": "user",
+            "content": f"Task: {task}\n\nStudent attempt:\n{baseline_response}\n\nProvide focused teaching in <teaching> tags."
+        }],
+        max_output_tokens=200
+    ).output[0].text
+
+    # Step 3: Student applies teaching
+    enhanced_response = client.responses.create(
+        model=student_model,
+        input=[{
+            "role": "user",
+            "content": f"Task: {task}\n\nTeaching:\n{teaching_response}\n\nApply the teaching step-by-step."
+        }],
+        max_output_tokens=512
+    ).output[0].text
+
+    # Step 4: Measure improvement with RIM
+    baseline_eval = reward.evaluate(prompt=task, response=baseline_response)
+    enhanced_eval = reward.evaluate(
+        prompt=task,
+        response=enhanced_response,
+        baseline_solutions=baseline_response,
+        teacher_traces=teaching_response
+    )
+
+    return {
+        'baseline_response': baseline_response,
+        'guided_response': enhanced_response,
+        'teaching': teaching_response,
+        'baseline_score': baseline_eval.score,
+        'enhanced_score': enhanced_eval.score,
+        'improvement_score': enhanced_eval.score - baseline_eval.score
+    }
+
+# Use it
+task = "Debug intermittent 503 errors in production Kubernetes cluster"
+result = run_atlas_protocol(task)
+
+print(f"Improvement: {result['improvement_score']:+.3f}")
+print(f"Enhanced response:\n{result['guided_response']}")
 ```
+
+<Note>
+For Chat Completions API (gpt, Claude, etc.), replace `client.responses.create()` with `client.chat.completions.create()`. See [inference-only integration](/integration/inference-only) for fallback patterns.
+</Note>
 
 ## Building Domain-Specific Evaluators
 
@@ -196,12 +238,12 @@ improvement = result['improvement_score']  # Performance gain
 
     class ATLASService:
         def __init__(self):
-            self.atlas = ATLASInference(
-                teacher_model_name="Arc-Intelligence/ATLAS-8B-Thinking",
-                student_model_name="your-production-model"
-            )
+            self.client = OpenAI()
+            self.reward = RIMReward(config_path='configs/rim_config.yaml')
             self.evaluator = DomainEvaluator(your_config)
             self.cache = {}
+            self.teacher_model = "gpt-5"
+            self.student_model = "gpt-4o-mini"
 
         async def process_task(self, request: TaskRequest):
             """
@@ -258,14 +300,12 @@ improvement = result['improvement_score']  # Performance gain
 ```python
 class CodeGenerationATLAS:
     """
-    ATLAS for code generation tasks
+    ATLAS for code generation tasks using the teaching protocol
     """
 
     def __init__(self):
-        self.atlas = ATLASInference(
-            teacher_model_name="Arc-Intelligence/ATLAS-8B-Instruct",
-            student_model_name="codellama/CodeLlama-7b-Instruct"
-        )
+        self.client = OpenAI()
+        self.reward = RIMReward(config_path='configs/rim_config.yaml')
 
     def enhance_code_generation(self, specification):
         """
@@ -281,7 +321,8 @@ class CodeGenerationATLAS:
         - Include docstrings
         """
 
-        result = self.atlas.run_full_protocol(prompt)
+        # Run ATLAS protocol
+        result = run_atlas_protocol(prompt, teacher_model="gpt-5", student_model="gpt-4o-mini")
 
         # Post-process to extract code
         code = self.extract_code_blocks(result['guided_response'])
@@ -291,7 +332,7 @@ class CodeGenerationATLAS:
             return code
         else:
             # Retry with more specific guidance
-            return self.retry_with_corrections(specification, code)
+            return self.retry_with_corrections(specification, code, result['teaching'])
 
     def validate_syntax(self, code):
         """Check if generated code is syntactically valid"""
@@ -310,6 +351,9 @@ class DataAnalysisATLAS:
     ATLAS for data analysis tasks
     """
 
+    def __init__(self):
+        self.client = OpenAI()
+
     def enhance_analysis(self, data_description, question):
         """
         Enhance analytical reasoning
@@ -326,7 +370,7 @@ class DataAnalysisATLAS:
         4. Address limitations
         """
 
-        result = self.atlas.run_full_protocol(task)
+        result = run_atlas_protocol(task, teacher_model="gpt-5", student_model="gpt-4o-mini")
 
         # Extract structured insights
         analysis = self.parse_analysis(result['guided_response'])
@@ -348,6 +392,9 @@ class DebuggingATLAS:
     ATLAS for systematic debugging
     """
 
+    def __init__(self):
+        self.client = OpenAI()
+
     def debug_issue(self, error_description, context):
         """
         Systematic debugging with teaching
@@ -364,7 +411,7 @@ class DebuggingATLAS:
         4. Find root cause
         """
 
-        result = self.atlas.run_full_protocol(task)
+        result = run_atlas_protocol(task, teacher_model="gpt-5", student_model="gpt-4o-mini")
 
         # Parse debugging steps
         debug_plan = self.parse_debug_plan(result['guided_response'])
@@ -383,8 +430,10 @@ class DebuggingATLAS:
 ### Caching Strategies
 
 ```python
-from functools import lru_cache
 import hashlib
+import time
+import json
+from openai import OpenAI
 
 class CachedATLAS:
     """
@@ -392,34 +441,33 @@ class CachedATLAS:
     """
 
     def __init__(self):
-        self.atlas = ATLASInference(...)
-        self.guidance_cache = {}
+        self.client = OpenAI()
+        self.result_cache = {}
         self.ttl = 3600  # 1 hour
 
-    def get_cached_guidance(self, task):
+    def get_cached_result(self, task):
         """
-        Cache teaching guidance for similar tasks
+        Cache full ATLAS protocol results for similar tasks
         """
         # Create semantic hash
         task_hash = self.semantic_hash(task)
 
         # Check cache
-        if task_hash in self.guidance_cache:
-            cached = self.guidance_cache[task_hash]
+        if task_hash in self.result_cache:
+            cached = self.result_cache[task_hash]
             if time.time() - cached['timestamp'] < self.ttl:
-                return cached['guidance']
+                return cached['result']
 
-        # Generate new guidance
-        result = self.atlas.diagnostic_probe(task)
-        guidance = self.atlas.generate_guidance(task, result)
+        # Run full protocol
+        result = run_atlas_protocol(task)
 
         # Cache it
-        self.guidance_cache[task_hash] = {
-            'guidance': guidance,
+        self.result_cache[task_hash] = {
+            'result': result,
             'timestamp': time.time()
         }
 
-        return guidance
+        return result
 
     def semantic_hash(self, task):
         """
@@ -440,9 +488,11 @@ class CachedATLAS:
 ### Batch Processing
 
 ```python
+import asyncio
+
 async def batch_enhance(tasks, batch_size=4):
     """
-    Process multiple tasks efficiently
+    Process multiple tasks efficiently using ATLAS protocol
     """
     results = []
 
@@ -451,7 +501,7 @@ async def batch_enhance(tasks, batch_size=4):
 
         # Process batch in parallel
         batch_results = await asyncio.gather(*[
-            atlas.run_full_protocol(task) for task in batch
+            asyncio.to_thread(run_atlas_protocol, task) for task in batch
         ])
 
         results.extend(batch_results)
@@ -520,17 +570,27 @@ class ATLASAnalytics:
   </Accordion>
 
   <Accordion title="Error Handling">
-    Implement robust error handling:
+    Implement robust error handling for API calls:
     ```python
-    try:
-        result = atlas.run_full_protocol(task)
-    except torch.cuda.OutOfMemoryError:
-        # Fall back to CPU or smaller model
-        result = atlas_cpu.run_full_protocol(task)
-    except Exception as e:
-        # Log and return baseline
-        logger.error(f"ATLAS failed: {e}")
-        result = student_model.generate(task)
+    from openai import OpenAI, APIError
+
+    def safe_atlas_protocol(task):
+        try:
+            result = run_atlas_protocol(task)
+            return result
+        except APIError as e:
+            # Handle API errors
+            logger.error(f"API error: {e}")
+            # Fall back to baseline without teaching
+            client = OpenAI()
+            baseline = client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[{"role": "user", "content": task}]
+            ).choices[0].message.content
+            return {'guided_response': baseline, 'improvement_score': 0}
+        except Exception as e:
+            logger.error(f"ATLAS failed: {e}")
+            raise
     ```
   </Accordion>
 
@@ -545,15 +605,23 @@ class ATLASAnalytics:
   <Accordion title="Testing Strategy">
     Test your implementation thoroughly:
     ```python
+    from RIM.reward_adapter import RIMReward
+
     def test_enhancement():
+        reward = RIMReward(config_path='configs/rim_config.yaml')
         test_cases = load_test_cases()
 
         for case in test_cases:
-            result = atlas.run_full_protocol(case['input'])
-            score = evaluator.evaluate(result['guided_response'],
-                                      case['expected'])
+            result = run_atlas_protocol(case['input'])
 
-            assert score > case['min_score'], \
+            # Score with RIM
+            eval_result = reward.evaluate(
+                prompt=case['input'],
+                response=result['guided_response'],
+                ground_truths=[case['expected']]
+            )
+
+            assert eval_result.score > case['min_score'], \
                    f"Failed: {case['name']}"
             assert result['improvement_score'] >= 0, \
                    "Degradation detected"
@@ -573,7 +641,7 @@ class ATLASAnalytics:
   <Card title="Production Deployment" icon="rocket" href="/integration/production-deployment">
     Deploy at scale
   </Card>
-  <Card title="API Reference" icon="code" href="/api-reference/atlas-inference">
-    Complete API documentation
+  <Card title="Configuration Reference" icon="code" href="/api-reference/configs">
+    Complete configuration documentation
   </Card>
 </CardGroup>

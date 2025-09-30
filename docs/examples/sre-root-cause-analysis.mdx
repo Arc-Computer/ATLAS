@@ -150,38 +150,87 @@ Each corrected procedure becomes a **Skill Capsule** - a reusable investigation 
 
 ## Implementation Code
 
-Here's how to implement this SRE enhancement in your environment:
+Here's how to implement this SRE enhancement using the ATLAS protocol with API models:
 
 ```python
-from transformers import AutoModelForCausalLM, AutoTokenizer
-from examples.utils.atlas_inference import ATLASInference
+from openai import OpenAI
+from RIM.reward_adapter import RIMReward
 
-# Load ATLAS teacher trained on SRE procedures
-teacher = AutoModelForCausalLM.from_pretrained(
-    "Arc-Intelligence/ATLAS-8B-Thinking",
-    trust_remote_code=True
+client = OpenAI()
+reward = RIMReward(config_path='configs/rim_config.yaml')
+
+# Define SRE incident
+incident = "Kubernetes service returning 503 errors intermittently"
+
+# Step 1: Get baseline investigation approach
+baseline_messages = [
+    {
+        "role": "system",
+        "content": "You are an SRE investigating production incidents. Explain your systematic approach."
+    },
+    {"role": "user", "content": incident}
+]
+baseline_response = client.responses.create(
+    model="gpt-4o-mini",
+    input=baseline_messages,
+    max_output_tokens=512
+)
+baseline_investigation = baseline_response.output[0].text
+
+# Step 2: Teacher analyzes and provides expert guidance
+teacher_messages = [
+    {
+        "role": "system",
+        "content": "You are an expert SRE teacher. The student investigated this incident. Provide focused teaching in <teaching> tags on systematic debugging."
+    },
+    {
+        "role": "user",
+        "content": f"Incident: {incident}\n\nStudent's approach:\n{baseline_investigation}\n\nProvide expert SRE guidance."
+    }
+]
+teaching_response = client.responses.create(
+    model="gpt-5",
+    input=teacher_messages,
+    max_output_tokens=200
+)
+teaching = teaching_response.output[0].text
+
+# Step 3: Student applies teaching for enhanced investigation
+enhanced_messages = [
+    {
+        "role": "system",
+        "content": "Apply the expert teaching to create a systematic investigation plan."
+    },
+    {
+        "role": "user",
+        "content": f"Incident: {incident}\n\nTeaching:\n{teaching}\n\nCreate a systematic investigation plan with specific kubectl and istioctl commands."
+    }
+]
+enhanced_response = client.responses.create(
+    model="gpt-4o-mini",
+    input=enhanced_messages,
+    max_output_tokens=512
+)
+investigation_plan = enhanced_response.output[0].text
+
+# Step 4: Measure improvement with RIM
+baseline_eval = reward.evaluate(prompt=incident, response=baseline_investigation)
+enhanced_eval = reward.evaluate(
+    prompt=incident,
+    response=investigation_plan,
+    baseline_solutions=baseline_investigation,
+    teacher_traces=teaching
 )
 
-# Your existing SRE bot or LLM
-sre_model = AutoModelForCausalLM.from_pretrained(
-    "your-sre-model",
-    trust_remote_code=True
-)
-
-# Create ATLAS-enhanced SRE investigator
-atlas_sre = ATLASInference(
-    student_model=sre_model,
-    teacher_model=teacher,
-    probe_token_limit=50
-)
-
-# Incident investigation
-incident = "Kubernetes service returning 503 errors"
-result = atlas_sre.run_full_protocol(incident)
-
-# Get expert investigation plan
-investigation_plan = result["guided_response"]
+print(f"Baseline quality: {baseline_eval.score:.3f}")
+print(f"Enhanced quality: {enhanced_eval.score:.3f}")
+print(f"Improvement: {enhanced_eval.score - baseline_eval.score:+.3f}")
+print(f"\nSystematic investigation plan:\n{investigation_plan}")
 ```
+
+<Note>
+This example uses OpenAI's Responses API for gpt-5 access. For standard models, see the [inference-only integration guide](/integration/inference-only) for Chat Completions API patterns.
+</Note>
 
 ## Try It Yourself
 
