@@ -13,6 +13,11 @@ ATLAS (Adaptive Teaching and Learning Alignment System) is an architecture for p
 
 Together, they form a complete learning loop where interaction traces stream into the reward system, the learning engine upgrades the teacher–student core, and the refreshed policy is redeployed so production agents get demonstrably sharper with every episode.
 
+<div align="center">
+  <img src="/images/system-architecture.png" alt="ATLAS System Architecture" width="800" />
+  <p><em>Figure: ATLAS keeps the agent in a learn–evaluate–update cycle.</em></p>
+</div>
+
 **The core value:** Rather than treating agents as static and stateless, ATLAS provides the framework for systems that **compound knowledge over time**. This enables building a durable library of domain expertise instead of relearning the same fixes repeatedly.
 
 ## The Core Concept: Teacher-Student Paradigm
@@ -41,11 +46,6 @@ ATLAS provides three operational modes that work together in a complete learning
 3. **[Train](/first-experiment)** – When you need more than prompt tweaks, use the judged data to update the teacher model weights themselves via reinforcement learning.
 
 This **evaluate → optimize → train** arc is the continual learning loop: fresh interactions enter RIM, the reward signal decides what to keep or discard, and ATLAS updates the components that do the teaching so the deployed agent never goes stale.
-
-<div align="center">
-  <img src="/images/system-architecture.png" alt="ATLAS System Architecture" width="800" />
-  <p><em>Figure: ATLAS keeps the agent in a learn–evaluate–update cycle.</em></p>
-</div>
 
 ## Pre-trained Models vs Custom Training
 
