@@ -11,29 +11,23 @@ ATLAS uses configuration files to customize behavior without code changes. Here'
 
 ```
 configs/
-├── wrappers/        🎯 START HERE for integrating your agent
-│   ├── openai_existing_agent.yaml   # Template for wrapping any agent
-│   └── openai_config.yaml           # OpenAI-specific settings
-├── optimize/        📈 Online optimization settings
-│   ├── api_models.yaml             # API-based optimization (no GPU)
-│   ├── vllm_server.yaml            # Local vLLM server setup
-│   └── default.yaml                # Base optimization config
-├── examples/        ⚡ Ready-to-run configurations
-│   ├── quickstart.yaml             # Quick start example
-│   └── data_source_examples.yaml  # Dataset loading examples
-├── data/            💾 Dataset configurations
-│   ├── arc_atlas_rl.yaml          # ATLAS RL training dataset
-│   └── arc_atlas_sft.yaml         # ATLAS SFT dataset
-├── demo/            🔬 Full demo scenarios
-│   ├── itbench_sre.yaml           # SRE debugging demo
-│   └── openai_agent_demo.yaml     # OpenAI agent demo
-├── model/           🤖 Model architectures (advanced)
-├── run/             🔬 Training experiments (advanced)
-└── trainer/         ⚙️  RL algorithms (advanced)
+├── wrappers/          🎯 START HERE - Wrap your existing agent
+├── optimize/          📈 Optimization settings (API or vLLM)
+├── examples/          ⚡ Ready-to-run configs
+├── data/              💾 Dataset configurations
+├── demo/              🔬 Full demo scenarios
+├── rim_config.yaml    🏆 Reward system configuration
+├── model/             🤖 Model architectures (advanced training)
+├── run/               🔬 Training experiments (advanced training)
+└── trainer/           ⚙️ RL algorithms (advanced training)
 ```
 
 <Note>
 **For Getting Started:** Start with `wrappers/` and `optimize/`. The `model/`, `run/`, and `trainer/` directories are for advanced RL training (see [Architecture docs](/architecture/config-system)).
+
+**Root-level configs:**
+- `rim_config.yaml` - Reward system settings (judges, models, thresholds). See [Reward Design](/concepts/reward-design).
+- `train.yaml` - Global training defaults (advanced users only)
 </Note>
 
 ## Common Configurations
@@ -488,37 +482,6 @@ wandb:
   project: my-atlas-project
   tags:
     - experiment-1
-```
-
-### Pattern 4: Multiple Teaching Strategies
-
-Test different teaching prompts:
-
-```yaml
-# configs/optimize/creative_teaching.yaml
-defaults:
-  - default
-
-seed_prompts:
-  teacher_adaptive_template: |
-    You are a creative problem-solving coach. The student attempted this:
-
-    Question: {question}
-    Student's work: {baseline_response}
-
-    Provide inventive teaching that encourages lateral thinking.
-    Wrap your teaching in <teaching> tags.
-
-  student_diagnostic_template: |
-    Question: {question}
-
-    Before solving, brainstorm 3 different approaches you could take:
-
-  student_with_teaching_template: |
-    Question: {question}
-    Teaching: {teaching}
-
-    Apply the creative teaching to find an elegant solution:
 ```
 
 ## Key Configuration Fields
