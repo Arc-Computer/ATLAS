@@ -1,284 +1,330 @@
 ---
 title: The ATLAS Reward System
-description: How the ATLAS reward ensemble evaluates accuracy, teaching quality, process, and diagnostics.
+description: How ATLAS measures if teaching actually works
 sidebarTitle: Reward System
 icon: trophy
 ---
 
-The ATLAS reward system is an evaluation framework designed for robustness, explainability, and cost-efficiency. It replaces a single, monolithic reward model with a multi-agent ensemble of "judges" that work together to score agent performance. The system operates on a two-tier protocol: an ensemble of efficient, small language models performs an initial evaluation, and any contentious or low-confidence results are automatically escalated to a larger, more capable arbiter model.
+How do we know if teaching actually worked? ATLAS uses a team of AI judges to score every interaction.
 
-This architecture provides developers with clear, principle-driven rationales for every score, calibrated uncertainty estimates, and state-of-the-art accuracy, as validated by its **93.7%** performance on the RewardBenchV2 benchmark.
+Instead of a single reward model that can be biased or brittle, ATLAS uses a multi-agent ensemble. Think of it like a medical panel: a team of general practitioners makes an initial diagnosis, and when they disagree, a specialist makes the final call.
 
-## Architectural Flow
+This achieves **93.7% accuracy on RewardBench V2** while keeping costs low.
 
-The reward system's evaluation process is a multi-step workflow designed to balance cost and accuracy, as implemented in `RIM/rim.py`.
+## The Two-Tier System
 
-<Steps>
-  <Step title="1. Ensemble Evaluation">
-    An evaluation begins with the **Tier 1 Small-Judge Ensemble**. As defined in `configs/rim_config.yaml`, a pool of efficient models (e.g., `gemini/gemini-2.5-flash`) are called in parallel. Each judge receives the same input but is run at a different temperature (e.g., `[0.2, 0.5, 0.8]`) to produce a diverse set of initial judgments.
-  </Step>
+<div align="center">
+  <img src="/images/reward-system-design.png" alt="ATLAS Reward System Architecture" width="800" />
+  <p><em>Tier 1: Fast ensemble evaluation → Tier 2: Expert arbiter when needed</em></p>
+</div>
 
-  <Step title="2. Principle-Guided Rationale">
-    A core feature of the system is its explainability. Judges are required by their prompts (defined in `RIM/judge_specs.py`) to provide a structured rationale for their scores. For instance, the `AccuracyJudge` must first generate and weigh a set of evaluation principles, making its final score fully auditable, while other judges like `HelpfulnessJudge` return different structured outputs like an `evidence` list.
-  </Step>
+### How It Works
 
-  <Step title="3. Uncertainty & Disagreement Check">
-    Once the ensemble judgments are collected, the system checks for ambiguity. Escalation to the next tier is triggered if either of these conditions is met:
-    - **High Disagreement:** The standard deviation of scores from the ensemble exceeds the `variance_threshold` (e.g., `0.15`).
-    - **Low Confidence:** Any individual judge reports a high self-assessed `uncertainty` score (e.g., `> 0.3`).
-  </Step>
+**Tier 1: The Initial Team**
+- Multiple efficient models (like `gemini-2.5-flash`) run in parallel
+- Each runs at different temperatures for diverse perspectives
+- They all score the same interaction independently
+- Fast and cheap for most cases
 
-  <Step title="4. Escalation to Arbiter">
-    If a case is flagged, it is escalated to the **Tier 2 Arbiter**. A detailed **meta-prompt** is constructed, containing the original inputs plus the full set of principles, scores, and rationales from the Tier 1 ensemble. This gives the larger, more capable model (e.g., `gemini/gemini-2.5-pro`) complete context to make a final, informed decision. If no flags are raised, the most confident judgment from the Tier 1 ensemble is used, saving cost and time.
-  </Step>
-</Steps>
+**Tier 2: The Expert Arbiter**
+- Only called when the team disagrees (high variance in scores)
+- Or when any judge reports low confidence
+- A more powerful model (like `gemini-2.5-pro`) reviews everything
+- Makes the final decision with full context
 
-![ATLAS Reward System Architecture](/images/reward-system-design.png)
+**The key insight**: Most cases are clear-cut and don't need the expensive expert. When there's genuine ambiguity, escalate to the specialist.
 
-## Reward Dimensions
+### When Escalation Happens
 
-The system is designed to be flexible, evaluating interactions across four key dimensions. Each dimension is implemented as a separate `Judge` class in `RIM/judges.py` and can be toggled in the configuration.
+The system escalates to Tier 2 when either:
+- **High disagreement**: Standard deviation of scores exceeds the threshold (default: 0.15)
+- **Low confidence**: Any judge reports high uncertainty (default: >0.3)
 
-| Judge | Purpose | ATLAS Use Case |
+Otherwise, it uses the most confident judgment from Tier 1—saving both time and money.
+
+## The Four Judges
+
+Each judge evaluates a different dimension of quality:
+
+| Judge | What It Asks | Why It Matters |
 | :--- | :--- | :--- |
-| **`AccuracyJudge`** | Measures factual correctness and alignment with ground truth. | Foundational check for all tasks; primary judge for pairwise benchmarking. |
-| **`HelpfulnessJudge`** | Assesses if teacher guidance caused a positive change in student performance. | Core reward signal for training the Teacher model to be effective. |
-| **`ProcessJudge`** | Evaluates the quality and coherence of a student's plan or reasoning steps. | Rewards the Teacher for guiding students toward better problem-solving strategies. |
-| **`DiagnosticJudge`** | Judges whether the teacher correctly identified the student's underlying flaws. | Rewards the Teacher for accurate diagnostic capabilities. |
+| **AccuracyJudge** | "Is the answer correct?" | Core quality check for all tasks |
+| **HelpfulnessJudge** | "Did teaching make it better?" | Measures actual improvement from guidance |
+| **ProcessJudge** | "Is the reasoning sound?" | Rewards good problem-solving approach |
+| **DiagnosticJudge** | "Did we identify the real problem?" | Validates the teacher's assessment |
 
-## Configuration for Developers
+### How Judges Work
 
-Developers can tune the reward system's behavior via `configs/rim_config.yaml` without changing code. This allows for easy adaptation to different tasks and cost constraints.
+Each judge is required to provide a structured rationale:
 
-```yaml title="configs/rim_config.yaml"
+**AccuracyJudge** generates evaluation principles first:
+```json
+{
+  "principles": [
+    {"name": "Correctness", "weight": 0.5, "description": "..."},
+    {"name": "Completeness", "weight": 0.3, "description": "..."}
+  ],
+  "score": 0.85,
+  "explanation": "The response correctly solves...",
+  "uncertainty": 0.1
+}
+```
+
+**HelpfulnessJudge** provides evidence list:
+```json
+{
+  "evidence": ["Student initially missed key concept", "Teaching provided specific guidance"],
+  "score": 0.75,
+  "explanation": "Teaching improved response quality by...",
+  "uncertainty": 0.15
+}
+```
+
+This makes every score fully auditable—you can see exactly why a judgment was made.
+
+## Configuration Essentials
+
+The reward system is configured via YAML, but you only need to understand a few key settings:
+
+### Core Settings
+
+```yaml
+# configs/rim_config.yaml
 rim:
-  # Controls the diversity of the Tier 1 ensemble
+  # Diversity: More temperatures = more diverse initial opinions
   temperatures: [0.2, 0.5, 0.8]
 
-  # Sets the sensitivity for escalation due to judge disagreement
-  variance_threshold: 0.15
+  # Escalation sensitivity
+  variance_threshold: 0.15  # Lower = more escalations to expert
 
-  # Defines the models for the two-tier system
-  models:
-    small_model: "gemini/gemini-2.5-flash"
-    large_model: "gemini/gemini-2.5-pro"
-
-  # Toggle which reward dimensions to compute for a given run
+  # Which dimensions to evaluate
   active_judges:
     accuracy: true
     helpfulness: true
     process: true
     diagnostic: true
-
-  model_configs:
-    default:
-      max_tokens: 32768
-      response_format: "json"
-    large:
-      max_tokens: 32768
-      response_format: "json"
-
-  consistency_rules:
-    alignment_completeness_bound: 0.1
-    completeness_helpfulness_threshold: 0.5
-    understanding_helpfulness_bound: 0.1
-    contradiction_penalty: 0.2
-    safety_violation_penalty: 0.2
-
-  anti_gaming:
-    enabled: true
-    cap_score: 0.3
-
-  # Configure parallel execution for the ensemble
-  parallel_execution:
-    max_workers: 8
 ```
-For different use cases, such as offline training where only process and helpfulness matter, you can create or use an alternative configuration file (e.g., `rim_offline_config.yaml`) that sets the `accuracy` and `diagnostic` flags to `false`.
-`model_configs` lets you tune per-model generation settings without editing code, while the `consistency_rules` block enforces the score relationships we rely on (for example, process cannot exceed accuracy by more than 0.1). The `anti_gaming` guard caps outlier scores when contradictions or safety issues are detected.
 
-## Using the Reward System in Code
+### Key Tuning Knobs
 
-The primary entry point for developers is the `RIMReward` class in `RIM/reward_adapter.py`. This class wraps the entire evaluation workflow.
+**Want more precision?**
+- Lower `variance_threshold` to 0.10 → More cases go to the expert model
 
-### Offline RL Training
+**Need faster/cheaper evaluation?**
+- Raise `variance_threshold` to 0.20 → Trust the initial team more often
+- Reduce `temperatures` to `[0.3, 0.7]` → Fewer ensemble members
 
-In a typical offline training run, you don't call the reward system directly. Instead, you instantiate it and pass it as an argument to the `GRPOTrainer`. The trainer then handles calling it with batches of data during the RL loop.
+**Different use cases?**
+- **Offline training**: Disable `accuracy` and `diagnostic`, focus on `helpfulness` and `process`
+- **Online evaluation**: Enable all four judges for comprehensive scoring
+
+## Using the Reward System
+
+### In Training (Offline RL)
+
+The reward system integrates seamlessly with the GRPO trainer:
 
 ```python
-# In a real training script (like train.py):
-
 from trainers.grpo import GRPOTrainer
 from RIM.reward_adapter import RIMReward
 from datasets import load_dataset
 
-# 1. Load your training configuration (e.g., from Hydra)
-# grpo_config = ...
-# train_dataset = ...
-
-# 2. Instantiate the reward system
+# 1. Instantiate reward system
 reward_system = RIMReward(config_path='configs/rim_config.yaml')
 
-# 3. Initialize the GRPOTrainer
-# Note: The first argument is the model, `args` takes the config,
-# and the reward system is passed in a list to `reward_funcs`.
+# 2. Pass to trainer
 trainer = GRPOTrainer(
     model="path/to/your/teacher_model",
     args=grpo_config,
-    reward_funcs=[reward_system],
-    train_dataset=train_dataset,
-    # ... other standard trainer arguments
+    reward_funcs=[reward_system],  # Just pass it in
+    train_dataset=train_dataset
 )
 
-# 4. Start the training
-# The trainer will now use the multi-agent reward system internally
+# 3. Train - the reward system runs automatically
 trainer.train()
 ```
 
-### Online Optimization
+The trainer handles calling the reward system with batches of data during the RL loop. You don't need to manage it manually.
 
-In the online optimization workflow (`optimize_teaching.py`), the reward system serves as a pluggable evaluation function. While the default process uses a `reflection_lm` to guide prompt evolution, the underlying `ATLASGEPAAdapter` is designed to use our reward system as the fitness function for its genetic algorithm. This allows you to optimize teaching prompts directly against the multi-dimensional scores produced by the reward system.
+### For Ad-hoc Evaluation
+
+Quick evaluation of teaching effectiveness:
 
 ```python
-# In optimize_teaching.py, the adapter can be configured
-# to use the reward system as its primary metric.
+from RIM.reward_adapter import RIMReward
 
+# Create reward system
+reward = RIMReward(config_path='configs/rim_config.yaml')
+
+# Evaluate a single interaction
+result = reward.evaluate({
+    'question': 'What is 2+2?',
+    'baseline_response': 'It is 4',
+    'taught_response': 'The answer is 4 because 2 plus 2 equals 4',
+    'teaching': 'Explain your reasoning step by step'
+})
+
+print(f"Accuracy: {result['accuracy']}")
+print(f"Helpfulness: {result['helpfulness']}")
+print(f"Improvement: {result['helpfulness'] - result['baseline_accuracy']}")
+```
+
+### In Online Optimization
+
+The reward system serves as the fitness function for prompt evolution:
+
+```python
 from RIM.reward_adapter import RIMReward
 from trainers.prompt_adapter import ATLASGEPAAdapter
 
-# 1. Instantiate the reward system
+# Reward system scores teaching quality
 reward_system = RIMReward(config_path='configs/rim_config.yaml')
 
-# 2. Pass it to the adapter for online optimization
+# Adapter uses rewards to evolve prompts
 adapter = ATLASGEPAAdapter(
     teacher_model=teacher_model,
     student_model=student_model,
-    reward_function=reward_system, # Using the reward system as the metric
-    # ... other adapter arguments
+    reward_function=reward_system  # Drives optimization
 )
 
-# 3. The gepa.optimize function will now use the reward system's
-# output to score and evolve the prompt candidates.
+# Optimize teaching prompts based on reward signals
+optimized_prompts = adapter.optimize()
 ```
 
-## Customizing Judge Behavior
+## Customizing Judges
 
-Judge behavior is controlled by **Python code in `RIM/judges.py`**, not YAML configuration. The config file only toggles which judges are active.
+### Modifying Existing Judges
 
-### Modifying Existing Judge Prompts
-
-To customize how a judge evaluates (e.g., change what AccuracyJudge prioritizes), edit the `_build_prompt` method in `RIM/judges.py`:
+Judge behavior is controlled by their prompts in `RIM/judges.py`. To change what AccuracyJudge prioritizes:
 
 ```python
 # RIM/judges.py
 class AccuracyJudge:
     def _build_prompt(self, inputs: Dict[str, Any]) -> str:
         # Customize this string to change evaluation criteria
-        return f"""Evaluate these two responses to the given prompt.
+        return f"""Evaluate these responses.
 
 Prompt: {inputs.get('prompt', '')}
-
 Response A: {inputs.get('response_a', '')}
 Response B: {inputs.get('response_b', '')}
 
-Step 1: Generate 2-3 principles that are most relevant for evaluating these responses.
-For each principle, assign a weight (percentage from 0.0 to 1.0) based on its importance.
-The weights should sum to 1.0.
+Step 1: Generate 2-3 evaluation principles with weights (must sum to 1.0)
+Step 2: Score both responses against each principle
+Step 3: Provide final scores (0.0 to 1.0)
 
-Step 2: Evaluate both responses against each principle.
-
-Step 3: Provide final scores from 0.0 to 1.0 for each response.
-
-Output JSON only: {{"principles": [{{"name": str, "weight": float, "description": str}}], "score_a": float, "score_b": float, "explanation": str, "uncertainty": float}}"""
+Output JSON only: {{"principles": [...], "score_a": float, "score_b": float, "uncertainty": float}}"""
 ```
-
-Modify the prompt text to emphasize different criteria, add constraints, or change the evaluation structure.
 
 ### Adding a New Judge
 
-To add a new evaluation dimension (e.g., "Creativity"):
-
-**Step 1: Create the judge class in `RIM/judges.py`:**
+**Step 1: Create judge class** (`RIM/judges.py`):
 
 ```python
-# RIM/judges.py
 class CreativityJudge:
     def __init__(self):
         self.name = 'creativity'
 
-    def evaluate(self, inputs: Dict[str, Any], model_fn, temperature: float) -> Dict[str, Any]:
-        prompt = self._build_prompt(inputs)
+    def evaluate(self, inputs: Dict[str, Any], model_fn, temperature: float):
+        prompt = f"""Score creativity (0.0 = formulaic, 1.0 = highly creative).
+        Response: {inputs.get('response', '')}
+        Output JSON: {{"score": float, "rationale": str, "uncertainty": float}}"""
+
         response = model_fn(prompt, temperature)
-        return self._parse_response(response)
-
-    def _build_prompt(self, inputs: Dict[str, Any]) -> str:
-        return f"""Evaluate the creativity of this response.
-
-Question: {inputs.get('question', '')}
-Response: {inputs.get('response', '')}
-
-Score creativity from 0.0 (formulaic) to 1.0 (highly creative).
-
-Output JSON only: {{"score": float, "rationale": str, "uncertainty": float}}"""
-
-    def _parse_response(self, response: str) -> Dict[str, Any]:
-        try:
-            data = json.loads(response)
-            return {
-                'score': data.get('score', 0.0),
-                'rationale': data.get('rationale', ''),
-                'uncertainty': data.get('uncertainty', 0.5)
-            }
-        except:
-            return {'score': 0.0, 'rationale': 'Parse error', 'uncertainty': 1.0}
+        return json.loads(response)
 ```
 
-**Step 2: Register the judge in `RIM/reward_adapter.py`:**
+**Step 2: Register in reward adapter** (`RIM/reward_adapter.py`):
 
 ```python
-# RIM/reward_adapter.py
-from RIM.judges import AccuracyJudge, HelpfulnessJudge, ProcessJudge, DiagnosticJudge, CreativityJudge
+from RIM.judges import AccuracyJudge, HelpfulnessJudge, CreativityJudge
 
 class RIMReward:
     def __init__(self, ...):
-        # Add your new judge here
         self.judges = {
             'accuracy': AccuracyJudge(),
             'helpfulness': HelpfulnessJudge(),
-            'process': ProcessJudge(),
-            'diagnostic': DiagnosticJudge(),
-            'creativity': CreativityJudge()  # New judge
+            'creativity': CreativityJudge()  # Add here
         }
 ```
 
-**Step 3: Enable in `configs/rim_config.yaml`:**
+**Step 3: Enable in config** (`configs/rim_config.yaml`):
 
 ```yaml
 active_judges:
   accuracy: true
   helpfulness: true
-  process: true
-  diagnostic: true
   creativity: true  # Enable new judge
 ```
 
-### Judge Class Structure
+## Performance
 
-Every judge must implement:
-- `__init__()`: Set `self.name`
-- `evaluate()`: Call `_build_prompt()`, invoke model, return parsed result
-- `_build_prompt()`: Return the LLM prompt string
-- `_parse_response()`: Parse JSON response into dict with `score`, `rationale`, `uncertainty`
+### RewardBench V2 Results
 
-The YAML config controls which judges run, but **all prompt logic lives in Python code**.
+The ensemble-and-escalation architecture achieves **93.7% overall accuracy**, significantly outperforming individual models:
 
-## Performance Snapshot
+- **Component model** (`gemini-2.5-flash`): 77.7% on its own
+- **System performance**: 93.7% (+16 points)
 
-Our reward system achieves a state-of-the-art **93.7%** overall accuracy on the RewardBenchV2 benchmark. This accuracy stems from our systems-based architecture, which outperforms single-model evaluators.
+The architecture creates a result greater than the sum of its parts.
 
-The value of the architecture is best seen in the performance uplift it provides to its components. The system's Tier 1 judge, `gemini-2.5-flash`, scores 77.7% on its own. By integrating it into our ensemble-and-escalation framework, the system achieves a **16-point performance increase**. This highlights how the system's design creates a result that is greater than the sum of its parts.
+<div align="center">
+  <img src="/images/reward-leaderboard.png" alt="ATLAS Reward System Leaderboard" width="800" />
+</div>
 
-![ATLAS Reward System Leaderboard on RewardBench V2](/images/reward-leaderboard.png)
+### Category Breakdown
 
-![ATLAS Performance by Category](/images/atlas-categories.png)
+<div align="center">
+  <img src="/images/atlas-categories.png" alt="Performance by Category" width="800" />
+</div>
 
-For a full analysis, see the complete [Technical Report](../REWARD_SYSTEM_TECHNICAL_REPORT).
+See the complete [Reward System Technical Report](https://www.arc.computer/blog/ATLAS-Reward-System) for full analysis.
+
+## Monitoring Rewards During Training
+
+The training logs include reward system outputs:
+
+```python
+# Example log entry
+{
+  'step': 150,
+  'rim_rewards': {
+    'accuracy': 0.85,
+    'helpfulness': 0.72,
+    'process': 0.78,
+    'diagnostic': 0.80
+  },
+  'rim_explanations': {
+    'accuracy': 'Response correctly solves the problem with proper units',
+    'helpfulness': 'Teaching improved reasoning structure significantly'
+  },
+  'escalation_rate': 0.23  # 23% of cases went to Tier 2
+}
+```
+
+Monitor these to:
+- Spot prompt regressions (dropping helpfulness scores)
+- Identify misconfigured thresholds (escalation rate too high/low)
+- Validate teaching improvements (rising scores over time)
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="How ATLAS Works" icon="arrows-rotate" href="/concepts/adaptive-teaching-protocol">
+    See how the two-pass teaching protocol works
+  </Card>
+  <Card title="GRPO Training" icon="graduation-cap" href="/training/offline/grpo-training">
+    Use the reward system to train teacher models
+  </Card>
+  <Card title="Online Optimization" icon="lightbulb" href="/training/online/optimize-with-atlas">
+    Evolve prompts using reward signals
+  </Card>
+  <Card title="API Reference" icon="code" href="/api-reference/configs">
+    Complete configuration options
+  </Card>
+</CardGroup>
+
+## References
+
+- [Reward System Technical Report](https://www.arc.computer/blog/ATLAS-Reward-System) - Complete methodology and benchmarks
+- [ATLAS Technical Report](/reference/technical-report) - How rewards integrate with training
+- [RewardBench V2](https://huggingface.co/spaces/allenai/reward-bench) - Benchmark leaderboard

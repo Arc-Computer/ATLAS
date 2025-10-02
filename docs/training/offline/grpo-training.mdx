@@ -1,364 +1,231 @@
 ---
-title: GRPO Training Guide
-description: Train teacher models with Generalized Reward Policy Optimization
-sidebarTitle: GRPO Training
+title: Training Your Own Teacher Model
+description: Complete guide to custom teacher model training with GRPO
+sidebarTitle: Custom Teacher Training
 icon: graduation-cap
 ---
 
 <Note>
-**Reading time**: 15 minutes • **Implementation time**: 2-3 days • **Difficulty**: Advanced
+**Time**: 24-48 hours (mostly unattended) • **Active setup**: 30-45 minutes • **Difficulty**: Advanced
 </Note>
 
-## Overview
+This is the advanced path. Most users should start with our [pre-trained models](/quickstart).
 
-GRPO (Group Relative Policy Optimization) is the core algorithm for training ATLAS teacher models. This guide walks through the complete training pipeline from SFT warmup to full RL optimization.
+## Who Should Train Custom Models
+
+You need custom training if you have:
+
+- **Proprietary knowledge** not available in public models
+- **Domain-specific tasks** where generic teaching doesn't work well
+- **Regulatory requirements** that prevent using pre-trained models
+- **Extreme performance needs** where every percentage point matters
+
+**What you'll need:**
+- 4-8 H100 or A100 GPUs (40GB+ VRAM each)
+- 2-3 days of training time
+- Basic PyTorch and distributed training knowledge
+- ~200GB disk space for checkpoints
+
+## Training Pipeline Overview
 
 ![Training Pipeline](/images/Training-Pipeline.png)
 
-## Prerequisites
+The training happens in three clear steps:
 
-- 4-8 H100 or A100 GPUs (40GB+ VRAM each)
-- CUDA 11.8+
-- Python 3.8+
-- 100GB+ disk space for checkpoints
-- Weights & Biases account (optional but recommended)
+**Step 1: SFT Warmup** → Teach basic teaching patterns (4-6 hours)
 
-## Training Pipeline
+**Step 2: Launch vLLM Server** → Set up fast inference (5 minutes)
 
-<Steps>
-  <Step title="Environment Setup">
-    Install dependencies and configure the environment:
+**Step 3: Run GRPO** → Learn adaptive teaching through RL (24-36 hours)
 
-    ```bash
-    # Clone repository
-    git clone https://github.com/Arc-Computer/ATLAS.git
-    cd ATLAS
+Each step has a clear goal and success criteria.
 
-    # Create environment
-    conda create -n atlas python=3.10
-    conda activate atlas
+## Step 1: SFT Warmup
 
-    # Install PyTorch with CUDA
-    pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+**Goal**: Establish foundational teaching capabilities
 
-    # Install training dependencies
-    pip install -r requirements.txt
+### What It Does
+Supervised fine-tuning teaches the model basic teaching patterns through demonstration. Think of it like a student teacher observing an expert before trying it themselves.
 
-    # Install Flash Attention 2 (recommended)
-    pip install flash-attn --no-build-isolation
+### Run It
 
-    # Login to Hugging Face
-    huggingface-cli login
+```bash
+# Minimum (2 GPUs)
+scripts/launch.sh 2 configs/run/teacher_sft.yaml \
+  output_dir=checkpoints/sft
 
-    # Configure Weights & Biases (optional)
-    wandb login
-    ```
+# Recommended (4 GPUs)
+scripts/launch.sh 4 configs/run/teacher_sft.yaml \
+  output_dir=checkpoints/sft
 
-    <Note>
-    Flash Attention 2 significantly improves training speed and memory efficiency. Install it if your GPU supports it (Ampere or newer).
-    </Note>
-  </Step>
+# Full production (8 GPUs)
+scripts/launch.sh 8 configs/run/teacher_sft.yaml \
+  output_dir=checkpoints/sft
+```
 
-  <Step title="SFT Warmup">
-    Start with supervised fine-tuning to establish base capabilities:
+### Success Looks Like
 
-    ```bash
-    # Run SFT training
-    scripts/launch.sh 8 configs/run/teacher_sft.yaml \
-      output_dir=checkpoints/sft \
-      num_train_epochs=1 \
-      learning_rate=2e-5 \
-      per_device_train_batch_size=4 \
-      gradient_accumulation_steps=4
-    ```
+| Metric | Target | What It Means |
+|--------|--------|---------------|
+| Training Loss | <1.5 | Model is learning patterns |
+| Gradient Norm | <5.0 | Training is stable |
+| Duration | 4-6 hours | On 8× H100 GPUs |
 
-    **Key parameters:**
-    - `num_train_epochs`: 1-2 epochs typically sufficient
-    - `learning_rate`: Start with 2e-5, adjust based on loss
-    - `gradient_accumulation_steps`: Increase for larger effective batch size
+**Monitor progress:**
+```bash
+# Watch training logs
+tail -f checkpoints/sft/training.log
 
-    Monitor training:
-    ```python
-    # Check training progress
-    tail -f checkpoints/sft/training.log
+# Check GPU usage
+nvidia-smi -l 1
+```
 
-    # Monitor GPU usage
-    nvidia-smi -l 1
-    ```
+## Step 2: Launch vLLM Server
 
-    <Warning>
-    SFT is critical for GRPO success. Ensure loss converges before proceeding.
-    </Warning>
-  </Step>
+**Goal**: Fast inference for RL training
 
-  <Step title="Launch vLLM Server">
-    Start the inference server for distributed generation:
+### What It Does
+The vLLM server provides high-throughput generation during reinforcement learning. It runs on separate GPUs from the training process for maximum efficiency.
 
-    ```bash
-    # Terminal 1: Launch vLLM server
-    ./scripts/launch_vllm_server.sh \
-      --model-path checkpoints/sft/final \
-      --tensor-parallel-size 4 \
-      --gpu-memory-utilization 0.9 \
-      --max-model-len 2048 \
-      --port 8000
+### Run It
 
-    # Verify server is running
-    curl http://localhost:8000/v1/models
-    ```
+```bash
+./scripts/launch_vllm_server.sh \
+  --model-path checkpoints/sft/final \
+  --tensor-parallel-size 4 \
+  --gpu-memory-utilization 0.9 \
+  --port 8000
+```
 
-    Server configuration options:
+### Success Looks Like
+
+```bash
+# Server should respond
+curl http://localhost:8000/v1/models
+
+# Should return 200 with model info
+```
+
+**Key parameters:**
+- `tensor-parallel-size`: Number of GPUs for inference (match your hardware)
+- `gpu-memory-utilization`: How much VRAM to use (0.9 = 90%)
+- `max-model-len`: Maximum sequence length (2048 is good default)
+
+## Step 3: Run GRPO Training
+
+**Goal**: Optimize teaching through reinforcement learning
+
+### What It Does
+GRPO (Group Relative Policy Optimization) trains the teacher to actually improve student performance. The reward comes from measuring if students get better when taught.
+
+### Run It
+
+```bash
+# Minimum (2 GPUs: 1 training, 1 vLLM)
+scripts/launch_with_server.sh 1 1 configs/run/teacher_rcl.yaml \
+  model_name_or_path=checkpoints/sft/final
+
+# Recommended (4 GPUs: 2 training, 2 vLLM)
+scripts/launch_with_server.sh 2 2 configs/run/teacher_rcl.yaml \
+  model_name_or_path=checkpoints/sft/final
+
+# Production (8 GPUs: 4 training, 4 vLLM)
+scripts/launch_with_server.sh 4 4 configs/run/teacher_rcl.yaml \
+  model_name_or_path=checkpoints/sft/final
+```
+
+The first number is training GPUs, second is vLLM GPUs.
+
+### Success Looks Like
+
+| Metric | Healthy Range | Warning Sign |
+|--------|--------------|--------------|
+| Reward Mean | Increasing | Plateau or decrease |
+| Non-degradation Rate | >95% | <90% indicates issues |
+| KL Divergence | 0.5-2.0 | >5.0 suggests collapse |
+
+**Monitor with TensorBoard:**
+```bash
+tensorboard --logdir checkpoints/grpo --port 6006
+```
+
+## Key Configuration Parameters
+
+You only need to understand 3-5 core parameters:
+
+### beta (KL divergence coefficient)
+**What it does**: Controls how much the model can change from the original
+
+**Default**: 0.04
+
+**When to adjust**:
+- Model changing too fast? → Increase to 0.06
+- Training too conservative? → Decrease to 0.02
+
+### temperature (sampling temperature)
+**What it does**: Controls how creative the teaching is
+
+**Default**: 0.7
+
+**When to adjust**:
+- Want more diverse teaching? → Increase to 0.9
+- Teaching too random? → Decrease to 0.5
+
+### learning_rate
+**What it does**: How fast the model learns
+
+**Default**: 5e-7 (much smaller than SFT!)
+
+**When to adjust**:
+- Training too slow? → Try 1e-6
+- Rewards collapsing? → Decrease to 1e-7
+
+<AccordionGroup>
+  <Accordion title="Advanced: Reward System Configuration">
+    GRPO uses the principle-based reward system. Point to the config:
+
     ```yaml
-    # configs/vllm_config.yaml
-    tensor_parallel_size: 4     # GPUs for inference
-    pipeline_parallel_size: 1    # Pipeline parallelism
-    gpu_memory_utilization: 0.9  # Memory allocation
-    max_model_len: 2048          # Max sequence length
-    enable_prefix_caching: true  # Cache repeated prompts
-    ```
-  </Step>
-
-  <Step title="Run GRPO Training">
-    Execute the main RL training with the SFT checkpoint:
-
-    ```bash
-    # Terminal 2: Run GRPO training
-    scripts/launch_with_server.sh 4 4 configs/run/teacher_rcl.yaml \
-      model_name_or_path=checkpoints/sft/final \
-      output_dir=checkpoints/grpo \
-      num_train_epochs=3 \
-      learning_rate=5e-7 \
-      beta=0.04 \
-      temperature=0.7
+    # configs/trainer/reward/rim_teaching.yaml
+    teacher_reward:
+      _target_: RIM.reward_adapter.RIMReward
+      config_path: configs/rim_offline_config.yaml
     ```
 
-    The script automatically:
-    1. Distributes training across 4 GPUs
-    2. Uses 4 GPUs for vLLM generation
-    3. Manages distributed communication
-    4. Handles checkpointing
+    The offline config focuses on helpfulness and process (not accuracy):
 
-    <Note>
-    The first number (4) is training GPUs, second (4) is inference GPUs. Adjust based on your hardware.
-    </Note>
-  </Step>
-
-  <Step title="Monitor Training">
-    Track key metrics during training:
-
-    ```python
-    # Monitor with Weights & Biases
-    wandb sync checkpoints/grpo
-
-    # Or use TensorBoard
-    tensorboard --logdir checkpoints/grpo/tensorboard
-
-    # Key metrics to watch:
-    # - rewards/mean_reward: Should increase
-    # - kl_divergence: Should stay < 10
-    # - learning_rate: Verify schedule
-    # - loss/policy_loss: Should decrease
+    ```yaml
+    # configs/rim_offline_config.yaml
+    active_judges:
+      accuracy: false      # Disable for offline training
+      helpfulness: true    # Core reward signal
+      process: true        # Rewards good reasoning
+      diagnostic: false    # Disable for offline training
     ```
 
-    Real-time monitoring script:
-    ```python
-    import json
-    import time
+    Monitor `rim_rewards` in logs to spot regressions.
+  </Accordion>
 
-    def monitor_training():
-        while True:
-            with open('checkpoints/grpo/trainer_state.json') as f:
-                state = json.load(f)
-
-            print(f"Step: {state['global_step']}")
-            print(f"Loss: {state['loss']:.4f}")
-            print(f"Learning Rate: {state['learning_rate']:.2e}")
-            print(f"Best Metric: {state['best_metric']:.4f}")
-            print("-" * 40)
-
-            time.sleep(10)
-
-    monitor_training()
+  <Accordion title="Advanced: All Parameters">
+    ```yaml
+    # Full configuration options
+    num_generations: 32              # Samples per prompt
+    max_new_tokens: 512             # Response length
+    top_p: 0.95                     # Nucleus sampling
+    warmup_ratio: 0.1               # LR warmup
+    weight_decay: 0.01              # L2 regularization
+    max_grad_norm: 1.0              # Gradient clipping
+    gradient_accumulation_steps: 4   # Effective batch size
     ```
-  </Step>
-
-  <Step title="Evaluate Model">
-    Test the trained model on validation data:
-
-    ```bash
-    # Run evaluation
-    python scripts/evaluate_model.py \
-      --model-path checkpoints/grpo/best_model \
-      --dataset Arc-Intelligence/Arc-ATLAS-Teach-v0 \
-      --split validation \
-      --metrics accuracy improvement safety
-
-    # Test specific capabilities
-    python scripts/test_teaching.py \
-      --teacher checkpoints/grpo/best_model \
-      --student Qwen/Qwen3-4B-Instruct \
-      --tasks sre_debugging math_reasoning code_generation
-    ```
-
-    Expected metrics:
-    - Improvement rate: >15%
-    - Non-degradation: >95%
-    - Token efficiency: &lt;250 tokens average
-  </Step>
-</Steps>
-
-## Configuration Deep Dive
-
-### GRPO Hyperparameters
-
-Critical parameters for successful training:
-
-```yaml
-# configs/trainer/teacher_grpo.yaml
-# Algorithm parameters
-beta: 0.04                    # KL divergence coefficient (0.01-0.1)
-temperature: 0.7              # Sampling temperature (0.5-1.0)
-grpo_alpha: 0.5              # PPO-style clipping (0.1-1.0)
-
-# Generation settings
-max_new_tokens: 512          # Response length limit
-top_p: 0.95                  # Nucleus sampling
-do_sample: true              # Enable sampling
-
-# Optimization
-learning_rate: 5e-7          # Peak learning rate
-warmup_ratio: 0.1           # Warmup proportion
-weight_decay: 0.01          # L2 regularization
-max_grad_norm: 1.0          # Gradient clipping
-
-# Efficiency
-gradient_accumulation_steps: 4  # Effective batch size multiplier
-gradient_checkpointing: true    # Memory vs compute tradeoff
-```
-
-### Reward System Configuration
-
-GRPO now consumes scores from the principle-based reward system. Instead of tuning scalar weights, point the trainer at the appropriate Hydra file and let the ensemble manage disagreement and escalation. The entry point lives in `configs/trainer/reward/rim_teaching.yaml`; it tells the trainer which reward adapter to instantiate and where to find the judge configuration.
-
-```yaml
-# configs/trainer/reward/rim_teaching.yaml
-teacher_reward:
-  _target_: RIM.reward_adapter.RIMReward
-  config_path: configs/rim_offline_config.yaml
-
-student_diagnostic_template: |
-  ...
-```
-
-Offline runs lean on helpfulness and process, so `configs/rim_offline_config.yaml` disables accuracy and diagnostic while leaving temperatures, variance thresholds, and anti-gaming rules untouched. When you need the full four-judge evaluation, switch the `config_path` to `configs/rim_config.yaml`; no other part of the training script changes.
-
-Always explain the intention before editing the YAML. Lowering the variance threshold forces more escalations to the large judge. Raising it reduces cost but risks missing nuanced disagreements. The same pattern applies to temperature lists: fewer temperatures make the ensemble faster but less diverse.
-
-```yaml
-# configs/rim_config.yaml
-rim:
-  temperatures: [0.2, 0.5, 0.8]
-  variance_threshold: 0.15
-  active_judges:
-    accuracy: true
-    helpfulness: true
-    process: true
-    diagnostic: true
-```
-
-During training, monitor `rim_rewards` and `rim_explanations` in the logs. These fields carry the per-dimension scores and accompanying explanations so you can spot prompt regressions or misconfigured thresholds without replaying trajectories.
-
-## Advanced Training Techniques
-
-### Curriculum Learning
-
-Implement progressive difficulty:
-
-```python
-class CurriculumScheduler:
-    """
-    Adjust task difficulty during training
-    """
-
-    def __init__(self, num_epochs):
-        self.num_epochs = num_epochs
-        self.current_epoch = 0
-
-    def get_task_distribution(self):
-        """
-        Return task mixture for current epoch
-        """
-        progress = self.current_epoch / self.num_epochs
-
-        if progress < 0.3:
-            # Start with simple tasks
-            return {
-                'simple': 0.6,
-                'medium': 0.3,
-                'hard': 0.1
-            }
-        elif progress < 0.7:
-            # Balanced distribution
-            return {
-                'simple': 0.33,
-                'medium': 0.34,
-                'hard': 0.33
-            }
-        else:
-            # Focus on hard tasks
-            return {
-                'simple': 0.1,
-                'medium': 0.3,
-                'hard': 0.6
-            }
-```
-
-### Mixed Precision Training
-
-Enable for faster training:
-
-```yaml
-# Add to training config
-fp16: true                    # Use float16
-fp16_opt_level: "O2"         # Optimization level
-fp16_backend: "amp"          # Use automatic mixed precision
-
-# Or use bfloat16 (recommended for A100/H100)
-bf16: true
-bf16_full_eval: true
-```
-
-### Gradient Accumulation Strategy
-
-Optimize for your GPU memory:
-
-```python
-def calculate_accumulation_steps(
-    desired_batch_size=128,
-    per_device_batch_size=4,
-    num_gpus=8
-):
-    """
-    Calculate gradient accumulation steps
-    """
-    effective_batch_per_step = per_device_batch_size * num_gpus
-    accumulation_steps = desired_batch_size // effective_batch_per_step
-
-    print(f"Per-device batch size: {per_device_batch_size}")
-    print(f"Number of GPUs: {num_gpus}")
-    print(f"Gradient accumulation steps: {accumulation_steps}")
-    print(f"Effective batch size: {desired_batch_size}")
-
-    return accumulation_steps
-```
+  </Accordion>
+</AccordionGroup>
 
 ## Troubleshooting
 
 <AccordionGroup>
   <Accordion title="CUDA Out of Memory">
-    **Problem**: OOM errors during training
+    **Problem**: GPU runs out of memory during training
 
-    **Solutions**:
+    **Quick fixes**:
     ```bash
     # Reduce batch size
     per_device_train_batch_size=1
@@ -366,72 +233,125 @@ def calculate_accumulation_steps(
     # Enable gradient checkpointing
     gradient_checkpointing=true
 
-    # Use DeepSpeed ZeRO
+    # Use DeepSpeed offloading
     deepspeed=configs/deepspeed/zero2.json
-
-    # Offload to CPU
-    offload=true
     ```
   </Accordion>
 
   <Accordion title="Reward Collapse">
     **Problem**: Rewards go to zero or negative
 
-    **Solutions**:
-    ```python
+    **Quick fixes**:
+    ```bash
     # Increase KL penalty
     beta=0.1
 
     # Reduce learning rate
     learning_rate=1e-7
 
-    # Add reward clipping
-    reward_clip_threshold=5.0
-
     # Check data quality
-    validate_training_data()
+    # Verify your training data has clear improvement signals
     ```
   </Accordion>
 
-  <Accordion title="vLLM Server Issues">
-    **Problem**: Connection refused or timeout
+  <Accordion title="vLLM Connection Failed">
+    **Problem**: Training can't connect to server
 
-    **Solutions**:
+    **Quick fixes**:
     ```bash
     # Check server is running
     ps aux | grep vllm
 
-    # Check port availability
+    # Verify port is open
     lsof -i :8000
 
-    # Restart server with more memory
+    # Restart with more memory
     --gpu-memory-utilization 0.95
-
-    # Use smaller model
-    --max-model-len 1024
     ```
   </Accordion>
 
   <Accordion title="Slow Training">
-    **Problem**: Training is slower than expected
+    **Problem**: Training slower than expected
 
-    **Solutions**:
+    **Quick fixes**:
     ```bash
-    # Enable Flash Attention
+    # Enable Flash Attention 2
     attn_implementation=flash_attention_2
 
-    # Use torch.compile (PyTorch 2.0+)
+    # Use torch compile (PyTorch 2.0+)
     torch_compile=true
 
     # Optimize data loading
     dataloader_num_workers=4
-    dataloader_pin_memory=true
-
-    # Profile to find bottlenecks
-    python -m torch.profiler.profile
     ```
   </Accordion>
 </AccordionGroup>
+
+## Expected Results
+
+After successful training, you should see:
+
+### Performance Metrics
+- **Teaching efficiency**: 15.7% average accuracy improvement
+- **Safety**: 97% non-degradation rate
+- **Token efficiency**: 50% reduction in response length
+- **Completion rate**: 31% improvement (69% → 100%)
+
+### Training Duration
+- **2 GPUs**: 4-5 days
+- **4 GPUs**: 2-3 days
+- **8 H100s**: 24-36 hours
+
+### Output Artifacts
+
+```
+results/
+├── sft_checkpoint/          # Phase 1 model
+│   ├── pytorch_model.bin
+│   └── config.json
+├── rl_checkpoint/           # Phase 2 model (use this!)
+│   ├── pytorch_model.bin
+│   ├── config.json
+│   └── trainer_state.json
+└── logs/
+    ├── train.log
+    └── tensorboard_events
+```
+
+## Validation
+
+Test your trained model:
+
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
+
+# Load your trained teacher
+teacher = AutoModelForCausalLM.from_pretrained(
+    "results/rl_checkpoint",
+    torch_dtype=torch.float16,
+    device_map="auto"
+)
+tokenizer = AutoTokenizer.from_pretrained("results/rl_checkpoint")
+
+# Load baseline student
+student = AutoModelForCausalLM.from_pretrained(
+    "Qwen/Qwen3-4B-Instruct-2507",
+    torch_dtype=torch.float16,
+    device_map="auto"
+)
+
+# Test on a problem
+problem = "A train travels 120 miles in 2 hours. What is its speed?"
+
+# Get baseline (student only)
+inputs = tokenizer(problem, return_tensors="pt").to(student.device)
+baseline = student.generate(**inputs, max_new_tokens=100)
+print(f"Baseline: {tokenizer.decode(baseline[0])}")
+
+# Get teaching (using ATLAS protocol from optimize_teaching.py)
+# This gives you the enhanced response
+```
 
 ## Performance Optimization
 
@@ -446,7 +366,6 @@ torchrun \
   --nnodes=2 \
   --node_rank=0 \
   --master_addr=10.0.0.1 \
-  --master_port=29500 \
   train.py configs/run/teacher_rcl.yaml
 
 # Node 2
@@ -455,128 +374,50 @@ torchrun \
   --nnodes=2 \
   --node_rank=1 \
   --master_addr=10.0.0.1 \
-  --master_port=29500 \
   train.py configs/run/teacher_rcl.yaml
 ```
 
-### DeepSpeed Integration
-
-Use ZeRO optimization for large models:
+### DeepSpeed for Large Models
 
 ```json
 // configs/deepspeed/zero2.json
 {
   "zero_optimization": {
     "stage": 2,
-    "offload_optimizer": {
-      "device": "cpu",
-      "pin_memory": true
-    },
-    "offload_param": {
-      "device": "cpu",
-      "pin_memory": true
-    },
-    "overlap_comm": true,
-    "contiguous_gradients": true,
-    "sub_group_size": 1e9
+    "offload_optimizer": {"device": "cpu"},
+    "overlap_comm": true
   },
-  "fp16": {
-    "enabled": true,
-    "loss_scale": 0,
-    "loss_scale_window": 1000
-  },
-  "gradient_clipping": 1.0,
-  "train_batch_size": "auto",
-  "train_micro_batch_size_per_gpu": "auto"
+  "fp16": {"enabled": true},
+  "gradient_clipping": 1.0
 }
 ```
 
-## Validation and Testing
-
-### Automated Evaluation Suite
-
-```python
-def evaluate_teacher_model(model_path, test_suite):
-    """
-    Comprehensive evaluation of trained model
-    """
-    results = {}
-
-    # Test improvement rates
-    for domain in ['sre', 'math', 'code', 'reasoning']:
-        domain_results = evaluate_domain(model_path, domain)
-        results[domain] = {
-            'improvement': domain_results['mean_improvement'],
-            'safety': domain_results['non_degradation_rate'],
-            'efficiency': domain_results['avg_tokens']
-        }
-
-    # Verify safety constraints
-    assert all(r['safety'] > 0.95 for r in results.values()), \
-           "Safety threshold not met"
-
-    # Check minimum performance
-    assert all(r['improvement'] > 0.10 for r in results.values()), \
-           "Improvement threshold not met"
-
-    return results
-```
-
-### A/B Testing Framework
-
-```python
-class ModelComparison:
-    """
-    Compare new model against baseline
-    """
-
-    def __init__(self, baseline_path, new_model_path):
-        self.baseline = load_model(baseline_path)
-        self.new_model = load_model(new_model_path)
-
-    def run_comparison(self, test_data, num_samples=100):
-        results = {
-            'baseline': [],
-            'new_model': []
-        }
-
-        for sample in test_data[:num_samples]:
-            # Test both models
-            baseline_result = self.baseline.process(sample)
-            new_result = self.new_model.process(sample)
-
-            results['baseline'].append(baseline_result['score'])
-            results['new_model'].append(new_result['score'])
-
-        # Statistical significance test
-        from scipy.stats import ttest_rel
-        t_stat, p_value = ttest_rel(
-            results['new_model'],
-            results['baseline']
-        )
-
-        return {
-            'baseline_mean': np.mean(results['baseline']),
-            'new_model_mean': np.mean(results['new_model']),
-            'improvement': np.mean(results['new_model']) - np.mean(results['baseline']),
-            'p_value': p_value,
-            'significant': p_value < 0.05
-        }
+Use with:
+```bash
+scripts/launch.sh 8 configs/run/teacher_rcl.yaml \
+  deepspeed=configs/deepspeed/zero2.json
 ```
 
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="SFT Warmup" icon="fire" href="/training/offline/sft-warmup">
-    Detailed SFT training guide
+  <Card title="Online Optimization" icon="arrows-rotate" href="/training/online/optimize-with-atlas">
+    Fine-tune your trained model for specific tasks
   </Card>
-  <Card title="Distributed Training" icon="server" href="/training/offline/distributed-training">
-    Scale across multiple GPUs
+  <Card title="Deploy to Production" icon="server" href="/integration/production-deployment">
+    Integrate your custom teacher into production
   </Card>
-  <Card title="vLLM Server Setup" icon="bolt" href="/training/offline/vllm-server">
-    Configure inference server
+  <Card title="Reward System Deep Dive" icon="trophy" href="/concepts/reward-design">
+    Understand how teaching effectiveness is measured
   </Card>
-  <Card title="Configuration Reference" icon="sliders" href="/api-reference/configs">
-    All configuration options
+  <Card title="Architecture Details" icon="diagram-project" href="/architecture/system-overview">
+    Technical implementation details
   </Card>
 </CardGroup>
+
+## References
+
+- [ATLAS Technical Report](/reference/technical-report) - Detailed methodology and ablations
+- [GRPO Paper](https://arxiv.org/abs/2402.03300) - Original algorithm
+- [vLLM Documentation](https://docs.vllm.ai) - Server configuration options
+- [First Experiment](/first-experiment) - Hands-on walkthrough
