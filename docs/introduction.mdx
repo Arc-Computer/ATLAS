@@ -4,69 +4,77 @@ description: A Continual Learning Framework for Production LLM Agents
 sidebarTitle: Introduction
 ---
 
-ATLAS (Adaptive Teaching and Learning Alignment System) is an architecture for production teams that need AI agents to improve from user interactions and feedback *after* deployment. It wraps any existing agent framework with the components required to create a closed-loop, continual learning system:
+ATLAS makes AI agents that learn from every interaction in production.
 
-1. **Reasoning Core**: A Teacher-Student model pair that enhances agent capabilities
-2. **[Reward System (RIM)](/concepts/reward-design)**: Turns implicit and explicit user feedback into a dense reward signal (achieves 93.7% accuracy on RewardBench V2)
-3. **Learning Engine**: Uses online methods like GEPA (Genetic-Pareto prompt optimization) and offline methods like GRPO (Group Relative Policy Optimization) to update models based on rewards
-4. **Persistent Memory**: Stores all interactions in structured trace files for analysis and retraining
+Instead of treating your deployed agents as static systems that need constant retraining, ATLAS gives them the ability to improve from real-world usage. You get an agent that compounds knowledge over time, building a durable library of domain expertise instead of relearning the same fixes repeatedly.
 
-Together, they form a complete learning loop where interaction traces stream into the reward system, the learning engine upgrades the teacher–student core, and the refreshed policy is redeployed so production agents get demonstrably sharper with every episode.
+## How It Works: The Tutor Approach
+
+ATLAS works like a skilled tutor helping a student improve. Your existing AI model (GPT, Claude, Gemini, etc.) is the student. ATLAS provides a specialized teacher model that reviews the student's work, identifies gaps, and provides focused guidance—all at inference time.
+
+**Example:** When your GPT-5 student attempts a complex reasoning task, the ATLAS teacher reviews the attempt, provides targeted help (like "Your calculation approach is correct, but check the units"), and the student applies this guidance to produce an improved response.
+
+This delivers measurable results: **15.7% average accuracy improvement**, **97% non-degradation rate**, and **50% token reduction** across benchmarks.
 
 <div align="center">
   <img src="/images/system-architecture.png" alt="ATLAS System Architecture" width="800" />
-  <p><em>Figure: ATLAS keeps the agent in a learn–evaluate–update cycle.</em></p>
+  <p><em>ATLAS keeps your agent in a learn–evaluate–update cycle</em></p>
 </div>
 
-**The core value:** Rather than treating agents as static and stateless, ATLAS provides the framework for systems that **compound knowledge over time**. This enables building a durable library of domain expertise instead of relearning the same fixes repeatedly.
+## What ATLAS Provides
 
-## The Core Concept: Teacher-Student Paradigm
+ATLAS wraps your existing agent framework with four components that create a complete learning loop:
 
-ATLAS works like a skilled tutor helping a student improve. Your existing AI model (GPT, Claude, Gemini, etc.) is the **student**. ATLAS provides a specialized **teacher** model that analyzes the student's work, identifies areas for improvement, and provides targeted guidance—all at inference time, with no retraining required.
+1. **Reasoning Core**: A teacher-student model pair that enhances your agent's capabilities
+2. **[Reward System (RIM)](/concepts/reward-design)**: Turns user feedback into dense reward signals (achieves 93.7% accuracy on RewardBench V2)
+3. **Learning Engine**: Uses online methods like GEPA and offline methods like GRPO to update models based on rewards
+4. **Persistent Memory**: Stores all interactions in structured trace files for analysis and retraining
 
-**Example:** When your GPT-5 student attempts a complex reasoning task, the ATLAS teacher reviews the attempt, provides focused teaching (like "Your calculation approach is correct, but check the units"), and the student applies this guidance to produce an improved response.
+Together, these components form a closed-loop system: interaction traces flow into the reward system, the learning engine upgrades the teacher-student core, and the refreshed models redeploy so your agent gets sharper with every episode.
 
-This delivers measurable results: **+15.7% average accuracy improvement**, **97% non-degradation rate**, and **50% token reduction** across benchmarks.
+## Compared to Alternatives
 
-## How ATLAS Compares to Alternatives
+| What you're doing today | How ATLAS helps |
+| :--- | :--- |
+| **Fine-tuning/RLHF** for every change | ATLAS enhances any model without modifying its weights—adapts in hours, not weeks |
+| **Prompt engineering** that's brittle | ATLAS evolves teaching strategies based on performance data, creating reproducible improvements |
+| **Traditional RL** requiring massive compute | ATLAS separates heavy offline training from light online optimization |
+| **RAG/memory** for knowledge gaps | ATLAS also improves your agent's core reasoning and problem-solving process |
 
-| Approach | Limitation | How ATLAS Solves It |
-| :--- | :--- | :--- |
-| **Fine-Tuning/RLHF** | Compute-intensive, risks catastrophic forgetting, requires constant retraining when the world changes | **Model-Agnostic Teaching:** Enhances any student model without modifying its weights. Adapts in hours, not weeks, while preserving all original capabilities. |
-| **Traditional RL** | Requires massive compute; static rewards | **Hybrid Architecture:** Separates heavy offline training from light, adaptive online optimization. |
-| **Prompt Engineering** | Inconsistent, brittle, and hard to scale | **Systematic & Reproducible:** Evolves teaching strategies based on performance data, creating a durable knowledge base. |
-| **Retrieval/Memory** | Addresses knowledge gaps but not reasoning | **Improves Core Logic:** The teacher-student paradigm directly enhances the student's reasoning process. |
+## The Learning Workflow
 
-## The Self-Improvement Workflow
+ATLAS provides three modes that work together in a complete learning cycle:
 
-ATLAS provides three operational modes that work together in a complete learning cycle:
+**1. [Evaluate](/quickstart#quick-evaluation-5-minutes)** – Capture baseline and teacher-guided responses, then measure the quality improvement with the reward system.
 
-1. **[Evaluate](/quickstart#quick-evaluation-5-minutes)** – Capture baseline and teacher-guided traces, then use the RIM reward system to quantify the quality improvement. This is your observation step.
-2. **[Optimize](/training/online/optimize-with-atlas)** – Use reward deltas as fitness signals so the prompt optimizer evolves better teaching strategies. Teacher prompts improve, student responses get sharper, rewards climb.
-3. **[Train](/first-experiment)** – When you need more than prompt tweaks, use the judged data to update the teacher model weights themselves via reinforcement learning.
+**2. [Optimize](/training/online/optimize-with-atlas)** – Use reward scores as fitness signals to evolve better teaching strategies. Teacher prompts improve, student responses get sharper, rewards climb.
 
-This **evaluate → optimize → train** arc is the continual learning loop: fresh interactions enter RIM, the reward signal decides what to keep or discard, and ATLAS updates the components that do the teaching so the deployed agent never goes stale.
+**3. [Train](/first-experiment)** – When you need more than prompt tweaks, use the judged data to update the teacher model weights via reinforcement learning.
 
-## Pre-trained Models vs Custom Training
+This evaluate → optimize → train arc creates a continual learning loop: fresh interactions enter the reward system, signals decide what to keep or discard, and ATLAS updates the teaching components so your deployed agent never goes stale.
+
+## Getting Started: Two Paths
 
 <CardGroup cols={2}>
   <Card title="Pre-trained ATLAS Models" icon="box">
-    **When to use**: 99% of use cases
+    **Best for: 99% of use cases**
+
     - Works across all domains out-of-the-box
-    - Adapts to your specific tasks via online optimization
+    - Adapts to your tasks via online optimization
     - No training infrastructure required
     - Available immediately on HuggingFace
   </Card>
   <Card title="Custom Teacher Training" icon="graduation-cap">
-    **When needed**: Specialized domains
+    **Best for: Specialized domains**
+
     - Proprietary knowledge not in public models
     - Regulatory compliance requirements
     - Extreme performance optimization needs
-    - Requires multi-GPU setup for best performance
+    - Requires multi-GPU setup
   </Card>
 </CardGroup>
 
-## Get Started
+## Next Steps
 
 <CardGroup cols={2}>
   <Card
@@ -74,7 +82,7 @@ This **evaluate → optimize → train** arc is the continual learning loop: fre
     icon="play"
     href="/quickstart"
   >
-    Deploy ATLAS in minutes using our pre-trained teacher models. No training required.
+    Deploy ATLAS in minutes using pre-trained teacher models. No training required.
   </Card>
   <Card
     title="Custom Training"
