@@ -67,8 +67,8 @@ scripts/launch.sh 8 configs/run/teacher_sft.yaml \
 
 | Metric | Target | What It Means |
 |--------|--------|---------------|
-| Training Loss | <1.5 | Model is learning patterns |
-| Gradient Norm | <5.0 | Training is stable |
+| Training Loss | &lt;1.5 | Model is learning patterns |
+| Gradient Norm | &lt;5.0 | Training is stable |
 | Duration | 4-6 hours | On 8× H100 GPUs |
 
 **Monitor progress:**
@@ -141,8 +141,8 @@ The first number is training GPUs, second is vLLM GPUs.
 | Metric | Healthy Range | Warning Sign |
 |--------|--------------|--------------|
 | Reward Mean | Increasing | Plateau or decrease |
-| Non-degradation Rate | >95% | <90% indicates issues |
-| KL Divergence | 0.5-2.0 | >5.0 suggests collapse |
+| Non-degradation Rate | &gt;95% | &lt;90% indicates issues |
+| KL Divergence | 0.5-2.0 | &gt;5.0 suggests collapse |
 
 **Monitor with TensorBoard:**
 ```bash
@@ -400,7 +400,7 @@ scripts/launch.sh 8 configs/run/teacher_rcl.yaml \
 
 ## Next Steps
 
-<CardGroup cols={2}>
+<CardGroup cols="2">
   <Card title="Online Optimization" icon="arrows-rotate" href="/training/online/optimize-with-atlas">
     Fine-tune your trained model for specific tasks
   </Card>

@@ -175,10 +175,10 @@ tensorboard --logdir results/ --port 6006
 | Metric | Healthy Range | Warning Signs |
 |--------|--------------|---------------|
 | Reward Mean | Increasing | Plateau or decrease |
-| Non-degradation Rate | >95% | &lt;90% indicates issues |
-| KL Divergence | 0.5-2.0 | >5.0 suggests collapse |
-| GPU Utilization | >80% | &lt;50% indicates bottleneck |
-| vLLM Throughput | >1000 tok/s | &lt;500 tok/s needs optimization |
+| Non-degradation Rate | &gt;95% | &lt;90% indicates issues |
+| KL Divergence | 0.5-2.0 | &gt;5.0 suggests collapse |
+| GPU Utilization | &gt;80% | &lt;50% indicates bottleneck |
+| vLLM Throughput | &gt;1000 tok/s | &lt;500 tok/s needs optimization |
 
 ### Diagnostic Commands
 
@@ -314,7 +314,7 @@ print(f"Teacher guidance: {guidance}")
 
 ## Next Steps
 
-<CardGroup cols={2}>
+<CardGroup cols="2">
   <Card title="Online Optimization" icon="arrows-rotate" href="/training/online/optimize-with-atlas">
     Fine-tune your trained model for specific tasks
   </Card>
