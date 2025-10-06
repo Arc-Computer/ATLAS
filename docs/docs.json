@@ -1,0 +1,168 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "ATLAS",
+  "colors": {
+    "primary": "#2563EB",
+    "light": "#60A5FA",
+    "dark": "#1E40AF"
+  },
+  "favicon": "/images/Arc-Icon.png",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "installation",
+              "first-experiment"
+            ]
+          },
+          {
+            "group": "SDK Runtime",
+            "pages": [
+              "sdk/quickstart",
+              "sdk/configuration",
+              "sdk/orchestration",
+              "sdk/adapters",
+              "sdk/student-teacher-roles"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "concepts/teacher-student-paradigm",
+              "concepts/adaptive-teaching-protocol",
+              "concepts/hybrid-learning",
+              "concepts/reward-design",
+              "concepts/what-is-gepa"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/configuration-guide"
+            ]
+          },
+          {
+            "group": "Examples & Case Studies",
+            "pages": [
+              "examples/online_optimization",
+              {
+                "group": "Case Studies",
+                "pages": [
+                  "examples/sre-root-cause-analysis",
+                  "examples/online-optimization-case-study",
+                  "examples/sota-on-tau-squared-bench"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Integration",
+            "pages": [
+              "integration/inference-only",
+              "integration/production-deployment"
+            ]
+          },
+          {
+            "group": "Training",
+            "pages": [
+              {
+                "group": "Online Optimization",
+                "pages": [
+                  "training/online/optimize-with-atlas",
+                  "training/online/continuous-learning"
+                ]
+              },
+              {
+                "group": "Offline Training",
+                "pages": [
+                  "training/offline/grpo-training"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Benchmarks",
+            "pages": [
+              "benchmarks/evaluation-methodology",
+              "benchmarks/reproduction"
+            ]
+          },
+          {
+            "group": "Architecture",
+            "pages": [
+              "architecture/system-overview",
+              "architecture/config-system"
+            ]
+          },
+          {
+            "group": "API Reference",
+            "pages": [
+              "api-reference/trainers"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "reference/technical-report",
+              "reference/models",
+              "reference/datasets",
+              "reference/glossary",
+              "reference/troubleshooting",
+              "reference/faq"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "API Reference",
+            "pages": [
+              "api-reference/configs"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "logo": {
+    "light": "/images/Arc-Icon.png",
+    "dark": "/images/Arc-Icon.png"
+  },
+  "appearance": {
+    "default": "light"
+  },
+  "background": {
+    "color": {
+      "light": "#FFFFFF",
+      "dark": "#0F0F0F"
+    }
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "GitHub",
+        "href": "https://github.com/Arc-Computer/ATLAS"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Models",
+      "href": "https://huggingface.co/Arc-Intelligence"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/Arc-Computer/ATLAS",
+      "linkedin": "https://www.linkedin.com/company/arc-intelligence"
+    }
+  }
+}
