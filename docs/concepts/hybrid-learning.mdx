@@ -118,9 +118,13 @@ class OnlineOptimizer:
 |-------------------|---------------|------------------|------|----------------|
 | Fine-tuning | 1-2 weeks | +10-15% | $1000s | Poor |
 | Few-shot prompting | Minutes | +3-5% | ~$1 | Limited |
-| ATLAS Hybrid | 2 hours* | +15.7% | ~$10 | Excellent |
+| ATLAS Hybrid | 2 hours* | +15.7% baseline<br />+165% with GEPA | ~$10 | Excellent |
 
 *With pre-trained teacher models
+
+<Note>
+  Baseline figures reflect the runtime Student–Teacher loop plus GRPO training. The +165% improvement comes from running GEPA on top of the same setup (see [Online Optimization](/training/online/optimize-with-atlas)).
+</Note>
 
 ### Case Study: Validated Cross-Domain Transfer
 

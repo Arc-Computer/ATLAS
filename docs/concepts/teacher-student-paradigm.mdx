@@ -94,8 +94,9 @@ State-of-the-art results on complex multi-step tasks (mms_issue subset):
 - **Cross-domain transfer**: Math-trained teacher successfully guides telecom debugging tasks
 
 ### Aggregate Metrics
-- **Average accuracy improvement**: 15.7% across all benchmarks
-- **Maximum improvement**: 29.6% on specific domains
+- **Average accuracy improvement (runtime + GRPO)**: 15.7% across all benchmarks
+- **Online optimization lift (GEPA)**: Up to +165% in ~2 hours for domain-specific tasks
+- **Maximum observed improvement**: 29.6% on specific domains (closed-loop baseline)
 - **Non-degradation rate**: 97% (safe to deploy)
 - **Token efficiency**: 50% reduction (4k → 2k tokens)
 - **Completion rate**: 31% improvement (69% → 100%)

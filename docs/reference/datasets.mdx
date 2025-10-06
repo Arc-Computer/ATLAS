@@ -149,11 +149,15 @@ sre_data = dataset.filter(lambda x: x['domain'] == 'debug')
 
 ### Performance Baselines
 
-| Metric | Baseline | w/ Teaching | Improvement |
-|--------|----------|-------------|-------------|
+| Metric | Baseline | w/ Student–Teacher Loop | Improvement |
+|--------|----------|-------------------------|-------------|
 | Accuracy | 62.3% | 78.0% | +15.7% |
 | Completion | 69% | 100% | +31% |
 | Token Efficiency | 100% | 50% | -50% |
+
+<Note>
+  These figures reflect the closed-loop runtime plus GRPO baseline. Applying GEPA on top of the same data produces the documented **+165%** task-specific lift (see [Online Optimization](/training/online/optimize-with-atlas)).
+</Note>
 
 ## Creating Custom Datasets
 

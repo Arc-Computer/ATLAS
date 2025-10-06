@@ -154,7 +154,7 @@ Use the full **Learning Engine (GRPO)** to train a new **Reasoning Core** from s
   # Phase 2: RL Training with vLLM (4 steps)
   scripts/launch_with_server.sh 1 1 configs/run/teacher_rcl.yaml report_to=null max_steps=4 eval_steps=1
   ```
-- **Expected Outcome**: A custom-trained teacher model checkpoint. A full training run can achieve a +15.7% average accuracy lift on student agents.
+- **Expected Outcome**: A custom-trained teacher model checkpoint. The closed-loop runtime plus GRPO training delivers an average **+15.7%** accuracy lift, with optional GEPA optimization stacking on an additional **+165%** domain-specific gain in ~2 hours.
 
 ---
 

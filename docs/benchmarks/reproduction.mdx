@@ -7,7 +7,7 @@ icon: copy
 
 ## Overview
 
-This guide provides exact steps to reproduce the 15.7% accuracy improvement and other benchmark results reported in our technical documentation.
+This guide provides exact steps to reproduce the closed-loop **+15.7% accuracy improvement** and related metrics reported in our technical documentation. After you reproduce the baseline, you can optionally run the [GEPA online optimization pipeline](/training/online/optimize-with-atlas) to observe the documented **+165% task-specific gain** achieved in our case study.
 
 <Note>
   Reproduction requires 4×H100 GPUs for full-scale training. For smaller-scale validation, see the [Quick Validation](#quick-validation) section.
@@ -116,8 +116,15 @@ beta: 0.04
       --seed 42
     ```
 
-    **Expected results**:
+    **Expected results (closed-loop runtime + GRPO)**:
     - Accuracy improvement: +15.7% ± 1.2%
+    - Completion rate: +31% ± 2%
+    - Non-degradation: ≥97%
+    - Token savings: ~50%
+
+    <Note>
+      To observe the **+165%** domain-specific lift reported in our documentation, run the GEPA optimization workflow after this baseline evaluation (see [Online Optimization](/training/online/optimize-with-atlas)).
+    </Note>
     - Completion rate: ~100%
     - Token reduction: ~50%
   </Step>
@@ -149,12 +156,13 @@ After successful reproduction, you should observe:
 
 | Metric | Expected Value | Tolerance |
 |--------|---------------|-----------|
-| Average accuracy gain | +15.7% | ±1.2% |
-| Max improvement | +29.6% | ±2.1% |
+| Average accuracy gain (closed loop) | +15.7% | ±1.2% |
+| Max improvement (closed loop) | +29.6% | ±2.1% |
 | Completion rate | ~100% | ±2% |
 | Token reduction | 50% | ±5% |
 | Generation speedup | 13.6% | ±2% |
 | Non-degradation rate | 97% | ±1% |
+| GEPA optimization gain | Up to +165% | Case-study specific |
 
 ## Monitoring Training
 
@@ -315,10 +323,7 @@ huggingface-cli upload your-org/atlas-reproduction \
 
 ## Next Steps
 
-<CardGroup cols="3">
-  <Card title="View Results" icon="chart-line" href="/benchmarks/performance-results">
-    See our benchmark results
-  </Card>
+<CardGroup cols="2">
   <Card title="Methodology" icon="flask" href="/benchmarks/evaluation-methodology">
     Understand evaluation protocol
   </Card>

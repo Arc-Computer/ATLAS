@@ -8,11 +8,11 @@ ATLAS makes AI agents that learn from every interaction in production.
 
 Instead of treating your deployed agents as static systems that need constant retraining, ATLAS gives them the ability to improve from real-world usage. You get an agent that compounds knowledge over time, building a durable library of domain expertise instead of relearning the same fixes repeatedly.
 
-## How It Works: The Tutor Approach
+## How It Works: Closed-Loop Learning System
 
-ATLAS works like a skilled tutor helping a student improve. Your existing AI model (GPT, Claude, Gemini, etc.) is the student. ATLAS provides a specialized teacher model that reviews the student's work, identifies gaps, and provides focused guidance—all at inference time.
+ATLAS wraps any base model (GPT, Claude, Gemini, open source checkpoints, or your own) with an inference-time closed-loop learning system. The system executes tasks with built-in quality control that reviews every decision, and the Reward System scores the outcome. That signal can immediately trigger retries or feed downstream training jobs. The same loop powers both the runtime SDK (real-time quality control) and the training stack (offline optimization).
 
-This delivers measurable results: **15.7% average accuracy improvement**, **97% non-degradation rate**, and **50% token reduction** across benchmarks.
+Across internal and external benchmarks this closed loop delivers an average **+15.7 % accuracy lift**, **97 % non-degradation**, and **~50 % token savings** versus baseline agents. Applying GEPA—the online optimizer that mutates system prompts on top of the runtime loop—drives domain-specific gains up to **+165 %** in roughly **2 hours** (see [Online Optimization](/training/online/optimize-with-atlas) and the [case study](/examples/online-optimization-case-study)). Offline GRPO fine-tuning then pushes longer-horizon improvements when you want to train custom checkpoints.
 
 ## Getting Started: Two Paths
 
@@ -22,14 +22,14 @@ Atlas is a comprehensive framework with two primary entry points. Most teams beg
 |--------------|----------|--------------|
 | Orchestrate tasks with a structured runtime loop. | Atlas SDK | [`SDK Quickstart`](/sdk/quickstart) |
 | Wrap my existing agent in a quality-control loop. | Atlas SDK | [`BYOA Adapters`](/sdk/adapters) |
-| Optimize prompts and teaching strategies. | Training & Optimization | [`Online Optimization`](/quickstart) |
-| Fine-tune a custom teacher model with RL. | Training & Optimization | [`Full Training Walkthrough`](/first-experiment) |
+| Optimize prompts and learning strategies. | Training & Optimization | [`Online Optimization`](/quickstart) |
+| Fine-tune a custom model with RL. | Training & Optimization | [`Full Training Walkthrough`](/first-experiment) |
 
 Choose your starting point below:
 
 <CardGroup cols="2">
   <Card title="SDK Runtime Orchestration" icon="workflow" href="/sdk/quickstart">
-    Use the Atlas orchestrator to run an existing agent with a Student-Teacher quality loop. Get started in minutes.
+    Use the Atlas orchestrator to run an existing agent with a closed-loop learning system. Get started in minutes.
   </Card>
   <Card title="Model Training & Optimization" icon="graduation-cap" href="/quickstart">
     Use online and offline learning to improve agent performance, optimize prompts, and fine-tune models with reinforcement learning.
@@ -40,12 +40,12 @@ Choose your starting point below:
 
 ATLAS wraps your existing agent framework with four components that create a complete learning loop:
 
-1. **Reasoning Core**: A teacher-student model pair that enhances your agent's capabilities
+1. **Reasoning Core**: A closed-loop learning system that enhances your agent's capabilities
 2. **[Reward System](/concepts/reward-design)**: Turns user feedback into dense reward signals (achieves 93.7% accuracy on RewardBench V2)
 3. **Learning Engine**: Uses online optimization and offline reinforcement learning (e.g., GEPA, GRPO) to update models based on rewards
 4. **Persistent Memory**: Stores all interactions in structured trace files for analysis and retraining
 
-Together, these components form a closed-loop system: interaction traces flow into the reward system, the learning engine upgrades the teacher-student core, and the refreshed models redeploy so your agent gets sharper with every episode.
+Together, these components form a closed-loop system: interaction traces flow into the reward system, the learning engine upgrades the reasoning core, and the refreshed models redeploy so your agent gets sharper with every episode.
 
 <div align="center">
   <img src="/images/system-architecture.png" alt="ATLAS System Architecture" width="800" />
@@ -65,13 +65,13 @@ Together, these components form a closed-loop system: interaction traces flow in
 
 ATLAS provides three modes that work together in a complete learning cycle:
 
-**1. [Evaluate](/quickstart#quick-evaluation-5-minutes)** – Capture baseline and teacher-guided responses, then measure the quality improvement with the reward system.
+**1. [Evaluate](/quickstart#quick-evaluation-5-minutes)** – Capture baseline and quality-controlled responses, then measure the improvement with the reward system.
 
-**2. [Optimize](/training/online/optimize-with-atlas)** – Use reward scores as fitness signals to evolve better teaching strategies. Teacher prompts improve, student responses get sharper, rewards climb.
+**2. [Optimize](/training/online/optimize-with-atlas)** – Use reward scores as fitness signals to evolve better strategies. The system's prompts and responses improve, rewards climb.
 
-**3. [Train](/first-experiment)** – When you need more than prompt tweaks, use the judged data to update the teacher model weights via reinforcement learning.
+**3. [Train](/first-experiment)** – When you need more than prompt tweaks, use the judged data to update model weights via reinforcement learning.
 
-This evaluate → optimize → train arc creates a continual learning loop: fresh interactions enter the reward system, signals decide what to keep or discard, and ATLAS updates the teaching components so your deployed agent never goes stale.
+This evaluate → optimize → train arc creates a continual learning loop: fresh interactions enter the reward system, signals decide what to keep or discard, and ATLAS updates the learning components so your deployed agent never goes stale.
 
 ## Research & Resources
 
@@ -80,4 +80,4 @@ Learn more about the methodology and science behind ATLAS:
 - [ATLAS Technical Report (PDF)](/ATLAS-Technical-Report.pdf) - Complete methodology, benchmarks, and implementation details
 - [Arc Research](https://www.arc.computer/research) - Our latest research advancing continual learning systems
 - [GitHub Repository](https://github.com/Arc-Computer/ATLAS) - Source code, examples, and issue tracking
-- [HuggingFace Models](https://huggingface.co/Arc-Intelligence) - Pre-trained teacher and student models
+- [HuggingFace Models](https://huggingface.co/Arc-Intelligence) - Pre-trained models

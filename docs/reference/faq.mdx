@@ -21,13 +21,9 @@ Unlike fine-tuning which modifies model weights, ATLAS:
 
 ### What performance improvements can I expect?
 
-Based on extensive benchmarking:
-- **Average accuracy gain**: 15.7%
-- **Task completion improvement**: 31%
-- **Non-degradation guarantee**: 97%
-- **Token efficiency**: 50% reduction
+Across our evaluation suite we consistently see the closed-loop Student–Teacher runtime deliver an average **+15.7% accuracy gain**, **31% task completion lift**, **97% non-degradation**, and **~50% token savings** versus baseline agents. When you layer the GEPA online optimizer on top of that loop, domain-specific studies show gains up to **+165%** in roughly **2 hours** with ~$10 in API spend (see [Online Optimization](/training/online/optimize-with-atlas)). Offline GRPO training then provides longer-term improvements when you fine-tune custom teacher checkpoints.
 
-Results vary by task complexity and student model capability.
+Actual results vary with task difficulty, data quality, and the strength of the underlying student model, but the closed loop plus GEPA/GRPO stack gives you levers to reach those numbers.
 
 ## Hardware & Setup
 

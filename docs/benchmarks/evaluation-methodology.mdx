@@ -200,17 +200,17 @@ def validate_improvement(baseline_scores, enhanced_scores):
 Successful evaluation demonstrates:
 
 <CardGroup cols="2">
-  <Card title="Accuracy" icon="bullseye">
-    **+15-30%** improvement across tasks
+  <Card title="Closed-Loop Accuracy" icon="bullseye">
+    **+15–30%** lift with the Student–Teacher runtime
+  </Card>
+  <Card title="GEPA Upside" icon="chart-line">
+    **Up to +165%** in ~2 hours for domain-specific optimization
   </Card>
   <Card title="Completion" icon="check">
     **~100%** vs ~69% baseline
   </Card>
   <Card title="Efficiency" icon="compress">
-    **50%** token reduction
-  </Card>
-  <Card title="Speed" icon="rocket">
-    **13-15%** faster generation
+    **~50%** token reduction with teaching
   </Card>
 </CardGroup>
 
@@ -298,10 +298,7 @@ def evaluate_diagnostic_accuracy(probe_results, actual_performance):
 
 ## Next Steps
 
-<CardGroup cols="3">
-  <Card title="Performance Results" icon="chart-line" href="/benchmarks/performance-results">
-    View benchmark results
-  </Card>
+<CardGroup cols="2">
   <Card title="Reproduction Guide" icon="copy" href="/benchmarks/reproduction">
     Reproduce our findings
   </Card>

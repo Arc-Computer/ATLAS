@@ -10,10 +10,9 @@ icon: file-pdf
 ATLAS (Adaptive Teaching and Learning Alignment System) is a hybrid reinforcement learning architecture that enhances language model performance through adaptive teaching protocols. The system implements a two-phase approach: diagnostic probing to assess student capability, followed by conditional teaching that provides targeted guidance.
 
 Through extensive evaluation on mathematical reasoning, code generation, and system reliability engineering tasks, ATLAS demonstrates:
-- **15.7% average accuracy improvement** across diverse benchmarks
-- **31% increase in task completion rates**
-- **97% non-degradation guarantee** ensuring safe deployment
-- **50% reduction in token usage** through efficient teaching strategies
+- **Closed-loop runtime gains**: +15.7% average accuracy, +31% completion, 97% non-degradation, ~50% token savings
+- **Online GEPA gains**: up to +165% task-specific improvement in ~2 hours with ~$10 in API spend
+- **Offline GRPO gains**: sustained quality improvements when fine-tuning custom teacher checkpoints
 
 The framework combines offline reinforcement learning for foundational skills with online optimization for task-specific adaptation, creating a practical path to continuously improving AI systems.
 
@@ -51,8 +50,9 @@ Zero-reward for performance degradation ensures 97% non-degradation rate in prod
 ### Domain-Specific Gains
 
 - **SRE Debugging**: Systematic improvement in root cause analysis and reduced investigation time
-- **Mathematical Reasoning**: 15.7% average gain
+- **Mathematical Reasoning**: 15.7% average gain (closed-loop baseline)
 - **Code Generation**: 31% completion rate improvement
+- **GEPA Optimization**: Up to +165% task-specific lift in ~2 hours (see [Online Optimization](/training/online/optimize-with-atlas))
 
 ## Citation
 
