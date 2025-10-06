@@ -34,15 +34,15 @@ CONFIG_TEMPLATE = textwrap.dedent(
     student:
       prompts:
         planner: |
-          {base_prompt}
+          {{base_prompt}}
 
           Break the task into two concise steps as JSON.
         executor: |
-          {base_prompt}
+          {{base_prompt}}
 
           Call the HTTP agent and describe the result.
         synthesizer: |
-          {base_prompt}
+          {{base_prompt}}
 
           Summarize the findings clearly for the user.
       max_plan_tokens: 512
@@ -102,7 +102,15 @@ CONFIG_TEMPLATE = textwrap.dedent(
       retry_threshold: 0.6
       aggregation_strategy: weighted_mean
     storage: null
-    prompt_rewrite: null
+    prompt_rewrite:
+      llm:
+        provider: openai
+        model: gpt-4o-mini
+        api_key_env: OPENAI_API_KEY
+        temperature: 0.1
+        max_output_tokens: 512
+      max_tokens: 1024
+      temperature: 0.1
     """
 )
 
@@ -112,9 +120,20 @@ class EchoHandler(BaseHTTPRequestHandler):
         length = int(self.headers.get("Content-Length", 0))
         payload = json.loads(self.rfile.read(length)) if length else {}
         prompt = payload.get("prompt", "")
-        response: dict[str, Any] = {
-            "output": f"Echo service received: {prompt[:100]}"
-        }
+        metadata = payload.get("metadata", {}) or {}
+        mode = metadata.get("mode") if isinstance(metadata, dict) else None
+        if mode == "planning":
+            plan = {
+                "steps": [
+                    {"id": 1, "description": "Call the HTTP agent to fetch an AI news headline", "depends_on": [], "tool": None, "tool_params": None},
+                    {"id": 2, "description": "Summarize the headline for the user", "depends_on": [1], "tool": None, "tool_params": None},
+                ]
+            }
+            response: dict[str, Any] = {"output": plan}
+        elif mode == "synthesis":
+            response = {"output": "The custom HTTP agent shared a single AI news headline."}
+        else:
+            response = {"output": f"Echo service received: {prompt[:100]}"}
         body = json.dumps(response).encode("utf-8")
         self.send_response(200)
         self.send_header("Content-Type", "application/json")
