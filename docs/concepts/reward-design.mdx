@@ -118,6 +118,41 @@ rim:
 - **Offline training**: Disable `accuracy` and `diagnostic`, focus on `helpfulness` and `process`
 - **Online evaluation**: Enable all four judges for comprehensive scoring
 
+## Reward System in the Atlas SDK
+
+The SDK runtime uses the same reward philosophy to control its execution loop. The `rim` block in `configs/examples/sdk_quickstart.yaml` defines the judges, arbiter, and thresholds that trigger retries.
+
+```yaml
+# configs/examples/sdk_quickstart.yaml
+rim:
+  judges:
+    - identifier: process
+      kind: process
+      weight: 0.6
+      # ...
+    - identifier: helpfulness
+      kind: helpfulness
+      weight: 0.4
+      # ...
+  arbiter:
+    # ...
+  success_threshold: 0.7
+  retry_threshold: 0.6
+```
+
+During orchestration, this configuration tells the runtime how to behave:
+
+1. After a step is executed, the `Teacher` sends the output to the Reward System for evaluation.
+2. The `process` and `helpfulness` judges score the attempt.
+3. If the final score is below the `retry_threshold` (0.6), the `Teacher` generates guidance and the `Student` retries the step.
+4. If the score is above the `success_threshold` (0.7), the step is approved and the orchestrator moves to the next one.
+
+<Tip>
+Want a stricter runtime? Raise the `success_threshold` in your config or add a new, domain-specific judge. See the [`SDK Configuration Reference`](/sdk/configuration#reward-system-the-rim-block) for complete syntax.
+</Tip>
+
+This mirrors the training world: the runtime uses rewards to keep the agent on track, while the training process uses the same signals to improve the underlying models.
+
 ## Using the Reward System
 
 ### In Training (Offline RL)

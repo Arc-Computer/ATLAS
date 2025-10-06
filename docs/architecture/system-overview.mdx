@@ -11,7 +11,7 @@ ATLAS is an architecture for production teams that need AI agents to improve fro
 
 The core components are:
 1.  **[Reasoning Core](/concepts/teacher-student-paradigm)**: A Teacher-Student model pair that enhances agent capabilities.
-2.  **[Reward System (RIM)](/concepts/reward-design)**: Turns implicit and explicit user feedback into a dense reward signal.
+2.  **[Reward System](/concepts/reward-design)**: Turns implicit and explicit user feedback into a dense reward signal.
 3.  **[Learning Engine](/concepts/hybrid-learning)**: Uses online (GEPA) and offline (GRPO) methods to update models based on rewards.
 4.  **Persistent Memory**: Stores all interactions for analysis and retraining. This layer is configurable to use local disk, a cloud bucket (e.g., S3), or a production database (e.g., Postgres) for storage.
 
@@ -25,8 +25,42 @@ These components form the complete learning loop shown below. The system capture
 The architecture operates as a continuous cycle:
 
 1.  **Capture & Persist**: All agent interactions and user feedback (reward signals like edits, approvals, tool usage) are captured by the agent framework and stored in Persistent Memory.
-2.  **Score & Reward**: The Reward System (RIM) processes these raw signals, converting them into structured, dense rewards that quantify performance.
+2.  **Score & Reward**: The Reward System processes these raw signals, converting them into structured, dense rewards that quantify performance.
 3.  **Adapt & Learn**: The Learning Engine uses these rewards to update the Reasoning Core. Online adaptation (GEPA) handles rapid, task-specific tuning, while offline training (GRPO) builds deep, foundational skills.
 4.  **Redeploy**: The improved teacher model (or its updated policy) is redeployed to the Reasoning Core, enhancing the agent's performance on subsequent tasks.
 
 This entire loop is designed to be automated and run in production, enabling agents to compound intelligence over time.
+
+## SDK Runtime vs. Training Architecture
+
+The Atlas SDK provides the entry point to this learning loop. It is responsible for the **live execution** of tasks, while the broader Atlas training system handles the **offline improvement** of the models. The two systems are complementary.
+
+```mermaid
+graph TD
+    subgraph "SDK Runtime (Live Execution)"
+        A[Task Request] --> B(atlas.run);
+        B --> C{Student-Teacher Loop};
+        C -- Plan, Execute, Review --> C;
+        C --> D[Final Answer];
+        C --> E((Traces));
+    end
+
+    subgraph "Training System (Offline Improvement)"
+        F((Persistent Memory)) --> G[Learning Engine];
+        G -- GRPO / GEPA --> H[Model Update];
+        H --> I(Updated Teacher Model);
+    end
+
+    E --> F;
+    I --> C;
+
+    style B fill:#cde4ff
+    style G fill:#d2ffd2
+```
+
+1.  The **SDK Runtime** orchestrates your agent through a task. This process generates a `Final Answer` for the user and, crucially, detailed `Traces` of the interaction.
+2.  These **Traces are persisted** and become the dataset for the offline **Training System**.
+3.  The **Learning Engine** uses these traces to fine-tune the Teacher model via methods like GRPO (offline reinforcement learning) or GEPA (online prompt optimization).
+4.  The **Updated Teacher Model** is then redeployed, making the live SDK Runtime more effective on subsequent tasks.
+
+This architecture ensures that every task executed by the SDK becomes a learning opportunity that improves the entire system over time. For a detailed breakdown of the runtime loop, see [`How Orchestration Works`](/sdk/orchestration).

@@ -1,0 +1,137 @@
+---
+title: Bring Your Own Agent
+description: Connect the Atlas orchestrator to any agent via OpenAI, Python, or HTTP adapters.
+sidebarTitle: Agent Adapters
+icon: plug
+---
+
+Atlas SDK follows a simple promise: **your agent, our orchestration**. Adapters create a small, consistent interface so you can place the Student-Teacher loop on top of nearly anything—from hosted APIs to local Python functions.
+
+## Choosing an Adapter
+
+| Adapter | Use when… | Strengths | Things to watch |
+|---------|-----------|-----------|-----------------|
+| `openai` | You have an OpenAI or Azure OpenAI chat model. | Minimal setup, native tool calling, streaming support. | Only works with OpenAI-compatible APIs. |
+| `http_api` | Your agent already runs behind an HTTP endpoint. | Language-agnostic, deploy-anywhere. | You define the payload schema, handle auth, and parse responses. |
+| `python` | You want to call local functions or LangChain runnables directly. | Lowest latency, easy debugging. | Runs inside the orchestrator process—ensure your code is safe and performant. |
+
+```mermaid
+graph LR
+    Student -->|Sends Prompt| Adapter
+    Adapter -->|Makes Request| Agent
+    Agent -->|Returns Response| Adapter
+    Adapter -->|Provides Trace & Output| Student
+    Student -->|Sends Context| Teacher
+    Teacher -->|Provides Guidance| Student
+```
+
+## OpenAI Adapter (`atlas/agent/openai_adapter.py`)
+
+This is the fastest way to get started, especially with GPT-4o-mini or Azure OpenAI models.
+
+```yaml
+agent:
+  type: openai
+  name: sdk-quickstart-openai
+  system_prompt: |
+    You are the Atlas Student. Be concise and helpful.
+  tools: []
+  llm:
+    provider: openai
+    model: gpt-4o-mini
+    api_key_env: OPENAI_API_KEY
+    temperature: 0.0
+    max_output_tokens: 768
+```
+
+- Supports conversation history and tool call metadata automatically.
+- Accepts `response_format` for JSON mode.
+- For Claude, Gemini, or other models, use the `http_api` adapter.
+
+## HTTP Adapter (`atlas/agent/http_adapter.py`)
+
+Best for microservices, serverless functions, or non-Python agents.
+
+```yaml
+agent:
+  type: http_api
+  name: example-http-agent
+  transport:
+    base_url: https://agent.example.com/run
+    headers:
+      Authorization: Bearer $AGENT_TOKEN
+    timeout_seconds: 60
+    retry:
+      attempts: 3
+      backoff_seconds: 1.0
+  payload_template:
+    mode: inference
+  result_path:
+    - data
+    - output
+```
+
+Wrap any service that accepts a JSON request. You define:
+
+- **`payload_template`**: The base JSON payload; the adapter injects the `prompt` and optional metadata.
+- **`result_path`**: A list of keys to traverse in the JSON response to find the agent's output string.
+- **Auth & retries**: Handled via the `transport` block, which mirrors `httpx` settings.
+
+## Python Adapter (`atlas/agent/python_adapter.py`)
+
+Ideal when your agent is a local Python function or a LangChain runnable.
+
+```yaml
+agent:
+  type: python
+  name: example-python-agent
+  import_path: agents.python_example
+  attribute: run_agent
+  working_directory: ./
+  allow_generator: false
+```
+
+- The adapter imports the `attribute` (e.g., `run_agent`) from the `import_path` module.
+- If the callable is async, the adapter awaits it; sync functions run in a background thread.
+- Set `allow_generator: true` to let the adapter consume a generator, concatenating all yielded strings into a single output.
+
+## Building Custom Adapters
+
+All adapters share a minimal interface (`AgentAdapter`). To add a new one (e.g., for gRPC), follow these steps:
+
+1. Extend the `AdapterType` enum in `atlas/config/models.py`.
+2. Implement a class inheriting from `AgentAdapter`.
+3. Register it in `atlas/agent/__init__.py`.
+
+```python
+from atlas.agent.registry import AgentAdapter, register_adapter
+from atlas.config.models import AdapterType
+
+class GRPCAdapter(AgentAdapter):
+    async def ainvoke(self, prompt: str, metadata: dict | None = None) -> str:
+        # 1. Connect to your gRPC service.
+        # 2. Build the request from the prompt.
+        # 3. Execute the call and get a response.
+        # 4. Return the response as a string.
+        return f"Response for prompt: {prompt}"
+
+# Assumes you've added GRPC to the AdapterType enum
+register_adapter(AdapterType.GRPC, GRPCAdapter)
+```
+
+Most teams start by copying the `http_api` adapter and swapping the transport layer.
+
+## Decision Checklist
+
+| Need | Recommendation |
+|------|----------------|
+| Fastest time-to-first-run | `openai` adapter with `sdk_quickstart.yaml`. |
+| Reuse an existing microservice | `http_api` adapter with proper retries and auth. |
+| Full control in local experiments | `python` adapter calling your local function. |
+| Access non-OpenAI APIs (Claude, Gemini, etc.) | Wrap them with the `http_api` adapter. |
+
+## Next Steps
+
+- Configure the rest of the runtime in [`SDK Configuration`](/sdk/configuration).
+- See how the orchestrator uses your adapter in [`How Orchestration Works`](/sdk/orchestration).
+- Clarify Student vs Teacher responsibilities in [`Student & Teacher Roles`](/sdk/student-teacher-roles).

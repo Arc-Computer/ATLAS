@@ -1,0 +1,95 @@
+agent:
+  type: openai
+  name: sdk-quickstart-openai
+  system_prompt: |
+    You are the Atlas Student. Follow the task instructions carefully and keep responses concise unless asked to elaborate.
+  tools: []
+  llm:
+    provider: openai
+    model: gpt-4o-mini
+    api_key_env: OPENAI_API_KEY
+    temperature: 0.0
+    max_output_tokens: 768
+  response_format: null
+
+student:
+  prompts:
+    planner: |
+      {base_prompt}
+
+      Break the user's task into a short numbered plan. Return a JSON object shaped exactly as {"steps": [...]} with each step containing id, description, and depends_on.
+    executor: |
+      {base_prompt}
+
+      Execute the current plan step. Show the work that led to your answer.
+    synthesizer: |
+      {base_prompt}
+
+      Summarize the important findings from every step and deliver the final answer.
+  max_plan_tokens: 1024
+  max_step_tokens: 1024
+  max_synthesis_tokens: 1024
+  tool_choice: auto
+
+teacher:
+  llm:
+    provider: openai
+    model: gpt-4o-mini
+    api_key_env: OPENAI_API_KEY
+    temperature: 0.1
+    max_output_tokens: 768
+  max_review_tokens: 1024
+  plan_cache_seconds: 300
+  guidance_max_tokens: 256
+  validation_max_tokens: 256
+  prompts:
+    plan_review: |
+      {base_prompt}
+
+      You are reviewing the student's proposed plan. Ensure it keeps the original task goal. Respond with a JSON object containing a top-level "steps" array. Do not wrap the plan in any additional keys.
+
+orchestration:
+  max_retries: 1
+  step_timeout_seconds: 600
+  rim_guidance_tag: rim_feedback
+  emit_intermediate_steps: true
+
+rim:
+  judges:
+    - identifier: process
+      kind: process
+      weight: 0.6
+      principles:
+        - Follows user instructions
+      llm:
+        provider: openai
+        model: gpt-4o-mini
+        api_key_env: OPENAI_API_KEY
+        temperature: 0.0
+        max_output_tokens: 512
+    - identifier: helpfulness
+      kind: helpfulness
+      weight: 0.4
+      principles:
+        - Provides useful answers
+      llm:
+        provider: openai
+        model: gpt-4o-mini
+        api_key_env: OPENAI_API_KEY
+        temperature: 0.0
+        max_output_tokens: 512
+  temperatures: [0.0, 0.3]
+  variance_threshold: 0.15
+  uncertainty_threshold: 0.3
+  arbiter:
+    provider: openai
+    model: gpt-4o-mini
+    api_key_env: OPENAI_API_KEY
+    temperature: 0.1
+    max_output_tokens: 512
+  success_threshold: 0.7
+  retry_threshold: 0.6
+  aggregation_strategy: weighted_mean
+
+storage: null
+prompt_rewrite: null
