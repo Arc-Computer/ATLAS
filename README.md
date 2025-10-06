@@ -8,14 +8,22 @@
 
 </div>
 
-ATLAS is an architecture for production teams that need AI agents to improve from user interactions and feedback *after* deployment. It wraps any existing agent framework with the components required to create a closed-loop, continual learning system:
+ATLAS is an architecture for production teams that need AI agents to improve from user interactions and feedback *after* deployment. Everything is built around a closed-loop learning system—run the loop at inference time for real-time quality control, then feed the traces into online/offline training jobs when you’re ready to adapt or fine-tune.
 
-1.  **Reasoning Core**: A Teacher-Student model pair that enhances agent capabilities.
-2.  **Reward System (RIM)**: Turns implicit and explicit user feedback (edits, approvals, tool usage) into a dense reward signal.
-3.  **Learning Engine**: Uses online methods like **GEPA** (Genetic-Pareto, a reflective prompt optimizer) and offline methods like **GRPO** (Group Relative Policy Optimization) to update models based on rewards.
-4.  **Persistent Memory**: Stores all interactions for analysis and retraining.
+## Why It Matters
 
-Together, they form the complete learning loop shown below.
+- **Closed-loop runtime gains**: +15.7% average accuracy, +31% completion, 97% non-degradation, ~50% token savings
+- **Online optimization**: Up to +165% domain-specific improvement in ~2 hours (no GPU required)
+- **Offline reinforcement learning**: Long-horizon improvements with full control over checkpoints
+
+Together, these capabilities help your agents compound expertise instead of relearning fixes manually.
+
+## Four Components, One Loop
+
+1. **Reasoning Core** – closed-loop runtime that pairs your target model with a reviewer
+2. **Reward System (RIM)** – converts edits, approvals, and tool usage into dense reward signals
+3. **Learning Engine** – online GEPA and offline GRPO for continuous adaptation
+4. **Persistent Memory** – durable trace store for evaluation and retraining
 
 <div align="center">
 <img src="public/system-architecture.png" alt="ATLAS System Architecture Diagram" width="800" style="border-radius: 12px;">
@@ -23,20 +31,23 @@ Together, they form the complete learning loop shown below.
 <em>Figure: ATLAS keeps the agent in a learn–evaluate–update cycle.</em>
 </div>
 
-ATLAS is designed for building production AI systems that compound knowledge over time. Rather than treating agents as static and stateless, ATLAS provides the framework for a dynamic learning loop. Interaction traces stream into the reward system, the learning engine upgrades the teacher–student core, and the refreshed policy is redeployed so production agents get demonstrably sharper with every episode. This enables the system to build a durable library of domain expertise instead of relearning the same fixes repeatedly. 
+## Choose Your Path
+
+| Goal | Best Starting Point | Key Docs |
+|------|--------------------|----------|
+| Orchestrate an existing agent with quality control | SDK Runtime Loop | [`SDK Quickstart`](https://docs.arc.computer/sdk/quickstart) |
+| Adapt prompts to a new domain quickly | GEPA Online Optimization | [`Online Optimization`](https://docs.arc.computer/training/online/optimize-with-atlas) |
+| Train custom checkpoints with RL | GRPO Offline Training | [`Full Training Walkthrough`](https://docs.arc.computer/first-experiment) |
 
 To learn more, read about our production use cases ([Introducing ATLAS](https://www.arc.computer/blog/introducing-atlas), [ATLAS SRE Diagnosis](https://www.arc.computer/blog/atlas-sre-diagnosis)) and the research that underpins the framework, from our reward system ([ATLAS Reward System](https://www.arc.computer/blog/ATLAS-Reward-System)) to our online optimization results ([Supercharging RL with Online Optimization](https://www.arc.computer/blog/supercharging-rl-with-online-optimization)).
 
-📄 **[Read the ATLAS Technical Report](https://docs.arc.computer/technical-report)** for comprehensive methodology and performance analysis.
+📄 **[Read the ATLAS Technical Report](https://docs.arc.computer/technical-report)** for methodology and benchmarks.
 
-📚 **[Full Documentation](https://docs.arc.computer)** for complete guides, API reference, and examples.
-
-
----
+📚 **[Full Documentation](https://docs.arc.computer)** for comprehensive guides, API reference, and examples.
 
 ## Quickstart — Evaluate, Then Optimize
 
-Start by measuring how much a GPT-5 teacher and the ATLAS reward system improve one of your agents. Once you see the delta, graduate to the full GEPA optimization loop.
+Start by measuring how much the closed-loop runtime (with GPT-5 acting as the reviewer) and the ATLAS Reward System improve one of your agents. Once you see the delta, graduate to the full GEPA optimization loop.
 
 ### Part A · 5 minutes — Score Baseline vs Teaching
 1. Install dependencies (Python 3.11+):
@@ -48,13 +59,14 @@ Start by measuring how much a GPT-5 teacher and the ATLAS reward system improve 
    export OPENAI_API_KEY=sk-...
    export GEMINI_API_KEY=your_gemini_key
    ```
-3. Run the quick evaluator. It captures a baseline response, asks a GPT-5 teacher for guidance, has the student retry with the teaching, and scores both with `RIMReward`.
+3. Run the quick evaluator. It captures a baseline response, asks the reviewer model (`--teacher-model`) for guidance, has the target model (`--student-model`) retry with that guidance, and scores both with `RIMReward`.
    ```bash
    python examples/quickstart/evaluate.py \
      --question "Masha braided her dolls' hair..." \
      --teacher-model gpt-5 \
      --student-model gpt-4o-mini
    ```
+   > **Note:** The CLI flags still use `--teacher-model` / `--student-model` for compatibility with the atlas-sdk runtime. They correspond to the reviewer and target models in the closed-loop system.
    Example output:
    ```text
    ========================================================================
@@ -68,7 +80,7 @@ Start by measuring how much a GPT-5 teacher and the ATLAS reward system improve 
    Change `--student-model` if you want to evaluate a different agent (any OpenAI Responses-compatible model).
 
 ### Part B · ~2 hours (optional) — Run GEPA Prompt Optimization
-Reuse the proven compatibility config and let GEPA evolve the teaching prompts.
+Reuse the proven compatibility config and let GEPA evolve the system prompts that steer the reviewer.
 
 Before you start, make sure the same keys from Part A are exported—`OPENAI_API_KEY` for model calls and `GEMINI_API_KEY` for the reward judges.
 
@@ -90,11 +102,11 @@ This loop iterates up to 40 evaluations (≈$10 in API spend) and writes the bes
 
 Each quickstart mode taps into the same learning cycle:
 
-1. **Evaluate (examples/quickstart/evaluate.py)** – capture baseline and teacher-guided traces, then use the RIM judges to quantify the lift. Nothing feeds back yet; this is your observation step.
-2. **Optimize (GEPA configs)** – reuse those reward deltas as fitness so the prompt optimizer keeps proposing better teaching strategies. Teacher prompts change, student responses improve, rewards climb.
-3. **Train (GRPO runs)** – when you need more than prompt tweaks, use the judged data to update the teacher weights themselves. New data → judges score it → teacher adapts → optimized prompts guide the student → repeat.
+1. **Evaluate (examples/quickstart/evaluate.py)** – capture baseline and reviewer-guided traces, then use the RIM judges to quantify the lift. Nothing feeds back yet; this is your observation step.
+2. **Optimize (GEPA configs)** – reuse those reward deltas as fitness so the prompt optimizer keeps proposing better system prompts. Reviewer prompts change, target responses improve, rewards climb.
+3. **Train (GRPO runs)** – when you need more than prompt tweaks, use the judged data to update the reviewer weights themselves. New data → judges score it → the reviewer adapts → refreshed prompts guide the target model → repeat.
 
-That evaluate → optimize → train arc is the “self-improvement at scale” loop: fresh interactions enter RIM, the reward signal decides what to keep or discard, and ATLAS updates the components that do the teaching so the deployed agent never goes stale.
+That evaluate → optimize → train arc is the “self-improvement at scale” loop: fresh interactions enter RIM, the reward signal decides what to keep or discard, and ATLAS updates the learning components so the deployed agent never goes stale.
 
 ---
 
@@ -120,7 +132,7 @@ Use the **Learning Engine (GEPA)** and a pre-trained **Reasoning Core** to optim
   ./scripts/openai_agent_atlas.sh configs/wrappers/openai_existing_agent.yaml
   ```
   Update `agents.target` in the config with your production connector before running the script.
-- **Expected Outcome**: A set of optimized teaching prompts in `optimized_prompts.json`. This process takes ~2 hours and costs ~$10 in API fees, delivering a performance improvement of up to +165% (measured as reward delta on evaluation tasks). See [Supercharging RL with Online Optimization](https://www.arc.computer/blog/supercharging-rl-with-online-optimization) for experimental setup.
+- **Expected Outcome**: A set of optimized system prompts in `optimized_prompts.json`. This process takes ~2 hours and costs ~$10 in API fees, delivering a performance improvement of up to +165% (measured as reward delta on evaluation tasks). See [Supercharging RL with Online Optimization](https://www.arc.computer/blog/supercharging-rl-with-online-optimization) for experimental setup.
 
 ### Path 2 — Deploy a Standalone Reward System
 
@@ -141,9 +153,9 @@ Use the **Reward System (RIM)** to evaluate agent performance with state-of-the-
   ```
 - **Expected Outcome**: A lightweight result object exposing the aggregated score, rationale, and per-judge details. Advanced callers can inspect `evaluation.extra["info"]` for the raw judge payload. For batched or high-throughput evaluation, call the `RIMReward` instance directly with lists of prompts and completions. The quickstart script prints aggregated and per-judge scores by default; pass `--verbose-judges` to surface full judge traces. The system achieves 93.7% accuracy on RewardBench V2, outperforming all public models. Benchmarks and judge configuration are detailed in [ATLAS Reward System](https://www.arc.computer/blog/atlas-reward-system).
 
-### Path 3 — Build a Custom Teacher Model
+### Path 3 — Train a Custom Reasoning Core
 
-Use the full **Learning Engine (GRPO)** to train a new **Reasoning Core** from scratch on your own data. This is for advanced use cases requiring deep domain specialization. Follow the [Custom Teacher Training Guide](https://docs.arc.computer/first-experiment).
+Use the full **Learning Engine (GRPO)** to train a new checkpoint on your own data. This is for advanced use cases requiring deep domain specialization. Follow the [Custom Training Guide](https://docs.arc.computer/first-experiment).
 
 - **Prerequisites**: Multi-GPU environment (4-8x A100/H100 recommended).
 - **Commands (Minimal Smoke Test)**:
@@ -154,7 +166,8 @@ Use the full **Learning Engine (GRPO)** to train a new **Reasoning Core** from s
   # Phase 2: RL Training with vLLM (4 steps)
   scripts/launch_with_server.sh 1 1 configs/run/teacher_rcl.yaml report_to=null max_steps=4 eval_steps=1
   ```
-- **Expected Outcome**: A custom-trained teacher model checkpoint. The closed-loop runtime plus GRPO training delivers an average **+15.7%** accuracy lift, with optional GEPA optimization stacking on an additional **+165%** domain-specific gain in ~2 hours.
+  > The config filenames retain the historical `teacher_*` naming from the runtime stack—they produce the same reviewer checkpoint used in the closed-loop system.
+- **Expected Outcome**: A custom-trained reasoning core checkpoint. The closed-loop runtime plus GRPO training delivers an average **+15.7%** accuracy lift, with optional GEPA optimization stacking on an additional **+165%** domain-specific gain in ~2 hours.
 
 ---
 
@@ -165,7 +178,7 @@ Use the full **Learning Engine (GRPO)** to train a new **Reasoning Core** from s
 
 Fine-tuning (or RLHF) creates a static, updated version of a model. It is compute-intensive and risks catastrophic forgetting. When the world changes, you must repeat the entire process.
 
-ATLAS creates a **dynamic, continual learning loop**. The teacher-student architecture separates foundational knowledge from task-specific adaptation. This means:
+ATLAS creates a **dynamic, continual learning loop**. The closed-loop architecture separates foundational knowledge from task-specific adaptation. This means:
 - **No Catastrophic Forgetting**: The student model's weights are never changed, preserving its original capabilities.
 - **Rapid Adaptation**: The online learning loop adapts to new tasks in hours, not weeks.
 - **Compounding Knowledge**: Skills learned from one task can be reapplied to others, creating a library of reusable "skill capsules."
