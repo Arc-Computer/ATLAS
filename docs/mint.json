@@ -53,6 +53,16 @@
       ]
     },
     {
+      "group": "SDK Runtime",
+      "pages": [
+        "sdk/quickstart",
+        "sdk/configuration",
+        "sdk/orchestration",
+        "sdk/adapters",
+        "sdk/student-teacher-roles"
+      ]
+    },
+    {
       "group": "Core Concepts",
       "pages": [
         "concepts/teacher-student-paradigm",

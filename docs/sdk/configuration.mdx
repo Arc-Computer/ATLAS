@@ -1,0 +1,219 @@
+---
+title: SDK Configuration Reference
+description: Understand every block in an Atlas SDK YAML file so you can tailor the orchestrator to your agents.
+sidebarTitle: Configuration
+icon: settings
+---
+
+Atlas SDK configs are the control tower for runtime orchestration. Each block in the YAML tells the Student, Teacher, and Reward System how to behave. Start with `configs/examples/sdk_quickstart.yaml`, then graduate to the richer examples in `configs/examples/openai_agent.yaml`, `http_agent.yaml`, and `python_agent.yaml`.
+
+<Note>
+All examples reference files in the Atlas SDK repo (`configs/examples/`). If you cloned the repo for the quickstart, you already have them.
+</Note>
+
+## Layout at a Glance
+
+```yaml
+agent:        # How to talk to your underlying model or service
+student:      # Planner, executor, and synthesizer prompts/limits
+teacher:      # Reviewer and validator settings
+orchestration:# Runtime policies like retries and timeouts
+rim:          # Defines the Reward System (judges, arbiter, thresholds)
+storage:      # (Optional) Postgres connection for trace persistence
+prompt_rewrite: # (Optional) Persona rewriting before the run starts
+```
+
+Each section is restrictive by design—unexpected keys raise validation errors—so it’s easier to debug mistakes before the orchestrator spins up.
+
+## Agent Configuration (`agent`)
+
+This block defines how the orchestrator communicates with your agent.
+
+| Adapter | Best for | Key fields |
+|---------|----------|------------|
+| `openai` | OpenAI or Azure OpenAI chat models | `llm` block (model, key env var, temperature, token limits) |
+| `http_api` | Remote services behind an HTTP interface | `transport` (base URL, retry policy), `payload_template`, `result_path` |
+| `python` | Local Python functions or callables | `import_path`, `attribute`, `working_directory`, optional `llm` metadata |
+
+### OpenAI Adapter Example
+```yaml
+agent:
+  type: openai
+  name: sdk-quickstart-openai
+  system_prompt: |
+    You are the Atlas Student. Be concise and thorough.
+  tools: []
+  llm:
+    provider: openai
+    model: gpt-4o-mini
+    api_key_env: OPENAI_API_KEY
+    temperature: 0.0
+    max_output_tokens: 768
+```
+<Tip>
+Any non-OpenAI-compatible API (like Anthropic Claude) should use the `http_api` adapter until a dedicated integration is available.
+</Tip>
+
+See [`Bring Your Own Agent`](/sdk/adapters) for full walkthroughs of all three adapters.
+
+## Student Configuration (`student`)
+
+The Student block shapes planning, execution, and synthesis.
+
+```yaml
+student:
+  prompts:
+    planner: |
+      {base_prompt}
+      Draft a numbered plan as JSON.
+    executor: |
+      {base_prompt}
+      Execute the step, showing intermediate reasoning.
+    synthesizer: |
+      {base_prompt}
+      Combine results into the final answer.
+  max_plan_tokens: 1024
+  max_step_tokens: 1024
+  max_synthesis_tokens: 1024
+  tool_choice: auto
+```
+
+- **Prompts**: Templates that receive `{base_prompt}` from the agent’s system prompt and any prompt rewriting.
+- **Token limits**: Guardrails for LLM calls; increase them when steps are truncated.
+- **`tool_choice`**: `auto` lets the Student call registered tools. Use `required` to force a tool call on every step.
+
+## Teacher Configuration (`teacher`)
+
+The Teacher reviews plans, validates outputs, and provides guidance.
+
+```yaml
+teacher:
+  llm:
+    provider: openai
+    model: gpt-4o-mini
+    api_key_env: OPENAI_API_KEY
+    temperature: 0.1
+    max_output_tokens: 768
+  max_review_tokens: 1024
+  plan_cache_seconds: 300
+  guidance_max_tokens: 256
+  validation_max_tokens: 256
+```
+
+- **LLM block**: Often mirrors the Student’s provider but can be a more powerful model for complex reviews.
+- **`plan_cache_seconds`**: Caches an approved plan for a given task ID to avoid re-running reviews.
+- **Guidance/validation caps**: Keep feedback concise; increase when you expect lengthy traces.
+
+## Orchestration (`orchestration`)
+
+These policies govern the runtime loop.
+
+```yaml
+orchestration:
+  max_retries: 1
+  step_timeout_seconds: 600
+  rim_guidance_tag: rim_feedback
+  emit_intermediate_steps: true
+```
+
+- **`max_retries`**: Default is 1; increase to allow for more revision loops.
+- **`step_timeout_seconds`**: Per-step timeout; extend when calling slow tools or external APIs.
+- **`rim_guidance_tag`**: The tag used to inject feedback from the Reward System back into prompts.
+- **`emit_intermediate_steps`**: Keep `true` to stream events for logging and telemetry. (Note: Telemetry dashboards are not yet documented).
+
+## Reward System (the `rim` block)
+
+The Reward System scores each attempt so the orchestrator knows whether to accept an answer or trigger a retry. The YAML block is named `rim` for compatibility with the core training engine.
+
+```yaml
+rim:
+  judges:
+    - identifier: process
+      kind: process
+      weight: 0.6
+      principles:
+        - Follows user instructions
+      llm:
+        provider: openai
+        model: gpt-4o-mini
+        api_key_env: OPENAI_API_KEY
+        temperature: 0.0
+        max_output_tokens: 512
+    - identifier: helpfulness
+      kind: helpfulness
+      weight: 0.4
+      principles:
+        - Provides useful answers
+      llm:
+        provider: openai
+        model: gpt-4o-mini
+        api_key_env: OPENAI_API_KEY
+        temperature: 0.0
+        max_output_tokens: 512
+  temperatures: [0.0, 0.3]
+  variance_threshold: 0.15
+  uncertainty_threshold: 0.3
+  arbiter:
+    provider: openai
+    model: gpt-4o-mini
+    api_key_env: OPENAI_API_KEY
+    temperature: 0.1
+    max_output_tokens: 512
+  success_threshold: 0.7
+  retry_threshold: 0.6
+  aggregation_strategy: weighted_mean
+```
+
+- **Judges**: At least one is required. Mix `process`, `helpfulness`, or custom judges to fit your domain.
+- **Arbiter**: A separate LLM that resolves disagreements between judges.
+- **Thresholds**: If a score is below `retry_threshold`, the Teacher is asked for guidance. Above `success_threshold`, the answer is accepted.
+
+Learn more in [`Reward Design`](/concepts/reward-design#reward-system-in-the-atlas-sdk).
+
+## Storage (`storage`)
+
+Optional Postgres persistence for traces and session metadata.
+
+```yaml
+storage:
+  database_url: postgresql://localhost:5432/atlas
+  min_connections: 1
+  max_connections: 5
+  statement_timeout_seconds: 30
+```
+
+Leave `storage: null` (as in the quickstart) when you don’t have a database. Enable it when you’re ready to collect sessions.
+
+## Prompt Rewrite (`prompt_rewrite`)
+
+This block lets an additional LLM tighten or extend Student/Teacher prompts before a run starts. The quickstart keeps this disabled (`prompt_rewrite: null`).
+
+```yaml
+prompt_rewrite:
+  llm:
+    provider: openai
+    model: gpt-4o-mini
+    api_key_env: OPENAI_API_KEY
+    temperature: 0.1
+    max_output_tokens: 1024
+  max_tokens: 1024
+  temperature: 0.1
+```
+
+Enable it to tailor personas dynamically—for example, to compress a long system prompt into a slimmer runtime context.
+
+## Cheat Sheet
+
+| Goal | Section to edit | Quick pointer |
+|------|-----------------|---------------|
+| Swap to Anthropic via HTTP | `agent` | Use the `http_api` adapter and point `transport.base_url` to your service. |
+| Increase reasoning depth | `student` and `teacher` | Raise the `max_..._tokens` limits for the planner, executor, or guidance. | 
+| Persist sessions | `storage` | Provide a reachable Postgres URL and credentials. |
+| Tighten the quality bar | `rim` | Increase the `success_threshold` in the Reward System or add a new judge. |
+| Personalize prompts | `prompt_rewrite` | Enable the block and configure the rewrite LLM. |
+
+## Next Steps
+
+- Walk through the runtime loop in [`How Orchestration Works`](/sdk/orchestration).
+- Choose the right connector in [`Bring Your Own Agent`](/sdk/adapters).
+- See how runtime roles compare to training in [`Student & Teacher Roles`](/sdk/student-teacher-roles).

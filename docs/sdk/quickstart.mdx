@@ -1,0 +1,103 @@
+---
+title: Quickstart: Run Your First Task
+description: Launch the Atlas SDK runtime, run your first task, and understand how the Student–Teacher loop orchestrates work.
+sidebarTitle: Quickstart
+icon: rocket
+---
+
+This guide provides the fastest path to running the Atlas SDK. You will clone the repository, set an environment variable, and execute your first task.
+
+<Note>
+**Beta notice:** The Atlas SDK runtime is in beta. APIs and configuration keys may evolve—check release notes before upgrading.
+</Note>
+
+## Prerequisites
+
+<Note>
+Until the Atlas SDK is published on PyPI, install it directly from GitHub. When the package becomes public you can swap the first step for `pip install atlas-sdk`.
+</Note>
+
+1. **Clone the SDK repo and install in editable mode**
+   ```bash
+   git clone https://github.com/Arc-Computer/atlas-sdk
+   cd atlas-sdk
+   pip install -e .
+   ```
+2. **Set your LLM credentials**
+   ```bash
+   export OPENAI_API_KEY="sk-your-key"
+   ```
+   <Tip>
+   Using Azure OpenAI? Set the usual environment variables (`AZURE_OPENAI_API_KEY`, `AZURE_OPENAI_ENDPOINT`) and update the config’s provider/model entries before running.
+   </Tip>
+3. **Use a modern version of Python.** The SDK is tested with Python 3.10 and newer.
+
+## Step 1 – Run the Quickstart Task
+
+The `sdk_quickstart.yaml` config is a lightweight configuration that disables storage and prompt rewriting, requiring only an `OPENAI_API_KEY` to get started.
+
+Save the following snippet to a file (e.g., `run_atlas.py`).
+
+```python
+from atlas import run
+
+result = run(
+    task="Summarize the latest AI news",
+    config_path="configs/examples/sdk_quickstart.yaml",
+)
+print(result.final_answer)
+```
+
+<Info>
+Alternatively, you can run the snippet directly in your terminal:
+```bash
+python -c "from atlas import run; result = run(task='Summarize the latest AI news', config_path='configs/examples/sdk_quickstart.yaml'); print(result.final_answer)"
+```
+</Info>
+
+You should see a short plan-reason-synthesize cycle: the Student drafts a plan, the Teacher verifies it, steps execute, and the final answer prints to your terminal.
+
+## What Just Happened?
+
+Think of `atlas.run` as a project manager who never gets tired:
+
+- **Configure** – the YAML tells the manager which agent to call and how the Student/Teacher/Reward System trio should behave.
+- **Plan** – the Student drafts a step-by-step approach for the Teacher to check.
+- **Review** – the Teacher approves or tweaks the plan before anything runs.
+- **Execute** – each step runs in order, with the Teacher validating outputs.
+- **Evaluate** – the Reward System scores the work, deciding whether retries or guidance are needed.
+
+```mermaid
+graph LR
+    A[Configure] --> B[Plan]
+    B --> C[Review]
+    C --> D[Execute]
+    D --> E[Evaluate]
+```
+
+## Configuration Breakdown
+
+The `sdk_quickstart.yaml` config defines the runtime behavior. Here’s a high-level look at the key sections:
+
+- **`agent`**: Specifies the agent to run the task. The quickstart uses the OpenAI adapter with `gpt-4o-mini` and no tools, requiring only an `OPENAI_API_KEY`.
+- **`student`**: Configures the planner, executor, and synthesizer roles with their respective prompts and token limits.
+- **`teacher`**: Defines the review and guidance agent, which also has its own model and token budget.
+- **`orchestration`**: Sets runtime parameters like the number of retries (default: 1) and step timeouts.
+- **`reward_system`**: Defines the judges and arbiter that score the final answer for quality and helpfulness. This score determines if a retry is needed.
+- **`storage`**: Set to `null` to disable Postgres persistence for a lightweight start.
+- **`prompt_rewrite`**: Also `null`. The SDK won't rewrite prompts for persona or style unless you enable this feature.
+
+To add tools, enable persistence, or use a different agent, switch the `config_path` to a more advanced configuration like `configs/examples/openai_agent.yaml` and see the `SDK Configuration` reference for details.
+
+## Troubleshooting Checklist
+
+- **Missing API key** – ensure `OPENAI_API_KEY` (or Azure equivalents) are exported in the same shell.
+- **Time spent downloading dependencies** – editable installs pull in `litellm`, `httpx`, and friends on the first run; subsequent runs are instant.
+- **Model limits** – bump `max_output_tokens` in the config if your summaries get truncated.
+
+## Next Steps
+
+- Dive into [`SDK Configuration`](/sdk/configuration) to customize each YAML block.
+- Learn how the planner, reviewer, and evaluator cooperate in [`How Orchestration Works`](/sdk/orchestration).
+- Wrap your own agent with the adapters in [`Bring Your Own Agent`](/sdk/adapters).
+- Compare runtime vs training expectations in [`Student & Teacher Roles`](/sdk/student-teacher-roles).

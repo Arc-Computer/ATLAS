@@ -28,6 +28,19 @@ Unlike fine-tuning or RLHF, which require modifying model weights, ATLAS works w
 | Risk of capability loss | Preserves all original capabilities |
 | Weeks to deploy changes | Hours to deploy improvements |
 
+## Runtime vs Training Context
+
+<Note>
+**Two ways to meet the Student and Teacher:** the SDK runtime uses them to execute a single task, while the training system uses them to *improve* future teachers.
+</Note>
+
+| Context | Where you see it | Student role | Teacher role | Goal |
+|---------|------------------|--------------|--------------|------|
+| **SDK Runtime** | [`sdk/quickstart`](/sdk/quickstart), [`How Orchestration Works`](/sdk/orchestration) | Plans, executes, and synthesizes answers using your adapter | Reviews plans, validates steps, and requests retries | Produce a high-quality answer right now |
+| **Training & Optimization** | [`Quickstart`](/quickstart), [`First Experiment`](/first-experiment) | The model being improved (e.g., teacher checkpoint) | The supervising coach generating training signals | Improve long-term model behavior |
+
+When writing or reading docs, look for the “Switching between Runtime and Training?” callout for navigation help. The in-depth runtime roles live at [`Student & Teacher Roles`](/sdk/student-teacher-roles).
+
 ## Why This Works
 
 ### 1. Asymmetric Specialization

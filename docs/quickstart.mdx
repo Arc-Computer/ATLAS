@@ -15,6 +15,12 @@ There are two primary paths for getting started with ATLAS. For most users, we r
 </Info>
 
 <Note>
+**Looking for the SDK runtime quickstart?** See [SDK Quickstart](/sdk/quickstart) to start orchestrating tasks with any agent.
+
+This page covers training and optimization workflows.
+</Note>
+
+<Note>
 **Quick Terminology**: In ATLAS, a "student" is any LLM or agent you want to enhance - GPT, Claude, Gemini, your custom API, etc. The "teacher" (our pre-trained ATLAS model) guides your student without modifying it.
 </Note>
 
@@ -29,7 +35,7 @@ python examples/quickstart/evaluate.py \
   --student-model gpt-4o-mini
 ```
 
-The script prints the baseline response, teacher guidance, the improved response, and [RIM (Reward System)](/concepts/reward-design) scores that measure the quality improvement. Configure models or token limits with CLI flags when needed.
+The script prints the baseline response, teacher guidance, the improved response, and [Reward System](/concepts/reward-design) scores that measure the quality improvement. Configure models or token limits with CLI flags when needed.
 
 Make sure you export both `OPENAI_API_KEY` and `GEMINI_API_KEY` before running the command.
 
@@ -52,7 +58,7 @@ This script runs the complete ATLAS protocol:
 1. Gets a baseline response from the student model
 2. Teacher analyzes it and provides guidance
 3. Student retries with the teaching
-4. RIM scores both to measure improvement
+4. The Reward System scores both to measure improvement
 
 You'll see output like this:
 

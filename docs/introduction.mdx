@@ -12,25 +12,45 @@ Instead of treating your deployed agents as static systems that need constant re
 
 ATLAS works like a skilled tutor helping a student improve. Your existing AI model (GPT, Claude, Gemini, etc.) is the student. ATLAS provides a specialized teacher model that reviews the student's work, identifies gaps, and provides focused guidance—all at inference time.
 
-**Example:** When your GPT-5 student attempts a complex reasoning task, the ATLAS teacher reviews the attempt, provides targeted help (like "Your calculation approach is correct, but check the units"), and the student applies this guidance to produce an improved response.
-
 This delivers measurable results: **15.7% average accuracy improvement**, **97% non-degradation rate**, and **50% token reduction** across benchmarks.
 
-<div align="center">
-  <img src="/images/system-architecture.png" alt="ATLAS System Architecture" width="800" />
-  <p><em>ATLAS keeps your agent in a learn–evaluate–update cycle</em></p>
-</div>
+## Getting Started: Two Paths
+
+Atlas is a comprehensive framework with two primary entry points. Most teams begin with the SDK to orchestrate an existing agent, then graduate to the training workflows for deeper optimization.
+
+| I want to... | Use this Path | Key Docs |
+|--------------|----------|--------------|
+| Orchestrate tasks with a structured runtime loop. | Atlas SDK | [`SDK Quickstart`](/sdk/quickstart) |
+| Wrap my existing agent in a quality-control loop. | Atlas SDK | [`BYOA Adapters`](/sdk/adapters) |
+| Optimize prompts and teaching strategies. | Training & Optimization | [`Online Optimization`](/quickstart) |
+| Fine-tune a custom teacher model with RL. | Training & Optimization | [`Full Training Walkthrough`](/first-experiment) |
+
+Choose your starting point below:
+
+<CardGroup cols="2">
+  <Card title="SDK Runtime Orchestration" icon="workflow" href="/sdk/quickstart">
+    Use the Atlas orchestrator to run an existing agent with a Student-Teacher quality loop. Get started in minutes.
+  </Card>
+  <Card title="Model Training & Optimization" icon="graduation-cap" href="/quickstart">
+    Use online and offline learning to improve agent performance, optimize prompts, and fine-tune models with reinforcement learning.
+  </Card>
+</CardGroup>
 
 ## What ATLAS Provides
 
 ATLAS wraps your existing agent framework with four components that create a complete learning loop:
 
 1. **Reasoning Core**: A teacher-student model pair that enhances your agent's capabilities
-2. **[Reward System (RIM)](/concepts/reward-design)**: Turns user feedback into dense reward signals (achieves 93.7% accuracy on RewardBench V2)
-3. **Learning Engine**: Uses online methods like GEPA and offline methods like GRPO to update models based on rewards
+2. **[Reward System](/concepts/reward-design)**: Turns user feedback into dense reward signals (achieves 93.7% accuracy on RewardBench V2)
+3. **Learning Engine**: Uses online optimization and offline reinforcement learning (e.g., GEPA, GRPO) to update models based on rewards
 4. **Persistent Memory**: Stores all interactions in structured trace files for analysis and retraining
 
 Together, these components form a closed-loop system: interaction traces flow into the reward system, the learning engine upgrades the teacher-student core, and the refreshed models redeploy so your agent gets sharper with every episode.
+
+<div align="center">
+  <img src="/images/system-architecture.png" alt="ATLAS System Architecture" width="800" />
+  <p><em>ATLAS keeps your agent in a learn–evaluate–update cycle</em></p>
+</div>
 
 ## Compared to Alternatives
 
@@ -52,46 +72,6 @@ ATLAS provides three modes that work together in a complete learning cycle:
 **3. [Train](/first-experiment)** – When you need more than prompt tweaks, use the judged data to update the teacher model weights via reinforcement learning.
 
 This evaluate → optimize → train arc creates a continual learning loop: fresh interactions enter the reward system, signals decide what to keep or discard, and ATLAS updates the teaching components so your deployed agent never goes stale.
-
-## Getting Started: Two Paths
-
-<CardGroup cols="2">
-  <Card title="Pre-trained ATLAS Models" icon="box">
-    **Best for: 99% of use cases**
-
-    - Works across all domains out-of-the-box
-    - Adapts to your tasks via online optimization
-    - No training infrastructure required
-    - Available immediately on HuggingFace
-  </Card>
-  <Card title="Custom Teacher Training" icon="graduation-cap">
-    **Best for: Specialized domains**
-
-    - Proprietary knowledge not in public models
-    - Regulatory compliance requirements
-    - Extreme performance optimization needs
-    - Requires multi-GPU setup
-  </Card>
-</CardGroup>
-
-## Next Steps
-
-<CardGroup cols="2">
-  <Card
-    title="Quickstart: Pre-trained Models"
-    icon="play"
-    href="/quickstart"
-  >
-    Deploy ATLAS in minutes using pre-trained teacher models. No training required.
-  </Card>
-  <Card
-    title="Custom Training"
-    icon="graduation-cap"
-    href="/first-experiment"
-  >
-    Build a custom teacher model optimized for your specific domain and requirements.
-  </Card>
-</CardGroup>
 
 ## Research & Resources
 
