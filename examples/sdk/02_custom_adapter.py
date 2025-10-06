@@ -34,15 +34,15 @@ CONFIG_TEMPLATE = textwrap.dedent(
     student:
       prompts:
         planner: |
-          {{base_prompt}}
+          {base_prompt}
 
           Break the task into two concise steps as JSON.
         executor: |
-          {{base_prompt}}
+          {base_prompt}
 
           Call the HTTP agent and describe the result.
         synthesizer: |
-          {{base_prompt}}
+          {base_prompt}
 
           Summarize the findings clearly for the user.
       max_plan_tokens: 512
