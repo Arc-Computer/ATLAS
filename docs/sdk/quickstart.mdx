@@ -83,7 +83,7 @@ The `sdk_quickstart.yaml` config defines the runtime behavior. Here’s a high-l
 - **`student`**: Configures the planner, executor, and synthesizer roles with their respective prompts and token limits.
 - **`teacher`**: Defines the review and guidance agent, which also has its own model and token budget.
 - **`orchestration`**: Sets runtime parameters like the number of retries (default: 1) and step timeouts.
-- **`reward_system`**: Defines the judges and arbiter that score the final answer for quality and helpfulness. This score determines if a retry is needed.
+- **`rim`** (Reward System): Defines the judges and arbiter that score the final answer for quality and helpfulness. This score determines if a retry is needed.
 - **`storage`**: Set to `null` to disable Postgres persistence for a lightweight start.
 - **`prompt_rewrite`**: Also `null`. The SDK won't rewrite prompts for persona or style unless you enable this feature.
 

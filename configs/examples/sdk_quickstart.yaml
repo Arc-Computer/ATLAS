@@ -47,11 +47,6 @@ teacher:
       {base_prompt}
 
       You are reviewing the student's proposed plan. Ensure it keeps the original task goal. Respond with a JSON object containing a top-level "steps" array. Do not wrap the plan in any additional keys.
-  prompts:
-    plan_review: |
-      {base_prompt}
-
-      You are reviewing the student's proposed plan. Ensure it keeps the original task goal. Respond with a JSON object containing a top-level "steps" array. Do not wrap the plan in any additional keys.
 
 orchestration:
   max_retries: 1
