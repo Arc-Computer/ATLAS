@@ -22,7 +22,7 @@ These examples pair with the SDK Runtime documentation to show how to run, custo
 
 ## Running an Example
 
-From the root of the SDK repo:
+From the root of this docs repository (after installing the SDK):
 
 ```bash
 python examples/sdk/01_minimal_example.py
