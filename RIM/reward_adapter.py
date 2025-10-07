@@ -1,9 +1,15 @@
 from dataclasses import dataclass
 from typing import List, Dict, Any, Tuple, Optional
+
 import yaml
 from pathlib import Path
 from RIM.rim import RewardInterpretationModel
 from RIM.judges import AccuracyJudge, HelpfulnessJudge, ProcessJudge, DiagnosticJudge
+from atlas_core.runtime import (
+    AtlasRewardBreakdown,
+    AtlasJudgeBreakdown,
+    AtlasJudgeSample,
+)
 
 
 @dataclass
@@ -14,6 +20,7 @@ class RIMEvaluation:
     rationale: str
     judge_scores: Dict[str, float]
     judge_explanations: Dict[str, str]
+    reward: AtlasRewardBreakdown
     extra: Optional[Dict[str, Any]] = None
 
 
@@ -40,6 +47,7 @@ class RIMReward:
             'process': ProcessJudge(),
             'diagnostic': DiagnosticJudge()
         }
+        self._last_structured_rewards: List[AtlasRewardBreakdown] = []
 
     def __call__(
         self,
@@ -61,6 +69,11 @@ class RIMReward:
             'process': [],
             'diagnostic': []
         }
+        structured_rewards: List[AtlasRewardBreakdown] = []
+
+        active_judges = [judge for judge, active in self.rim.active_judges.items() if active]
+        if not active_judges:
+            active_judges = list(all_rewards.keys())
 
         for i, (prompt, completion) in enumerate(zip(prompts, completions)):
             trajectory = self._build_trajectory(
@@ -72,13 +85,14 @@ class RIMReward:
 
             result = self.rim.evaluate(trajectory)
             self._apply_consistency_rules(result['rewards'], result['explanations'])
+            structured_rewards.append(self._build_reward_breakdown(result, active_judges))
 
             for judge in result['rewards']:
                 if judge in all_rewards:
                     all_rewards[judge].append(result['rewards'][judge])
                     all_explanations[judge].append(result['explanations'][judge])
 
-        active_judges = [judge for judge, active in self.rim.active_judges.items() if active]
+        self._last_structured_rewards = structured_rewards
 
         combined_rewards = []
         for i in range(len(prompts)):
@@ -90,7 +104,8 @@ class RIMReward:
             for i in range(len(prompts)):
                 sample_info = {
                     'rewards': {judge: all_rewards[judge][i] for judge in active_judges if judge in all_rewards},
-                    'explanations': {judge: all_explanations[judge][i] for judge in active_judges if judge in all_explanations}
+                    'explanations': {judge: all_explanations[judge][i] for judge in active_judges if judge in all_explanations},
+                    'structured_reward': structured_rewards[i],
                 }
                 info_dict.append(sample_info)
 
@@ -184,10 +199,13 @@ class RIMReward:
             raw_tensors = None
 
         score = rewards[0] if rewards else 0.0
-        sample_info = info_dict[0] if info_dict else {'rewards': {}, 'explanations': {}}
+        sample_info = info_dict[0] if info_dict else {'rewards': {}, 'explanations': {}, 'structured_reward': None}
 
         judge_scores = sample_info.get('rewards', {}) or {}
         judge_explanations = sample_info.get('explanations', {}) or {}
+        structured_reward = sample_info.get('structured_reward')
+        if structured_reward is None:
+            structured_reward = AtlasRewardBreakdown(score=score, judges=[], rationale=None, raw=None)
 
         active_judges = [
             judge for judge, active in self.rim.active_judges.items()
@@ -208,6 +226,7 @@ class RIMReward:
             rationale=rationale,
             judge_scores=judge_scores,
             judge_explanations=judge_explanations,
+            reward=structured_reward,
             extra={'raw_tensors': raw_tensors, 'info': sample_info}
         )
 
@@ -235,3 +254,54 @@ class RIMReward:
                     trajectory[key] = kwargs[key][index]
 
         return trajectory
+
+    def _build_reward_breakdown(
+        self,
+        result: Dict[str, Any],
+        active_judges: List[str],
+    ) -> AtlasRewardBreakdown:
+        records = result.get('records') or {}
+        judges: List[AtlasJudgeBreakdown] = []
+        for judge in active_judges:
+            record = records.get(judge, {})
+            score = record.get('score', result['rewards'].get(judge, 0.0))
+            rationale = record.get('rationale', result['explanations'].get(judge, ''))
+            principles = record.get('principles', [])
+            samples_payload = record.get('samples', [])
+            samples = [
+                AtlasJudgeSample(
+                    score=sample.get('score', 0.0),
+                    rationale=sample.get('rationale', ''),
+                    principles=sample.get('principles', []),
+                    uncertainty=sample.get('uncertainty'),
+                    temperature=sample.get('temperature'),
+                )
+                for sample in samples_payload
+            ]
+            judges.append(
+                AtlasJudgeBreakdown(
+                    identifier=judge,
+                    score=score,
+                    rationale=rationale,
+                    principles=principles,
+                    samples=samples,
+                    escalated=record.get('escalated', False),
+                    escalation_reason=record.get('escalation_reason'),
+                )
+            )
+        aggregated_score = (
+            sum(j.score for j in judges) / len(judges) if judges else 0.0
+        )
+        rationale_text = "\n".join(j.rationale for j in judges if j.rationale) or None
+        return AtlasRewardBreakdown(
+            score=aggregated_score,
+            judges=judges,
+            rationale=rationale_text,
+            raw=result,
+        )
+
+    @property
+    def last_structured_rewards(self) -> List[AtlasRewardBreakdown]:
+        """Return the structured rewards from the most recent batched evaluation."""
+
+        return getattr(self, "_last_structured_rewards", [])

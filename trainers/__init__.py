@@ -6,5 +6,6 @@ try:
         DataScorerArgs, DataTeacherRewardScorer,
         DataConcatenatorArgs, DataCompletionConcatenator)
     from RIM.reward_adapter import RIMReward
+    from .runtime_dataset import load_runtime_traces, flatten_traces_for_training
 except ImportError:
     pass

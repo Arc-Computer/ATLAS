@@ -25,8 +25,9 @@ class RewardInterpretationModel:
         self.max_workers = config['parallel_execution']['max_workers']
 
     def evaluate(self, trajectory: Dict[str, Any]) -> Dict[str, Any]:
-        results = {}
-        explanations = {}
+        results: Dict[str, float] = {}
+        explanations: Dict[str, str] = {}
+        records: Dict[str, Dict[str, Any]] = {}
 
         active_judges = [judge for judge, active in self.active_judges.items() if active]
 
@@ -40,11 +41,13 @@ class RewardInterpretationModel:
                 judge = future_to_judge[future]
                 reward_result = future.result()
                 results[judge] = reward_result['score']
-                explanations[judge] = reward_result['explanation']
+                explanations[judge] = reward_result.get('explanation', '')
+                records[judge] = reward_result
 
         return {
             'rewards': results,
-            'explanations': explanations
+            'explanations': explanations,
+            'records': records,
         }
 
     def _evaluate_single_reward(self, trajectory: Dict[str, Any], reward_type: str) -> Dict[str, Any]:
@@ -83,7 +86,12 @@ class RewardInterpretationModel:
             best_sample = min(samples, key=lambda x: x.uncertainty)
             return {
                 'score': best_sample.score,
-                'explanation': best_sample.explanation
+                'explanation': best_sample.explanation,
+                'principles': best_sample.principles,
+                'samples': self._serialise_samples(samples),
+                'escalated': False,
+                'escalation_reason': None,
+                'uncertainty': best_sample.uncertainty,
             }
         else:
             return self._escalate_to_large_model(trajectory, reward_type, samples)
@@ -142,6 +150,11 @@ class RewardInterpretationModel:
                 'score': 0.0,
                 'explanation': 'Large-judge escalation failed to produce a valid response.'
                 + (f" Reason: {failure_reason}" if failure_reason else ''),
+                'principles': [],
+                'samples': self._serialise_samples(samples),
+                'escalated': True,
+                'escalation_reason': failure_reason,
+                'uncertainty': None,
             }
 
         score = response.get('score')
@@ -155,9 +168,22 @@ class RewardInterpretationModel:
         if failure_reason:
             explanation = f"[{failure_reason}] {explanation}".strip()
 
+        principles = response.get('principles', [])
+        if not isinstance(principles, list):
+            principles = []
+
+        uncertainty = response.get('uncertainty')
+        if not isinstance(uncertainty, (int, float)):
+            uncertainty = None
+
         return {
             'score': score,
-            'explanation': explanation
+            'explanation': explanation,
+            'principles': principles,
+            'samples': self._serialise_samples(samples),
+            'escalated': True,
+            'escalation_reason': failure_reason,
+            'uncertainty': uncertainty,
         }
 
     def _normalize_model_output(self, output: Any) -> Dict[str, Any] | None:
@@ -249,3 +275,18 @@ Output JSON: {{"principles": [{{"name": str, "weight": float, "description": str
                 'uncertainty': 1.0,
                 '_fallback': True,
             }
+
+    @staticmethod
+    def _serialise_samples(samples: List[RewardSample]) -> List[Dict[str, Any]]:
+        payload: List[Dict[str, Any]] = []
+        for sample in samples:
+            payload.append(
+                {
+                    'score': sample.score,
+                    'rationale': sample.explanation,
+                    'principles': sample.principles,
+                    'uncertainty': sample.uncertainty,
+                    'temperature': sample.temperature,
+                }
+            )
+        return payload
