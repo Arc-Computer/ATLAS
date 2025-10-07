@@ -2,6 +2,7 @@ import os
 import abc
 import gc
 import copy
+import json
 import torch
 import accelerate
 from torch import nn
@@ -102,6 +103,24 @@ class TeacherGRPOTrainer(GRPOTrainer, TeacherTrainer):
         prompts = [x["prompt"] for x in inputs]
         prompts_text = [maybe_apply_chat_template(example, self.processing_class)[
             "prompt"] for example in inputs]
+
+        step_contexts = [example.get("step_context") or {} for example in inputs]
+        guidance_histories = [example.get("guidance_history") or [] for example in inputs]
+        validations = [example.get("validation") or {} for example in inputs]
+        tool_names = [example.get("tool") for example in inputs]
+        tool_parameters = [example.get("tool_params") or {} for example in inputs]
+        reward_breakdowns = [example.get("reward_breakdown") for example in inputs]
+        reward_scores = [example.get("reward_score") for example in inputs]
+
+        def _pretty(value):
+            if value is None:
+                return ""
+            if isinstance(value, str):
+                return value
+            try:
+                return json.dumps(value, ensure_ascii=False, indent=2)
+            except (TypeError, ValueError):
+                return str(value)
         
         self._print_debugging_logs('Generating baseline solutions...')
         baseline_completions_text = self._generate_baseline_solutions(prompts_text)
@@ -116,13 +135,27 @@ class TeacherGRPOTrainer(GRPOTrainer, TeacherTrainer):
         torch.cuda.empty_cache()
         self.accelerator.wait_for_everyone()
         
+        def _safe_format(template: str, **values: str) -> str:
+            try:
+                return template.format(**values)
+            except KeyError as exc:
+                return template + "\n" + "\n".join(f"{key}: {values[key]}" for key in sorted(values))
+
         self._print_debugging_logs('Generating teacher adaptive teaching...')
         teacher_prompts = []
-        for prompt, approach in zip(prompts_text, student_approaches):
-            teacher_prompt = self.teacher_adaptive_template.format(
-                question=prompt, approach=approach
+        for idx, (prompt, approach) in enumerate(zip(prompts_text, student_approaches)):
+            teacher_prompts.append(
+                _safe_format(
+                    self.teacher_adaptive_template,
+                    question=prompt,
+                    approach=approach,
+                    step_context=_pretty(step_contexts[idx]),
+                    guidance_history=_pretty(guidance_histories[idx]),
+                    validation=_pretty(validations[idx]),
+                    tool=tool_names[idx] or "none",
+                    tool_params=_pretty(tool_parameters[idx]),
+                )
             )
-            teacher_prompts.append(teacher_prompt)
         
         if self.args.use_vllm or self.args.use_ray or self.args.use_vllm_server:
             teacher_completion_ids = self._generate_with_vllm(teacher_prompts, role="teacher")
@@ -138,19 +171,27 @@ class TeacherGRPOTrainer(GRPOTrainer, TeacherTrainer):
         self._print_debugging_logs('Generating student solutions with teaching...')
         student_prompts_with_teaching = []
         teaching_only_text = []
-        for prompt, full_teaching in zip(prompts_text, teacher_completions_text):
+        for idx, (prompt, full_teaching) in enumerate(zip(prompts_text, teacher_completions_text)):
             import re
             teaching_match = re.search(r'<teaching>(.*?)</teaching>', full_teaching, re.DOTALL)
             if teaching_match:
                 teaching_content = teaching_match.group(1).strip()
             else:
                 teaching_content = full_teaching.strip()
-            
+
             teaching_only_text.append(teaching_content)
-            student_prompt = self.student_with_teaching_template.format(
-                question=prompt, teaching=teaching_content
+            student_prompts_with_teaching.append(
+                _safe_format(
+                    self.student_with_teaching_template,
+                    question=prompt,
+                    teaching=teaching_content,
+                    step_context=_pretty(step_contexts[idx]),
+                    guidance_history=_pretty(guidance_histories[idx]),
+                    validation=_pretty(validations[idx]),
+                    tool=tool_names[idx] or "none",
+                    tool_params=_pretty(tool_parameters[idx]),
+                )
             )
-            student_prompts_with_teaching.append(student_prompt)
         
         if self.args.use_vllm or self.args.use_ray or self.args.use_vllm_server:
             student_completion_ids = self._generate_with_vllm(student_prompts_with_teaching)
@@ -202,11 +243,14 @@ class TeacherGRPOTrainer(GRPOTrainer, TeacherTrainer):
                         if key not in ["prompt", "completion"]]
                 reward_kwargs = {key: [example[key]
                                      for example in inputs] for key in keys}
-                
+
                 reward_kwargs['baseline_solutions'] = baseline_solutions
                 reward_kwargs['solutions'] = student_solutions
                 reward_kwargs['ground_truths'] = [example.get('ground_truth', '') for example in inputs]
-                
+                reward_kwargs.setdefault('guidance_history', guidance_histories)
+                reward_kwargs.setdefault('step_context', step_contexts)
+                reward_kwargs.setdefault('validation', validations)
+
                 output_reward_func = reward_func(
                     prompts=prompts, completions=completions, **reward_kwargs)
                 rewards_per_func[:, i] = torch.tensor(
@@ -245,6 +289,10 @@ class TeacherGRPOTrainer(GRPOTrainer, TeacherTrainer):
                                 "baseline_solution": baseline_sol,
                                 "ground_truth": gt,
                                 "reward": float(reward_val),
+                                "prior_reward": reward_scores[j] if j < len(reward_scores) else None,
+                                "reward_breakdown": reward_breakdowns[j] if j < len(reward_breakdowns) else None,
+                                "guidance_history": guidance_histories[j] if j < len(guidance_histories) else [],
+                                "step_context": step_contexts[j] if j < len(step_contexts) else {},
                                 "student_full_response": student_completions_text[j] if j < len(student_completions_text) else "",
                                 "baseline_full_response": baseline_completions_text[j] if j < len(baseline_completions_text) else ""
                             }

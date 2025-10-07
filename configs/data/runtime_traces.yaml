@@ -1,0 +1,13 @@
+dataset_path: traces/export.jsonl
+eval_split_ratio: 0.1
+dataset_max_samples: null
+shuffle: true
+
+data_log_name: runtime_traces
+
+make_dataset_fn:
+  _target_: custom_data.runtime_trace_data.get_runtime_trace_dataset
+  export_path: ${dataset_path}
+  eval_split_ratio: ${eval_split_ratio}
+  dataset_max_samples: ${dataset_max_samples}
+  shuffle: ${shuffle}

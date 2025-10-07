@@ -5,6 +5,7 @@ from typing import Any, Callable, Dict, List, Optional, Union
 from gepa.core.adapter import GEPAAdapter, EvaluationBatch
 from .extraction_utils import ATLASExtractionUtils
 from RIM.reward_adapter import RIMReward
+from atlas_core.runtime import AtlasRewardBreakdown
 from .prompt_adapter import ATLASDataInst, ATLASTrajectory, ATLASRolloutOutput
 from .terminal_display import DisplayManager
 from .agent_instrumentation import InstrumentedAgentWrapper
@@ -374,6 +375,13 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
 
         for i in range(len(batch)):
             rim_rewards = info_dicts[i]['rewards']
+            structured_reward = info_dicts[i].get('structured_reward')
+            if isinstance(structured_reward, AtlasRewardBreakdown):
+                reward_breakdown_dict = structured_reward.to_dict()
+            elif hasattr(structured_reward, "to_dict"):
+                reward_breakdown_dict = structured_reward.to_dict()
+            else:
+                reward_breakdown_dict = structured_reward or {}
 
             combined_score = (
                 sum(rim_rewards.get(judge, 0.0) for judge in active_judges) / len(active_judges)
@@ -387,6 +395,7 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
                 "combined_score": combined_score,
                 "rim_rewards": rim_rewards,
                 "rim_explanations": info_dicts[i]['explanations'],
+                "reward_breakdown": reward_breakdown_dict,
             }
             outputs.append(output)
             scores.append(combined_score)
@@ -421,6 +430,14 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
 
         if capture_traces:
             for i in range(len(batch)):
+                structured_reward = info_dicts[i].get('structured_reward')
+                if isinstance(structured_reward, AtlasRewardBreakdown):
+                    reward_breakdown_dict = structured_reward.to_dict()
+                elif hasattr(structured_reward, "to_dict"):
+                    reward_breakdown_dict = structured_reward.to_dict()
+                else:
+                    reward_breakdown_dict = structured_reward or {}
+
                 trajectory = {
                     "question": questions[i],
                     "student_approach": student_approaches[i],
@@ -433,6 +450,7 @@ class CompatibilityAdapter(GEPAAdapter[ATLASDataInst, ATLASTrajectory, ATLASRoll
                     "baseline_trace": baseline_trajectories[i] if i < len(baseline_trajectories) else "",
                     "rim_rewards": info_dicts[i]['rewards'] if i < len(info_dicts) else {},
                     "rim_explanations": info_dicts[i]['explanations'] if i < len(info_dicts) else {},
+                    "reward_breakdown": reward_breakdown_dict,
                     "token_usage": {
                         "baseline_tokens": count_tokens(baseline_responses[i]),
                         "enhanced_tokens": count_tokens(enhanced_responses[i]),
