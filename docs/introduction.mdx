@@ -16,7 +16,13 @@ Across internal and external benchmarks this closed loop delivers an average **+
 
 ## Getting Started: Two Paths
 
-Atlas is a comprehensive framework with two primary entry points. Most teams begin with the SDK to orchestrate an existing agent, then graduate to the training workflows for deeper optimization.
+Atlas is a comprehensive framework with two primary entry points. Most teams begin with the SDK to orchestrate an existing agent, then graduate to the training workflows for deeper optimization. Install the runtime with:
+
+```bash
+pip install arc-atlas
+```
+
+That single package contains the SDK client, orchestrator, reward system, and telemetry tools. Use it to wrap your agent, stream the Teacher↔Student loop to your terminal, and export traces for training.
 
 | I want to... | Use this Path | Key Docs |
 |--------------|----------|--------------|

@@ -9,7 +9,13 @@ icon: download
 **Time required**: 10-15 minutes • **Difficulty**: Beginner
 </Note>
 
-**TL;DR:** Use the automated install script for your Python version, then run the smoke test in the Verification section to confirm PyTorch, vLLM, and model downloads are configured correctly.
+**TL;DR:** If you only need the SDK runtime, install the packaged release:
+
+```bash
+python -m pip install --upgrade arc-atlas
+```
+
+That gives you the orchestrator, telemetry streaming, and the exporter CLI. Use the sections below when you need the full training stack (PyTorch, vLLM, Flash Attention) for SFT/GRPO.
 
 This guide covers installing ATLAS with Python 3.11/3.12, PyTorch 2.6.0, and vLLM 0.8.3 (the high-throughput inference engine).
 
@@ -59,7 +65,16 @@ This guide covers installing ATLAS with Python 3.11/3.12, PyTorch 2.6.0, and vLL
 ## Installation Methods
 
 <Tabs>
-  <Tab title="Automated (Recommended)">
+  <Tab title="Runtime SDK (Minimal)">
+    ```bash
+    python -m pip install --upgrade arc-atlas
+    ```
+
+    <Tip>
+    Keep credentials such as `OPENAI_API_KEY` in a `.env` file and load them before orchestrating runs.
+    </Tip>
+  </Tab>
+  <Tab title="Automated Training Setup (Recommended)">
     Use our validated installation scripts for the smoothest setup:
 
     **For Python 3.11:**
@@ -79,7 +94,7 @@ This guide covers installing ATLAS with Python 3.11/3.12, PyTorch 2.6.0, and vLL
     - Install all dependencies
   </Tab>
 
-  <Tab title="Manual Installation">
+  <Tab title="Manual Training Installation">
     For custom environments or debugging:
 
     ```bash

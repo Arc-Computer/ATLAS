@@ -5,7 +5,7 @@ sidebarTitle: Quickstart
 icon: rocket
 ---
 
-This guide provides the fastest path to running the Atlas SDK. You will clone the repository, set an environment variable, and execute your first task.
+This guide provides the fastest path to running the Atlas SDK. Install the packaged runtime, point it at your agent, and execute your first task in a few commands.
 
 <Note>
 **Beta notice:** The Atlas SDK runtime is in beta. APIs and configuration keys may evolve—check release notes before upgrading.
@@ -14,16 +14,17 @@ This guide provides the fastest path to running the Atlas SDK. You will clone th
 ## Prerequisites
 
 <Note>
-Until the Atlas SDK is published on PyPI, install it directly from GitHub. When the package becomes public you can swap the first step for `pip install atlas-sdk`.
+Install the SDK directly from PyPI:
 </Note>
 
-1. **Clone the SDK repo and install in editable mode**
+1. **Install and upgrade the SDK**
    ```bash
-   git clone https://github.com/Arc-Computer/atlas-sdk
-   cd atlas-sdk
-   pip install -e .
+   python -m pip install --upgrade arc-atlas
    ```
-2. **Set your LLM credentials**
+   <Tip>
+   Working inside a virtual environment? Activate it first, then install the package.
+   </Tip>
+2. **Store your LLM credentials**
    ```bash
    export OPENAI_API_KEY="sk-your-key"
    ```
@@ -31,6 +32,10 @@ Until the Atlas SDK is published on PyPI, install it directly from GitHub. When 
    Using Azure OpenAI? Set the usual environment variables (`AZURE_OPENAI_API_KEY`, `AZURE_OPENAI_ENDPOINT`) and update the config’s provider/model entries before running.
    </Tip>
 3. **Use a modern version of Python.** The SDK is tested with Python 3.10 and newer.
+
+<Note>
+We recommend keeping credentials in a `.env` file and loading them with `dotenv` or your process manager so they never land in shell history.
+</Note>
 
 ## Step 1 – Run the Quickstart Task
 
@@ -55,7 +60,25 @@ python -c "from atlas import run; result = run(task='Summarize the latest AI new
 ```
 </Info>
 
-You should see a short plan-reason-synthesize cycle: the Student drafts a plan, the Teacher verifies it, steps execute, and the final answer prints to your terminal.
+You should see a short plan-reason-synthesize cycle streaming into the terminal: the Student drafts a plan, the Teacher verifies it, steps execute, rewards are logged, and the final answer prints at the end. Telemetry emits automatically when stdout is a TTY. Force it on/off with `stream_progress=True/False` in the `run` call.
+
+### BYOA in 5 Minutes
+
+Atlas wraps any agent that can expose either an OpenAI-compatible API, an HTTP endpoint, or a Python callable. Copy one of the starter configs in `configs/examples/` and adjust the `agent` block. For example, to target a local HTTP service:
+
+```yaml
+agent:
+  type: http_api
+  name: my-http-agent
+  system_prompt: |
+    You are the Atlas Student. Solve the task carefully and explain decisions.
+  tools: []
+  transport:
+    base_url: http://localhost:8080/agent
+    timeout_seconds: 60
+```
+
+Run it with the same snippet as above, swapping the `config_path`. Atlas will stream the plan, tool calls, and reward breakdowns as it executes your agent.
 
 ## What Just Happened?
 
