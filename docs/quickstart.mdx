@@ -99,6 +99,10 @@ atlas.export \
 Ensure Postgres is running and reachable before exporting. You can launch it with `docker compose up -d postgres` (using the repo's compose file) or `brew services start postgresql`.
 </Note>
 
+<Tip>
+If another tool has claimed the `atlas` command on your machine, invoke the exporter with `python -m atlas.export ...` or ensure the Arc binary appears first on `PATH`.
+</Tip>
+
 Each JSONL record maps to the shared runtime schema (`task`, `plan`, per-step `reward` with nested judges, guidance history, validation, tool metadata). Preview a single record with `jq`:
 
 ```bash

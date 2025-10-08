@@ -33,6 +33,10 @@ atlas.export \
 Start Postgres before exporting (e.g., `docker compose up -d postgres` or `brew services start postgresql`) so the CLI can connect successfully.
 </Note>
 
+<Tip>
+If another tool owns the `atlas` command on your system, run the exporter with `python -m atlas.export ...` or adjust `PATH` so the Arc binary is first.
+</Tip>
+
 ### Optional filters
 
 - `--session-id 42` exports a single session.
