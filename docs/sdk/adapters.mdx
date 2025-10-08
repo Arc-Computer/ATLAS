@@ -25,7 +25,7 @@ graph LR
     Teacher -->|Provides Guidance| Student
 ```
 
-## OpenAI Adapter (`atlas/agent/openai_adapter.py`)
+## OpenAI Adapter (`atlas/connectors/openai.py`)
 
 This is the fastest way to get started, especially with GPT-4o-mini or Azure OpenAI models.
 
@@ -48,7 +48,7 @@ agent:
 - Accepts `response_format` for JSON mode.
 - For Claude, Gemini, or other models, use the `http_api` adapter.
 
-## HTTP Adapter (`atlas/agent/http_adapter.py`)
+## HTTP Adapter (`atlas/connectors/http.py`)
 
 Best for microservices, serverless functions, or non-Python agents.
 
@@ -77,7 +77,7 @@ Wrap any service that accepts a JSON request. You define:
 - **`result_path`**: A list of keys to traverse in the JSON response to find the agent's output string.
 - **Auth & retries**: Handled via the `transport` block, which mirrors `httpx` settings.
 
-## Python Adapter (`atlas/agent/python_adapter.py`)
+## Python Adapter (`atlas/connectors/python.py`)
 
 Ideal when your agent is a local Python function or a LangChain runnable.
 
@@ -101,10 +101,10 @@ All adapters share a minimal interface (`AgentAdapter`). To add a new one (e.g.,
 
 1. Extend the `AdapterType` enum in `atlas/config/models.py`.
 2. Implement a class inheriting from `AgentAdapter`.
-3. Register it in `atlas/agent/__init__.py`.
+3. Register it with `register_adapter` (see `atlas.connectors.registry`) and import the module from `atlas.connectors.__init__` so it auto-registers at runtime.
 
 ```python
-from atlas.agent.registry import AgentAdapter, register_adapter
+from atlas.connectors.registry import AgentAdapter, register_adapter
 from atlas.config.models import AdapterType
 
 class GRPCAdapter(AgentAdapter):
@@ -120,6 +120,10 @@ register_adapter(AdapterType.GRPC, GRPCAdapter)
 ```
 
 Most teams start by copying the `http_api` adapter and swapping the transport layer.
+
+<Note>
+Atlas auto-imports built-in adapters via `atlas.connectors.__init__`. Custom adapters should follow the same pattern—expose your module there (or import it in your app startup) so registration runs once on load.
+</Note>
 
 ## Decision Checklist
 

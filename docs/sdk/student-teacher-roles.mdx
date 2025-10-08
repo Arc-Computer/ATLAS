@@ -18,11 +18,11 @@ In Atlas, the terms “Student” and “Teacher” are used in two primary cont
 | **SDK Runtime** | The planner, executor, and synthesizer that calls your agent. | The plan reviewer, output validator, and guidance author. | Deliver a reliable answer for the current task. |
 | **Model Training** | The model being improved (e.g., a new policy checkpoint). | The supervising model providing feedback during optimization. | Improve the long-term performance of the Student model. |
 
-The runtime roles are defined in `atlas/roles/`, while the training roles are part of the broader Atlas training system.
+The runtime roles now live in `atlas/personas/`, while the training roles are part of the broader Atlas training system. Runtime orchestration leans on shared LangGraph helpers in `atlas.runtime.agent_loop`.
 
 ## The Runtime Student
 
-Located in `atlas/roles/student.py`, the runtime Student performs three key actions:
+Located in `atlas/personas/student.py`, the runtime Student performs three key actions:
 
 1. **Plan**: Creates a dependency graph to solve the task (`acreate_plan`). The prompt for this is set in `student.prompts.planner`.
 2. **Execute**: Runs each step from the plan, calling any necessary tools or adapters (`aexecute_step`).
@@ -32,7 +32,7 @@ Key configuration levers include prompt templates (`student.prompts`), token bud
 
 ## The Runtime Teacher
 
-Defined in `atlas/roles/teacher.py`, the runtime Teacher acts as the quality assurance layer.
+Defined in `atlas/personas/teacher.py`, the runtime Teacher acts as the quality assurance layer.
 
 1. **Plan Review**: Approves or rejects the Student's plan before execution (`areview_plan`).
 2. **Validation**: Checks the output of each step to ensure it meets quality standards (`avalidate_step`).

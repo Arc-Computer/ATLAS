@@ -5,7 +5,7 @@ sidebarTitle: Export Traces
 icon: database
 ---
 
-The Atlas SDK can persist every orchestration session, including per-step rewards, guidance history, and tool usage. Use the `atlas.export` command to convert those records into JSONL files that plug directly into the training stack (`load_runtime_traces`, `sessions_to_rl_records`).
+The Atlas SDK can persist every orchestration session, including per-step rewards, guidance history, and tool usage. Use the `arc-atlas` CLI (or `python -m atlas.cli.export`) to convert those records into JSONL files that plug directly into the training stack (`load_runtime_traces`, `sessions_to_rl_records`).
 
 ## 1. Enable Postgres persistence
 
@@ -24,7 +24,7 @@ Run your tasks with `atlas.core.run(..., stream_progress=True)` as usual. Each s
 ## 2. Export to JSONL
 
 ```bash
-atlas.export \
+arc-atlas \
   --database-url postgresql://atlas:atlas@localhost:5432/atlas \
   --output traces/my-session.jsonl
 ```
@@ -34,7 +34,7 @@ Start Postgres before exporting (e.g., `docker compose up -d postgres` or `brew 
 </Note>
 
 <Tip>
-If another tool owns the `atlas` command on your system, run the exporter with `python -m atlas.export ...` or adjust `PATH` so the Arc binary is first.
+If another tool owns the `atlas` command on your system, run the exporter with `python -m atlas.cli.export ...` or adjust `PATH` so `arc-atlas` resolves first.
 </Tip>
 
 ### Optional filters
@@ -94,3 +94,7 @@ Or use the Hydra shortcut (`configs/data/runtime_traces.yaml`) described in the 
 | Missing rewards in JSON | Judges disabled | Ensure your `rim` block activates the judges you expect. |
 
 With the exporter in place you can schedule nightly runs, collect batches of traces, and continuously fine-tune the teacher without manual wrangling.
+
+<Note>
+Compatibility aliases `atlas-export` and `atlas.export` remain for existing scripts, but new projects should prefer `arc-atlas` or `python -m atlas.cli.export`.
+</Note>

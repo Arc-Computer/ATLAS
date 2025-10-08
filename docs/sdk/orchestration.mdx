@@ -29,10 +29,10 @@ sequenceDiagram
 
 1. **Plan Creation**: The `Student` proposes a step-by-step plan to accomplish the task (`Student.acreate_plan`).
 2. **Plan Review**: The `Teacher` approves or rewrites the plan before execution begins (`Teacher.areview_plan`).
-3. **Dependency Graph**: The orchestrator sorts the steps to ensure prerequisites run first (`atlas/orchestration/orchestrator.py`).
-4. **Step Execution**: The `Student` executes each step, streaming tool calls and traces into the `ExecutionContext` (`Student.aexecute_step`).
+3. **Dependency Graph**: The orchestrator sorts the steps to ensure prerequisites run first (`atlas/runtime/orchestration/orchestrator.py`).
+4. **Step Execution**: The `Student` executes each step, streaming tool calls and traces into the `ExecutionContext` (`Student.aexecute_step` powered by `atlas/runtime/orchestration/execution_context.py`).
 5. **Validation Loop**: The `Teacher` validates the output of each step (`avalidate_step`). If validation fails, it can request guidance.
-6. **Evaluation**: The Reward System scores the full attempt (`atlas/reward/evaluator.py`). A score below the configured `retry_threshold` will trigger a retry.
+6. **Evaluation**: The Reward System scores the full attempt (`atlas/evaluation/evaluator.py`). A score below the configured `retry_threshold` will trigger a retry.
 7. **Final Synthesis**: Once all steps are successfully executed and validated, the `Student` combines the results into a final answer (`asynthesize_final_answer`).
 
 ## Retries & Guidance
@@ -50,7 +50,7 @@ Use this to tune how forgiving the runtime should be: raise `max_retries` for hi
 Every significant action is published to the `ExecutionContext` event stream. Subscribe to it to power CLI streams, dashboards, or custom logging.
 
 ```python
-from atlas.orchestration.execution_context import ExecutionContext
+from atlas.runtime.orchestration.execution_context import ExecutionContext
 
 context = ExecutionContext.get()
 subscription = context.event_stream.subscribe(print)
@@ -58,11 +58,11 @@ subscription = context.event_stream.subscribe(print)
 
 - **Intermediate steps** – emitted when plans start/end, steps begin/finish, and tool calls fire.
 - **Metadata** – stores guidance text, judge scores, and session metadata for later persistence.
-- **Telemetry hooks** – `atlas/core.py` allows a `TelemetryPublisher` to attach/detach. Dashboard documentation is coming later, so consider this a future-proofing hook.
+- **Telemetry hooks** – The `atlas.core` module (`atlas/core/__init__.py`) allows a `TelemetryPublisher` to attach/detach. Dashboard documentation is coming later, so consider this a future-proofing hook.
 
 ## Anatomy of `atlas.core.run`
 
-Open `atlas/core.py` to see the high-level flow:
+Open the `atlas.core` module (`atlas/core/__init__.py`) to see the high-level flow:
 
 1. Load and validate the config (`atlas/config/loader.py`).
 2. Create the agent adapter via `create_from_atlas_config`.
