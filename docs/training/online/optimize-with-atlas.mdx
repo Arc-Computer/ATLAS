@@ -26,7 +26,13 @@ GEPA (Genetic-Pareto) optimization evolves ATLAS teaching prompts using reflecti
 
 <Steps>
   <Step title="Install ATLAS">
-    Clone and install the complete framework:
+    Start with the managed runtime:
+
+    ```bash
+    python -m pip install --upgrade arc-atlas
+    ```
+
+    GEPA relies on helper scripts in the training repo, so when you're ready to optimize prompts locally:
 
     ```bash
     git clone https://github.com/Arc-Computer/ATLAS
@@ -34,10 +40,14 @@ GEPA (Genetic-Pareto) optimization evolves ATLAS teaching prompts using reflecti
     pip install -r requirements-py312.txt
     ```
 
-    This installs:
+    This adds:
     - `gepa` package (prompt optimizer)
     - `trainers.prompt_adapter` (ATLAS adapter)
     - `RIM.reward_adapter` (reward system)
+
+    <Note>
+    These extras are only needed if you plan to run GEPA or customize the training stack locally; managed SDK users can stop after installing `arc-atlas`.
+    </Note>
   </Step>
 
   <Step title="Set API Keys">
@@ -51,6 +61,9 @@ GEPA (Genetic-Pareto) optimization evolves ATLAS teaching prompts using reflecti
     export TEACHER_MODEL=gpt-5
     export STUDENT_MODEL=gpt-4o-mini
     ```
+    <Tip>
+    Keep these secrets in a `.env` file or secret manager and load them before running scripts to avoid leaking them in shell history.
+    </Tip>
   </Step>
 
   <Step title="Run GEPA Optimization">
