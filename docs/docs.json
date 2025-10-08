@@ -27,6 +27,7 @@
             "pages": [
               "sdk/quickstart",
               "sdk/configuration",
+              "sdk/export-traces",
               "sdk/orchestration",
               "sdk/adapters",
               "sdk/student-teacher-roles"

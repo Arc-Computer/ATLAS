@@ -25,17 +25,15 @@ This is the fastest path to seeing ATLAS in action and is production-ready for A
 ## Quick Start (5 Minutes)
 
 <Steps>
-  <Step title="Install Dependencies">
-    Clone the repository and install requirements:
+  <Step title="Install the managed SDK">
+    Install the packaged runtime and exporter from PyPI:
 
     ```bash
-    git clone https://github.com/Arc-Computer/ATLAS
-    cd ATLAS
-    pip install -r requirements-py312.txt
+    python -m pip install --upgrade arc-atlas
     ```
 
     <Note>
-    This installs the ATLAS framework with all dependencies including the RIM reward system and GEPA optimizer.
+    Clone the repository and install `requirements-py312.txt` only if you need to modify the core training stack or run the GEPA optimizer locally.
     </Note>
   </Step>
 
@@ -50,6 +48,9 @@ This is the fastest path to seeing ATLAS in action and is production-ready for A
     <Info>
     OpenAI is used for teacher/student models. Gemini is used for the RIM reward judges that score improvements.
     </Info>
+    <Tip>
+    Prefer storing credentials in a `.env` file and loading them with your process manager so they never land in shell history.
+    </Tip>
   </Step>
 
   <Step title="Run Quick Evaluation">

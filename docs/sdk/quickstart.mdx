@@ -5,7 +5,7 @@ sidebarTitle: Quickstart
 icon: rocket
 ---
 
-This guide provides the fastest path to running the Atlas SDK. You will clone the repository, set an environment variable, and execute your first task.
+This guide provides the fastest path to running the Atlas SDK. Install the packaged runtime, point it at your agent, and execute your first task in a few commands.
 
 <Note>
 **Beta notice:** The Atlas SDK runtime is in beta. APIs and configuration keys may evolve—check release notes before upgrading.
@@ -14,16 +14,17 @@ This guide provides the fastest path to running the Atlas SDK. You will clone th
 ## Prerequisites
 
 <Note>
-Until the Atlas SDK is published on PyPI, install it directly from GitHub. When the package becomes public you can swap the first step for `pip install atlas-sdk`.
+Install the SDK directly from PyPI:
 </Note>
 
-1. **Clone the SDK repo and install in editable mode**
+1. **Install and upgrade the SDK**
    ```bash
-   git clone https://github.com/Arc-Computer/atlas-sdk
-   cd atlas-sdk
-   pip install -e .
+   python -m pip install --upgrade arc-atlas
    ```
-2. **Set your LLM credentials**
+   <Tip>
+   Working inside a virtual environment? Activate it first, then install the package.
+   </Tip>
+2. **Store your LLM credentials**
    ```bash
    export OPENAI_API_KEY="sk-your-key"
    ```
@@ -32,6 +33,10 @@ Until the Atlas SDK is published on PyPI, install it directly from GitHub. When 
    </Tip>
 3. **Use a modern version of Python.** The SDK is tested with Python 3.10 and newer.
 
+<Note>
+We recommend keeping credentials in a `.env` file and loading them with `dotenv` or your process manager so they never land in shell history.
+</Note>
+
 ## Step 1 – Run the Quickstart Task
 
 The `sdk_quickstart.yaml` config is a lightweight configuration that disables storage and prompt rewriting, requiring only an `OPENAI_API_KEY` to get started.
@@ -39,11 +44,12 @@ The `sdk_quickstart.yaml` config is a lightweight configuration that disables st
 Save the following snippet to a file (e.g., `run_atlas.py`).
 
 ```python
-from atlas import run
+from atlas.core import run
 
 result = run(
     task="Summarize the latest AI news",
     config_path="configs/examples/sdk_quickstart.yaml",
+    stream_progress=True,
 )
 print(result.final_answer)
 ```
@@ -51,15 +57,33 @@ print(result.final_answer)
 <Info>
 Alternatively, you can run the snippet directly in your terminal:
 ```bash
-python -c "from atlas import run; result = run(task='Summarize the latest AI news', config_path='configs/examples/sdk_quickstart.yaml'); print(result.final_answer)"
+python -c "from atlas.core import run; result = run(task='Summarize the latest AI news', config_path='configs/examples/sdk_quickstart.yaml', stream_progress=True); print(result.final_answer)"
 ```
 </Info>
 
-You should see a short plan-reason-synthesize cycle: the Student drafts a plan, the Teacher verifies it, steps execute, and the final answer prints to your terminal.
+You should see a short plan-reason-synthesize cycle streaming into the terminal: the Student drafts a plan, the Teacher verifies it, steps execute, rewards are logged, and the final answer prints at the end. The `ConsoleTelemetryStreamer` auto-enables when stdout is a TTY; force it on/off with `stream_progress=True/False` in the `run` call.
+
+### BYOA in 5 Minutes
+
+Atlas wraps any agent that can expose either an OpenAI-compatible API, an HTTP endpoint, or a Python callable. Copy one of the starter configs in `configs/examples/` and adjust the `agent` block. For example, to target a local HTTP service:
+
+```yaml
+agent:
+  type: http_api
+  name: my-http-agent
+  system_prompt: |
+    You are the Atlas Student. Solve the task carefully and explain decisions.
+  tools: []
+  transport:
+    base_url: http://localhost:8080/agent
+    timeout_seconds: 60
+```
+
+Run it with the same snippet as above, swapping the `config_path`. Atlas will stream the plan, tool calls, and reward breakdowns as it executes your agent.
 
 ## What Just Happened?
 
-Think of `atlas.run` as a project manager who never gets tired:
+Think of `atlas.core.run` as a project manager who never gets tired:
 
 - **Configure** – the YAML tells the manager which agent to call and how the Student/Teacher/Reward System trio should behave.
 - **Plan** – the Student drafts a step-by-step approach for the Teacher to check.
@@ -97,6 +121,7 @@ To add tools, enable persistence, or use a different agent, switch the `config_p
 
 ## Next Steps
 
+- Persist sessions and build datasets with [`Export Runtime Traces`](/sdk/export-traces), then follow the training loop in [`Quickstart`](/quickstart).
 - Dive into [`SDK Configuration`](/sdk/configuration) to customize each YAML block.
 - Learn how the planner, reviewer, and evaluator cooperate in [`How Orchestration Works`](/sdk/orchestration).
 - Wrap your own agent with the adapters in [`Bring Your Own Agent`](/sdk/adapters).

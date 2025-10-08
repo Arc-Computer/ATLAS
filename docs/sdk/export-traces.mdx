@@ -1,0 +1,96 @@
+---
+title: "Export Runtime Traces"
+description: Persist Atlas SDK sessions to JSONL so you can feed training pipelines without manual munging.
+sidebarTitle: Export Traces
+icon: database
+---
+
+The Atlas SDK can persist every orchestration session, including per-step rewards, guidance history, and tool usage. Use the `atlas.export` command to convert those records into JSONL files that plug directly into the training stack (`load_runtime_traces`, `sessions_to_rl_records`).
+
+## 1. Enable Postgres persistence
+
+Add a `storage` block to your SDK config:
+
+```yaml
+storage:
+  database_url: postgresql://atlas:atlas@localhost:5432/atlas
+  min_connections: 1
+  max_connections: 5
+  statement_timeout_seconds: 30
+```
+
+Run your tasks with `atlas.core.run(..., stream_progress=True)` as usual. Each session, step result, and intermediate event is written to Postgres.
+
+## 2. Export to JSONL
+
+```bash
+atlas.export \
+  --database-url postgresql://atlas:atlas@localhost:5432/atlas \
+  --output traces/my-session.jsonl
+```
+
+<Note>
+Start Postgres before exporting (e.g., `docker compose up -d postgres` or `brew services start postgresql`) so the CLI can connect successfully.
+</Note>
+
+<Tip>
+If another tool owns the `atlas` command on your system, run the exporter with `python -m atlas.export ...` or adjust `PATH` so the Arc binary is first.
+</Tip>
+
+### Optional filters
+
+- `--session-id 42` exports a single session.
+- `--limit 25` pulls the most recent 25 sessions.
+- `--pretty` emits indented JSON (useful for debugging, but larger on disk).
+
+The exporter writes one JSON object per line. Each record aligns with `AtlasSessionTrace`:
+
+```jsonc
+{
+  "task": "Summarize the latest AI news",
+  "final_answer": "...",
+  "plan": {"steps": [{"id": 1, "description": "collect sources"}]},
+  "steps": [
+    {
+      "step_id": 1,
+      "description": "collect sources",
+      "trace": "HUMAN: ...",
+      "output": "...",
+      "reward": {
+        "score": 0.88,
+        "judges": [
+          {"identifier": "process", "score": 0.90, "rationale": "..."}
+        ]
+      },
+      "guidance": ["cite the primary source"],
+      "validation": {"valid": true, "rationale": "complete"},
+      "tool": "web_search",
+      "tool_params": {"query": "Atlas SDK"}
+    }
+  ],
+  "session_metadata": {"batch": "aime-2025"}
+}
+```
+
+> **Tip:** Compress large exports with `xz` or `gzip`—the loader streams line-by-line, so you can decompress on the fly if desired.
+
+## 3. Feed the training stack
+
+```python
+from trainers.runtime_dataset import load_runtime_traces, sessions_to_rl_records
+
+sessions = load_runtime_traces("traces/my-session.jsonl")
+records = sessions_to_rl_records(sessions)
+```
+
+Or use the Hydra shortcut (`configs/data/runtime_traces.yaml`) described in the top-level quickstart. The exported schema matches the training adapters, so no custom glue code is required.
+
+## Troubleshooting
+
+| Error | Likely cause | Fix |
+|-------|--------------|-----|
+| `database connection refused` | Postgres URL unreachable | Verify host/port, ensure server is running. |
+| Empty JSONL file | No sessions stored | Confirm `storage` block is enabled and runs completed successfully. |
+| Missing rewards in JSON | Judges disabled | Ensure your `rim` block activates the judges you expect. |
+
+With the exporter in place you can schedule nightly runs, collect batches of traces, and continuously fine-tune the teacher without manual wrangling.

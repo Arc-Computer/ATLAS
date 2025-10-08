@@ -7,6 +7,10 @@ icon: settings
 
 Atlas SDK configs are the control tower for runtime orchestration. Each block in the YAML tells the Student, Teacher, and Reward System how to behave. Start with `configs/examples/sdk_quickstart.yaml`, then graduate to the richer examples in `configs/examples/openai_agent.yaml`, `http_agent.yaml`, and `python_agent.yaml`.
 
+<Tip>
+Run orchestration with `atlas.core.run(..., stream_progress=True)` to mirror every event in the terminal. The streamer depends on these same configuration blocks, so what you see in the console matches what persists to storage.
+</Tip>
+
 <Note>
 All examples reference files in the Atlas SDK repo (`configs/examples/`). If you cloned the repo for the quickstart, you already have them.
 </Note>
@@ -119,7 +123,7 @@ orchestration:
 - **`max_retries`**: Default is 1; increase to allow for more revision loops.
 - **`step_timeout_seconds`**: Per-step timeout; extend when calling slow tools or external APIs.
 - **`rim_guidance_tag`**: The tag used to inject feedback from the Reward System back into prompts.
-- **`emit_intermediate_steps`**: Keep `true` to stream events for logging and telemetry. (Note: Telemetry dashboards are not yet documented).
+- **`emit_intermediate_steps`**: Keep `true` to stream events for logging and telemetry. Combine this with `stream_progress=True` in `atlas.core.run` to see the Teacher/Student loop live.
 
 ## Reward System (the `rim` block)
 
@@ -182,7 +186,7 @@ storage:
   statement_timeout_seconds: 30
 ```
 
-Leave `storage: null` (as in the quickstart) when you don’t have a database. Enable it when you’re ready to collect sessions.
+Leave `storage: null` (as in the quickstart) when you don’t have a database. Enable it when you want durable telemetry or plan to export datasets with `atlas.export --output traces.jsonl`.
 
 ## Prompt Rewrite (`prompt_rewrite`)
 
