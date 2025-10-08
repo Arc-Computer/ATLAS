@@ -4,13 +4,19 @@ description: A Continual Learning Framework for Production LLM Agents
 sidebarTitle: Introduction
 ---
 
+<div align="center">
+  <img src="/images/ATLAS.png" alt="ATLAS Hero Image"/>
+</div>
+
+<br/>
+
 ATLAS makes AI agents that learn from every interaction in production.
 
 Instead of treating your deployed agents as static systems that need constant retraining, ATLAS gives them the ability to improve from real-world usage. You get an agent that compounds knowledge over time, building a durable library of domain expertise instead of relearning the same fixes repeatedly.
 
 ## How It Works: Closed-Loop Learning System
 
-ATLAS wraps any base model (GPT, Claude, Gemini, open source checkpoints, or your own) with an inference-time closed-loop learning system. The system executes tasks with built-in quality control that reviews every decision, and the Reward System scores the outcome. That signal can immediately trigger retries or feed downstream training jobs. The same loop powers both the runtime SDK (real-time quality control) and the training stack (offline optimization).
+ATLAS wraps any base model (GPT, Claude, Gemini, open source checkpoints, or your own) with an inference-time closed-loop learning system that observes the agent's action space in its live environment. The system executes tasks with built-in quality control that reviews every decision, and the Reward System scores the outcome. That signal can immediately trigger retries or feed downstream training jobs. The same loop powers both the runtime SDK (real-time quality control) and the training stack (offline optimization).
 
 Across internal and external benchmarks this closed loop delivers an average **+15.7 % accuracy lift**, **97 % non-degradation**, and **~50 % token savings** versus baseline agents. Applying GEPA—the online optimizer that mutates system prompts on top of the runtime loop—drives domain-specific gains up to **+165 %** in roughly **2 hours** (see [Online Optimization](/training/online/optimize-with-atlas) and the [case study](/examples/online-optimization-case-study)). Offline GRPO fine-tuning then pushes longer-horizon improvements when you want to train custom checkpoints.
 
@@ -55,7 +61,7 @@ Together, these components form a closed-loop system: interaction traces flow in
 
 <div align="center">
   <img src="/images/system-architecture.png" alt="ATLAS System Architecture" width="800" />
-  <p><em>ATLAS keeps your agent in a learn–evaluate–update cycle</em></p>
+  <p><em>ATLAS keeps your agent in a learn–evaluate–update cycle.</em></p>
 </div>
 
 ## Compared to Alternatives
