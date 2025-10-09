@@ -3,7 +3,7 @@
 <div align="center">
 
 <img src="public/ATLAS.png" alt="ATLAS Hero" width="900" style="border-radius: 12px;">
-<br>
+
 [![ATLAS-8B-Thinking](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-ATLAS--8B--Thinking-blue)](https://huggingface.co/Arc-Intelligence/ATLAS-8B-Thinking) [![ATLAS-8B-Instruct](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-ATLAS--8B--Instruct-blue)](https://huggingface.co/Arc-Intelligence/ATLAS-8B-Instruct) [![Arc-ATLAS-Teach Dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-Arc--ATLAS--Teach-green)](https://huggingface.co/datasets/Arc-Intelligence/Arc-ATLAS-Teach-v1) [![Docs](https://img.shields.io/badge/Docs-latest-green)](https://docs.arc.computer) [![PyPI version](https://img.shields.io/pypi/v/arc-atlas.svg)](https://pypi.org/project/arc-atlas/) [![Python 3.11 | 3.12](https://img.shields.io/badge/Python-3.11%20%7C%203.12-blue)](#installation)
 
 </div>
@@ -95,8 +95,11 @@ export STUDENT_MODEL=gpt-5-mini
 The config relies on the agents registry; edit `agents.target` inside the YAML to match your production connector.
 
 You can also start from `configs/examples/quickstart.yaml`, which reuses the same wrapper with minimal overrides.
+
 OpenAI currently limits Assistants to GPT-4.x models, so the GEPA wrapper defaults to `gpt-4.1` (or you can set `TEACHER_MODEL` to `Arc-Intelligence/ATLAS-8B-Thinking`).
-This loop iterates up to 40 evaluations (≈$10 in API spend) and writes the best prompts to `optimized_prompts.json`. Attach those prompts to your agent once you’re ready for deployment.
+
+This loop iterates up to 40 evaluations (≈$10 in API spend) and writes the best prompts to `optimized_prompts.json`. Attach those prompts to your agent once you're ready for deployment.
+
 ---
 
 ## How the Continual Loop Fits Together
