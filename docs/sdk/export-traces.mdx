@@ -65,7 +65,9 @@ The exporter writes one JSON object per line. Each record aligns with `AtlasSess
       "guidance": ["cite the primary source"],
       "validation": {"valid": true, "rationale": "complete"},
       "tool": "web_search",
-      "tool_params": {"query": "Atlas SDK"}
+      "tool_params": {"query": "Atlas SDK"},
+      "artifacts": {"sources": ["https://..."]},
+      "deliverable": {"summary": "..."}
     }
   ],
   "session_metadata": {"batch": "aime-2025"}
@@ -73,6 +75,8 @@ The exporter writes one JSON object per line. Each record aligns with `AtlasSess
 ```
 
 > **Tip:** Compress large exports with `xz` or `gzip`—the loader streams line-by-line, so you can decompress on the fly if desired.
+
+Each step object can include structured `artifacts` captured during execution and a `deliverable` payload that mirrors what the Student hands back to downstream systems.
 
 ## 3. Feed the training stack
 
@@ -94,7 +98,3 @@ Or use the Hydra shortcut (`configs/data/runtime_traces.yaml`) described in the 
 | Missing rewards in JSON | Judges disabled | Ensure your `rim` block activates the judges you expect. |
 
 With the exporter in place you can schedule nightly runs, collect batches of traces, and continuously fine-tune the teacher without manual wrangling.
-
-<Note>
-Compatibility aliases `atlas-export` and `atlas.export` remain for existing scripts, but new projects should prefer `arc-atlas` or `python -m atlas.cli.export`.
-</Note>

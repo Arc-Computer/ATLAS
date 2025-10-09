@@ -4,7 +4,7 @@
 
 <img src="public/ATLAS.png" alt="ATLAS Hero" width="900" style="border-radius: 12px;">
 <br>
-[![ATLAS-8B-Thinking](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-ATLAS--8B--Thinking-blue)](https://huggingface.co/Arc-Intelligence/ATLAS-8B-Thinking) [![ATLAS-8B-Instruct](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-ATLAS--8B--Instruct-blue)](https://huggingface.co/Arc-Intelligence/ATLAS-8B-Instruct) [![Arc-ATLAS-Teach Dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-Arc--ATLAS--Teach-green)](https://huggingface.co/datasets/Arc-Intelligence/Arc-ATLAS-Teach-v1) [![Docs](https://img.shields.io/badge/Docs-latest-green)](https://docs.arc.computer) [![Python 3.11 | 3.12](https://img.shields.io/badge/Python-3.11%20%7C%203.12-blue)](#installation)
+[![ATLAS-8B-Thinking](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-ATLAS--8B--Thinking-blue)](https://huggingface.co/Arc-Intelligence/ATLAS-8B-Thinking) [![ATLAS-8B-Instruct](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-ATLAS--8B--Instruct-blue)](https://huggingface.co/Arc-Intelligence/ATLAS-8B-Instruct) [![Arc-ATLAS-Teach Dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-Arc--ATLAS--Teach-green)](https://huggingface.co/datasets/Arc-Intelligence/Arc-ATLAS-Teach-v1) [![Docs](https://img.shields.io/badge/Docs-latest-green)](https://docs.arc.computer) [![PyPI version](https://img.shields.io/pypi/v/arc-atlas.svg)](https://pypi.org/project/arc-atlas/) [![Python 3.11 | 3.12](https://img.shields.io/badge/Python-3.11%20%7C%203.12-blue)](#installation)
 
 </div>
 
@@ -50,10 +50,11 @@ To learn more, read about our production use cases ([Introducing ATLAS](https://
 Start by measuring how much the closed-loop runtime (with GPT-5 acting as the reviewer) and the ATLAS Reward System improve one of your agents. Once you see the delta, graduate to the full GEPA optimization loop.
 
 ### Part A · 5 minutes — Score Baseline vs Teaching
-1. Install dependencies (Python 3.11+):
+1. Install the managed runtime (Python 3.11+):
    ```bash
-   pip install -r requirements-py312.txt
+   pip install arc-atlas
    ```
+   <sub>If you want to run the example scripts from this repo, clone it and install the extras in editable mode: `git clone https://github.com/Arc-Computer/atlas-sdk && cd atlas-sdk && pip install -e .[dev]`.</sub>
 2. Set credentials (OpenAI for models, Gemini for the reward judge):
    ```bash
    export OPENAI_API_KEY=sk-...
@@ -66,7 +67,7 @@ Start by measuring how much the closed-loop runtime (with GPT-5 acting as the re
      --teacher-model gpt-5 \
      --student-model gpt-4o-mini
    ```
-   > **Note:** The CLI flags still use `--teacher-model` / `--student-model` for compatibility with the atlas-sdk runtime. They correspond to the reviewer and target models in the closed-loop system.
+   > **Note:** The CLI flags map directly to the reviewer (`--teacher-model`) and target (`--student-model`) roles inside the closed-loop runtime.
    Example output:
    ```text
    ========================================================================
@@ -198,7 +199,12 @@ ATLAS creates a **dynamic, continual learning loop**. The closed-loop architectu
 
 ## Installation
 
-Conda is recommended for environment management. The repository has been validated with Python 3.11 and 3.12.
+**Quick install (runtime + exporter):**
+```sh
+pip install arc-atlas
+```
+
+Conda is recommended for environment management when developing locally. The repository has been validated with Python 3.11 and 3.12.
 
 **Python 3.11:**
 ```sh

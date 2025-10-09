@@ -32,7 +32,7 @@ sequenceDiagram
 3. **Dependency Graph**: The orchestrator sorts the steps to ensure prerequisites run first (`atlas/runtime/orchestration/orchestrator.py`).
 4. **Step Execution**: The `Student` executes each step, streaming tool calls and traces into the `ExecutionContext` (`Student.aexecute_step` powered by `atlas/runtime/orchestration/execution_context.py`).
 5. **Validation Loop**: The `Teacher` validates the output of each step (`avalidate_step`). If validation fails, it can request guidance.
-6. **Evaluation**: The Reward System scores the full attempt (`atlas/evaluation/evaluator.py`). A score below the configured `retry_threshold` will trigger a retry.
+6. **Evaluation**: The Reward System scores the full attempt (`atlas/evaluation/evaluator.py`), publishing judge reasoning back through the runtime execution context. A score below the configured `retry_threshold` will trigger a retry.
 7. **Final Synthesis**: Once all steps are successfully executed and validated, the `Student` combines the results into a final answer (`asynthesize_final_answer`).
 
 ## Retries & Guidance

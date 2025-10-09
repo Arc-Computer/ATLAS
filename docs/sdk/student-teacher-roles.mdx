@@ -18,7 +18,7 @@ In Atlas, the terms “Student” and “Teacher” are used in two primary cont
 | **SDK Runtime** | The planner, executor, and synthesizer that calls your agent. | The plan reviewer, output validator, and guidance author. | Deliver a reliable answer for the current task. |
 | **Model Training** | The model being improved (e.g., a new policy checkpoint). | The supervising model providing feedback during optimization. | Improve the long-term performance of the Student model. |
 
-The runtime roles now live in `atlas/personas/`, while the training roles are part of the broader Atlas training system. Runtime orchestration leans on shared LangGraph helpers in `atlas.runtime.agent_loop`.
+The runtime roles now live in `atlas/personas/`, while the training roles are part of the broader Atlas training system. Runtime orchestration leans on shared LangGraph helpers in `atlas.runtime.agent_loop`, and persona prompts are generated via `atlas.prompts`.
 
 ## The Runtime Student
 

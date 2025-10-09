@@ -15,6 +15,7 @@ Run orchestration with `atlas.core.run(..., stream_progress=True)` to mirror eve
 All examples reference files in the Atlas SDK repo (`configs/examples/`). If you cloned the repo for the quickstart, you already have them.
 </Note>
 
+
 ## Layout at a Glance
 
 ```yaml
@@ -24,7 +25,6 @@ teacher:      # Reviewer and validator settings
 orchestration:# Runtime policies like retries and timeouts
 rim:          # Defines the Reward System (judges, arbiter, thresholds)
 storage:      # (Optional) Postgres connection for trace persistence
-prompt_rewrite: # (Optional) Persona rewriting before the run starts
 ```
 
 Each section is restrictive by design—unexpected keys raise validation errors—so it’s easier to debug mistakes before the orchestrator spins up.
@@ -82,7 +82,7 @@ student:
   tool_choice: auto
 ```
 
-- **Prompts**: Templates that receive `{base_prompt}` from the agent’s system prompt and any prompt rewriting.
+- **Prompts**: Templates that receive `{base_prompt}` from the agent’s system prompt. Atlas also ships opinionated defaults in `atlas.prompts.build_student_prompts`; override them by supplying explicit prompt strings, tweaking the base prompt, or calling the helper yourself.
 - **Token limits**: Guardrails for LLM calls; increase them when steps are truncated.
 - **`tool_choice`**: `auto` lets the Student call registered tools. Use `required` to force a tool call on every step.
 
@@ -107,6 +107,7 @@ teacher:
 - **LLM block**: Often mirrors the Student’s provider but can be a more powerful model for complex reviews.
 - **`plan_cache_seconds`**: Caches an approved plan for a given task ID to avoid re-running reviews.
 - **Guidance/validation caps**: Keep feedback concise; increase when you expect lengthy traces.
+- **Prompts**: Teacher defaults come from `atlas.prompts.build_teacher_prompts`; override the prompts block to match your review style.
 
 ## Orchestration (`orchestration`)
 
@@ -171,6 +172,7 @@ rim:
 - **Judges**: At least one is required. Mix `process`, `helpfulness`, or custom judges to fit your domain.
 - **Arbiter**: A separate LLM that resolves disagreements between judges.
 - **Thresholds**: If a score is below `retry_threshold`, the Teacher is asked for guidance. Above `success_threshold`, the answer is accepted.
+- **Implementation detail**: The small/large judge implementations ship in `atlas.evaluation.judges.*`, so advanced users can inspect or extend them directly.
 
 Learn more in [`Reward Design`](/concepts/reward-design#reward-system-in-the-atlas-sdk).
 
@@ -188,23 +190,13 @@ storage:
 
 Leave `storage: null` (as in the quickstart) when you don’t have a database. Enable it when you want durable telemetry or plan to export datasets with `arc-atlas --output traces.jsonl`.
 
-## Prompt Rewrite (`prompt_rewrite`)
+## Persona prompts & guidance
 
-This block lets an additional LLM tighten or extend Student/Teacher prompts before a run starts. The quickstart keeps this disabled (`prompt_rewrite: null`).
+Atlas derives persona text by combining the adapter’s `system_prompt` with helper templates in `atlas.prompts`. Customize behaviour by:
 
-```yaml
-prompt_rewrite:
-  llm:
-    provider: openai
-    model: gpt-4o-mini
-    api_key_env: OPENAI_API_KEY
-    temperature: 0.1
-    max_output_tokens: 1024
-  max_tokens: 1024
-  temperature: 0.1
-```
-
-Enable it to tailor personas dynamically—for example, to compress a long system prompt into a slimmer runtime context.
+- Providing explicit strings under `student.prompts` and `teacher.prompts`.
+- Adjusting the adapter’s base `system_prompt`.
+- Calling `atlas.prompts.build_student_prompts` / `build_teacher_prompts` in your own tooling before handing prompts to the config.
 
 ## Cheat Sheet
 
@@ -214,7 +206,7 @@ Enable it to tailor personas dynamically—for example, to compress a long syste
 | Increase reasoning depth | `student` and `teacher` | Raise the `max_..._tokens` limits for the planner, executor, or guidance. | 
 | Persist sessions | `storage` | Provide a reachable Postgres URL and credentials. |
 | Tighten the quality bar | `rim` | Increase the `success_threshold` in the Reward System or add a new judge. |
-| Personalize prompts | `prompt_rewrite` | Enable the block and configure the rewrite LLM. |
+| Personalize prompts | `student.prompts` / `teacher.prompts` | Override the templates directly or use `atlas.prompts` helpers. |
 
 ## Next Steps
 

@@ -70,7 +70,7 @@ result = run(
 )
 ```
 
-When `stream_progress=True` and stdout is interactive, the `ConsoleTelemetryStreamer` auto-enables to print the accepted plan, retries, tool calls, and reward scores as they happen. Set `stream_progress=False` to silence streaming, or leave it unset and Atlas will auto-detect.
+When `stream_progress=True` and stdout is interactive, `atlas.runtime.telemetry.ConsoleTelemetryStreamer` auto-enables to print the accepted plan, retries, tool calls, and reward scores as they happen. Set `stream_progress=False` to silence streaming, or leave it unset and Atlas will auto-detect.
 
 <Note>
 Need persistence? Add a `storage:` block in your YAML (see below) so every session lands in Postgres for export.
@@ -103,7 +103,7 @@ Ensure Postgres is running and reachable before exporting. You can launch it wit
 If another tool has claimed the `atlas` command on your machine, invoke the exporter with `python -m atlas.cli.export ...` or ensure `arc-atlas` resolves first on `PATH`.
 </Tip>
 
-Each JSONL record maps to the shared runtime schema (`task`, `plan`, per-step `reward` with nested judges, guidance history, validation, tool metadata). Preview a single record with `jq`:
+Each JSONL record maps to the shared runtime schema (`task`, `plan`, per-step `reward` with nested judges, guidance history, validation, tool metadata, plus optional `artifacts` and `deliverable` payloads). Preview a single record with `jq`:
 
 ```bash
 jq '.' traces/aime-batch.jsonl | head

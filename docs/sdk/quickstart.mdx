@@ -61,7 +61,7 @@ python -c "from atlas.core import run; result = run(task='Summarize the latest A
 ```
 </Info>
 
-You should see a short plan-reason-synthesize cycle streaming into the terminal: the Student drafts a plan, the Teacher verifies it, steps execute, rewards are logged, and the final answer prints at the end. The `ConsoleTelemetryStreamer` auto-enables when stdout is a TTY; force it on/off with `stream_progress=True/False` in the `run` call.
+You should see a short plan-reason-synthesize cycle streaming into the terminal: the Student drafts a plan, the Teacher verifies it, steps execute, rewards are logged, and the final answer prints at the end. `atlas.runtime.telemetry.ConsoleTelemetryStreamer` auto-enables when stdout is a TTY; force it on/off with `stream_progress=True/False` in the `run` call.
 
 ### BYOA in 5 Minutes
 
@@ -109,7 +109,7 @@ The `sdk_quickstart.yaml` config defines the runtime behavior. Here’s a high-l
 - **`orchestration`**: Sets runtime parameters like the number of retries (default: 1) and step timeouts.
 - **`rim`** (Reward System): Defines the judges and arbiter that score the final answer for quality and helpfulness. This score determines if a retry is needed.
 - **`storage`**: Set to `null` to disable Postgres persistence for a lightweight start.
-- **`prompt_rewrite`**: Also `null`. The SDK won't rewrite prompts for persona or style unless you enable this feature.
+- **`student.prompts` / `teacher.prompts`**: Optional overrides. Atlas now derives persona text from `atlas.prompts`; customize behaviour by editing these prompt blocks directly.
 
 To add tools, enable persistence, or use a different agent, switch the `config_path` to a more advanced configuration like `configs/examples/openai_agent.yaml` and see the `SDK Configuration` reference for details.
 
