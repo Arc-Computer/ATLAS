@@ -18,8 +18,7 @@
             "pages": [
               "introduction",
               "quickstart",
-              "installation",
-              "first-experiment"
+              "installation"
             ]
           },
           {
@@ -40,19 +39,33 @@
               "concepts/adaptive-teaching-protocol",
               "concepts/hybrid-learning",
               "concepts/reward-design",
-              "concepts/what-is-gepa"
+              "concepts/what-is-gepa",
+              "architecture/system-overview"
             ]
           },
           {
-            "group": "Guides",
+            "group": "Training",
             "pages": [
-              "guides/configuration-guide"
+              "training/configuration",
+              {
+                "group": "Online Optimization",
+                "pages": [
+                  "training/online/optimize-with-atlas",
+                  "training/online/continuous-learning"
+                ]
+              },
+              {
+                "group": "Offline Training",
+                "pages": [
+                  "training/offline/grpo-training"
+                ]
+              }
             ]
           },
           {
             "group": "Examples & Case Studies",
             "pages": [
-              "examples/online_optimization",
+              "examples/custom-implementation",
               {
                 "group": "Case Studies",
                 "pages": [
@@ -71,24 +84,6 @@
             ]
           },
           {
-            "group": "Training",
-            "pages": [
-              {
-                "group": "Online Optimization",
-                "pages": [
-                  "training/online/optimize-with-atlas",
-                  "training/online/continuous-learning"
-                ]
-              },
-              {
-                "group": "Offline Training",
-                "pages": [
-                  "training/offline/grpo-training"
-                ]
-              }
-            ]
-          },
-          {
             "group": "Benchmarks",
             "pages": [
               "benchmarks/evaluation-methodology",
@@ -96,16 +91,10 @@
             ]
           },
           {
-            "group": "Architecture",
-            "pages": [
-              "architecture/system-overview",
-              "architecture/config-system"
-            ]
-          },
-          {
             "group": "API Reference",
             "pages": [
-              "api-reference/trainers"
+              "api-reference/trainers",
+              "api-reference/training-configs"
             ]
           },
           {
@@ -127,7 +116,8 @@
           {
             "group": "API Reference",
             "pages": [
-              "api-reference/configs"
+              "api-reference/trainers",
+              "api-reference/training-configs"
             ]
           }
         ]
