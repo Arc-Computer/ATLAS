@@ -9,6 +9,10 @@ icon: flask
 **Total time**: 24-48 hours (mostly unattended training) • **Active setup time**: 30-45 minutes • **Difficulty**: Intermediate
 </Note>
 
+<Info>
+**Applies to:** Atlas Training stack (GRPO, SFT, GEPA). You’ll need the core ATLAS repository, multi-GPU hardware, and the datasets referenced below. If you’re only running the SDK runtime, stop after exporting traces.
+</Info>
+
 **TL;DR:** Phase 1 (SFT) takes ~4-6 hours to establish a baseline teacher, Phase 2 (GRPO) runs ~24-36 hours with periodic monitoring, and validation at the end confirms the 15.7% accuracy lift before you promote the checkpoint.
 
 ## Overview

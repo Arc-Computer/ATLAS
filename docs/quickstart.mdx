@@ -1,6 +1,6 @@
 ---
 title: Quickstart
-description: "Get started with ATLAS in minutes by deploying pre-trained models or training your own."
+description: "Wrap your agent with the Atlas runtime and optionally bridge exported traces into the training stack."
 sidebarTitle: Quickstart
 icon: rocket
 ---
@@ -8,8 +8,12 @@ icon: rocket
 ATLAS is designed for production AI engineers. In under an hour you can plug the Teacher–Student loop into your existing agent, stream telemetry to your terminal, export training traces, and feed them into the GRPO trainer.
 
 <Info>
-**End-to-end flow:** Install SDK → Configure BYOA → Run Teacher/Student/Reward loop → Export traces → Train.
+**Choose your path:**
+- **Runtime orchestration only** — Complete Steps 1–4 to wrap your agent with Atlas quality control and export traces (requires only `pip install arc-atlas`).
+- **Runtime + training pipeline** — Continue through Step 5 to feed exported traces into GRPO/GEPA training (requires the [Atlas training repository](https://github.com/Arc-Computer/ATLAS)).
 </Info>
+
+*End-to-end flow:* Install SDK → Configure BYOA → Run Teacher/Student/Reward loop → Export traces → Train.
 
 ## Step 1 — Install the runtime and set credentials
 
@@ -109,6 +113,12 @@ Each JSONL record maps to the shared runtime schema (`task`, `plan`, per-step `r
 jq '.' traces/aime-batch.jsonl | head
 ```
 
+---
+
+<Note>
+**Training integration (optional):** The remaining steps assume you have cloned the Atlas training repository and provisioned the required GPU resources. If you only need runtime orchestration, you can stop after Step 4.
+</Note>
+
 ## Step 5 — Train or score with the runtime dataset
 
 Point the core training stack at the exported file using the provided loader:
@@ -135,10 +145,13 @@ Each of these uses the same exported traces, so you can adopt them incrementally
 
 ## Checklist
 
+**SDK runtime (required):**
 - [x] Installed `arc-atlas` and exported API keys
 - [x] Wrapped the agent with a YAML config
 - [x] Streamed telemetry for a real task
 - [x] Enabled Postgres storage and exported JSONL traces
+
+**Training integration (optional):**
 - [x] Consumed traces in the training stack
 
-You now have the complete Atlas learning loop running—production telemetry into dataset exports, dataset exports into training, and training back into runtime performance.
+You now have the full Atlas workflow configured. Completing Steps 1–4 gives you runtime orchestration with exportable traces; finishing Step 5 bridges those traces into the training stack for GRPO/GEPA optimization.

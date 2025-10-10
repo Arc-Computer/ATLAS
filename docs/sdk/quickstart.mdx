@@ -39,7 +39,7 @@ We recommend keeping credentials in a `.env` file and loading them with `dotenv`
 
 ## Step 1 – Run the Quickstart Task
 
-The `sdk_quickstart.yaml` config is a lightweight configuration that disables storage and prompt rewriting, requiring only an `OPENAI_API_KEY` to get started.
+The `openai_agent.yaml` config is a lightweight configuration that disables storage and prompt rewriting, requiring only an `OPENAI_API_KEY` to get started.
 
 Save the following snippet to a file (e.g., `run_atlas.py`).
 
@@ -48,7 +48,7 @@ from atlas.core import run
 
 result = run(
     task="Summarize the latest AI news",
-    config_path="configs/examples/sdk_quickstart.yaml",
+    config_path="configs/examples/openai_agent.yaml",
     stream_progress=True,
 )
 print(result.final_answer)
@@ -57,7 +57,7 @@ print(result.final_answer)
 <Info>
 Alternatively, you can run the snippet directly in your terminal:
 ```bash
-python -c "from atlas.core import run; result = run(task='Summarize the latest AI news', config_path='configs/examples/sdk_quickstart.yaml', stream_progress=True); print(result.final_answer)"
+python -c "from atlas.core import run; result = run(task='Summarize the latest AI news', config_path='configs/examples/openai_agent.yaml', stream_progress=True); print(result.final_answer)"
 ```
 </Info>
 
@@ -101,7 +101,7 @@ graph LR
 
 ## Configuration Breakdown
 
-The `sdk_quickstart.yaml` config defines the runtime behavior. Here’s a high-level look at the key sections:
+The `openai_agent.yaml` config defines the runtime behavior. Here’s a high-level look at the key sections:
 
 - **`agent`**: Specifies the agent to run the task. The quickstart uses the OpenAI adapter with `gpt-4o-mini` and no tools, requiring only an `OPENAI_API_KEY`.
 - **`student`**: Configures the planner, executor, and synthesizer roles with their respective prompts and token limits.
@@ -111,7 +111,7 @@ The `sdk_quickstart.yaml` config defines the runtime behavior. Here’s a high-l
 - **`storage`**: Set to `null` to disable Postgres persistence for a lightweight start.
 - **`student.prompts` / `teacher.prompts`**: Optional overrides. Atlas now derives persona text from `atlas.prompts`; customize behaviour by editing these prompt blocks directly.
 
-To add tools, enable persistence, or use a different agent, switch the `config_path` to a more advanced configuration like `configs/examples/openai_agent.yaml` and see the `SDK Configuration` reference for details.
+To add tools, enable persistence, or use a different agent, switch the `config_path` to another template in `configs/examples/` (e.g., `http_agent.yaml`, `python_agent.yaml`) and see the `SDK Configuration` reference for details.
 
 ## Troubleshooting Checklist
 

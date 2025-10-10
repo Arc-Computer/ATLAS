@@ -129,7 +129,7 @@ Atlas auto-imports built-in adapters via `atlas.connectors.__init__`. Custom ada
 
 | Need | Recommendation |
 |------|----------------|
-| Fastest time-to-first-run | `openai` adapter with `sdk_quickstart.yaml`. |
+| Fastest time-to-first-run | `openai` adapter with `openai_agent.yaml`. |
 | Reuse an existing microservice | `http_api` adapter with proper retries and auth. |
 | Full control in local experiments | `python` adapter calling your local function. |
 | Access non-OpenAI APIs (Claude, Gemini, etc.) | Wrap them with the `http_api` adapter. |

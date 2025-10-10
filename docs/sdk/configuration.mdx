@@ -5,7 +5,7 @@ sidebarTitle: Configuration
 icon: settings
 ---
 
-Atlas SDK configs are the control tower for runtime orchestration. Each block in the YAML tells the Student, Teacher, and Reward System how to behave. Start with `configs/examples/sdk_quickstart.yaml`, then graduate to the richer examples in `configs/examples/openai_agent.yaml`, `http_agent.yaml`, and `python_agent.yaml`.
+Atlas SDK configs are the control tower for runtime orchestration. Each block in the YAML tells the Student, Teacher, and Reward System how to behave. Start with `configs/examples/openai_agent.yaml`, then explore the other templates (`http_agent.yaml`, `python_agent.yaml`) to match your deployment.
 
 <Tip>
 Run orchestration with `atlas.core.run(..., stream_progress=True)` to mirror every event in the terminal. The streamer depends on these same configuration blocks, so what you see in the console matches what persists to storage.
@@ -25,6 +25,7 @@ teacher:      # Reviewer and validator settings
 orchestration:# Runtime policies like retries and timeouts
 rim:          # Defines the Reward System (judges, arbiter, thresholds)
 storage:      # (Optional) Postgres connection for trace persistence
+metadata:     # (Optional) Custom key-value tags persisted with each session
 ```
 
 Each section is restrictive by design—unexpected keys raise validation errors—so it’s easier to debug mistakes before the orchestrator spins up.
@@ -121,7 +122,7 @@ orchestration:
   emit_intermediate_steps: true
 ```
 
-- **`max_retries`**: Default is 1; increase to allow for more revision loops.
+- **`max_retries`**: Default (and maximum) is 1. The orchestrator never retries the same step more than once.
 - **`step_timeout_seconds`**: Per-step timeout; extend when calling slow tools or external APIs.
 - **`rim_guidance_tag`**: The tag used to inject feedback from the Reward System back into prompts.
 - **`emit_intermediate_steps`**: Keep `true` to stream events for logging and telemetry. Combine this with `stream_progress=True` in `atlas.core.run` to see the Teacher/Student loop live.
@@ -132,47 +133,27 @@ The Reward System scores each attempt so the orchestrator knows whether to accep
 
 ```yaml
 rim:
-  judges:
-    - identifier: process
-      kind: process
-      weight: 0.6
-      principles:
-        - Follows user instructions
-      llm:
-        provider: openai
-        model: gpt-4o-mini
-        api_key_env: OPENAI_API_KEY
-        temperature: 0.0
-        max_output_tokens: 512
-    - identifier: helpfulness
-      kind: helpfulness
-      weight: 0.4
-      principles:
-        - Provides useful answers
-      llm:
-        provider: openai
-        model: gpt-4o-mini
-        api_key_env: OPENAI_API_KEY
-        temperature: 0.0
-        max_output_tokens: 512
-  temperatures: [0.0, 0.3]
-  variance_threshold: 0.15
-  uncertainty_threshold: 0.3
-  arbiter:
+  small_model:
     provider: openai
     model: gpt-4o-mini
     api_key_env: OPENAI_API_KEY
-    temperature: 0.1
     max_output_tokens: 512
-  success_threshold: 0.7
-  retry_threshold: 0.6
-  aggregation_strategy: weighted_mean
+  large_model:
+    provider: openai
+    model: gpt-4o
+    api_key_env: OPENAI_API_KEY
+    max_output_tokens: 768
+  active_judges:
+    process: true
+    helpfulness: true
+  variance_threshold: 0.15
+  uncertainty_threshold: 0.3
+  parallel_workers: 4
 ```
 
-- **Judges**: At least one is required. Mix `process`, `helpfulness`, or custom judges to fit your domain.
-- **Arbiter**: A separate LLM that resolves disagreements between judges.
-- **Thresholds**: If a score is below `retry_threshold`, the Teacher is asked for guidance. Above `success_threshold`, the answer is accepted.
-- **Implementation detail**: The small/large judge implementations ship in `atlas.evaluation.judges.*`, so advanced users can inspect or extend them directly.
+- **Judge toggles**: Enable or disable built-in judges through `active_judges`. Custom judges can be added by extending `atlas.evaluation.judges`.
+- **Escalation models**: `small_model` handles the fast path; `large_model` resolves disagreements when variance or uncertainty exceed the configured thresholds.
+- **Retry behaviour**: The orchestrator retries when the aggregated score falls below `0.6` (built-in default). Adjust `max_retries` in the orchestration block to cap how many attempts are made.
 
 Learn more in [`Reward Design`](/concepts/reward-design#reward-system-in-the-atlas-sdk).
 
@@ -197,6 +178,7 @@ Atlas derives persona text by combining the adapter’s `system_prompt` with hel
 - Providing explicit strings under `student.prompts` and `teacher.prompts`.
 - Adjusting the adapter’s base `system_prompt`.
 - Calling `atlas.prompts.build_student_prompts` / `build_teacher_prompts` in your own tooling before handing prompts to the config.
+- Supplying optional `prompt_guidance` dicts (per persona) when you need to inject structured hints that the runtime merges into prompts at execution time.
 
 ## Cheat Sheet
 
@@ -205,7 +187,7 @@ Atlas derives persona text by combining the adapter’s `system_prompt` with hel
 | Swap to Anthropic via HTTP | `agent` | Use the `http_api` adapter and point `transport.base_url` to your service. |
 | Increase reasoning depth | `student` and `teacher` | Raise the `max_..._tokens` limits for the planner, executor, or guidance. | 
 | Persist sessions | `storage` | Provide a reachable Postgres URL and credentials. |
-| Tighten the quality bar | `rim` | Increase the `success_threshold` in the Reward System or add a new judge. |
+| Tighten the quality bar | `rim` | Lower `variance_threshold` / `uncertainty_threshold` or disable lenient judges in `active_judges`. |
 | Personalize prompts | `student.prompts` / `teacher.prompts` | Override the templates directly or use `atlas.prompts` helpers. |
 
 ## Next Steps
