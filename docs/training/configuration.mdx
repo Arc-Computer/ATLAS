@@ -126,7 +126,7 @@ graph TD
     C[configs/trainer/*.yaml<br/>Algorithms] --> B
     D[configs/model/*.yaml<br/>Models] --> B
     E[configs/data/*.yaml<br/>Datasets] --> B
-    F[configs/reward/*.yaml<br/>Rewards] --> B
+    F[configs/trainer/reward/*.yaml<br/>Reward presets] --> B
 ```
 
 ### Layer Breakdown
@@ -138,6 +138,7 @@ graph TD
 | `model/*.yaml` | Model specifications | `qwen3_8b.yaml`, `llama3_8b.yaml` | Adding new architectures |
 | `data/*.yaml` | Dataset configs | `arc_atlas_rl.yaml`, `arc_atlas_sft.yaml` | New datasets or preprocessing |
 | `trainer/*.yaml` | Algorithm settings | `teacher_grpo.yaml`, `sft.yaml` | Tweaking GRPO/SFT defaults |
+| `trainer/reward/*.yaml` | Reward presets (Hydra `_global_` group) | `rim_teaching.yaml` | Swap reward bundles or create new ensembles |
 
 ### Example: `configs/run/teacher_rcl.yaml`
 
