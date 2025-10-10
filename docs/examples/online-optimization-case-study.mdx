@@ -20,6 +20,19 @@ This case study demonstrates the power of layering a hyper-efficient online opti
 
 ![ATLAS Online Learning Improvement](/images/atlas-online-learning.png "Pareto front score across GEPA iterations for ATLAS-8B-Thinking teaching Qwen3-4B")
 
+## Hands-on Demo
+
+Want to reproduce the loop in minutes? Open the Colab notebook below and run through the exact optimisation pipeline:
+
+<Card title="Run the Interactive Demo" icon="google-colab" href="https://colab.research.google.com/github/Arc-Computer/ATLAS/blob/main/examples/online_optimization_demo.ipynb">
+  Launch GEPA in Google Colab (A100 runtime recommended)
+</Card>
+
+The notebook walks through three stages:
+1. Evaluate the pre-trained teacher on a challenging task.
+2. Execute reflective mutations with GEPA to evolve better prompts.
+3. Validate the improved prompt and compare before/after results.
+
 ## The Hybrid Architecture: Offline RL + Online Optimization
 
 This experiment showcases a hybrid approach that combines the best of offline and online learning:

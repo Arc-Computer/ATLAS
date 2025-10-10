@@ -115,6 +115,8 @@ jq '.' traces/aime-batch.jsonl | head
 
 ---
 
+## Training Integration (Optional)
+
 <Note>
 **Training integration (optional):** The remaining steps assume you have cloned the Atlas training repository and provisioned the required GPU resources. If you only need runtime orchestration, you can stop after Step 4.
 </Note>
@@ -131,7 +133,7 @@ make_dataset_fn:
   eval_split_ratio: 0.1
 ```
 
-Now launch GRPO or a scoring job exactly as you would with any other dataset. The trainer sees the same reward structure that the runtime produced, so step-level improvements translate directly into policy updates. See [`Training Your Own Teacher`](/training/offline/grpo-training) for the full recipe.
+Now launch GRPO or a scoring job exactly as you would with any other dataset. The trainer sees the same reward structure that the runtime produced, so step-level improvements translate directly into policy updates. See [`Training Your Own Teacher`](/training/offline/grpo-training) for the full recipe and the [`Training Configuration`](/training/configuration) guide for Hydra overrides.
 
 ## Optional — Advanced optimisation
 
