@@ -9,7 +9,7 @@
 ### Added
 - `scripts/run_offline_pipeline.py` helper for one-touch export → GRPO training workflows.
 - GRPO-focused example configs (`configs/examples/quickstart.yaml`, `configs/demo/runtime_grpo.yaml`) aligned with runtime trace exports.
-- Conditional dependency handling for `bitsandbytes` (Linux/CUDA only) and explicit `litellm` requirement so the reward tests install cleanly on CPU dev machines.
+- Conditional dependency handling for `bitsandbytes` (Linux-only, matching upstream wheels) and explicit `litellm` requirement so the reward tests install cleanly on CPU dev machines.
 
 ### Changed
 - Repositioned Atlas Core documentation and README to describe the repo as offline GRPO + reward tooling, directing online continual learning to the atlas-sdk runtime.

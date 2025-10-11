@@ -108,14 +108,14 @@ pip install -r requirements-py312.txt
 
 > Need GPU-backed training? Install PyTorch matching your CUDA stack, then run `pip install -r requirements-py312.txt`.
 >
-> On macOS (or other CPU-only setups) `bitsandbytes` is skipped automatically. For CUDA training environments the pinned version will install as part of the same requirements file.
+> On Linux/CUDA environments the pinned `bitsandbytes` wheel will install automatically; on macOS or Windows it is skipped.
 
 ## Development
 
 - Format / lint: `ruff check .`
 - Tests: `pytest`
 - Docs sanity: `mintlify broken-links` (requires interactive prompt today)
-- Type checking: `pyright` (see `pyrightconfig.json` for the scoped paths)
+- Type checking: `pyright` (covers `train.py`, offline CLI helpers, and the runtime trace ingest path; see `pyrightconfig.json`)
 
 We track major changes in `CHANGELOG.md`.
 

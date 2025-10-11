@@ -1,6 +1,6 @@
 import os
 import json
-from typing import Dict, Any
+from typing import Dict, Any, cast
 from litellm import completion
 
 
@@ -23,12 +23,15 @@ class ModelInterface:
                 print(f"\n=== Calling {model_name} ===")
                 print(f"Temperature: {temperature}, Max tokens: {max_tokens}")
 
-            response = completion(
+            response = cast(
+                Any,
+                completion(
                 model=model_name,
                 messages=[{"role": "user", "content": prompt}],
                 temperature=temperature,
                 max_tokens=max_tokens,
                 response_format={"type": "json_object"}
+            )
             )
 
             if self._is_verbose():

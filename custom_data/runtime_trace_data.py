@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any, Dict, Optional
 
 from datasets import Dataset
-from transformers import PreTrainedTokenizer
+from transformers.tokenization_utils_base import PreTrainedTokenizerBase
 
 from trainers.runtime_dataset import (
     load_runtime_traces,
@@ -12,7 +12,7 @@ from trainers.runtime_dataset import (
 
 
 def get_runtime_trace_dataset(
-    tokenizer: PreTrainedTokenizer,
+    tokenizer: PreTrainedTokenizerBase,
     export_path: str,
     eval_split_ratio: float = 0.1,
     dataset_max_samples: Optional[int] = None,
@@ -38,4 +38,3 @@ def get_runtime_trace_dataset(
         }
 
     return {"train_dataset": dataset, "eval_dataset": None}
-

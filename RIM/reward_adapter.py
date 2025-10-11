@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Dict, Any, Tuple, Optional
+from typing import Any, Dict, List, Optional, Tuple, cast
 
 import yaml
 from pathlib import Path
@@ -181,20 +181,23 @@ class RIMReward:
 
         return_raw_tensors = call_kwargs.pop('return_raw_tensors', False)
 
+        raw_result = self(
+            prompts=[prompt],
+            completions=[response],
+            return_info_dict=True,
+            return_raw_tensors=return_raw_tensors,
+            **call_kwargs,
+        )
+
         if return_raw_tensors:
-            rewards, info_dict, raw_tensors = self(
-                prompts=[prompt],
-                completions=[response],
-                return_info_dict=True,
-                return_raw_tensors=True,
-                **call_kwargs
+            rewards, info_dict, raw_tensors = cast(
+                Tuple[List[float], List[Dict[str, Any]], Any],
+                raw_result,
             )
         else:
-            rewards, info_dict = self(
-                prompts=[prompt],
-                completions=[response],
-                return_info_dict=True,
-                **call_kwargs
+            rewards, info_dict = cast(
+                Tuple[List[float], List[Dict[str, Any]]],
+                raw_result,
             )
             raw_tensors = None
 
