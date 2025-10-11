@@ -11,10 +11,9 @@ ATLAS (Adaptive Teaching and Learning Alignment System) is a hybrid reinforcemen
 
 Through extensive evaluation on mathematical reasoning, code generation, and system reliability engineering tasks, ATLAS demonstrates:
 - **Closed-loop runtime gains**: +15.7% average accuracy, +31% completion, 97% non-degradation, ~50% token savings
-- **Online GEPA gains**: up to +165% task-specific improvement in ~2 hours with ~$10 in API spend
-- **Offline GRPO gains**: sustained quality improvements when fine-tuning custom teacher checkpoints
+- **Offline GRPO gains**: sustained quality improvements when fine-tuning custom teacher checkpoints from production traces
 
-The framework combines offline reinforcement learning for foundational skills with online optimization for task-specific adaptation, creating a practical path to continuously improving AI systems.
+The framework combines offline reinforcement learning for foundational skills with runtime orchestration that keeps quality high in production. Task-specific continual learning is now delivered through the [`atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) runtime.
 
 ## Full Report
 
@@ -28,7 +27,7 @@ The framework combines offline reinforcement learning for foundational skills wi
 A two-pass inference mechanism that first diagnoses student capability (≤50 tokens) then provides calibrated guidance (≤200 tokens) based on the assessment.
 
 ### 2. Hybrid Learning Architecture
-Separation of expensive offline RL training from lightweight online optimization, enabling rapid adaptation at ~$10 per task domain.
+Separation of expensive offline RL training from the managed runtime that captures production traces, enabling rapid adaptation without retraining base student models.
 
 ### 3. Compounding Intelligence
 Demonstrated skill transfer across domains with up to 83% transfer efficiency, creating accumulating knowledge over time.
@@ -52,7 +51,7 @@ Zero-reward for performance degradation ensures 97% non-degradation rate in prod
 - **SRE Debugging**: Systematic improvement in root cause analysis and reduced investigation time
 - **Mathematical Reasoning**: 15.7% average gain (closed-loop baseline)
 - **Code Generation**: 31% completion rate improvement
-- **GEPA Optimization**: Up to +165% task-specific lift in ~2 hours (see [Online Optimization](/training/online/optimize-with-atlas))
+- **Continual Learning (SDK)**: Use the atlas-sdk runtime for rapid, task-specific adaptation between offline training runs
 
 ## Citation
 
@@ -72,7 +71,7 @@ If you use ATLAS in your research, please cite:
 
 The ATLAS framework builds on several foundational works:
 - GRPO (Group Relative Policy Optimization) for RL training
-- GEPA (Genetic Prompt Evolution Algorithm) for online optimization
+- Genetic prompt evolution research for online optimization, now implemented and maintained in the atlas-sdk runtime
 - Constitutional AI principles for safe deployment
 
 ## Next Steps

@@ -206,27 +206,9 @@ print(f"Helpfulness: {result['helpfulness']}")
 print(f"Improvement: {result['helpfulness'] - result['baseline_accuracy']}")
 ```
 
-### In Online Optimization
+### In Continual Learning
 
-The reward system serves as the fitness function for prompt evolution:
-
-```python
-from RIM.reward_adapter import RIMReward
-from trainers.prompt_adapter import ATLASGEPAAdapter
-
-# Reward system scores teaching quality
-reward_system = RIMReward(config_path='configs/rim_config.yaml')
-
-# Adapter uses rewards to evolve prompts
-adapter = ATLASGEPAAdapter(
-    teacher_model=teacher_model,
-    student_model=student_model,
-    reward_function=reward_system  # Drives optimization
-)
-
-# Optimize teaching prompts based on reward signals
-optimized_prompts = adapter.optimize()
-```
+In the SDK runtime, the same reward signals drive continual learning loops and help teams decide when to export traces for GRPO training. See the [`atlas-sdk` documentation](https://docs.arc.computer/sdk/quickstart) for details on wiring reward feedback into production orchestration.
 
 ## Customizing Judges
 
@@ -352,8 +334,8 @@ Monitor these to:
   <Card title="GRPO Training" icon="graduation-cap" href="/training/offline/grpo-training">
     Use the reward system to train teacher models
   </Card>
-  <Card title="Online Optimization" icon="lightbulb" href="/training/online/optimize-with-atlas">
-    Evolve prompts using reward signals
+  <Card title="SDK Runtime" icon="lightbulb" href="/sdk/quickstart">
+    See how rewards flow through the production loop
   </Card>
   <Card title="Training Configs API" icon="code" href="/api-reference/training-configs">
     Complete configuration options

@@ -1,8 +1,0 @@
-defaults:
-  - default
-
-student_model: gpt-4o
-teacher_model: Arc-Intelligence/ATLAS-8B-Thinking
-reflection_lm: gpt-5
-
-max_metric_calls: 50

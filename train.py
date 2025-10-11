@@ -7,6 +7,7 @@ import torch
 from omegaconf import DictConfig, OmegaConf
 from datetime import datetime
 from transformers.trainer_utils import get_last_checkpoint
+from typing import Any, Dict, Optional, cast
 
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 
@@ -18,11 +19,13 @@ def wandb_init(cfg, run_name: str, group_name: str, log_dir: str):
     import wandb
     from omegaconf import OmegaConf
 
-    config_dict = OmegaConf.to_container(
+    config_dict = cast(
+        Dict[str, Any],
+        OmegaConf.to_container(
         cfg,
         resolve=True,
         throw_on_missing=False,
-    )
+    ))
     config_dict["log_dir"] = log_dir
     config_dict["wandb_run_name"] = run_name
     config_dict["wandb_group_name"] = group_name
@@ -73,13 +76,52 @@ def main(cfg: DictConfig):
     else:
         is_main_process = True
 
-    if OmegaConf.is_missing(cfg, "gradient_accumulation_steps"):
-        accumulation_steps = compute_accumulation_steps(
-            train_batch_size=cfg.train_batch_size,
-            per_device_train_batch_size=cfg.per_device_train_batch_size)
-        cfg.gradient_accumulation_steps = accumulation_steps
+    def _resolve_grad_accum(target_cfg: DictConfig) -> int | None:
+        if target_cfg is None or not isinstance(target_cfg, DictConfig):
+            return None
+        if not OmegaConf.is_missing(target_cfg, "gradient_accumulation_steps"):
+            return target_cfg.gradient_accumulation_steps
 
-    logger.info(f"Accumulation steps {cfg.gradient_accumulation_steps} ----")
+        train_batch = None
+        if not OmegaConf.is_missing(target_cfg, "train_batch_size"):
+            train_batch = target_cfg.train_batch_size
+        elif not OmegaConf.is_missing(cfg, "train_batch_size"):
+            train_batch = cfg.train_batch_size
+
+        per_device_batch = None
+        if not OmegaConf.is_missing(target_cfg, "per_device_train_batch_size"):
+            per_device_batch = target_cfg.per_device_train_batch_size
+        elif not OmegaConf.is_missing(cfg, "per_device_train_batch_size"):
+            per_device_batch = cfg.per_device_train_batch_size
+
+        if train_batch is None or per_device_batch is None:
+            return None
+
+        return compute_accumulation_steps(
+            train_batch_size=train_batch,
+            per_device_train_batch_size=per_device_batch,
+        )
+
+    accumulation_steps = _resolve_grad_accum(cfg)
+    trainer_cfg = cfg.get("trainer", None)
+    trainer_accum = _resolve_grad_accum(trainer_cfg)
+
+    resolved_value: Optional[int] = None
+    if trainer_accum is not None:
+        trainer_cfg.gradient_accumulation_steps = trainer_accum
+        resolved_value = trainer_accum
+
+    if accumulation_steps is not None:
+        cfg.gradient_accumulation_steps = accumulation_steps
+        resolved_value = accumulation_steps
+    elif resolved_value is not None and OmegaConf.is_missing(cfg, "gradient_accumulation_steps"):
+        cfg.gradient_accumulation_steps = resolved_value
+
+    if resolved_value is None:
+        logger.warning("gradient_accumulation_steps could not be inferred; "
+                       "set it explicitly in your config.")
+    else:
+        logger.info(f"Accumulation steps {resolved_value} ----")
 
     using_wandb = False
     if isinstance(cfg.report_to, str):

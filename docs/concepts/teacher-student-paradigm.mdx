@@ -84,7 +84,7 @@ State-of-the-art results on complex multi-step tasks (mms_issue subset):
 
 ### Aggregate Metrics
 - **Average accuracy improvement (runtime + GRPO)**: 15.7% across all benchmarks
-- **Online optimization lift (GEPA)**: Up to +165% in ~2 hours for domain-specific tasks
+- **Continual learning (SDK runtime)**: Rapid, task-specific adaptation powered by the atlas-sdk export + training workflow
 - **Maximum observed improvement**: 29.6% on specific domains (closed-loop baseline)
 - **Non-degradation rate**: 97% (safe to deploy)
 - **Token efficiency**: 50% reduction (4k → 2k tokens)
@@ -125,29 +125,13 @@ The reward signal comes from measuring actual student improvement, creating a te
 
 ## Integration Patterns
 
-### Pattern 1: Direct Enhancement
+### Pattern 1: SDK Runtime Orchestration
 
-```python
-from trainers.prompt_adapter import ATLASGEPAAdapter
+Define your agent connector in the atlas-sdk (HTTP, Python callable, CLI, or OpenAI Assistant) and enable teaching plus reward scoring. The runtime collects traces that Atlas Core consumes for GRPO training.
 
-adapter = ATLASGEPAAdapter(
-    teacher_model=teacher_generate_fn,
-    student_model=student_generate_fn,
-    all_prompts=optimized_prompts
-)
+### Pattern 2: Offline GRPO Training
 
-result = adapter.evaluate([{"question": user_query}])
-enhanced_output = result.outputs[0]["student_with_teaching"]
-```
-
-### Pattern 2: Batch Processing
-
-```python
-# Efficient processing of multiple queries
-queries = [{"question": q} for q in query_list]
-results = adapter.evaluate(queries, capture_traces=True)
-enhanced_outputs = [r["student_with_teaching"] for r in results.outputs]
-```
+Export those traces and run `python scripts/run_offline_pipeline.py --export-path <export>.jsonl` to produce an updated teacher checkpoint. Point the SDK runtime at the new weights to close the loop.
 
 ## Best Practices
 
@@ -198,4 +182,4 @@ enhanced_outputs = [r["student_with_teaching"] for r in results.outputs]
 
 - [ATLAS Technical Report](/reference/technical-report) – Complete methodology and architecture
 - [Offline Training Guide](/training/offline/grpo-training) – Hands-on teacher training walkthrough
-- [Online Optimization Case Study](/examples/online-optimization-case-study) – Reflective prompt evolution in practice
+- [SRE Case Study](/examples/sre-root-cause-analysis) – Applying the runtime loop and GRPO to incident response

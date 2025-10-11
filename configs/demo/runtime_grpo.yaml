@@ -1,0 +1,15 @@
+# Example GRPO configuration that consumes runtime traces exported from the SDK.
+# Run with:
+#   python train.py --config-name demo/runtime_grpo
+
+defaults:
+  - /train
+
+data:
+  dataset_path: traces/demo/runtime_traces.jsonl
+  eval_split_ratio: 0.1
+
+wandb_project: atlas-demo-offline
+wandb_run_name: demo-runtime-grpo
+
+output_dir: results/demo-runtime-grpo

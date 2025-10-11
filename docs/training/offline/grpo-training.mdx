@@ -392,7 +392,7 @@ inputs = tokenizer(problem, return_tensors="pt").to(student.device)
 baseline = student.generate(**inputs, max_new_tokens=100)
 print(f"Baseline: {tokenizer.decode(baseline[0])}")
 
-# Get teaching (using ATLAS protocol from optimize_teaching.py)
+# Get teaching (using the atlas-sdk runtime loop)
 # This gives you the enhanced response
 ```
 
@@ -444,8 +444,8 @@ scripts/launch.sh 8 configs/run/teacher_rcl.yaml \
 ## Next Steps
 
 <CardGroup cols="2">
-  <Card title="Online Optimization" icon="arrows-rotate" href="/training/online/optimize-with-atlas">
-    Fine-tune your trained model for specific tasks
+  <Card title="SDK Runtime" icon="arrows-rotate" href="/sdk/quickstart">
+    Keep production agents improving between offline runs
   </Card>
   <Card title="Deploy to Production" icon="server" href="/integration/production-deployment">
     Integrate your custom teacher into production

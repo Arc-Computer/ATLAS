@@ -1,0 +1,16 @@
+{
+  "include": [
+    "scripts/run_offline_pipeline.py",
+    "train.py"
+  ],
+  "exclude": [
+    "**/__pycache__",
+    "RIM",
+    "custom_data",
+    "atlas_core",
+    "accelerate",
+    "trainers"
+  ],
+  "typeCheckingMode": "basic",
+  "reportMissingImports": "warning"
+}
