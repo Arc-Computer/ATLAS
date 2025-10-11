@@ -94,7 +94,7 @@ storage:
 After a run (or a batch of runs) export the traces to JSONL:
 
 ```bash
-arc-atlas \
+atlas sdk export \
   --database-url postgresql://atlas:atlas@localhost:5432/atlas \
   --output traces/aime-batch.jsonl
 ```
@@ -104,7 +104,7 @@ Ensure Postgres is running and reachable before exporting. You can launch it wit
 </Note>
 
 <Tip>
-If another tool has claimed the `atlas` command on your machine, invoke the exporter with `python -m atlas.cli.export ...` or ensure `arc-atlas` resolves first on `PATH`.
+If another tool has claimed the `atlas` command on your machine, invoke the exporter with `python -m atlas.cli.export ...` or ensure `atlas` resolves first on `PATH`.
 </Tip>
 
 Each JSONL record maps to the shared runtime schema (`task`, `plan`, per-step `reward` with nested judges, guidance history, validation, tool metadata, plus optional `artifacts` and `deliverable` payloads). Preview a single record with `jq`:

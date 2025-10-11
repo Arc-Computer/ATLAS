@@ -35,7 +35,7 @@ Use the runtime for instant lift, then plug the same traces into GRPO when you n
 | Stage | Run This | Output | Typical Effort |
 |-------|-----------|--------|----------------|
 | Runtime quality control | [`atlas.core.run(..., stream_progress=True)`](/sdk/quickstart) | Reviewed plan, per-step traces, live reward scores | Minutes |
-| Persist + export | [`storage:` block](/sdk/configuration) + [`arc-atlas --output traces.jsonl`](/sdk/export-traces) | JSONL dataset mirroring production behaviour | Minutes |
+| Persist + export | [`storage:` block](/sdk/configuration) + [`atlas sdk export --output traces.jsonl`](/sdk/export-traces) | JSONL dataset mirroring production behaviour | Minutes |
 | Export + train workflow | [`scripts/run_offline_pipeline.py`](https://github.com/Arc-Computer/ATLAS/blob/main/scripts/run_offline_pipeline.py) | Convert runtime traces into a new teacher checkpoint | Minutes to launch (training time depends on compute) |
 | Custom training | [GRPO pipeline](/training/offline/grpo-training) | Bespoke teacher checkpoint, ready to deploy | Multi-hour job on GPUs |
 
