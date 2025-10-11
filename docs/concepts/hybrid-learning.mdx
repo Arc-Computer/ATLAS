@@ -31,23 +31,23 @@ Offline RL Training (24-48 hours)
 - **Cross-domain transfer**: Math-trained reasoning generalizes to debugging, coding, and other analytical tasks
 - **One-time cost**: Amortized over all deployments
 
-### Phase 2: Online Optimization
+### Phase 2: Runtime Continual Learning (SDK)
 
-Online optimization adapts pre-trained teachers to specific tasks:
+The atlas-sdk runtime adapts pre-trained teachers to specific tasks between GRPO training runs:
 
 ```
-Online Adaptation (2 hours)
-├── Task Analysis: Identify performance gaps
-├── Reflective Mutation: Automatic reward engineering
-├── Policy Updates: Rapid skill refinement
-└── Output: Task-optimized teaching policy
+Runtime Loop (continuous)
+├── Task Analysis: Identify performance gaps via rewards
+├── Experimentation: Adjust teaching prompts and strategies
+├── Trace Export: Capture high-signal interactions
+└── Output: Data for the next GRPO cycle + incremental runtime improvements
 ```
 
 **Key Characteristics:**
-- **Lightweight**: ~$10 in API costs
-- **Rapid**: 2-hour optimization cycles
-- **Safe**: Maintains non-degradation guarantee
-- **Continuous**: Improves with deployment
+- **Lightweight**: Runs through managed APIs in the SDK
+- **Rapid**: Improves over hours instead of full retraining cycles
+- **Safe**: Maintains non-degradation guarantee via reward guardrails
+- **Continuous**: Feeds fresh traces into the next offline training job
 
 ## Technical Implementation
 
@@ -78,37 +78,9 @@ def grpo_loss(logits, rewards, reference_logits, beta=0.04):
     return pg_loss + beta * kl_loss
 ```
 
-### Online Optimization Loop
+### Runtime Continual Learning Loop (SDK)
 
-The online phase implements reflective mutation for continuous improvement:
-
-```python
-class OnlineOptimizer:
-    def __init__(self, teacher_model, student_model):
-        self.teacher = teacher_model
-        self.student = student_model
-        self.skill_capsules = []
-
-    def optimize(self, task_samples):
-        for iteration in range(max_iterations):
-            # Phase 1: Evaluate current performance
-            baseline_score = self.evaluate(task_samples)
-
-            # Phase 2: Generate teaching variations
-            teaching_variants = self.reflective_mutation(
-                task_samples,
-                current_performance=baseline_score
-            )
-
-            # Phase 3: Select best teaching strategy
-            best_variant = self.select_optimal(teaching_variants)
-
-            # Phase 4: Create reusable skill capsule
-            if best_variant.improvement > threshold:
-                self.skill_capsules.append(best_variant)
-
-        return self.skill_capsules
-```
+In production, the atlas-sdk runtime constantly evaluates teacher guidance, captures deltas, and exports high-signal traces. Those traces feed both short-term adjustments (prompt/runtime tuning) and the next GRPO training cycle. As a result, the hybrid system keeps improving without pausing deployment.
 
 ## Empirical Validation
 
@@ -118,12 +90,12 @@ class OnlineOptimizer:
 |-------------------|---------------|------------------|------|----------------|
 | Fine-tuning | 1-2 weeks | +10-15% | $1000s | Poor |
 | Few-shot prompting | Minutes | +3-5% | ~$1 | Limited |
-| ATLAS Hybrid | 2 hours* | +15.7% baseline<br />+165% with GEPA | ~$10 | Excellent |
+| ATLAS Runtime + GRPO | Hours (depends on export + training) | +15.7% baseline | API + GPU spend | Excellent |
 
 *With pre-trained teacher models
 
 <Note>
-  Baseline figures reflect the runtime Student–Teacher loop plus GRPO training. The +165% improvement comes from running GEPA on top of the same setup (see [Online Optimization](/training/online/optimize-with-atlas)).
+  Baseline figures reflect the runtime Student–Teacher loop plus GRPO training. Online continual learning now lives in the [`atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) runtime.
 </Note>
 
 ### Case Study: Validated Cross-Domain Transfer
@@ -202,26 +174,25 @@ The hybrid architecture enables "Compounding Intelligence" through:
     ```
   </Step>
 
-  <Step title="Online Optimization">
-    Configure task-specific adaptation:
+  <Step title="Run GRPO on Exported Traces">
+    Launch the one-touch offline pipeline once the SDK has exported traces:
     ```bash
-    ./scripts/openai_agent_atlas.sh configs/optimize/default.yaml \
-      task_samples=your_task_data.json \
-      optimization_steps=100 \
-      temperature=0.7
+    python scripts/run_offline_pipeline.py \
+      --export-path traces/runtime.jsonl \
+      --wandb-project atlas-production \
+      --wandb-run-name runtime-to-grpo
     ```
   </Step>
 
   <Step title="Deploy Enhanced Model">
-    Integrate optimized teaching into production:
-    ```python
-    from trainers.prompt_adapter import ATLASGEPAAdapter
-
-    adapter = ATLASGEPAAdapter(
-        teacher_model=optimized_teacher_generate_fn,
-        student_model=your_production_model_generate_fn,
-        all_prompts=optimized_prompts
-    )
+    Point the SDK runtime at the new teacher checkpoint and redeploy:
+    ```yaml
+    # atlas-sdk runtime config excerpt
+    teacher:
+      llm:
+        provider: huggingface
+        model: /models/atlas-teacher-grpo
+        temperature: 0.2
     ```
   </Step>
 </Steps>
@@ -259,4 +230,4 @@ The hybrid architecture enables "Compounding Intelligence" through:
 
 - [ATLAS Technical Report](/reference/technical-report) - Sections 3.1-3.3 on hybrid architecture
 - [GRPO Algorithm](https://arxiv.org/abs/2402.03300) - Foundation for offline training
-- [Online Learning Guide](/training/online/optimize-with-atlas) - Practical implementation
+- [SDK Runtime Guide](/sdk/quickstart) - Export traces and manage continual learning

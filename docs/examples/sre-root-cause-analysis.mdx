@@ -288,19 +288,13 @@ ATLAS provides:
     This minimal intervention approach ensures efficiency while maximizing improvement.
   </Accordion>
 
-  <Accordion title="Online Optimization Process">
-    The 165% gain in 2 hours happens through:
-
-    1. **Reflective Mutation**: Automatic reward engineering
-    2. **Policy Gradient Updates**: Continuous improvement
-    3. **Skill Consolidation**: Converting lessons into reusable patterns
-
-    Total cost: ~$10 in API calls
+  <Accordion title="Runtime Continual Learning Workflow">
+    Export traces from the SDK runtime, review reward deltas, and schedule GRPO training to convert the learnings into a new teacher checkpoint. This keeps the incident playbook improving without interrupting production.
   </Accordion>
 </AccordionGroup>
 
 ## Next Steps
 
-<Card title="Online Optimization Case Study" icon="bolt" href="/examples/online-optimization-case-study">
-  Explore other use cases
+<Card title="Export & Train Workflow" icon="bolt" href="/training/offline/grpo-training">
+  Explore other offline training walkthroughs
 </Card>

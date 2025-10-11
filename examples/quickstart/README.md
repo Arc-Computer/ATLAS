@@ -1,6 +1,6 @@
 # ATLAS Quickstart Evaluation
 
-Run a single question through the ATLAS loop to see how much a GPT-5 teacher and the RIM reward system improve your agent before committing to a full GEPA optimization run.
+Run a single question through the ATLAS loop to see how much a GPT-5 teacher and the RIM reward system improve your agent before you export traces and launch GRPO training.
 
 ## Prerequisites
 - Python 3.11+
@@ -18,8 +18,8 @@ python examples/quickstart/evaluate.py \
 ```
 The script prints baseline and teacher-guided responses plus their RIM scores.
 
-Use the optional flags to change models or token limits. When ready for full prompt evolution, run:
+Use the optional flags to change models or token limits. When you’re ready to graduate from evaluation to training, export a batch of runtime traces with the atlas-sdk CLI and run:
 ```bash
-./scripts/openai_agent_atlas.sh configs/wrappers/openai_existing_agent.yaml
+python scripts/run_offline_pipeline.py --export-path traces/<your-export>.jsonl
 ```
-Update `agents.target` in the YAML to point at your production connector before running the script.
+This converts the export into a GRPO training job without any additional overrides.

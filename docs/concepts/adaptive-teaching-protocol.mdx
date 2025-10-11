@@ -152,7 +152,7 @@ ATLAS provides a **6x performance lift** while maintaining consistency across mu
 
 ### Key Metrics Across Benchmarks
 - **Closed-loop accuracy improvement**: 15.7% baseline lift
-- **Online optimization gain (GEPA)**: Up to +165% in ~2 hours on targeted domains
+- **Continual learning (atlas-sdk)**: Rapid task-specific adaptation powered by the runtime export + GRPO workflow
 - **Maximum observed improvement**: 29.6% on specific datasets (closed-loop baseline)
 - **Completion rate**: 31% improvement (69% → 100%)
 - **Token efficiency**: 50% reduction (4k → 2k tokens)
@@ -162,56 +162,15 @@ ATLAS provides a **6x performance lift** while maintaining consistency across mu
 
 ### Real-time Enhancement
 
-```python
-from trainers.prompt_adapter import ATLASGEPAAdapter
-import json
-
-# Load optimized teaching prompts
-with open("optimized_prompts.json", "r") as f:
-    prompts = json.load(f)["best_candidate"]
-
-# Create adapter
-adapter = ATLASGEPAAdapter(
-    teacher_model=teacher_generate_fn,
-    student_model=student_generate_fn,
-    all_prompts=prompts
-)
-
-# Process query with adaptive teaching
-result = adapter.evaluate([{"question": user_query}])
-enhanced_response = result.outputs[0]["student_with_teaching"]
-```
+Use the atlas-sdk runtime adapters (HTTP, Python callable, CLI, OpenAI Assistant) to wrap your agent with the teacher/student loop. The runtime streams guidance, telemetry, and reward scores while capturing traces for offline training.
 
 ### Batch Processing
 
-```python
-# Process multiple queries efficiently
-queries = [{"question": q} for q in query_list]
-results = adapter.evaluate(
-    queries,
-    capture_traces=True  # For analysis and optimization
-)
-enhanced_outputs = [r["student_with_teaching"] for r in results.outputs]
-```
+Schedule `atlas sdk export` to dump accumulated traces to JSONL. Atlas Core consumes those exports via `scripts/run_offline_pipeline.py`, producing new teacher checkpoints through GRPO.
 
 ### Streaming Applications
 
-```python
-class StreamingATLAS:
-    def __init__(self, teacher, student):
-        self.teacher = teacher
-        self.student = student
-        self.guidance_cache = {}
-
-    async def stream_enhanced(self, prompt: str):
-        # Get guidance once (cached)
-        if prompt not in self.guidance_cache:
-            self.guidance_cache[prompt] = await self.teacher.get_guidance(prompt)
-
-        # Stream enhanced response
-        async for token in self.student.stream(prompt, self.guidance_cache[prompt]):
-            yield token
-```
+Leverage the SDK's streaming APIs to interleave guidance with live tool usage. Persist the trace outputs so that high-signal conversations feed the next GRPO training cycle.
 
 ## How Diagnosis Works
 
@@ -239,8 +198,8 @@ These combine into a capability score from 0.0 to 1.0:
   <Card title="Deploy to Production" icon="code" href="/integration/inference-only">
     Integrate adaptive teaching into your pipeline
   </Card>
-  <Card title="Online Optimization" icon="arrows-rotate" href="/training/online/optimize-with-atlas">
-    Evolve teaching strategies for your specific tasks
+  <Card title="SDK Runtime" icon="workflow" href="/sdk/quickstart">
+    Export traces and monitor agents in production
   </Card>
   <Card title="Performance Analysis" icon="chart-line" href="/benchmarks/evaluation-methodology">
     Detailed benchmark results and methodology

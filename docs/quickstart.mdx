@@ -10,7 +10,7 @@ ATLAS is designed for production AI engineers. In under an hour you can plug the
 <Info>
 **Choose your path:**
 - **Runtime orchestration only** — Complete Steps 1–4 to wrap your agent with Atlas quality control and export traces (requires only `pip install arc-atlas`).
-- **Runtime + training pipeline** — Continue through Step 5 to feed exported traces into GRPO/GEPA training (requires the [Atlas training repository](https://github.com/Arc-Computer/ATLAS)).
+- **Runtime + training pipeline** — Continue through Step 5 to feed exported traces into GRPO training (requires the [Atlas Core training repository](https://github.com/Arc-Computer/ATLAS)).
 </Info>
 
 *End-to-end flow:* Install SDK → Configure BYOA → Run Teacher/Student/Reward loop → Export traces → Train.
@@ -135,13 +135,21 @@ make_dataset_fn:
 
 Now launch GRPO or a scoring job exactly as you would with any other dataset. The trainer sees the same reward structure that the runtime produced, so step-level improvements translate directly into policy updates. See [`Training Your Own Teacher`](/training/offline/grpo-training) for the full recipe and the [`Training Configuration`](/training/configuration) guide for Hydra overrides.
 
+Run the helper CLI to kick off training without assembling overrides:
+
+```bash
+python scripts/run_offline_pipeline.py --export-path traces/aime-batch.jsonl
+```
+
+Pass `--wandb-project`, `--output-dir`, or additional `--override` flags as needed.
+
 ## Optional — Advanced optimisation
 
 Once the loop is running end-to-end, you can layer on additional optimization strategies:
 
-- **Prompt evolution (GEPA)** for rapid API-based improvements.
 - **Custom judges** for domain-specific scoring.
 - **Full GRPO retraining** when you need a bespoke teacher checkpoint.
+- **SDK continual learning** if you need rapid, task-specific adaptation between offline runs.
 
 Each of these uses the same exported traces, so you can adopt them incrementally as your workloads grow.
 
@@ -156,4 +164,4 @@ Each of these uses the same exported traces, so you can adopt them incrementally
 **Training integration (optional):**
 - [x] Consumed traces in the training stack
 
-You now have the full Atlas workflow configured. Completing Steps 1–4 gives you runtime orchestration with exportable traces; finishing Step 5 bridges those traces into the training stack for GRPO/GEPA optimization.
+You now have the full Atlas workflow configured. Completing Steps 1–4 gives you runtime orchestration with exportable traces; finishing Step 5 bridges those traces into the training stack for GRPO training.

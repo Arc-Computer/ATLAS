@@ -1,8 +1,8 @@
 defaults:
   - _self_
   - model@_global_: qwen3_8b
-  - data@_global_: arc_atlas_sft
-  - trainer@_global_: base_sft
+  - data@_global_: runtime_traces
+  - trainer@_global_: grpo
   - run@_global_: default
 
 
@@ -17,7 +17,7 @@ call_post_training:
 logging_strategy: steps
 logging_steps: 5
 report_to: "wandb"
-wandb_project: adaptive_teaching_sft
+wandb_project: adaptive_teaching_grpo
 wandb_group_name: ${data_log_name}/${model_log_name}
 wandb_run_name: ${trainer_log_name}
 
