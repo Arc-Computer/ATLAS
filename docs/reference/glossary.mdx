@@ -14,15 +14,12 @@ icon: book
 The ability of an agent to improve from experience and transfer learned skills across tasks without retraining the base model weights.
 
 ### Hybrid Architecture
-ATLAS's approach of separating offline RL training (for teachers) from online optimization (for task adaptation), enabling both stability and flexibility.
+ATLAS's approach of separating offline RL training (for teachers) from runtime continual learning (for task adaptation), enabling both stability and flexibility.
 
 ## Training Algorithms
 
 ### GRPO
 **Group Relative Policy Optimization** - The offline RL algorithm used to train ATLAS teacher models. Optimizes teaching policies through group-relative rewards with KL divergence constraints.
-
-### GEPA
-**Genetic Evolution for Prompt Adaptation** - The online optimization algorithm that rapidly adapts to specific tasks through evolutionary search without model retraining.
 
 ### SFT
 **Supervised Fine-Tuning** - Initial training phase that establishes baseline capabilities before RL optimization. Required warmup step before GRPO training.

@@ -1,0 +1,18 @@
+{
+  "include": [
+    "train.py",
+    "scripts/run_offline_pipeline.py",
+    "custom_data/runtime_trace_data.py",
+    "trainers/runtime_dataset.py",
+    "atlas_core/runtime/schema.py"
+  ],
+  "exclude": [
+    "**/__pycache__",
+    ".venv",
+    "**/node_modules",
+    "**/build",
+    "**/dist"
+  ],
+  "typeCheckingMode": "basic",
+  "reportMissingImports": "warning"
+}

@@ -1,12 +1,18 @@
-# Lightweight config that reuses the proven OpenAI compatibility wrapper.
-# Run with:
-#   ./scripts/openai_agent_atlas.sh configs/examples/quickstart.yaml
-# or override TEACHER_MODEL / STUDENT_MODEL via environment variables.
+# Minimal GRPO quickstart config for running on exported runtime traces.
+# Usage:
+#   python train.py --config-name examples/quickstart
+# or run the helper script:
+#   python scripts/run_offline_pipeline.py --export-path traces/aime-batch.jsonl
 
 defaults:
-  - ../wrappers/openai_existing_agent
+  - /train
 
-# Override only the fields you need. Examples:
-# teacher_model: gpt-4.1
-# student_model: gpt-4o-mini
-# max_metric_calls: 40
+# Path to the runtime dataset exported from the atlas-sdk CLI.
+data:
+  dataset_path: traces/aime-batch.jsonl
+  eval_split_ratio: 0.1
+
+# Optional overrides for experiment tracking and output structure.
+wandb_project: atlas-quickstart
+wandb_run_name: traces-to-grpo
+output_dir: results/quickstart

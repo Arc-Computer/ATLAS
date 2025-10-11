@@ -156,7 +156,7 @@ sre_data = dataset.filter(lambda x: x['domain'] == 'debug')
 | Token Efficiency | 100% | 50% | -50% |
 
 <Note>
-  These figures reflect the closed-loop runtime plus GRPO baseline. Applying GEPA on top of the same data produces the documented **+165%** task-specific lift (see [Online Optimization](/training/online/optimize-with-atlas)).
+  These figures reflect the closed-loop runtime plus GRPO baseline. Online continual learning now lives in the [`atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) runtime if you need task-specific adaptation between offline training runs.
 </Note>
 
 ## Creating Custom Datasets

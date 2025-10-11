@@ -21,9 +21,9 @@ Unlike fine-tuning which modifies model weights, ATLAS:
 
 ### What performance improvements can I expect?
 
-Across our evaluation suite we consistently see the closed-loop Student–Teacher runtime deliver an average **+15.7% accuracy gain**, **31% task completion lift**, **97% non-degradation**, and **~50% token savings** versus baseline agents. When you layer the GEPA online optimizer on top of that loop, domain-specific studies show gains up to **+165%** in roughly **2 hours** with ~$10 in API spend (see [Online Optimization](/training/online/optimize-with-atlas)). Offline GRPO training then provides longer-term improvements when you fine-tune custom teacher checkpoints.
+Across our evaluation suite we consistently see the closed-loop Student–Teacher runtime deliver an average **+15.7% accuracy gain**, **31% task completion lift**, **97% non-degradation**, and **~50% token savings** versus baseline agents. Offline GRPO training then compounds those gains when you fine-tune custom teacher checkpoints using the traces exported from production.
 
-Actual results vary with task difficulty, data quality, and the strength of the underlying student model, but the closed loop plus GEPA/GRPO stack gives you levers to reach those numbers.
+Actual results vary with task difficulty, data quality, and the strength of the underlying student model, but the closed loop plus GRPO stack gives you levers to reach those numbers. Online continual learning lives in the [`atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) runtime if you need rapid, task-specific adaptation.
 
 ## Hardware & Setup
 
@@ -84,15 +84,10 @@ model = AutoModelForCausalLM.from_pretrained(
 
 ### How long does training take?
 
-**Offline RL Training:**
+**Offline RL Training (GRPO):**
 - SFT warmup: 4-8 hours
 - GRPO training: 24-48 hours
 - Hardware: 4-8 H100 GPUs
-
-**Online Optimization:**
-- Time: 2-3 hours
-- Cost: ~$10 in API credits
-- No GPU required
 
 ### What's the difference between online and offline training?
 
@@ -102,11 +97,11 @@ model = AutoModelForCausalLM.from_pretrained(
 - Produces generalizable models
 - One-time investment
 
-**Online Optimization (GEPA):**
-- Adapts to specific tasks
-- Uses API-based optimization
-- Rapid iteration cycles
-- Per-task refinement
+**Continual Learning (atlas-sdk):**
+- Adapts to specific tasks using the runtime loop
+- Runs through the SDK CLI and APIs
+- Rapid iteration cycles driven by live traces
+- Keeps production agents improving between offline training runs
 
 ### Can I train on custom data?
 
@@ -167,18 +162,7 @@ See [Inference Integration Guide](/integration/inference-only) for complete exam
 
 ### Can ATLAS work with my existing agent?
 
-Yes, ATLAS can wrap any existing agent:
-
-```bash
-scripts/openai_agent_atlas.sh configs/wrappers/your_agent.yaml
-```
-
-Supports:
-- OpenAI Assistants
-- LangChain agents
-- HTTP APIs
-- Python functions
-- CLI tools
+Yes. Use the [`atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) runtime wrappers (HTTP, Python callable, OpenAI Assistants, CLI) to orchestrate your agent, export traces, and hand them to Atlas Core for training. The SDK documentation covers the available adapters and configuration options.
 
 ### How do I monitor performance in production?
 
@@ -258,15 +242,14 @@ If issues persist:
 - Check task-model compatibility
 - Verify data quality
 - Adjust teaching parameters
-- Use online optimization
+- Export fresh traces and schedule a GRPO training run
 
 ## Cost Questions
 
 ### How much does ATLAS cost to run?
 
 **Training Costs:**
-- Offline RL: $100-500 in compute
-- Online optimization: ~$10 per task
+- Offline RL: $100-500 in compute (depends on GPUs and run length)
 
 **Inference Costs:**
 - Self-hosted: Electricity only

@@ -7,7 +7,7 @@ icon: copy
 
 ## Overview
 
-This guide provides exact steps to reproduce the closed-loop **+15.7% accuracy improvement** and related metrics reported in our technical documentation. After you reproduce the baseline, you can optionally run the [GEPA online optimization pipeline](/training/online/optimize-with-atlas) to observe the documented **+165% task-specific gain** achieved in our case study.
+This guide provides exact steps to reproduce the closed-loop **+15.7% accuracy improvement** and related metrics reported in our technical documentation. Once you reproduce the baseline, export the traces and run our offline GRPO pipeline to train a bespoke teacher checkpoint for your domain.
 
 <Note>
   Reproduction requires 4×H100 GPUs for full-scale training. For smaller-scale validation, see the [Quick Validation](#quick-validation) section.
@@ -123,7 +123,7 @@ beta: 0.04
     - Token savings: ~50%
 
     <Note>
-      To observe the **+165%** domain-specific lift reported in our documentation, run the GEPA optimization workflow after this baseline evaluation (see [Online Optimization](/training/online/optimize-with-atlas)).
+      To continue beyond the baseline, export the traces with the SDK and launch `python scripts/run_offline_pipeline.py --export-path traces/runtime.jsonl` to begin GRPO training.
     </Note>
     - Completion rate: ~100%
     - Token reduction: ~50%
@@ -162,7 +162,7 @@ After successful reproduction, you should observe:
 | Token reduction | 50% | ±5% |
 | Generation speedup | 13.6% | ±2% |
 | Non-degradation rate | 97% | ±1% |
-| GEPA optimization gain | Up to +165% | Case-study specific |
+| Offline GRPO gain | Sustained lift from training on exported traces | Compute-bound |
 
 ## Monitoring Training
 

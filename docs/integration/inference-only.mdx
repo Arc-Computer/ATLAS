@@ -33,7 +33,7 @@ This is the fastest path to seeing ATLAS in action and is production-ready for A
     ```
 
     <Note>
-    Clone the repository and install `requirements-py312.txt` only if you need to modify the core training stack or run the GEPA optimizer locally.
+    Clone the repository and install `requirements-py312.txt` only if you need to modify the offline training stack or extend reward tooling.
     </Note>
   </Step>
 
@@ -396,13 +396,14 @@ trainset: arc-atlas-rl
 max_examples: 10
 ```
 
-Then optimize with GEPA:
+When you're satisfied with the runtime performance, export traces with the SDK and launch offline training:
 
 ```bash
-./scripts/openai_agent_atlas.sh configs/wrappers/my_agent.yaml
+atlas sdk export --config configs/examples/my_agent.yaml --output traces/runtime.jsonl
+python scripts/run_offline_pipeline.py --export-path traces/runtime.jsonl
 ```
 
-This evolves optimized teaching prompts saved to `optimized_prompts.json`.
+This produces a new GRPO-trained teacher checkpoint that you can redeploy through the SDK runtime.
 
 ## Hardware Requirements
 
@@ -432,17 +433,17 @@ This evolves optimized teaching prompts saved to `optimized_prompts.json`.
 ## Next Steps
 
 <CardGroup cols="2">
-  <Card title="Optimize Teaching Prompts" icon="bolt" href="/training/online/optimize-with-atlas">
-    Use GEPA to evolve better teaching strategies (+165% performance)
+  <Card title="SDK Runtime Quickstart" icon="bolt" href="/sdk/quickstart">
+    Wrap your agent, stream telemetry, and export traces for training
+  </Card>
+  <Card title="Offline GRPO Training" icon="graduation-cap" href="/training/offline/grpo-training">
+    Convert runtime exports into new teacher checkpoints
   </Card>
   <Card title="RIM Reward System" icon="scale-balanced" href="/concepts/reward-design">
     Understand how ATLAS measures improvement
   </Card>
   <Card title="Production Deployment" icon="rocket" href="/integration/production-deployment">
     Scale to production environments
-  </Card>
-  <Card title="Working Examples" icon="code" href="/examples/online-optimization-case-study">
-    See complete end-to-end demos
   </Card>
 </CardGroup>
 
@@ -472,6 +473,6 @@ This evolves optimized teaching prompts saved to `optimized_prompts.json`.
     1. Verify teacher model is stronger than student (e.g., gpt-5 > gpt-4o-mini)
     2. Check teaching actually contains guidance (not just repeating the question)
     3. Ensure student prompt includes the teaching content
-    4. Try running GEPA optimization to improve teaching prompts
+    4. Export traces and review them with the reward system to locate failure patterns before scheduling GRPO training
   </Accordion>
 </AccordionGroup>

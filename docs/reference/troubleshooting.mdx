@@ -340,52 +340,9 @@ sudo ufw status
 vllm_url = "http://localhost:8000/v1"  # Not https
 ```
 
-## Online Optimization Issues
+## Continual Learning Support
 
-### GEPA Not Converging
-
-**Problem:** Online optimization shows no improvement
-
-**Solutions:**
-
-```python
-# Increase population size
-config.population_size = 30
-
-# Adjust mutation temperature
-config.mutation_temperature = 0.8
-
-# Use better reflection model
-config.reflection_model = "gpt-4-turbo"
-
-# Add more diverse examples
-config.num_samples = 200
-
-# Check data quality
-validator.check_sample_diversity(samples)
-```
-
-### High API Costs
-
-**Problem:** Online optimization exceeding budget
-
-**Solutions:**
-
-```yaml
-# Reduce iterations
-max_iterations: 50  # Instead of 100
-
-# Use cheaper models
-reflection_model: "gpt-3.5-turbo"
-evaluation_model: "gpt-3.5-turbo"
-
-# Enable caching
-enable_cache: true
-cache_ttl: 3600
-
-# Smaller batches
-batch_size: 2
-```
+Online continual learning and adaptive prompt optimization live in the [`atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) project. Refer to the SDK troubleshooting guide for help with the export CLI, runtime orchestration, or continual learning jobs.
 
 ## Getting Help
 

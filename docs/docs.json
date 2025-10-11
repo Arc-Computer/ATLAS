@@ -39,7 +39,6 @@
               "concepts/adaptive-teaching-protocol",
               "concepts/hybrid-learning",
               "concepts/reward-design",
-              "concepts/what-is-gepa",
               "architecture/system-overview"
             ]
           },
@@ -47,13 +46,7 @@
             "group": "Training",
             "pages": [
               "training/configuration",
-              {
-                "group": "Online Optimization",
-                "pages": [
-                  "training/online/optimize-with-atlas",
-                  "training/online/continuous-learning"
-                ]
-              },
+              "training/online/continuous-learning",
               {
                 "group": "Offline Training",
                 "pages": [
@@ -70,7 +63,6 @@
                 "group": "Case Studies",
                 "pages": [
                   "examples/sre-root-cause-analysis",
-                  "examples/online-optimization-case-study",
                   "examples/sota-on-tau-squared-bench"
                 ]
               }

@@ -9,6 +9,10 @@ icon: infinity
 
 Continuous learning enables ATLAS to improve automatically from production usage, creating a self-improving system that gets better with every interaction. This approach combines online optimization with production feedback loops.
 
+<Info>
+Atlas Core now focuses on offline GRPO training. The workflows in this guide are implemented in the [`atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) runtime and documented here for architectural context.
+</Info>
+
 ## System Architecture
 
 ```mermaid
@@ -193,7 +197,7 @@ graph LR
             """
             print(f"Triggering update with {len(training_samples)} samples")
 
-            # Run online optimization
+            # Trigger the atlas-sdk continual learning job
             optimizer = OnlineOptimizer()
             improved_model = await optimizer.optimize(
                 training_samples,

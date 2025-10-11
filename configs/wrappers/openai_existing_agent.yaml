@@ -38,14 +38,6 @@ generation_config:
 seed_prompts:
   teacher_adaptive_template: "You are an expert teacher. The student gave this response: {baseline_response}\n\nTo the question: {question}\n\nProvide focused teaching to help them improve. Wrap teaching in <teaching> tags."
 
-gepa_config:
-  candidate_selection_strategy: pareto
-  skip_perfect_score: false
-  reflection_minibatch_size: 5
-  perfect_score: 1.0
-  module_selector: single
-  display_progress_bar: true
-
 wandb:
   enabled: false
   project: atlas-compatibility-testing

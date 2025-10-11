@@ -1,7 +1,7 @@
 transformers==4.51.1
 datasets==3.2.0
 accelerate==1.4.0
-bitsandbytes==0.45.5
+bitsandbytes==0.45.5; platform_system == "Linux"
 peft==0.14.0
 hf-transfer==0.1.9
 deepspeed==0.15.4
@@ -12,3 +12,4 @@ matplotlib
 wandb
 tensorboard==2.18.0
 fire==0.7.0
+litellm>=1.77.7
