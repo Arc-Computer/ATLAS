@@ -33,52 +33,30 @@ By keeping online optimization inside the SDK and offline RL here, teams get a c
 <em>Offline GRPO sits downstream of the runtime loop: export traces → train → redeploy.</em>
 </div>
 
-## One-Touch Offline Workflow
+## Workflow at a Glance
 
-1. **Export traces with the SDK**
-   ```bash
-   atlas sdk export --config configs/examples/http_agent.yaml --output traces/aime-batch.jsonl
-   ```
-   See the [SDK documentation](https://docs.arc.computer/sdk/export-traces) for configuration details.
+Atlas Core fits into a simple, repeatable loop:
 
-2. **Run GRPO against the export**
-   ```bash
-   python scripts/run_offline_pipeline.py \
-     --export-path traces/aime-batch.jsonl \
-     --wandb-project atlas-aime \
-     --wandb-run-name aime-runtime-to-grpo
-   ```
-   The helper script wraps `python train.py` with sensible Hydra overrides so the SDK (or your automation) can trigger training without assembling overrides by hand. Pass `--dry-run` to inspect the command before execution.
+1. **Export traces** with the SDK runtime (`atlas sdk export ...`). The SDK owns online orchestration, telemetry, and JSONL export.
+2. **Launch offline training** with `python scripts/run_offline_pipeline.py --export-path <traces.jsonl>`. The helper applies the correct Hydra overrides so you can scale training without hand-written commands.
+3. **Evaluate and redeploy** the new teacher checkpoint, updating runtime configs in the SDK when you are satisfied with the lift.
 
-3. **Evaluate and deploy**
-   - Use `tests/` or your own harness to validate the checkpoint.
-   - Update runtime configs in the SDK to point at the new teacher weights.
+Need the hands-on version? Follow the [Quickstart tutorial](https://docs.arc.computer/quickstart) for the complete step-by-step instructions.
 
-## Configuration Cheatsheet
+## Configuration Overview
 
-Atlas Core uses Hydra to compose training configs. Key groups:
+Hydra bundles Atlas defaults into composable groups:
 
-- `model@_global_` → `configs/model/` (defaults to `qwen3_8b`)
-- `data@_global_` → `configs/data/` (defaults to `runtime_traces`)
-- `trainer@_global_` → `configs/trainer/` (defaults to `grpo`)
+- `model@_global_` → `configs/model/`
+- `data@_global_` → `configs/data/`
+- `trainer@_global_` → `configs/trainer/`
 
-Examples:
+Starter configs ship in:
 
-```bash
-# Use a different dataset (e.g., supervised warmup) and trainer
-python train.py data@_global_=arc_atlas_sft trainer@_global_=base_sft
+- `configs/examples/quickstart.yaml` (minimal overrides for the helper script)
+- `configs/demo/runtime_grpo.yaml` (documented walkthrough used in the Mintlify docs)
 
-# Custom split and output directory
-python train.py \
-  data.eval_split_ratio=0.2 \
-  data.dataset_path=traces/incident.jsonl \
-  output_dir=results/incident-grpo
-```
-
-Ready-made configs:
-
-- `configs/examples/quickstart.yaml` – minimal overrides for the helper script
-- `configs/demo/runtime_grpo.yaml` – documented walkthrough used in the Mintlify docs
+Deep dives and override recipes live in the [Training Configuration guide](https://docs.arc.computer/training/configuration).
 
 ## Rewards Only?
 

@@ -55,9 +55,7 @@ configs/
       diagnostic_max_tokens: 500
     ```
 
-    ```bash
-    ./scripts/openai_agent_atlas.sh configs/wrappers/my_api_agent.yaml
-    ```
+    Use the SDK runtime CLI (`atlas sdk run ...`) or Python entry points (`atlas.core.run(...)`) to execute this wrapper. See the [`SDK Quickstart`](/sdk/quickstart) for end-to-end launch commands.
   </Tab>
   <Tab title="Python Function">
     ```yaml
@@ -101,9 +99,7 @@ configs/
     compatibility_mode: true
     ```
 
-    ```bash
-    ./scripts/openai_agent_atlas.sh configs/wrappers/my_cli_agent.yaml
-    ```
+    Run the wrapper through the SDK runtime (CLI or Python API) as described in the [`SDK Quickstart`](/sdk/quickstart).
   </Tab>
 </Tabs>
 

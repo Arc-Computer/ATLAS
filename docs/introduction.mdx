@@ -43,17 +43,7 @@ Every stage feeds the next—the same traces you capture at runtime become the f
 
 ## Getting Started: Two Paths
 
-Atlas is a comprehensive framework with two primary entry points. Most teams begin with the SDK to orchestrate an existing agent, then graduate to the training workflows for deeper optimization. Install the runtime with:
-
-```bash
-pip install arc-atlas
-```
-
-That single package contains the SDK client, orchestrator, reward system, and telemetry tools. Use it to wrap your agent, stream the Teacher↔Student loop to your terminal, and export traces for training.
-
-<Tip>
-Start fast: copy `configs/examples/http_agent.yaml`, swap in your agent endpoint, then call `atlas.core.run(task=..., config_path=...)` to see the loop in action before tweaking anything else.
-</Tip>
+Atlas is a comprehensive framework with two primary entry points. Most teams begin with the SDK to orchestrate an existing agent, then graduate to the training workflows for deeper optimization. For hands-on instructions, see the [Quickstart tutorial](/quickstart) and the [`SDK Quickstart`](/sdk/quickstart).
 
 | I want to... | Use this Path | Key Docs |
 |--------------|----------|--------------|
@@ -62,7 +52,7 @@ Start fast: copy `configs/examples/http_agent.yaml`, swap in your agent endpoint
 | Convert runtime traces into GRPO training runs. | Atlas Core | [`Offline Training Guide`](/training/offline/grpo-training) |
 | Fine-tune a custom model with RL. | Training & Optimization | [`Offline Training Guide`](/training/offline/grpo-training) |
 
-Choose your starting point below:
+Choose your starting point:
 
 <CardGroup cols="2">
   <Card title="SDK Runtime Orchestration" icon="workflow" href="/sdk/quickstart">
