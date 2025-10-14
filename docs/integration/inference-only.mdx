@@ -399,7 +399,10 @@ max_examples: 10
 When you're satisfied with the runtime performance, export traces with the SDK and launch offline training:
 
 ```bash
-atlas sdk export --config configs/examples/my_agent.yaml --output traces/runtime.jsonl
+arc-atlas \
+  --database-url postgresql://atlas:atlas@localhost:5432/atlas \
+  --output traces/runtime.jsonl \
+  --trajectory-event-limit 500
 python scripts/run_offline_pipeline.py --export-path traces/runtime.jsonl
 ```
 

@@ -166,7 +166,7 @@ Use the atlas-sdk runtime adapters (HTTP, Python callable, CLI, OpenAI Assistant
 
 ### Batch Processing
 
-Schedule `atlas sdk export` to dump accumulated traces to JSONL. Atlas Core consumes those exports via `scripts/run_offline_pipeline.py`, producing new teacher checkpoints through GRPO.
+Schedule `arc-atlas --database-url postgresql://... --output traces.jsonl` to dump accumulated traces to JSONL. Atlas Core consumes those exports via `scripts/run_offline_pipeline.py`, producing new teacher checkpoints through GRPO.
 
 ### Streaming Applications
 

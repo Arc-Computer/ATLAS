@@ -26,7 +26,10 @@ Run your tasks with `atlas.core.run(..., stream_progress=True)` as usual. Each s
 ```bash
 arc-atlas \
   --database-url postgresql://atlas:atlas@localhost:5432/atlas \
-  --output traces/my-session.jsonl
+  --output traces/my-session.jsonl \
+  --trajectory-event-limit 500 \
+  --status succeeded \
+  --limit 50
 ```
 
 <Note>
@@ -39,44 +42,83 @@ If another tool owns the `atlas` command on your system, run the exporter with `
 
 ### Optional filters
 
-- `--session-id 42` exports a single session.
-- `--limit 25` pulls the most recent 25 sessions.
-- `--pretty` emits indented JSON (useful for debugging, but larger on disk).
+- `--session-id 42` (repeatable) exports specific sessions.
+- `--limit 25` / `--offset 25` page through recent sessions.
+- `--status succeeded --status failed` filters on runtime completion state.
+- `--trajectory-event-limit 200` caps the number of intermediate telemetry events embedded per session.
+- `--batch-size 20` controls how many sessions are fetched per query when walking large tables.
 
 The exporter writes one JSON object per line. Each record aligns with `AtlasSessionTrace`:
 
 ```jsonc
 {
-  "task": "Summarize the latest AI news",
+  "task": "Summarize the latest Atlas SDK updates",
   "final_answer": "...",
-  "plan": {"steps": [{"id": 1, "description": "collect sources"}]},
+  "adaptive_summary": {
+    "adaptive_mode": "coach",
+    "confidence": 0.58,
+    "certification_run": false,
+    "probe": {
+      "mode": "coach",
+      "confidence": 0.55,
+      "evidence": ["persona_helpful_ratio=0.62", "risk_high_severity"]
+    },
+    "mode_history": [
+      {"mode": "paired", "confidence": 0.71, "certification": true},
+      {"mode": "coach", "confidence": 0.55}
+    ]
+  },
+  "triage_dossier": {
+    "task": "Summarize the latest Atlas SDK updates",
+    "summary": "Capture highlights for stakeholders.",
+    "risks": [{"category": "quality", "description": "Customer-facing copy", "severity": "moderate"}],
+    "signals": [{"name": "tenant", "value": "demo"}],
+    "tags": ["tenant:demo", "domain:sre"]
+  },
+  "plan": {"steps": [{"id": 1, "description": "Collect release notes"}, {"id": 2, "description": "Draft summary"}]},
   "steps": [
     {
       "step_id": 1,
-      "description": "collect sources",
+      "description": "Collect release notes",
       "trace": "HUMAN: ...",
       "output": "...",
       "reward": {
-        "score": 0.88,
+        "score": 0.92,
         "judges": [
-          {"identifier": "process", "score": 0.90, "rationale": "..."}
+          {"identifier": "process", "score": 0.91, "rationale": "..."}
         ]
       },
-      "guidance": ["cite the primary source"],
-      "validation": {"valid": true, "rationale": "complete"},
+      "guidance": ["Cite the release date."],
+      "validation": {"valid": true, "rationale": "Complete"},
       "tool": "web_search",
-      "tool_params": {"query": "Atlas SDK"},
+      "tool_params": {"query": "Atlas SDK release notes"},
       "artifacts": {"sources": ["https://..."]},
-      "deliverable": {"summary": "..."}
+      "deliverable": {"notes": ["https://..."]}
     }
   ],
+  "session_reward": {
+    "score": 0.88,
+    "uncertainty": 0.07,
+    "judges": [
+      {"identifier": "process", "score": 0.90, "rationale": "..."}
+    ]
+  },
+  "reward_summary": {"score": 0.88},
+  "personas_used": [
+    {"persona": "planner", "instruction": "Focus on customer tone", "source": "memory"}
+  ],
+  "persona_updates": {
+    "new_candidates": [
+      {"persona": "planner", "instruction": "Mention adaptive modes", "tags": ["tenant:demo"]}
+    ]
+  },
   "session_metadata": {"batch": "aime-2025"}
 }
 ```
 
 > **Tip:** Compress large exports with `xz` or `gzip`—the loader streams line-by-line, so you can decompress on the fly if desired.
 
-Each step object can include structured `artifacts` captured during execution and a `deliverable` payload that mirrors what the Student hands back to downstream systems.
+Use `adaptive_summary` to audit routing choices, probe evidence, and certification status; `triage_dossier` captures the structured context that informed the decision; `personas_used` and `persona_updates` show how memory evolved during the run. Each step also carries structured `artifacts` captured during execution and a `deliverable` payload that mirrors what the Student hands back to downstream systems.
 
 ## 3. Feed the training stack
 

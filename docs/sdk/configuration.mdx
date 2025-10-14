@@ -19,13 +19,13 @@ All examples reference files in the Atlas SDK repo (`configs/examples/`). If you
 ## Layout at a Glance
 
 ```yaml
-agent:        # How to talk to your underlying model or service
-student:      # Planner, executor, and synthesizer prompts/limits
-teacher:      # Reviewer and validator settings
-orchestration:# Runtime policies like retries and timeouts
-rim:          # Defines the Reward System (judges, arbiter, thresholds)
-storage:      # (Optional) Postgres connection for trace persistence
-metadata:     # (Optional) Custom key-value tags persisted with each session
+agent:             # How to talk to your underlying model or service
+student:           # Planner, executor, and synthesizer prompts/limits
+teacher:           # Reviewer and validator settings
+orchestration:     # Runtime policies like retries and timeouts
+rim:               # Reward system (judges, arbiter, thresholds)
+adaptive_teaching: # Triage adapter, capability probe, reward overrides
+storage:           # (Optional) Postgres connection for trace persistence
 ```
 
 Each section is restrictive by design—unexpected keys raise validation errors—so it’s easier to debug mistakes before the orchestrator spins up.
@@ -157,6 +157,41 @@ rim:
 
 Learn more in [`Reward Design`](/concepts/reward-design#reward-system-in-the-atlas-sdk).
 
+## Adaptive Teaching (`adaptive_teaching`)
+
+This block powers the triage → probe → adaptive-mode controller. Leave it at the defaults to inherit the out-of-the-box behaviour or customise it to align with your governance rules.
+
+```yaml
+adaptive_teaching:
+  enabled: true
+  certify_first_run: true
+  mode_override: null            # Force a lane when governance requires it
+  triage_adapter: atlas.utils.triage:default_build_dossier
+  default_tags:
+    - tenant:demo
+    - domain:sre
+  probe:
+    thresholds:
+      auto: 0.85
+      paired: 0.65
+      coach: 0.40
+    fallback_mode: coach
+    evidence_limit: 6
+    timeout_seconds: 15
+  reward:
+    type: rim                     # or "python" for a custom objective
+    focus_prompt: null
+```
+
+- **`enabled`** / **`mode_override`**: Globally toggle the adaptive controller or pin the runtime to `auto`, `paired`, `coach`, or `escalate`.
+- **`certify_first_run`**: When `true`, the first time a persona fingerprint appears it is forced through a `paired` certification and the verdict is cached.
+- **`triage_adapter`**: A dotted path to a Python callable that returns a `TriageDossier`. Use `atlas triage init --domain <code|sre|support>` to scaffold a custom adapter.
+- **`default_tags`**: Labels automatically attached to persona memories and adaptive telemetry.
+- **`probe`**: Configures the capability probe LLM. Adjust the confidence thresholds, fallback behaviour, evidence length, or timeout. Set `probe.llm` if you want to override the default Gemini model.
+- **`reward`**: Override the reward objective. Stick with `rim` for the built-in judges or choose `python` and point `import_path`/`attribute` to your own scorer.
+
+See the [Adaptive Runtime Guide](../runtime_adaptive_flow.md) for a walkthrough of how these fields shape triage, probing, and lane decisions.
+
 ## Storage (`storage`)
 
 Optional Postgres persistence for traces and session metadata.
@@ -169,7 +204,17 @@ storage:
   statement_timeout_seconds: 30
 ```
 
-Leave `storage: null` (as in the quickstart) when you don’t have a database. Enable it when you want durable telemetry or plan to export datasets with `atlas sdk export --output traces.jsonl`.
+Leave `storage: null` when you don’t have a database. Enable it when you want durable telemetry or plan to export datasets:
+
+```bash
+arc-atlas \
+  --database-url postgresql://localhost:5432/atlas \
+  --output traces/runtime.jsonl \
+  --trajectory-event-limit 500 \
+  --status succeeded
+```
+
+Need a local instance quickly? Run `atlas storage up` to generate a Docker Compose file and start Postgres with sensible defaults.
 
 ## Persona prompts & guidance
 
@@ -186,12 +231,13 @@ Atlas derives persona text by combining the adapter’s `system_prompt` with hel
 |------|-----------------|---------------|
 | Swap to Anthropic via HTTP | `agent` | Use the `http_api` adapter and point `transport.base_url` to your service. |
 | Increase reasoning depth | `student` and `teacher` | Raise the `max_..._tokens` limits for the planner, executor, or guidance. | 
-| Persist sessions | `storage` | Provide a reachable Postgres URL and credentials. |
+| Steer adaptive routing | `adaptive_teaching` | Tweak probe thresholds, default tags, or set `mode_override`. |
+| Persist sessions | `storage` | Provide a Postgres URL or run `atlas storage up` and export with `arc-atlas`. |
 | Tighten the quality bar | `rim` | Lower `variance_threshold` / `uncertainty_threshold` or disable lenient judges in `active_judges`. |
 | Personalize prompts | `student.prompts` / `teacher.prompts` | Override the templates directly or use `atlas.prompts` helpers. |
 
 ## Next Steps
 
-- Walk through the runtime loop in [`How Orchestration Works`](/sdk/orchestration).
+- Walk through the runtime loop in [`How Orchestration Works`](/sdk/orchestration) and keep the [`Adaptive Runtime Guide`](../runtime_adaptive_flow.md) nearby for controller tuning.
 - Choose the right connector in [`Bring Your Own Agent`](/sdk/adapters).
 - See how runtime roles compare to training in [`Student & Teacher Roles`](/sdk/student-teacher-roles).
