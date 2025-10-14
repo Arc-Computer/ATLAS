@@ -1,4 +1,4 @@
-# ATLAS Core · Offline GRPO Training and Reward Tooling
+# Atlas Core · Learning Engine for Adaptive Agents
 
 <div align="center">
 
@@ -12,38 +12,47 @@
 
 </div>
 
-Atlas Core is the **offline** side of ATLAS: GRPO training loops, reward tooling, and utilities for turning runtime traces into deployable teacher checkpoints. The **atlas-sdk** repository now owns the runtime, telemetry, and online continual learning story. Think of the split as:
+# What is Atlas?
 
-| What you need | Repo | Highlights |
-|---------------|------|------------|
-| Runtime quality control, trace export, online adaptation | [`Arc-Computer/atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) | Bring-your-own-agent orchestration, telemetry, continual learning CLI |
-| Offline GRPO training and reward tooling | `Arc-Computer/ATLAS` (this repo) | Train teacher checkpoints from exported traces, analyze rewards, manage checkpoints |
+Atlas is the learning layer for production agents, giving them a way to adapt and learn in real time from every task. The runtime SDK (`atlas-sdk`) wraps any agent in an adaptive dual-agent reasoning loop (student + teacher) guided by reward signals that triages tasks, probes capability, and chooses the right supervision lane while streaming rich telemetry. This repository, **Atlas Core**, turns those adaptive episodes into new teacher checkpoints with offline GRPO training and provides the reward tooling that powers both halves.
 
-By keeping online optimization inside the SDK and offline RL here, teams get a clean hand-off: **export runtime traces → run GRPO → deploy the new teacher.**
-
-## Why the Offline Stack Matters
-
-- **Production-grounded data** – You own the traces captured in production. Atlas Core consumes them directly without relabeling.
-- **Repeatable GRPO pipeline** – Hydrated configs, reward adapters, and vLLM integration ship a proven recipe for training teacher checkpoints.
-- **Separation of concerns** – Online continual learning, real-time adaptation, and agent wrappers live in the SDK. Atlas Core focuses purely on training.
+| When you need… | Use | Highlights |
+|----------------|-----|------------|
+| Runtime continual learning: triage → probe → lane routing, telemetry, JSONL export | [`Arc-Computer/atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) | Drop-in runtime harness, storage helpers (`atlas storage up`), exporter (`arc-atlas`), persona telemetry |
+| Offline optimization: GRPO training, reward adapters, analysis utilities | `Arc-Computer/ATLAS` (this repo) | GRPO trainer, RIM reward system, data loaders, launch scripts |
 
 <div align="center">
-<img src="public/system-architecture.png" alt="ATLAS System Architecture Diagram" width="800" style="border-radius: 12px;">
-<br>
-<em>Offline GRPO sits downstream of the runtime loop: export traces → train → redeploy.</em>
+  <img src="public/runtime-2.png" alt="Atlas SDK adaptive runtime flow diagram showing triage, capability probe, and lane routing (auto, paired, coach, escalate)" width="900" />
+  <p><em>The runtime SDK triages each task, probes capability, and routes it into the right supervision lane before your agent executes.</em></p>
 </div>
 
-## Workflow at a Glance
+## Architecture at a Glance
 
-Atlas Core fits into a simple, repeatable loop:
+<div align="center">
+  <img src="docs/images/system-architecture.png" alt="Atlas architecture showing reasoning core, reward system, learning engine, and persistent memory connected to agent frameworks" width="900" style="border-radius: 12px;">
+  <p><em>Runtime episodes feed the reward system and persistent memory; Atlas Core consumes those exports to train new teachers with GRPO.</em></p>
+</div>
 
-1. **Export traces** with the SDK runtime (`arc-atlas --database-url … --output traces.jsonl`). The SDK owns online orchestration, telemetry, and JSONL export.
-2. **Launch offline training** with `python scripts/run_offline_pipeline.py --export-path <traces.jsonl>`. The helper applies the correct Hydra overrides so you can scale training without hand-written commands.
-3. **Evaluate and redeploy** the new teacher checkpoint, updating runtime configs in the SDK when you are satisfied with the lift.
+- **Reasoning Core** – Student and Teacher personas live in `atlas-sdk`, wrapping your agent with adaptive supervision in lanes (`auto`, `paired`, `coach`, `escalate`).
+- **Reward System (RIM)** – Shared evaluators score every step and session; the same judges label runtime telemetry and training data.
+- **Learning Engine** – This repo’s GRPO trainer ingests exported traces (`arc-atlas`) to produce updated teacher checkpoints.
+- **Persistent Memory** – Postgres + JSONL exports capture triage dossiers, adaptive summaries, persona updates, and reward payloads so the learning loop compounds over time.
 
-Need the hands-on version? Follow the [Quickstart tutorial](https://docs.arc.computer/quickstart) for the complete step-by-step instructions.
+## End-to-End Workflow
 
-The SDK runtime triages every request, runs a capability probe, and routes it into the right lane (`auto`, `paired`, `coach`, or `escalate`) before your agent executes. Those decisions—lane, probe confidence, certification status, persona usage, and reward breakdowns—stream live to the console and flow into `arc-atlas` exports so training jobs inherit the full adaptive context.
+1. **Wrap your agent with the runtime SDK** – Follow the [`SDK Quickstart`](https://docs.arc.computer/sdk/quickstart) to install `arc-atlas`, point the YAML config at your agent, and run `atlas.core.run`. Each task is triaged, probed, and routed into `auto`, `paired`, `coach`, or `escalate`, while adaptive summaries, persona updates, and rewards are recorded.
+2. **Persist and export telemetry** – Enable Postgres via `atlas storage up` and export sessions with `arc-atlas --database-url … --output traces.jsonl`. Every record carries the triage dossier, lane decision, probe confidence, guidance, and reward breakdowns.
+3. **Train offline with Atlas Core** – Use this repository’s GRPO pipeline (`python scripts/run_offline_pipeline.py --export-path <traces.jsonl>`) to turn runtime traces into a new teacher checkpoint. Redeploy the checkpoint back through the SDK to close the loop.
+
+This hand-off keeps the learning flywheel tight: runtime captures adaptive behaviour, exports become training data, and Atlas Core ships the update back into production.
+
+## What's in this Repository
+
+- `scripts/run_offline_pipeline.py` – One-command launcher that composes Hydra configs, spins up GRPO training, and handles logging/output directories.
+- `configs/` – Hydra library for models, datasets (`runtime_traces.yaml`), trainers (`teacher_grpo.yaml`), and ready-to-run recipes (e.g., `configs/run/teacher_sft.yaml`, `configs/run/teacher_grpo.yaml`).
+- `RIM/` – Reward adapters and judge definitions shared between runtime evaluation and offline training.
+- `train.py` / `trainers/` – Core GRPO loop, data loaders, and evaluation utilities.
+- `docs/` – Mintlify docs (synced with [docs.arc.computer](https://docs.arc.computer)) covering runtime orchestration and training deep dives.
 
 ## Configuration Overview
 
@@ -59,6 +68,28 @@ Starter configs ship in:
 - `configs/demo/runtime_grpo.yaml` (documented walkthrough used in the Mintlify docs)
 
 Deep dives and override recipes live in the [Training Configuration guide](https://docs.arc.computer/training/configuration).
+
+## Offline Quickstart
+
+1. **Prepare the runtime export**
+   ```bash
+   # From the atlas-sdk repo after running adaptive episodes
+   atlas storage up  # optional helper to launch Postgres
+   arc-atlas --database-url postgresql://atlas:atlas@localhost:5432/atlas \
+     --output traces/runtime.jsonl
+   ```
+   Each record carries `triage_dossier`, `adaptive_summary`, persona usage/updates, plan/step traces, and reward payloads—the exact inputs Atlas Core expects.
+
+2. **Launch GRPO training**
+   ```bash
+   python scripts/run_offline_pipeline.py \
+     --export-path traces/runtime.jsonl \
+     output_dir=results/teacher-grpo
+   ```
+   Override Hydra arguments (model, batch size, GPUs) as needed; the helper wires up `configs/run/teacher_grpo.yaml` by default.
+
+3. **Redeploy the checkpoint**
+   Point the runtime SDK at `results/teacher-grpo/rl_checkpoint/` (or your chosen output dir) to load the new teacher, then rerun `atlas.core.run` to close the loop.
 
 ## Rewards Only?
 
