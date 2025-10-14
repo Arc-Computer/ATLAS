@@ -1,7 +1,6 @@
----
-title: "Quickstart: Run Your First Task"
+title: "SDK Quickstart: Run Your First Task"
 description: Launch the Atlas SDK runtime, run your first task, and understand how the Student–Teacher loop orchestrates work.
-sidebarTitle: Quickstart
+sidebarTitle: SDK Quickstart
 icon: rocket
 ---
 
@@ -40,6 +39,11 @@ We recommend keeping credentials in a `.env` file and loading them with `dotenv`
 ## Step 1 – Run the Quickstart Task
 
 The `configs/examples/openai_agent.yaml` configuration enables the adaptive runtime out of the box. It includes a small `storage` block so you can persist sessions immediately—set `storage: null` if you prefer purely in-memory runs.
+
+<div align="center">
+  <img src="/images/adaptive-runtime.png" alt="Atlas SDK adaptive runtime flow diagram showing triage, probe, and lane routing" width="900" />
+  <p><em>The adaptive runtime probes capability and routes every task into the right lane before the Student–Teacher loop executes.</em></p>
+</div>
 
 Save the following snippet to a file (e.g., `run_atlas.py`).
 
