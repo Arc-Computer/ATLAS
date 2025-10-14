@@ -1,7 +1,6 @@
----
-title: Quickstart
-description: "Wrap your agent with the Atlas runtime and optionally bridge exported traces into the training stack."
-sidebarTitle: Quickstart
+title: Atlas Workflow Overview
+description: "Understand the end-to-end Atlas loop, then dive into the runtime quickstart or the training pipeline."
+sidebarTitle: Workflow Overview
 icon: rocket
 ---
 
@@ -12,6 +11,10 @@ ATLAS is designed for production AI engineers. In under an hour you can plug the
 - **Runtime orchestration only** — Complete Steps 1–4 to wrap your agent with Atlas quality control and export traces (requires only `pip install arc-atlas`).
 - **Runtime + training pipeline** — Continue through Step 5 to feed exported traces into GRPO training (requires the [Atlas Core training repository](https://github.com/Arc-Computer/ATLAS)).
 </Info>
+
+<Tip>
+Need the runtime instructions immediately? Head straight to the [`SDK Quickstart`](/sdk/quickstart) for the hands-on walkthrough. This page stays high level so teams can plan the full export → train loop.
+</Tip>
 
 *End-to-end flow:* Install SDK → Configure BYOA → Run Teacher/Student/Reward loop → Export traces → Train.
 
