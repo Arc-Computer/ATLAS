@@ -37,11 +37,13 @@ By keeping online optimization inside the SDK and offline RL here, teams get a c
 
 Atlas Core fits into a simple, repeatable loop:
 
-1. **Export traces** with the SDK runtime (`atlas sdk export ...`). The SDK owns online orchestration, telemetry, and JSONL export.
+1. **Export traces** with the SDK runtime (`arc-atlas --database-url … --output traces.jsonl`). The SDK owns online orchestration, telemetry, and JSONL export.
 2. **Launch offline training** with `python scripts/run_offline_pipeline.py --export-path <traces.jsonl>`. The helper applies the correct Hydra overrides so you can scale training without hand-written commands.
 3. **Evaluate and redeploy** the new teacher checkpoint, updating runtime configs in the SDK when you are satisfied with the lift.
 
 Need the hands-on version? Follow the [Quickstart tutorial](https://docs.arc.computer/quickstart) for the complete step-by-step instructions.
+
+The SDK runtime triages every request, runs a capability probe, and routes it into the right lane (`auto`, `paired`, `coach`, or `escalate`) before your agent executes. Those decisions—lane, probe confidence, certification status, persona usage, and reward breakdowns—stream live to the console and flow into `arc-atlas` exports so training jobs inherit the full adaptive context.
 
 ## Configuration Overview
 

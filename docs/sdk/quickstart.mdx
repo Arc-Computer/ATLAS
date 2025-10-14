@@ -5,7 +5,7 @@ sidebarTitle: Quickstart
 icon: rocket
 ---
 
-This guide provides the fastest path to running the Atlas SDK. Install the packaged runtime, point it at your agent, and execute your first task in a few commands.
+This guide provides the fastest path to running the Atlas SDK. Install the packaged runtime, point it at your agent, and execute your first task in a few commands—all while the adaptive runtime decides how much supervision each request needs.
 
 <Note>
 **Beta notice:** The Atlas SDK runtime is in beta. APIs and configuration keys may evolve—check release notes before upgrading.
@@ -31,7 +31,7 @@ Install the SDK directly from PyPI:
    <Tip>
    Using Azure OpenAI? Set the usual environment variables (`AZURE_OPENAI_API_KEY`, `AZURE_OPENAI_ENDPOINT`) and update the config’s provider/model entries before running.
    </Tip>
-3. **Use a modern version of Python.** The SDK is tested with Python 3.10 and newer.
+3. **Use a modern version of Python.** The SDK is tested with Python 3.10 and newer (the repo is developed with Python 3.13).
 
 <Note>
 We recommend keeping credentials in a `.env` file and loading them with `dotenv` or your process manager so they never land in shell history.
@@ -39,7 +39,7 @@ We recommend keeping credentials in a `.env` file and loading them with `dotenv`
 
 ## Step 1 – Run the Quickstart Task
 
-The `openai_agent.yaml` config is a lightweight configuration that disables storage and prompt rewriting, requiring only an `OPENAI_API_KEY` to get started.
+The `configs/examples/openai_agent.yaml` configuration enables the adaptive runtime out of the box. It includes a small `storage` block so you can persist sessions immediately—set `storage: null` if you prefer purely in-memory runs.
 
 Save the following snippet to a file (e.g., `run_atlas.py`).
 
@@ -61,7 +61,9 @@ python -c "from atlas.core import run; result = run(task='Summarize the latest A
 ```
 </Info>
 
-You should see a short plan-reason-synthesize cycle streaming into the terminal: the Student drafts a plan, the Teacher verifies it, steps execute, rewards are logged, and the final answer prints at the end. `atlas.runtime.telemetry.ConsoleTelemetryStreamer` auto-enables when stdout is a TTY; force it on/off with `stream_progress=True/False` in the `run` call.
+You should see an adaptive summary headline in the console stream (for example, `Adaptive: mode=coach confidence=0.58 certification=True`) followed by the usual plan-reason-synthesize loop. The runtime triages the request, runs a capability probe, chooses one of four lanes (`auto`, `paired`, `coach`, `escalate`), and then executes the Student↔Teacher loop with lane-specific supervision. `atlas.runtime.telemetry.ConsoleTelemetryStreamer` auto-enables when stdout is a TTY; force it on/off with `stream_progress=True/False` in the `run` call.
+
+Need a local Postgres instance? The CLI ships with `atlas storage up`, which writes `atlas-postgres.yaml` and starts the database via Docker. Skip it (or tear it down) if you’re running without persistence.
 
 ### BYOA in 5 Minutes
 
@@ -83,13 +85,14 @@ Run it with the same snippet as above, swapping the `config_path`. Atlas will st
 
 ## What Just Happened?
 
-Think of `atlas.core.run` as a project manager who never gets tired:
+Think of `atlas.core.run` as a project manager who never gets tired—now fronted by an adaptive controller:
 
-- **Configure** – the YAML tells the manager which agent to call and how the Student/Teacher/Reward System trio should behave.
-- **Plan** – the Student drafts a step-by-step approach for the Teacher to check.
-- **Review** – the Teacher approves or tweaks the plan before anything runs.
-- **Execute** – each step runs in order, with the Teacher validating outputs.
-- **Evaluate** – the Reward System scores the work, deciding whether retries or guidance are needed.
+- **Triage & probe** – a triage adapter builds context, the capability probe scores confidence, and the runtime picks a lane.
+- **Configure** – the YAML tells the orchestrator which agent to call and how the Student/Teacher/Reward System trio should behave.
+- **Plan** – the Student drafts a step-by-step approach when a stepwise lane is chosen; in single-shot lanes the plan collapses to one step.
+- **Review** – the Teacher approves or tweaks the plan (or just inspects the final answer in `paired` mode).
+- **Execute** – each step runs with lane-specific guidance, validation, and retries.
+- **Evaluate** – the Reward System scores the work, deciding whether to reuse guidance and how to update persona memories.
 
 ```mermaid
 graph LR
@@ -108,8 +111,9 @@ The `openai_agent.yaml` config defines the runtime behavior. Here’s a high-lev
 - **`teacher`**: Defines the review and guidance agent, which also has its own model and token budget.
 - **`orchestration`**: Sets runtime parameters like the number of retries (default: 1) and step timeouts.
 - **`rim`** (Reward System): Defines the judges and arbiter that score the final answer for quality and helpfulness. This score determines if a retry is needed.
-- **`storage`**: Set to `null` to disable Postgres persistence for a lightweight start.
-- **`student.prompts` / `teacher.prompts`**: Optional overrides. Atlas now derives persona text from `atlas.prompts`; customize behaviour by editing these prompt blocks directly.
+- **`adaptive_teaching`**: Controls the triage adapter, capability probe thresholds, certification policy, default tags, and reward overrides. See the [`Configuration reference`](/sdk/configuration#adaptive_teaching) and the [Adaptive Runtime guide](/runtime_adaptive_flow) for details.
+- **`storage`**: Point at Postgres to persist episodes; remove the block or set it to `null` for in-memory experiments.
+- **`student.prompts` / `teacher.prompts`**: Optional overrides. Atlas derives persona text from `atlas.prompts`; customize behaviour by editing these prompt blocks directly.
 
 To add tools, enable persistence, or use a different agent, switch the `config_path` to another template in `configs/examples/` (e.g., `http_agent.yaml`, `python_agent.yaml`) and see the `SDK Configuration` reference for details.
 
@@ -122,7 +126,7 @@ To add tools, enable persistence, or use a different agent, switch the `config_p
 ## Next Steps
 
 - Persist sessions and build datasets with [`Export Runtime Traces`](/sdk/export-traces), then follow the training loop in [`Quickstart`](/quickstart).
-- Dive into [`SDK Configuration`](/sdk/configuration) to customize each YAML block.
+- Dive into [`SDK Configuration`](/sdk/configuration) to customize each YAML block and the [`Adaptive Runtime Guide`](/runtime_adaptive_flow) to understand the triage → probe → lane controller.
 - Learn how the planner, reviewer, and evaluator cooperate in [`How Orchestration Works`](/sdk/orchestration).
 - Wrap your own agent with the adapters in [`Bring Your Own Agent`](/sdk/adapters).
 - Compare runtime vs training expectations in [`Student & Teacher Roles`](/sdk/student-teacher-roles).

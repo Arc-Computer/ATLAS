@@ -24,8 +24,8 @@ Across internal and external benchmarks this closed loop delivers an average **+
 
 ATLAS gives you a single harness that captures value on every turn of the loop:
 
-- **Runtime orchestrator** – `atlas.core.run` wraps any agent in the Student↔Teacher reviewer, applies live quality control, and exposes telemetry through `atlas.runtime.telemetry`.
-- **Data engine** – every run streams structured traces and reward signals into Postgres (`storage` block) and exports JSONL via the SDK CLI (`atlas sdk export`). You own the dataset that reflects how your production agent actually behaves.
+- **Runtime orchestrator** – `atlas.core.run` triages every task, runs a capability probe, routes it into `auto`, `paired`, `coach`, or `escalate`, and then wraps your agent in the Student↔Teacher reviewer while streaming telemetry through `atlas.runtime.telemetry`.
+- **Data engine** – every run streams structured traces and reward signals into Postgres (`storage` block) and exports JSONL via the SDK CLI (`arc-atlas --database-url ... --output traces.jsonl`). You own the dataset that reflects how your production agent actually behaves.
 - **Training pipeline** – feed those traces straight into the offline stack (`custom_data.runtime_trace_data.get_runtime_trace_dataset`, GRPO trainers) to ship bespoke teachers or policy checkpoints without hand-labeling.
 
 Use the runtime for instant lift, then plug the same traces into GRPO when you need custom weights—the data you collect in production is the fuel for both. Online continual learning now lives in the [atlas-sdk](https://github.com/Arc-Computer/atlas-sdk) repository.
@@ -35,7 +35,7 @@ Use the runtime for instant lift, then plug the same traces into GRPO when you n
 | Stage | Run This | Output | Typical Effort |
 |-------|-----------|--------|----------------|
 | Runtime quality control | [`atlas.core.run(..., stream_progress=True)`](/sdk/quickstart) | Reviewed plan, per-step traces, live reward scores | Minutes |
-| Persist + export | [`storage:` block](/sdk/configuration) + [`atlas sdk export --output traces.jsonl`](/sdk/export-traces) | JSONL dataset mirroring production behaviour | Minutes |
+| Persist + export | [`storage:` block](/sdk/configuration) + [`arc-atlas --database-url … --output traces.jsonl`](/sdk/export-traces) | JSONL dataset mirroring production behaviour | Minutes |
 | Export + train workflow | [`scripts/run_offline_pipeline.py`](https://github.com/Arc-Computer/ATLAS/blob/main/scripts/run_offline_pipeline.py) | Convert runtime traces into a new teacher checkpoint | Minutes to launch (training time depends on compute) |
 | Custom training | [GRPO pipeline](/training/offline/grpo-training) | Bespoke teacher checkpoint, ready to deploy | Multi-hour job on GPUs |
 
@@ -67,7 +67,7 @@ Choose your starting point:
 
 1. **Runtime config** – choose the closest template (`configs/examples/openai_agent.yaml`, `http_agent.yaml`, or `python_agent.yaml`) and point it at your agent.
 2. **Secrets & telemetry** – export your LLM keys, set `stream_progress=True`, and enable Postgres with the `storage` block when you’re ready to persist sessions.
-3. **Export pipeline** – schedule `atlas sdk export --config ... --output traces.jsonl` after runs to materialize the dataset.
+3. **Export pipeline** – schedule `arc-atlas --database-url ... --output traces.jsonl` after runs to materialize the dataset.
 4. **Learning loop** – feed the JSONL into `custom_data.runtime_trace_data.get_runtime_trace_dataset` and train with GRPO when you need custom checkpoints.
 
 This workflow keeps the runtime, telemetry, and training stack in lockstep so every production interaction grows your private dataset.

@@ -38,7 +38,7 @@ You need custom training if you have:
 
 ### Runtime traces as the data source
 
-The exporter (`atlas sdk export --output traces.jsonl`) produces records that align with `custom_data.runtime_trace_data.get_runtime_trace_dataset`. Reference the provided Hydra config:
+The exporter (`arc-atlas --database-url postgresql://... --output traces.jsonl`) produces records that align with `custom_data.runtime_trace_data.get_runtime_trace_dataset`. Reference the provided Hydra config:
 
 ```yaml
 # configs/data/runtime_traces.yaml
@@ -48,7 +48,7 @@ make_dataset_fn:
   eval_split_ratio: 0.1
 ```
 
-Each record includes the plan, per-step guidance, reward breakdown, and validation labels the runtime observed. When you adopt runtime exports, you can skip the manual data munging described in older guides.
+Each record includes the triage dossier, adaptive summary (lane, confidence, certification flag, probe evidence), plan/step traces, persona usage/updates, reward breakdowns, and validation labels the runtime observed. When you adopt runtime exports, you can skip the manual data munging described in older guides because the learning context is embedded alongside every episode.
 
 The training happens in three clear steps:
 
