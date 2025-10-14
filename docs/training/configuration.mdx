@@ -108,6 +108,8 @@ configs/
 - `configs/data/` – Dataset definitions (`arc_atlas_rl.yaml`, `arc_atlas_sft.yaml`). Adjust `max_train_samples`, preprocessing, or add new splits.
 - `configs/rim_config.yaml` – Reward system selections used by both runtime and training.
 
+Runtime exports generated via `arc-atlas` include the triage dossier, `adaptive_summary` (lane, confidence, certification), persona usage/updates, full plan and step traces, and the aggregated `session_reward`. Hydrate those JSONL files with `custom_data.runtime_trace_data.get_runtime_trace_dataset`—each record carries the same adaptive metadata the runtime streamed in real time. See the [`Adaptive Runtime Guide`](/runtime_adaptive_flow) if you need a refresher on lane semantics.
+
 See [`Reward Design`](/concepts/reward-design) for guidance on judges, variance thresholds, and escalation strategies.
 
 ## Hydra Composition Deep Dive

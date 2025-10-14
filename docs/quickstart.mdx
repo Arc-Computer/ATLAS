@@ -62,7 +62,14 @@ teacher:
 
 Swap the adapter for OpenAI (`type: openai`) or a local Python callable (`type: python`) if that fits your stack. The rest of the file—`student`, `teacher`, `rim`, `orchestration`—ships with sensible defaults. See [`SDK Configuration`](/sdk/configuration) for every field.
 
-## Step 3 — Run the Teacher/Student/Reward loop with telemetry
+## Step 3 — Run the adaptive runtime with telemetry
+
+Every call to `atlas.core.run` now begins with a triage dossier and capability probe. Those signals decide which lane the orchestrator chooses for the task:
+
+- `auto` keeps latency low with a single-shot execution and no validation when confidence is high.
+- `paired` runs single-shot but routes through a one-time certification check (ideal for first-run fingerprints).
+- `coach` condenses the reviewed plan into a single step with validation plus an optional retry for lightweight supervision.
+- `escalate` keeps the full stepwise plan, enabling rich guidance, retries, and detailed telemetry.
 
 ```python
 from atlas.core import run
@@ -74,7 +81,7 @@ result = run(
 )
 ```
 
-When `stream_progress=True` and stdout is interactive, `atlas.runtime.telemetry.ConsoleTelemetryStreamer` auto-enables to print the accepted plan, retries, tool calls, and reward scores as they happen. Set `stream_progress=False` to silence streaming, or leave it unset and Atlas will auto-detect.
+When `stream_progress=True` and stdout is interactive, `atlas.runtime.telemetry.ConsoleTelemetryStreamer` auto-enables to print the accepted plan (if any), retries, tool calls, lane choice, probe confidence, and reward scores as they happen. Set `stream_progress=False` to silence streaming, or leave it unset and Atlas will auto-detect.
 
 <Note>
 Need persistence? Add a `storage:` block in your YAML (see below) so every session lands in Postgres for export.

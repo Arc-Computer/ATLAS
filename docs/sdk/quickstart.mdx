@@ -111,7 +111,7 @@ The `openai_agent.yaml` config defines the runtime behavior. Here’s a high-lev
 - **`teacher`**: Defines the review and guidance agent, which also has its own model and token budget.
 - **`orchestration`**: Sets runtime parameters like the number of retries (default: 1) and step timeouts.
 - **`rim`** (Reward System): Defines the judges and arbiter that score the final answer for quality and helpfulness. This score determines if a retry is needed.
-- **`adaptive_teaching`**: Controls the triage adapter, capability probe thresholds, certification policy, default tags, and reward overrides. See the [`Configuration reference`](/sdk/configuration#adaptive_teaching) and the [Adaptive Runtime guide](../runtime_adaptive_flow.md) for details.
+- **`adaptive_teaching`**: Controls the triage adapter, capability probe thresholds, certification policy, default tags, and reward overrides. See the [`Configuration reference`](/sdk/configuration#adaptive_teaching) and the [Adaptive Runtime guide](/runtime_adaptive_flow) for details.
 - **`storage`**: Point at Postgres to persist episodes; remove the block or set it to `null` for in-memory experiments.
 - **`student.prompts` / `teacher.prompts`**: Optional overrides. Atlas derives persona text from `atlas.prompts`; customize behaviour by editing these prompt blocks directly.
 
@@ -126,7 +126,7 @@ To add tools, enable persistence, or use a different agent, switch the `config_p
 ## Next Steps
 
 - Persist sessions and build datasets with [`Export Runtime Traces`](/sdk/export-traces), then follow the training loop in [`Quickstart`](/quickstart).
-- Dive into [`SDK Configuration`](/sdk/configuration) to customize each YAML block and the [`Adaptive Runtime Guide`](../runtime_adaptive_flow.md) to understand the triage → probe → lane controller.
+- Dive into [`SDK Configuration`](/sdk/configuration) to customize each YAML block and the [`Adaptive Runtime Guide`](/runtime_adaptive_flow) to understand the triage → probe → lane controller.
 - Learn how the planner, reviewer, and evaluator cooperate in [`How Orchestration Works`](/sdk/orchestration).
 - Wrap your own agent with the adapters in [`Bring Your Own Agent`](/sdk/adapters).
 - Compare runtime vs training expectations in [`Student & Teacher Roles`](/sdk/student-teacher-roles).

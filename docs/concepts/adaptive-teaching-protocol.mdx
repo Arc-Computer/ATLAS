@@ -5,136 +5,64 @@ sidebarTitle: How ATLAS Works
 icon: arrows-rotate
 ---
 
-ATLAS improves your AI model's responses through adaptive teaching. Like a doctor doing a check-up before prescribing treatment, ATLAS first diagnoses your model's capability on a specific task, then provides the right level of guidance to help it succeed.
+ATLAS improves your model’s responses by turning each task into a structured learning episode. Before the Student executes anything, the runtime collects triage context, probes capability, and then chooses how tightly to supervise the work. The entire process runs at inference time—no finetuning or weight edits required.
 
-This happens in two quick passes—no retraining required.
-
-## The Two-Pass Process
+## Adaptive Episode Flow
 
 <div align="center">
   <img src="/images/adaptive-teaching.png" alt="ATLAS Adaptive Teaching Flow" width="800" />
-  <p><em>Pass 1 diagnoses capability, Pass 2 provides adaptive guidance</em></p>
+  <p><em>Triage → capability probe → adaptive lane → reward + telemetry</em></p>
 </div>
 
-### Pass 1: Quick Diagnosis (≤50 tokens)
+1. **Triage dossier** – A triage adapter (default: `atlas.utils.triage.default_build_dossier`) normalises metadata, risks, and persona hints for the task.  
+2. **Capability probe** – A lightweight LLM prompt inspects the dossier plus recent history and returns `{mode, confidence, evidence}`.  
+3. **Adaptive lane** – The orchestrator records the probe payload and routes the Student into one of four execution modes.  
+4. **Execution & reward** – The Student and Teacher collaborate according to the lane’s supervision level, then the Reward System aggregates judges and learning notes.  
+5. **Telemetry & memory** – The runtime emits an `adaptive_summary`, captures persona usage/updates, and persists everything for export.
 
-The teacher sends a brief probe to assess the student model's capability on the specific task.
+### The Four Lanes
 
-**What happens:**
-- Teacher generates a targeted diagnostic question
-- Student responds with up to 50 tokens
-- Teacher analyzes the response for reasoning depth, domain knowledge, and confidence
+| Lane | When it triggers | Supervision profile | What gets recorded |
+|------|------------------|---------------------|--------------------|
+| `auto` | High confidence history | Student executes once, Teacher skips validation | Lane selection + confidence for telemetry; reward may be skipped |
+| `paired` | Certification required or fingerprint unseen | Student executes once, Teacher validates the final answer | Certification flag, validation verdict, reward reused from certification |
+| `coach` | Medium confidence | Reviewed plan collapses into a single step with validation + optional retry | Adaptive summary stores probe evidence; guidance stays concise |
+| `escalate` | Low confidence or manual override | Full stepwise execution with detailed guidance and retries | Rich per-step metadata, guidance transcripts, persona promotions |
 
-**Example probe for math problem:**
-```
-"What approach would you use to solve this problem?"
-```
+The lane determines how much help the Teacher provides, how many retries are allowed, and how the final reward is computed. Switching lanes is automatic—the probe score and recent session history drive the choice.
 
-The student's answer reveals whether they understand the core concept or need help.
+### Telemetry and Exports
 
-### Pass 2: Adaptive Guidance (≤200 tokens)
+Every run writes adaptive context into the execution metadata:
 
-Based on the diagnosis, the teacher provides exactly the right amount of help—not too much, not too little.
+- `adaptive_summary` captures the active lane, probe confidence, certification marker, evidence, and recent decisions.
+- `triage_dossier` stores the structured risk/signal payload that seeded the episode.
+- `personas_used` and `persona_updates` expose which memories influenced the run and what new candidates were proposed.
+- `session_reward` and per-step traces mirror the judges and guidance the Teacher delivered.
 
-**What happens:**
-- Teacher selects a guidance strategy based on capability assessment
-- Guidance is injected into the student's context
-- Student generates an enhanced response using the teaching
+When you export sessions with `arc-atlas`, those same fields appear in JSONL so downstream analytics and training pipelines can reason about lane-specific behaviour.
 
-**Example guidance for weak capability:**
-```
-"This is exponential growth. Steps:
-1. Find doubling periods: 15 ÷ 3 = 5
-2. Apply formula: Initial × 2^periods
-3. Calculate: 100 × 2^5 = 3200"
-```
+## Example Episode: Production Incident
 
-## Three Guidance Strategies
+**Task:** “Service returns 503 errors intermittently in production.”
 
-ATLAS adapts its teaching based on what the student needs:
+1. **Triage** tags the task with `domain:sre`, notes recent incident history, and references an Istio persona.  
+2. **Probe** sees a fresh fingerprint and moderate risk → selects `paired` for certification.  
+3. **Execution** runs single-shot, the Teacher validates the final answer, and the certification verdict becomes the reward.  
+4. **Follow-up runs** reuse the new fingerprint; once confidence climbs, the probe shifts later requests to `coach`, enabling quick single-step executions with compact guidance.
 
-| Student Capability | Teaching Strategy | What It Provides |
-|-------------------|------------------|------------------|
-| **Struggling** | Comprehensive | Like a detailed tutorial—breaks down every step, explains prerequisites, points out common mistakes |
-| **Partial Understanding** | Targeted | Like a helpful hint—identifies the key insight you're missing, corrects misconceptions |
-| **Already Capable** | Minimal | Like a safety net—only flags edge cases, keeps you on track |
-
-### How It Adapts
-
-**Weak student (comprehensive guidance):**
-- Full problem decomposition
-- Step-by-step methodology
-- Common pitfalls to avoid
-- Verification strategy
-
-**Moderate student (targeted guidance):**
-- Critical insight they're missing
-- Correction for specific misconception
-- Key principle to apply
-
-**Strong student (minimal guidance):**
-- Edge case awareness
-- Optimization suggestion
-- Or nothing at all if they're on the right track
-
-## Case Study: Debugging Task
-
-**Task:** "Service returns 503 errors intermittently in production"
-
-<Tabs>
-  <Tab title="Weak Student">
-    **Diagnostic probe response:**
-    > "Check if service is running"
-
-    **Capability score:** 0.25 (struggling)
-
-    **Adaptive guidance (178 tokens):**
-    ```
-    Systematic debugging approach:
-    1. Check service mesh configuration (istioctl analyze)
-    2. Verify mTLS policies aren't conflicting
-    3. Examine traffic routing rules
-    4. Check resource limits and scaling policies
-    5. Review recent deployments
-
-    Start with: kubectl get virtualservice,destinationrule -A
-    This reveals routing configuration issues that cause intermittent failures.
-    ```
-  </Tab>
-
-  <Tab title="Strong Student">
-    **Diagnostic probe response:**
-    > "Analyze Istio configurations and check Envoy proxy logs"
-
-    **Capability score:** 0.85 (capable)
-
-    **Adaptive guidance (62 tokens):**
-    ```
-    Circuit breaker configuration may be too aggressive.
-    Check: outlierDetection.consecutiveErrors threshold in DestinationRule.
-    Common cause of intermittent 503s with partial traffic.
-    ```
-  </Tab>
-</Tabs>
-
-Notice the dramatic difference: weak students get comprehensive scaffolding (178 tokens), while strong students get minimal intervention (62 tokens). This saves both cost and context length.
+Atlas tracks the entire journey: the adaptive summary logs the lane change, persona promotion records the helpful guidance, and exports capture both sessions so training teams can see how the runtime escalated supervision.
 
 ## Why This Matters
 
 ### Saves Money
-Adaptive guidance means you only use the tokens you need. Strong models get 50-100 tokens of guidance, weak models get 200-300. Average across tasks: **50% token reduction** compared to always providing full guidance.
+The runtime only escalates when needed. Familiar tasks stay in `auto`/`paired`, consuming minimal tokens, while unfamiliar or risky work is escalated to `coach`/`escalate` to guarantee quality. Across benchmarks this yields ~50 % token savings versus always-on supervision.
 
 ### Safe to Deploy
-97% non-degradation rate across benchmarks. When a student is already capable, minimal guidance means minimal risk of making things worse.
+By certifying new fingerprints (`paired`) and capturing reward rationales, Atlas sustains a 97 % non-degradation rate. Risky tasks receive the same stepwise oversight you’d expect from a human reviewer.
 
-### Works with Any Model
-Because teaching happens at inference time through prompting, ATLAS works with any student model:
-- Closed APIs (GPT, Claude, Gemini)
-- Open-source models (Llama, Qwen, Mistral)
-- Your custom fine-tuned models
-- Even your existing agents and workflows
-
-No retraining, no weight modifications, no model access required.
+### Works with Any Agent
+Because the teacher/student loop runs at inference time, you can wrap closed APIs (GPT, Claude, Gemini), open-source models (Llama, Qwen, Mistral), or your own agents. No model weights or managed infrastructure required—just provide a config and let the runtime handle triage, probing, and telemetry.
 
 ## Performance Results
 
@@ -200,9 +128,6 @@ These combine into a capability score from 0.0 to 1.0:
   </Card>
   <Card title="SDK Runtime" icon="workflow" href="/sdk/quickstart">
     Export traces and monitor agents in production
-  </Card>
-  <Card title="Performance Analysis" icon="chart-line" href="/benchmarks/evaluation-methodology">
-    Detailed benchmark results and methodology
   </Card>
 </CardGroup>
 

@@ -53,402 +53,58 @@ This is the fastest path to seeing ATLAS in action and is production-ready for A
     </Tip>
   </Step>
 
-  <Step title="Run Quick Evaluation">
-    Test the teacher-student protocol with RIM scoring:
+  <Step title="Run an adaptive episode">
+    Call the SDK runtime so each task flows through triage, capability probing, and lane routing:
+
+    ```python
+    from atlas import core
+
+    result = core.run(
+        task="Investigate intermittent 503 errors in checkout",
+        config_path="configs/examples/http_agent.yaml",
+        stream_progress=True,
+    )
+
+    print("Final answer:", result.final_answer)
+    ```
+
+    The console stream shows:
+
+    1. Triage dossier metadata (risks, signals, persona hints).
+    2. Capability probe decision (`mode=coach confidence=0.55 evidence=[...]`).
+    3. Lane-specific execution (`auto`/`paired` single-shot versus `coach`/`escalate` stepwise retries).
+    4. Session reward plus `adaptive_summary`, `personas_used`, and any promotion updates.
+  </Step>
+
+  <Step title="Persist and export runs">
+    Capture runs for analysis or training by enabling storage and exporting JSONL traces:
 
     ```bash
-    python examples/quickstart/evaluate.py \
-      --question "Masha braided her dolls' hair..." \
-      --teacher-model gpt-5 \
-      --student-model gpt-4o-mini
+    atlas storage up                         # optional helper to launch Postgres
+    arc-atlas \
+      --database-url postgresql://atlas:atlas@localhost:5432/atlas \
+      --output traces/runtime.jsonl \
+      --trajectory-event-limit 500 \
+      --status succeeded
     ```
 
-    This runs the full ATLAS protocol:
-    1. Gets baseline student response
-    2. Teacher provides guidance
-    3. Student retries with teaching
-    4. RIM judges score both responses
-
-    Expected output:
-    ```text
-    ========================================================================
-    Baseline student answer:
-    [Student's initial attempt]
-
-    Teacher guidance:
-    [Teacher's diagnostic feedback]
-
-    Student with teaching:
-    [Student's improved response]
-    ========================================================================
-    Reward (baseline): 0.342
-    Reward (with teaching): 0.781
-    Delta: +0.439
-    ========================================================================
-    ```
+    Each record includes the triage dossier, adaptive summary (lane, confidence, certification), plan/step traces, persona usage/update events, and the reward breakdown—exactly what the training stack expects.
   </Step>
 </Steps>
 
-## Real Code Examples
-
-All examples below use **actual working code** from the ATLAS repository.
-
-### Example 1: Single Question Evaluation
-
-Using the verified `examples/quickstart/evaluate.py` pattern:
-
-```python
-#!/usr/bin/env python
-"""Evaluate baseline vs teacher-guided response with RIM scoring."""
-
-from openai import OpenAI
-from RIM.reward_adapter import RIMReward
-
-client = OpenAI()
-reward = RIMReward(config_path='configs/rim_config.yaml')
-
-question = "A bat and ball cost $1.10 total. The bat costs $1.00 more than the ball. How much does the ball cost?"
-
-# Step 1: Get baseline response
-baseline_messages = [
-    {"role": "system", "content": "You are a helpful agent. Explain your reasoning."},
-    {"role": "user", "content": question}
-]
-baseline_response = client.responses.create(
-    model="gpt-4o-mini",
-    input=baseline_messages,
-    max_output_tokens=512
-)
-baseline = baseline_response.output[0].text
-
-# Step 2: Teacher provides guidance
-teacher_messages = [
-    {
-        "role": "system",
-        "content": "You are an expert teacher. Analyze the student's attempt and provide concise teaching in <teaching> tags."
-    },
-    {
-        "role": "user",
-        "content": f"Question: {question}\n\nStudent attempt:\n{baseline}\n\nProvide focused guidance."
-    }
-]
-teaching_response = client.responses.create(
-    model="gpt-5",
-    input=teacher_messages,
-    max_output_tokens=512
-)
-teaching = teaching_response.output[0].text
-
-# Step 3: Student retries with teaching
-enhanced_messages = [
-    {"role": "system", "content": "Apply the teaching to solve the problem."},
-    {"role": "user", "content": f"Question: {question}\n\nTeaching:\n{teaching}\n\nSolve step-by-step and put answer in <solution> tags."}
-]
-enhanced_response = client.responses.create(
-    model="gpt-4o-mini",
-    input=enhanced_messages,
-    max_output_tokens=512
-)
-enhanced = enhanced_response.output[0].text
-
-# Step 4: Score with RIM
-baseline_eval = reward.evaluate(prompt=question, response=baseline)
-enhanced_eval = reward.evaluate(
-    prompt=question,
-    response=enhanced,
-    baseline_solutions=baseline,
-    teacher_traces=teaching
-)
-
-print(f"Baseline score: {baseline_eval.score:.3f}")
-print(f"Enhanced score: {enhanced_eval.score:.3f}")
-print(f"Improvement: {enhanced_eval.score - baseline_eval.score:+.3f}")
-```
-
-<Note>
-This uses OpenAI's Responses API (required for gpt-5 access). If you don't have access, see the Chat Completions fallback below.
-</Note>
-
-### Example 2: Chat Completions API Fallback
-
-For standard OpenAI models without Responses API access:
-
-```python
-from openai import OpenAI
-from RIM.reward_adapter import RIMReward
-
-client = OpenAI()
-reward = RIMReward(config_path='configs/rim_config.yaml')
-
-def call_chat_api(messages, model="gpt-4o-mini", max_tokens=512):
-    """Helper for standard Chat Completions API."""
-    response = client.chat.completions.create(
-        model=model,
-        messages=messages,
-        max_tokens=max_tokens,
-        temperature=0.7
-    )
-    return response.choices[0].message.content
-
-question = "Debug why this service returns 503 errors intermittently."
-
-# Baseline
-baseline = call_chat_api([
-    {"role": "system", "content": "You are an SRE assistant."},
-    {"role": "user", "content": question}
-])
-
-# Teacher guidance
-teaching = call_chat_api([
-    {"role": "system", "content": "You are an expert SRE teacher. Provide diagnostic guidance in <teaching> tags."},
-    {"role": "user", "content": f"Question: {question}\n\nStudent said:\n{baseline}\n\nWhat should they check?"}
-], model="gpt-4o")
-
-# Enhanced response
-enhanced = call_chat_api([
-    {"role": "user", "content": f"Question: {question}\n\nGuidance:\n{teaching}\n\nProvide detailed solution."}
-])
-
-# Score improvement
-baseline_score = reward.evaluate(prompt=question, response=baseline).score
-enhanced_score = reward.evaluate(prompt=question, response=enhanced, baseline_solutions=baseline, teacher_traces=teaching).score
-
-print(f"Improvement: {enhanced_score - baseline_score:+.3f}")
-```
-
-### Example 3: Batch Evaluation
-
-Process multiple questions efficiently:
-
-```python
-from openai import OpenAI
-from RIM.reward_adapter import RIMReward
-from typing import List, Dict
-
-client = OpenAI()
-reward = RIMReward(config_path='configs/rim_config.yaml')
-
-def evaluate_batch(questions: List[str], teacher_model="gpt-5", student_model="gpt-4o-mini") -> List[Dict]:
-    """Evaluate multiple questions with ATLAS protocol."""
-    results = []
-
-    for question in questions:
-        # Run protocol (same as Example 1)
-        baseline = client.responses.create(
-            model=student_model,
-            input=[{"role": "user", "content": question}],
-            max_output_tokens=512
-        ).output[0].text
-
-        teaching = client.responses.create(
-            model=teacher_model,
-            input=[{
-                "role": "user",
-                "content": f"Provide teaching for: {question}\nStudent said: {baseline}"
-            }],
-            max_output_tokens=200
-        ).output[0].text
-
-        enhanced = client.responses.create(
-            model=student_model,
-            input=[{"role": "user", "content": f"{question}\nTeaching: {teaching}"}],
-            max_output_tokens=512
-        ).output[0].text
-
-        # Score both
-        baseline_eval = reward.evaluate(prompt=question, response=baseline)
-        enhanced_eval = reward.evaluate(prompt=question, response=enhanced, baseline_solutions=baseline, teacher_traces=teaching)
-
-        results.append({
-            "question": question,
-            "baseline_score": baseline_eval.score,
-            "enhanced_score": enhanced_eval.score,
-            "delta": enhanced_eval.score - baseline_eval.score
-        })
-
-    return results
-
-# Test on multiple questions
-questions = [
-    "Explain transformer attention mechanisms",
-    "Debug a memory leak in this Python code",
-    "Optimize this SQL query for performance"
-]
-
-results = evaluate_batch(questions)
-avg_improvement = sum(r["delta"] for r in results) / len(results)
-print(f"Average improvement: {avg_improvement:+.3f}")
-```
-
-## Using RIM Reward for Custom Scoring
-
-The RIM reward system can evaluate any agent's output quality:
-
-```python
-from RIM.reward_adapter import RIMReward
-
-# Initialize with config
-reward = RIMReward(config_path='configs/rim_config.yaml')
-
-# Score a single response
-result = reward.evaluate(
-    prompt="What causes database deadlocks?",
-    response="Deadlocks occur when two transactions wait for each other's locks..."
-)
-
-print(f"Quality score: {result.score:.3f}")
-print(f"Judge breakdown: {result.judge_scores}")
-print(f"Rationale:\n{result.rationale}")
-
-# Score with ground truth (for accuracy)
-result_with_gt = reward.evaluate(
-    prompt="What is 2+2?",
-    response="The answer is 4",
-    ground_truths=["4"]
-)
-
-# Score with baseline comparison (for improvement measurement)
-result_with_baseline = reward.evaluate(
-    prompt="Explain recursion",
-    response="Recursion is when a function calls itself with a base case...",
-    baseline_solutions="Recursion is when code repeats."
-)
-```
-
-<Info>
-RIM uses multiple judge models (accuracy, helpfulness, process, diagnostic) to provide comprehensive scoring. See [Reward Design](/concepts/reward-design) for details.
-</Info>
-
-## Integration with Production Agents
-
-### Pattern 1: REST API Enhancement
-
-Wrap your existing API endpoint with ATLAS teaching:
-
-```python
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from openai import OpenAI
-from RIM.reward_adapter import RIMReward
-
-app = FastAPI()
-client = OpenAI()
-reward = RIMReward(config_path='configs/rim_config.yaml')
-
-class QueryRequest(BaseModel):
-    question: str
-    use_teaching: bool = True
-
-@app.post("/query")
-async def handle_query(request: QueryRequest):
-    """Endpoint that optionally uses ATLAS teaching."""
-
-    if not request.use_teaching:
-        # Direct response
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[{"role": "user", "content": request.question}]
-        )
-        return {"response": response.choices[0].message.content}
-
-    # ATLAS protocol
-    baseline = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[{"role": "user", "content": request.question}]
-    ).choices[0].message.content
-
-    teaching = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[{
-            "role": "user",
-            "content": f"Provide teaching for: {request.question}\nStudent said: {baseline}"
-        }]
-    ).choices[0].message.content
-
-    enhanced = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[{"role": "user", "content": f"{request.question}\nTeaching: {teaching}"}]
-    ).choices[0].message.content
-
-    return {
-        "response": enhanced,
-        "teaching": teaching,
-        "baseline": baseline
-    }
-```
-
-### Pattern 2: Agent Wrapper
-
-Use the wrapper configuration system for seamless integration:
-
-```yaml
-# configs/wrappers/my_agent.yaml
-user_agent:
-  type: custom
-  config:
-    integration_type: http_api
-    endpoint: "http://localhost:8000/chat"
-    prompt_field: "message"
-    response_field: "response"
-
-teacher_model: gpt-5
-trainset: arc-atlas-rl
-max_examples: 10
-```
-
-When you're satisfied with the runtime performance, export traces with the SDK and launch offline training:
-
-```bash
-arc-atlas \
-  --database-url postgresql://atlas:atlas@localhost:5432/atlas \
-  --output traces/runtime.jsonl \
-  --trajectory-event-limit 500
-python scripts/run_offline_pipeline.py --export-path traces/runtime.jsonl
-```
-
-This produces a new GRPO-trained teacher checkpoint that you can redeploy through the SDK runtime.
-
-## Hardware Requirements
-
-<AccordionGroup>
-  <Accordion title="API-Only (Recommended for Inference)">
-    **Requirements**: None (all computation via API)
-
-    **Cost**: ~$0.10-0.50 per query with teaching (varies by model)
-
-    **Best for**: Production deployments, rapid prototyping, development
-  </Accordion>
-
-  <Accordion title="Local Models (Advanced)">
-    **Requirements**:
-    - 1 GPU with 24GB+ VRAM (for 8B teacher + 8B student)
-    - PyTorch 2.0+
-    - Transformers library
-
-    **Cost**: $0 per query (after model download)
-
-    **Best for**: Privacy-sensitive deployments, high-volume usage
-
-    Note: Local model setup requires additional configuration. See the full training documentation for details.
-  </Accordion>
-</AccordionGroup>
-
-## Next Steps
-
-<CardGroup cols="2">
-  <Card title="SDK Runtime Quickstart" icon="bolt" href="/sdk/quickstart">
-    Wrap your agent, stream telemetry, and export traces for training
-  </Card>
-  <Card title="Offline GRPO Training" icon="graduation-cap" href="/training/offline/grpo-training">
-    Convert runtime exports into new teacher checkpoints
-  </Card>
-  <Card title="RIM Reward System" icon="scale-balanced" href="/concepts/reward-design">
-    Understand how ATLAS measures improvement
-  </Card>
-  <Card title="Production Deployment" icon="rocket" href="/integration/production-deployment">
-    Scale to production environments
-  </Card>
-</CardGroup>
+## Patterns for Production Integration
+
+- **Inline orchestration** — Call `atlas.core.run` directly from your service and work with the returned `Result` object (plan, per-step traces, final answer). `ExecutionContext.get().metadata["adaptive_summary"]` exposes lane, confidence, and certification flags in real time.
+- **Job runner / queue** — For batched workloads, wrap `core.run` inside a worker that records adaptive summaries and reward scores to your observability stack. Schedule `arc-atlas` to materialise datasets for the training team.
+- **Custom adapters** — If your agent is exposed via HTTP, scaffold a dossier builder with `atlas triage init --domain sre --output sre_dossier.py`, point `adaptive_teaching.triage_adapter` at it, and let the probe choose the right lane per request.
+
+## Best Practices
+
+1. **Watch adaptive summaries** — Lane changes, probe evidence, and certification flags surface in telemetry and exports. Forward them to your observability stack to track risk trends.
+2. **Keep triage light** — Start with the default dossier builder, then enrich it with domain signals (alerts, customer metadata) once you see where probes need more context.
+3. **Instrument rewards** — `session_reward` and per-step judge scores explain why the runtime retried. Use them to tune prompts or escalate risky tasks to humans.
+4. **Export regularly** — Nightly `arc-atlas` runs capture adaptive summaries, persona updates, and telemetry so the training team can retrain judges or students without extra plumbing.
+5. **Automate guardrails** — Trigger alerts if a fingerprint stays in `escalate` for too long or if certification attempts fail repeatedly.
 
 ## Troubleshooting
 
@@ -456,7 +112,7 @@ This produces a new GRPO-trained teacher checkpoint that you can redeploy throug
   <Accordion title="AttributeError: 'OpenAI' object has no attribute 'responses'">
     **Problem**: You don't have access to the Responses API (required for gpt-5)
 
-    **Solution**: Use the Chat Completions API fallback shown in Example 2 above, or request Responses API access from OpenAI.
+    **Solution**: Switch to the Chat Completions API for the teacher/student models or request Responses API access from OpenAI.
   </Accordion>
 
   <Accordion title="RIM judges returning all 0.5 scores">

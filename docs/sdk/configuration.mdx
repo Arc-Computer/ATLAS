@@ -190,7 +190,7 @@ adaptive_teaching:
 - **`probe`**: Configures the capability probe LLM. Adjust the confidence thresholds, fallback behaviour, evidence length, or timeout. Set `probe.llm` if you want to override the default Gemini model.
 - **`reward`**: Override the reward objective. Stick with `rim` for the built-in judges or choose `python` and point `import_path`/`attribute` to your own scorer.
 
-See the [Adaptive Runtime Guide](../runtime_adaptive_flow.md) for a walkthrough of how these fields shape triage, probing, and lane decisions.
+See the [Adaptive Runtime Guide](/runtime_adaptive_flow) for a walkthrough of how these fields shape triage, probing, and lane decisions.
 
 ## Storage (`storage`)
 
@@ -238,6 +238,6 @@ Atlas derives persona text by combining the adapter’s `system_prompt` with hel
 
 ## Next Steps
 
-- Walk through the runtime loop in [`How Orchestration Works`](/sdk/orchestration) and keep the [`Adaptive Runtime Guide`](../runtime_adaptive_flow.md) nearby for controller tuning.
+- Walk through the runtime loop in [`How Orchestration Works`](/sdk/orchestration) and keep the [`Adaptive Runtime Guide`](/runtime_adaptive_flow) nearby for controller tuning.
 - Choose the right connector in [`Bring Your Own Agent`](/sdk/adapters).
 - See how runtime roles compare to training in [`Student & Teacher Roles`](/sdk/student-teacher-roles).

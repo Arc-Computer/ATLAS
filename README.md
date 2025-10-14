@@ -43,6 +43,8 @@ Atlas Core fits into a simple, repeatable loop:
 
 Need the hands-on version? Follow the [Quickstart tutorial](https://docs.arc.computer/quickstart) for the complete step-by-step instructions.
 
+The SDK runtime triages every request, runs a capability probe, and routes it into the right lane (`auto`, `paired`, `coach`, or `escalate`) before your agent executes. Those decisions—lane, probe confidence, certification status, persona usage, and reward breakdowns—stream live to the console and flow into `arc-atlas` exports so training jobs inherit the full adaptive context.
+
 ## Configuration Overview
 
 Hydra bundles Atlas defaults into composable groups:
