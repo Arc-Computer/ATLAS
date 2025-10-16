@@ -39,6 +39,10 @@ Load those variables before you orchestrate runs.
 
 Atlas ships YAML templates for the three adapter families. Copy the closest example from the SDK (`configs/examples/`) and edit the `agent` block. For instance, to wrap a local HTTP service:
 
+<Tip>
+**Understanding Student & Teacher roles:** The config below references `student` and `teacher` blocks. The **Student** is your base agent (the model executing tasks), and the **Teacher** is a reviewer that provides real-time feedback to improve outputs—no model weights are modified. This two-persona architecture enables quality control and adaptive guidance at runtime. See [`Student & Teacher Roles`](/sdk/student-teacher-roles) for the complete mental model.
+</Tip>
+
 ```yaml
 # configs/my_http_agent.yaml
 agent:
@@ -93,6 +97,10 @@ Need persistence? Add a `storage:` block in your YAML (see below) so every sessi
 ## Step 4 — Persist and export traces
 
 Enable storage:
+
+<Note>
+**Data ownership and control:** All session data writes exclusively to the Postgres database *you* provide and control. ATLAS never operates its own data sink or accesses your database—the `database_url` points to your infrastructure (self-hosted, cloud-managed, or local). If you prefer ephemeral sessions, simply omit the `storage` block entirely, and no persistent data will be created. This step is completely optional and governed by your data policies.
+</Note>
 
 ```yaml
 storage:

@@ -134,26 +134,30 @@ The Reward System scores each attempt so the orchestrator knows whether to accep
 ```yaml
 rim:
   small_model:
-    provider: openai
-    model: gpt-4o-mini
-    api_key_env: OPENAI_API_KEY
+    provider: google
+    model: gemini/gemini-2.5-flash
+    api_key_env: GEMINI_API_KEY
     max_output_tokens: 512
   large_model:
-    provider: openai
-    model: gpt-4o
-    api_key_env: OPENAI_API_KEY
+    provider: google
+    model: gemini/gemini-2.5-flash
+    api_key_env: GEMINI_API_KEY
     max_output_tokens: 768
+  judge_prompt: 'Reward runs that follow the plan, stay safe, and finish the task.'
   active_judges:
     process: true
     helpfulness: true
   variance_threshold: 0.15
   uncertainty_threshold: 0.3
-  parallel_workers: 4
 ```
 
+- **`judge_prompt`**: Steer evaluation criteria toward specific domain objectives. The evaluator includes this prompt when deriving principles and scoring the trajectory.
 - **Judge toggles**: Enable or disable built-in judges through `active_judges`. Custom judges can be added by extending `atlas.evaluation.judges`.
 - **Escalation models**: `small_model` handles the fast path; `large_model` resolves disagreements when variance or uncertainty exceed the configured thresholds.
 - **Retry behaviour**: The orchestrator retries when the aggregated score falls below `0.6` (built-in default). Adjust `max_retries` in the orchestration block to cap how many attempts are made.
+
+**Defining domain-agnostic objectives:**
+The RIM block lets you express generic quality criteria (like security guardrails, compliance checks, or output correctness) in natural language through judge prompts—no model training required. Each judge evaluates a dimension (e.g., "Does this response avoid prompt injection?", "Is the reasoning process sound?") and the system reconciles multiple judge opinions via ensemble and escalation. Importantly, this scoring loop never modifies model weights; it operates purely at inference time to provide feedback signals that steer behavior and inform retry decisions. Think of RIM as an evaluation and governance layer, not a training mechanism. See [`Reward Design`](/concepts/reward-design) for examples of how to define objectives through judge prompts.
 
 Learn more in [`Reward Design`](/concepts/reward-design#reward-system-in-the-atlas-sdk).
 
@@ -188,13 +192,13 @@ adaptive_teaching:
 - **`triage_adapter`**: A dotted path to a Python callable that returns a `TriageDossier`. Use `atlas triage init --domain <code|sre|support>` to scaffold a custom adapter.
 - **`default_tags`**: Labels automatically attached to persona memories and adaptive telemetry.
 - **`probe`**: Configures the capability probe LLM. Adjust the confidence thresholds, fallback behaviour, evidence length, or timeout. Set `probe.llm` if you want to override the default Gemini model.
-- **`reward`**: Override the reward objective. Stick with `rim` for the built-in judges or choose `python` and point `import_path`/`attribute` to your own scorer.
+- **`reward`**: Override the reward objective. Set `type: rim` for the built-in evaluator or `type: python` to point at a custom scorer via `import_path`/`attribute`. Use `focus_prompt` to steer the evaluation toward specific quality criteria—the evaluator includes this prompt when deriving principles and scoring the trajectory.
 
 See the [Adaptive Runtime Guide](/runtime_adaptive_flow) for a walkthrough of how these fields shape triage, probing, and lane decisions.
 
 ## Storage (`storage`)
 
-Optional Postgres persistence for traces and session metadata.
+Postgres persistence for traces and learning memory—**required for continual improvement across runs**.
 
 ```yaml
 storage:
@@ -204,7 +208,11 @@ storage:
   statement_timeout_seconds: 30
 ```
 
-Leave `storage: null` when you don’t have a database. Enable it when you want durable telemetry or plan to export datasets:
+**How storage enables learning:**
+Without storage, each run is isolated—no memory persists between sessions. With storage enabled, ATLAS remembers what guidance worked on past tasks and retrieves those successful patterns for similar future runs. This persistent memory drives token efficiency gains and faster resolution on repeated scenarios. The system learns at inference time by recalling helpful strategies, not by modifying model weights.
+
+**You control where data lives:**
+When enabled, all traces write only to the Postgres database you provide via `database_url`—your self-hosted, cloud-managed, or local instance. ATLAS never operates its own data store or intermediary sink. You retain complete ownership and access control. Leave `storage: null` to run in ephemeral mode (no persistence), but note that this disables cross-session learning. Enable storage when you want continual gains:
 
 ```bash
 arc-atlas \
