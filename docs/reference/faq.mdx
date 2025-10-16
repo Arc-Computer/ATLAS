@@ -11,6 +11,18 @@ icon: question
 
 ATLAS (Adaptive Teaching and Learning Alignment System) is a framework that trains "teacher" models to improve "student" model performance through adaptive guidance. It uses a two-pass protocol: diagnostic assessment followed by targeted teaching.
 
+### Does ATLAS train on my production data?
+
+No. The runtime loop operates through inference-time feedback—no model weights are modified during production execution. Weight updates only happen when you explicitly run offline GRPO training jobs on your own infrastructure.
+
+**Data control:**
+- All session traces write exclusively to the Postgres database you provide via `storage.database_url`
+- ATLAS never operates its own data store or accesses your database
+- Leave `storage: null` in your config to run in ephemeral mode with no persistent data
+- Training is opt-in: you choose when to export traces and run offline training
+
+The runtime learns by storing successful guidance patterns in memory (when storage is enabled) and retrieving them for similar future tasks—this is inference-time adaptation, not model training.
+
 ### How is ATLAS different from fine-tuning?
 
 Unlike fine-tuning which modifies model weights, ATLAS:
