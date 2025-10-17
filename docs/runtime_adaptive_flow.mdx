@@ -1,0 +1,45 @@
+---
+title: Adaptive Runtime Flow
+description: Step through the adaptive dual-agent controller that triages tasks, probes capability, and selects the right supervision lane.
+sidebarTitle: Adaptive Runtime Flow
+icon: workflow
+---
+
+The Atlas SDK orchestrator wraps every request in an adaptive dual-agent loop. The runtime triages the task, probes capability, and then pairs your agent (the student) with a verifying teacher that applies the right level of oversight before results ship.
+
+<Info>
+Looking for the personas behind each role? Read the [`Student & Verifying Teacher Roles`](/sdk/student-verifying-teacher-roles) guide after you understand the controller shown here.
+</Info>
+
+## Runtime Diagram
+
+<div align="center">
+  <img src="/images/adaptive-runtime.png" alt="Adaptive runtime flow showing triage, probe, and lane routing into auto, paired, coach, and escalate before telemetry and rewards." width="900" />
+  <p><em>The runtime triages tasks, probes capability, and routes them into the correct supervision lane before the student + verifying teacher execute.</em></p>
+</div>
+
+## Flow Breakdown
+
+<Steps>
+  <Step title="Triage the request">
+    A triage adapter builds a dossier from the incoming task, prior personas, and recent telemetry. Custom adapters can enrich the dossier with business-specific metadata.
+  </Step>
+  <Step title="Probe capability">
+    A lightweight probe model scores confidence and surfaces evidence. The orchestrator stores the score, evidence, and lane suggestion in `adaptive_summary`.
+  </Step>
+  <Step title="Select supervision lane">
+    Based on probe confidence and certification requirements, the orchestrator picks `auto`, `paired`, `coach`, or `escalate`. Manual overrides and mode pins come from `adaptive_teaching`.
+  </Step>
+  <Step title="Execute the dual-agent loop">
+    The student plans and executes, while the verifying teacher reviews, validates, and issues guidance according to the active lane. Retries only fire in lanes that permit them.
+  </Step>
+  <Step title="Score and persist">
+    RIM judges score the outcome, certification verdicts are recorded, and telemetry flows to the console or storage backends. Export these traces with `arc-atlas` for offline training.
+  </Step>
+</Steps>
+
+## Related Guides
+
+- [`SDK Configuration`](/sdk/configuration) — Tune `adaptive_teaching` thresholds, fallback modes, and certification behaviour.
+- [`How Orchestration Works`](/sdk/orchestration) — Dive deeper into the step-by-step execution pipeline.
+- [`Student & Verifying Teacher Roles`](/sdk/student-verifying-teacher-roles) — Understand persona responsibilities in runtime vs. training.

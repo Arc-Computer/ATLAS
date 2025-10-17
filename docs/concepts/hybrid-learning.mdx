@@ -26,7 +26,7 @@ Offline RL Training (24-48 hours)
 
 **Key Characteristics:**
 - **Compute-intensive**: Minimum 2 GPUs (1 for vLLM, 1 for training)
-- **High-quality teaching examples**: ~900 carefully curated adaptive teaching demonstrations from Arc-ATLAS-Teach-v0
+- **High-quality teaching examples**: ~900 carefully curated adaptive dual-agent demonstrations from Arc-ATLAS-Teach-v0
 - **Math-trained foundation**: Teacher model trained as expert in reasoning, sequential thinking, and complex problem decomposition
 - **Cross-domain transfer**: Math-trained reasoning generalizes to debugging, coding, and other analytical tasks
 - **One-time cost**: Amortized over all deployments
@@ -95,7 +95,7 @@ In production, the atlas-sdk runtime constantly evaluates teacher guidance, capt
 *With pre-trained teacher models
 
 <Note>
-  Baseline figures reflect the runtime Student–Teacher loop plus GRPO training. Online continual learning now lives in the [`atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) runtime.
+  Baseline figures reflect the runtime dual-agent loop (student + verifying teacher) plus GRPO training. Online continual learning now lives in the [`atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) runtime.
 </Note>
 
 ### Case Study: Validated Cross-Domain Transfer
@@ -212,8 +212,8 @@ The hybrid architecture enables "Compounding Intelligence" through:
 ## Next Steps
 
 <CardGroup cols="2">
-  <Card title="Adaptive Teaching Protocol" icon="chalkboard-user" href="/concepts/adaptive-teaching-protocol">
-    Understand the two-pass teaching mechanism
+  <Card title="Adaptive Dual-Agent Reasoning" icon="chalkboard-user" href="/concepts/adaptive-dual-agent-reasoning">
+    Understand the two-pass dual-agent mechanism
   </Card>
   <Card title="Online Learning" icon="layer-group" href="/training/online/continuous-learning">
     Learn how skills accumulate over time

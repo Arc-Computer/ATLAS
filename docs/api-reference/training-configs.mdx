@@ -14,20 +14,30 @@ ATLAS configurations control every aspect of training and inference. Parameters 
 
 <CodeGroup>
 ```python title="Basic RL Training"
-from configs import GRPOConfig
-from trainers import GRPOTrainer
+from trainers import GRPOTrainer, GRPOConfig
+from RIM.reward_adapter import RIMReward
 
-config = GRPOConfig(
+args = GRPOConfig(
+    output_dir="./output/grpo",
     model_name_or_path="Arc-Intelligence/ATLAS-8B-Thinking",
     learning_rate=5e-6,
     num_train_epochs=3,
     per_device_train_batch_size=4,
     gradient_accumulation_steps=4,
-    beta=0.04,  # KL penalty
-    temperature=0.7
+    beta=0.04,
 )
 
-trainer = GRPOTrainer(config)
+reward = RIMReward(config_path="configs/rim_config.yaml")
+
+trainer = GRPOTrainer(
+    model=args.model_name_or_path,
+    reward_funcs=reward,
+    args=args,
+    train_dataset=train_data,
+    eval_dataset=eval_data,
+    processing_class=tokenizer,
+)
+
 trainer.train()
 ```
 
@@ -40,28 +50,28 @@ scripts/launch_with_server.sh 4 4 configs/run/teacher_rcl.yaml \
 
 When instantiating a trainer directly in Python, create the reward adapter yourself and pass it as the `reward_funcs` argument.
 
-```python title="Adaptive Teaching"
-from configs import TeacherGRPOConfig
-from trainers import TeacherGRPOTrainer
+```python title="Dual-Agent Teacher Training"
+from trainers import TeacherGRPOTrainer, GRPOConfig
 from RIM.reward_adapter import RIMReward
 
-config = TeacherGRPOConfig(
+teacher_args = GRPOConfig(
+    output_dir="./output/teacher-grpo",
     model_name_or_path="Arc-Intelligence/ATLAS-8B-Thinking",
     num_train_epochs=3,
-    max_probe_tokens=50,
-    max_guidance_tokens=200
+    per_device_train_batch_size=1,
+    gradient_accumulation_steps=8,
+    beta=0.04,
 )
 
-reward_fn = RIMReward(config_path="configs/rim_config.yaml")
+reward_fn = RIMReward(config_path="configs/rim_offline_config.yaml")
 
 trainer = TeacherGRPOTrainer(
-    model=config.model_name_or_path,
+    model=teacher_args.model_name_or_path,
     reward_funcs=reward_fn,
-    args=config,
+    args=teacher_args,
     train_dataset=train_data,
-    eval_dataset=eval_data,
     processing_class=tokenizer,
-    student_model="meta-llama/Llama-3.2-8B-Instruct"
+    student_model="meta-llama/Llama-3.2-8B-Instruct",
 )
 
 trainer.train()
@@ -145,7 +155,7 @@ trainer.train()
     |-----------|------|---------|-------------|
     | `max_probe_tokens` | int | 500 | Maximum tokens for student diagnostic probing |
     | `student_diagnostic_template` | str | None | Template for generating student diagnostic probes |
-    | `teacher_adaptive_template` | str | None | Template for generating teacher adaptive teaching |
+    | `teacher_adaptive_template` | str | None | Template for generating verifying-teacher guidance during the dual-agent loop |
     | `student_with_teaching_template` | str | None | Template for student solution with teaching |
     | `student_baseline_template` | str | None | Template for student baseline solution |
 

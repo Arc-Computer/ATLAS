@@ -14,7 +14,7 @@ This case study addresses the "Judgment Gap"—the critical difference between a
         New state-of-the-art on τ²-bench `mms_issue` tasks, a benchmark for dual-control agent reliability.
     </Card>
     <Card title="6x Performance Lift" icon="arrow-up-circle">
-        The teacher-student framework provided a nearly 6x performance improvement over the student-only baseline (4.1% pass@1).
+        The adaptive dual-agent loop delivered nearly a 6x improvement over the student-only baseline (4.1% pass@1).
     </Card>
 </CardGroup>
 
@@ -26,10 +26,10 @@ Real-world workflows are not static. They are dynamic, dual-control environments
 
 ## Methodology: Cross-Domain Learning
 
-The ATLAS framework employs a Teacher-Student architecture to instill judgment:
+The ATLAS framework employs an adaptive dual-agent architecture—your agent plus a verifying teacher—to instill judgment:
 
--   **Teacher Model (`Arc-Intelligence/arc-teacher-8b`):** An expert in a separate, complex domain (mathematics).
--   **Student Model (`Qwen/Qwen3-8B`):** A generalist model that executes tasks.
+-   **Verifying teacher (`Arc-Intelligence/arc-teacher-8b`):** An expert in a separate, complex domain (mathematics).
+-   **Student agent (`Qwen/Qwen3-8B`):** A generalist model that executes tasks.
 
 The teacher provides high-level "thinking traces" to the student, demonstrating that abstract reasoning skills can be transferred across domains to guide execution in a completely different context (telecom).
 

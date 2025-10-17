@@ -9,7 +9,7 @@ icon: question
 
 ### What is ATLAS?
 
-ATLAS (Adaptive Teaching and Learning Alignment System) is a framework that trains "teacher" models to improve "student" model performance through adaptive guidance. It uses a two-pass protocol: diagnostic assessment followed by targeted teaching.
+ATLAS (Adaptive Teaching and Learning Alignment System) is a framework that pairs your existing agent (the student) with a specialized verifying teacher that provides adaptive guidance. It uses a two-pass protocol: diagnostic assessment followed by targeted teaching.
 
 ### Does ATLAS train on my production data?
 
@@ -33,7 +33,7 @@ Unlike fine-tuning which modifies model weights, ATLAS:
 
 ### What performance improvements can I expect?
 
-Across our evaluation suite we consistently see the closed-loop Student–Teacher runtime deliver an average **+15.7% accuracy gain**, **31% task completion lift**, **97% non-degradation**, and **~50% token savings** versus baseline agents. Offline GRPO training then compounds those gains when you fine-tune custom teacher checkpoints using the traces exported from production.
+Across our evaluation suite we consistently see the closed-loop dual-agent runtime (student + verifying teacher) deliver an average **+15.7% accuracy gain**, **31% task completion lift**, **97% non-degradation**, and **~50% token savings** versus baseline agents. Offline GRPO training then compounds those gains when you fine-tune custom teacher checkpoints using the traces exported from production.
 
 Actual results vary with task difficulty, data quality, and the strength of the underlying student model, but the closed loop plus GRPO stack gives you levers to reach those numbers. Online continual learning lives in the [`atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) runtime if you need rapid, task-specific adaptation.
 
@@ -68,7 +68,7 @@ Yes, with API-based models you need no GPU at all. For local model inference:
 # API-based (no GPU needed)
 from openai import OpenAI
 client = OpenAI()
-# Use teacher/student via API calls
+# Call the verifying teacher and student via API
 
 # For local models on CPU
 from transformers import AutoModelForCausalLM
@@ -81,11 +81,11 @@ model = AutoModelForCausalLM.from_pretrained(
 
 ### Which models are compatible?
 
-**Teacher Models (Pre-trained):**
+**Verifying teacher checkpoints (pre-trained):**
 - ATLAS-8B-Thinking (reasoning)
 - ATLAS-8B-Instruct (coding)
 
-**Student Models (Any LLM):**
+**Student agents (any LLM):**
 - Qwen series (4B-70B)
 - Llama series (7B-70B)
 - Mistral/Mixtral models

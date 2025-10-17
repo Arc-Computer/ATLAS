@@ -5,114 +5,157 @@ sidebarTitle: Configuration
 icon: settings
 ---
 
-Atlas SDK configs are the control tower for runtime orchestration. Each block in the YAML tells the Student, Teacher, and Reward System how to behave. Start with `configs/examples/openai_agent.yaml`, then explore the other templates (`http_agent.yaml`, `python_agent.yaml`) to match your deployment.
-
-<Tip>
-Run orchestration with `atlas.core.run(..., stream_progress=True)` to mirror every event in the terminal. The streamer depends on these same configuration blocks, so what you see in the console matches what persists to storage.
-</Tip>
+Atlas SDK configs are the control tower for runtime orchestration. Every key is validated by a Pydantic schema (`atlas-sdk/atlas/config/models.py`), so mistakes surface before the adaptive dual-agent reasoning loop—your agent paired with a verifying teacher—spins up.
 
 <Note>
-All examples reference files in the Atlas SDK repo (`configs/examples/`). If you cloned the repo for the quickstart, you already have them.
+This page is a configuration reference. For adapter walkthroughs and orchestration concepts, see [`Bring Your Own Agent`](/sdk/adapters) and [`How Orchestration Works`](/sdk/orchestration).
 </Note>
 
+<Tip>
+Keep `atlas.core.run(..., stream_progress=True)` enabled while tuning configs—the live event stream mirrors exactly what persists to storage and makes it easy to spot misconfigured blocks.
+</Tip>
 
-## Layout at a Glance
+## Root Config Overview
 
-```yaml
-agent:             # How to talk to your underlying model or service
-student:           # Planner, executor, and synthesizer prompts/limits
-teacher:           # Reviewer and validator settings
-orchestration:     # Runtime policies like retries and timeouts
-rim:               # Reward system (judges, arbiter, thresholds)
-adaptive_teaching: # Triage adapter, capability probe, reward overrides
-storage:           # (Optional) Postgres connection for trace persistence
-```
+| Field | Type / Default | Required? | Why it matters |
+| --- | --- | --- | --- |
+| `agent` | Adapter union (`http_api` \| `python` \| `openai`) | Yes | Connects the orchestrator to your underlying agent transport. |
+| `teacher` | `TeacherConfig` | Yes | Defines the verifying teacher persona, LLM, and feedback limits. |
+| `rim` | `RIMConfig` | Yes | Configures the reward ensemble that drives retries and adaptive feedback. |
+| `student` | `StudentConfig` (token caps default to `2048`) | No | Controls your agent’s (student) prompts, tool usage, and token budgets. |
+| `orchestration` | `OrchestrationConfig` (`max_retries=1`, `step_timeout_seconds=900`, `rim_guidance_tag="rim_feedback"`, `emit_intermediate_steps=true`) | No | Governs retries, timeouts, and telemetry emission. |
+| `adaptive_teaching` | `AdaptiveTeachingConfig` (`enabled=true`) | No | Triage, probe, and lane-selection policy. |
+| `storage` | `StorageConfig \| null` (default `null`) | No | Enables Postgres persistence for traces and learning memory. |
+| `metadata` | `Dict[str, Any]` (default `{}`) | No | Free-form tags for analytics and logging. |
 
-Each section is restrictive by design—unexpected keys raise validation errors—so it’s easier to debug mistakes before the orchestrator spins up.
+## Agent Block (`agent`)
 
-## Agent Configuration (`agent`)
+This block wires the orchestrator to your agent. The schema is defined by `AdapterConfig` and its subclasses in `atlas-sdk/atlas/config/models.py:67-176`; extra keys are rejected.
 
-This block defines how the orchestrator communicates with your agent.
+### Common fields
 
-| Adapter | Best for | Key fields |
-|---------|----------|------------|
-| `openai` | OpenAI or Azure OpenAI chat models | `llm` block (model, key env var, temperature, token limits) |
-| `http_api` | Remote services behind an HTTP interface | `transport` (base URL, retry policy), `payload_template`, `result_path` |
-| `python` | Local Python functions or callables | `import_path`, `attribute`, `working_directory`, optional `llm` metadata |
+| Parameter | Type / Default | Required? | Why adjust |
+| --- | --- | --- | --- |
+| `type` | Enum: `http_api`, `python`, `openai` | Yes | Selects which adapter subclass will validate the rest of the block. |
+| `name` | `str` | Yes | Appears in telemetry and logs; use a descriptive identifier per deployment. |
+| `system_prompt` | `str` | Yes | Baseline persona text passed to your agent (the student). |
+| `tools` | `List[ToolDefinition]` (default `[]`) | No | Register JSON-schema tool signatures; validation ensures required keys exist. |
 
-### OpenAI Adapter Example
+### HTTP adapter (`type: http_api`)
+
+| Parameter | Type / Default | Required? | Why adjust |
+| --- | --- | --- | --- |
+| `transport.base_url` | `str` | Yes | Base endpoint for your service. |
+| `transport.headers` | `Dict[str, str]` (default `{}`) | No | Inject auth or custom headers. |
+| `transport.timeout_seconds` | `float` (default `60.0`) | No | Increase when downstream APIs are slow. |
+| `transport.retry.attempts` | `int` (default `1`, bounded `1..5`) | No | Add resilience for flaky endpoints. |
+| `transport.retry.backoff_seconds` | `float` (default `1.0`) | No | Control backoff between retry attempts. |
+| `payload_template` | `Dict[str, Any]` (default `{}`) | No | Provide a skeleton payload with placeholders the runtime will fill. |
+| `result_path` | `Sequence[str] \| null` | No | Extract a nested field from the response JSON. |
+
+### Python adapter (`type: python`)
+
+| Parameter | Type / Default | Required? | Why adjust |
+| --- | --- | --- | --- |
+| `import_path` | `str` | Yes | Python module or package that exposes your callable. |
+| `attribute` | `str \| null` | No | Specify the function/class name when the module exports multiple callables. |
+| `working_directory` | `str \| null` | No | Run relative imports against a specific path. |
+| `allow_generator` | `bool` (default `false`) | No | Enable when the callable yields streaming results. |
+| `llm` | `LLMParameters \| null` | No | Supply metadata when the callable proxies an LLM (e.g., for telemetry). |
+
+### OpenAI adapter (`type: openai`)
+
+| Parameter | Type / Default | Required? | Why adjust |
+| --- | --- | --- | --- |
+| `llm.provider` | `'openai'` or `'azure-openai'` | Yes | Adapter enforces OpenAI-compatible providers. |
+| `llm.model` | `str` | Yes | Choose the underlying chat model. |
+| `llm.api_key_env` | `str` (default `"OPENAI_API_KEY"`) | No | Point to a different environment variable. |
+| `llm.temperature` | `float` (default `0.0`, range `0..2`) | No | Increase for more exploratory generations. |
+| `llm.top_p` | `float \| null` | No | Apply nucleus sampling if desired. |
+| `llm.max_output_tokens` | `int \| null` | No | Cap response length. |
+| `llm.timeout_seconds` | `float` (default `60.0`) | No | Widen for long-running completions. |
+| `llm.retry.attempts` | `int` (default `1`, bounded `1..5`) | No | Increase for transient API failures. |
+| `response_format` | `Dict[str, Any] \| null` | No | Request JSON schema enforcement when the provider supports it. |
+
+Example (from `atlas-sdk/configs/examples/openai_agent.yaml`):
+
 ```yaml
 agent:
   type: openai
-  name: sdk-quickstart-openai
+  name: example-openai-agent
   system_prompt: |
-    You are the Atlas Student. Be concise and thorough.
+    You are an OpenAI model acting as the Atlas Student. Follow instructions carefully and respond with JSON when asked.
   tools: []
   llm:
     provider: openai
-    model: gpt-4o-mini
+    model: gpt-5-mini
     api_key_env: OPENAI_API_KEY
-    temperature: 0.0
-    max_output_tokens: 768
+    temperature: 0.2
+    max_output_tokens: 2048
 ```
-<Tip>
-Any non-OpenAI-compatible API (like Anthropic Claude) should use the `http_api` adapter until a dedicated integration is available.
-</Tip>
 
-See [`Bring Your Own Agent`](/sdk/adapters) for full walkthroughs of all three adapters.
+## Student Block (`student`)
 
-## Student Configuration (`student`)
+Guides the student agent’s prompts and token budgets. When `prompts` is omitted, the runtime builds defaults from the agent `system_prompt`.
 
-The Student block shapes planning, execution, and synthesis.
+| Parameter | Type / Default | Required? | Why adjust |
+| --- | --- | --- | --- |
+| `prompts` | `StudentPrompts \| null` | No | Override planner/executor/synthesizer prompt templates explicitly. |
+| `prompt_guidance` | `Dict[str, str]` (default `{}`) | No | Supply reusable chunks merged into prompts per run. |
+| `max_plan_tokens` | `int` (default `2048`) | No | Raise when plans are truncated. |
+| `max_step_tokens` | `int` (default `2048`) | No | Increase for verbose tool output. |
+| `max_synthesis_tokens` | `int` (default `2048`) | No | Allow longer final answers. |
+| `tool_choice` | Literal `auto` \| `required` (default `auto`) | No | Force tool invocation on every step when governance demands it. |
+
+Example override (add explicit prompts to your config):
 
 ```yaml
 student:
   prompts:
     planner: |
       {base_prompt}
-      Draft a numbered plan as JSON.
+
+      Break the user's task into a short numbered plan.
     executor: |
       {base_prompt}
-      Execute the step, showing intermediate reasoning.
+
+      Execute the current plan step. Show the work that led to your answer.
     synthesizer: |
       {base_prompt}
-      Combine results into the final answer.
+
+      Summarize the important findings from every step and deliver the final answer.
   max_plan_tokens: 1024
   max_step_tokens: 1024
   max_synthesis_tokens: 1024
   tool_choice: auto
 ```
 
-- **Prompts**: Templates that receive `{base_prompt}` from the agent’s system prompt. Atlas also ships opinionated defaults in `atlas.prompts.build_student_prompts`; override them by supplying explicit prompt strings, tweaking the base prompt, or calling the helper yourself.
-- **Token limits**: Guardrails for LLM calls; increase them when steps are truncated.
-- **`tool_choice`**: `auto` lets the Student call registered tools. Use `required` to force a tool call on every step.
+## Teacher Block (`teacher`)
 
-## Teacher Configuration (`teacher`)
+Defines the verifying teacher persona that validates plans, emits guidance, and certifies results.
 
-The Teacher reviews plans, validates outputs, and provides guidance.
+| Parameter | Type / Default | Required? | Why adjust |
+| --- | --- | --- | --- |
+| `llm` | `LLMParameters` | Yes | Choose the verifying teacher model (often stronger than the student agent). |
+| `max_review_tokens` | `int \| null` (default `null`) | No | Cap plan-review responses. |
+| `plan_cache_seconds` | `int` (default `300`) | No | Reuse approved plans for repeated task IDs. |
+| `guidance_max_tokens` | `int \| null` | No | Limit per-step feedback length. |
+| `validation_max_tokens` | `int \| null` | No | Cap the validation verdict. |
+| `prompts` | `TeacherPrompts \| null` | No | Replace default reviewer prompts. |
+| `prompt_guidance` | `Dict[str, str]` (default `{}`) | No | Inject reusable guidance fragments. |
 
-```yaml
-teacher:
-  llm:
-    provider: openai
-    model: gpt-4o-mini
-    api_key_env: OPENAI_API_KEY
-    temperature: 0.1
-    max_output_tokens: 768
-  max_review_tokens: 1024
-  plan_cache_seconds: 300
-  guidance_max_tokens: 256
-  validation_max_tokens: 256
-```
+## Orchestration Block (`orchestration`)
 
-- **LLM block**: Often mirrors the Student’s provider but can be a more powerful model for complex reviews.
-- **`plan_cache_seconds`**: Caches an approved plan for a given task ID to avoid re-running reviews.
-- **Guidance/validation caps**: Keep feedback concise; increase when you expect lengthy traces.
-- **Prompts**: Teacher defaults come from `atlas.prompts.build_teacher_prompts`; override the prompts block to match your review style.
+Controls retry semantics and telemetry.
 
-## Orchestration (`orchestration`)
+| Parameter | Type / Default | Required? | Why adjust |
+| --- | --- | --- | --- |
+| `max_retries` | `int` (default `1`, hard ceiling) | No | Set to `0` to disable retries entirely. |
+| `step_timeout_seconds` | `float` (default `900.0`) | No | Lengthen for slow tools or external APIs. |
+| `rim_guidance_tag` | `str` (default `"rim_feedback"`) | No | Change when your prompts expect a different insertion tag. |
+| `emit_intermediate_steps` | `bool` (default `true`) | No | Toggle console/storage streaming of intermediate events. |
 
-These policies govern the runtime loop.
+Example override (pairing with the prompts above):
 
 ```yaml
 orchestration:
@@ -122,14 +165,21 @@ orchestration:
   emit_intermediate_steps: true
 ```
 
-- **`max_retries`**: Default (and maximum) is 1. The orchestrator never retries the same step more than once.
-- **`step_timeout_seconds`**: Per-step timeout; extend when calling slow tools or external APIs.
-- **`rim_guidance_tag`**: The tag used to inject feedback from the Reward System back into prompts.
-- **`emit_intermediate_steps`**: Keep `true` to stream events for logging and telemetry. Combine this with `stream_progress=True` in `atlas.core.run` to see the Teacher/Student loop live.
+## Reward System Block (`rim`)
 
-## Reward System (the `rim` block)
+The Reward System evaluates each trajectory to decide whether to retry or accept the outcome.
 
-The Reward System scores each attempt so the orchestrator knows whether to accept an answer or trigger a retry. The YAML block is named `rim` for compatibility with the core training engine.
+| Parameter | Type / Default | Required? | Why adjust |
+| --- | --- | --- | --- |
+| `small_model` | `LLMParameters` | Yes | Fast path judge; keep lightweight for latency-sensitive checks. |
+| `large_model` | `LLMParameters` | Yes | Escalation judge invoked on disagreement. |
+| `active_judges` | `Dict[str, bool]` (default `{"process": true, "helpfulness": true}`) | No | Toggle built-in dimensions or add custom judges. |
+| `variance_threshold` | `float` (default `0.15`) | No | Lower to escalate disagreements sooner. |
+| `uncertainty_threshold` | `float` (default `0.3`) | No | Raise to reduce escalations on ambiguous scores. |
+| `parallel_workers` | `int` (default `4`, range `1..32`) | No | Tune concurrency to match judge model throughput. |
+| `judge_prompt` | `str \| null` | No | Provide a rubric that defines success for your domain. |
+
+Example of weighting judges:
 
 ```yaml
 rim:
@@ -143,109 +193,140 @@ rim:
     model: gemini/gemini-2.5-flash
     api_key_env: GEMINI_API_KEY
     max_output_tokens: 768
-  judge_prompt: 'Reward runs that follow the plan, stay safe, and finish the task.'
   active_judges:
     process: true
     helpfulness: true
+    accuracy: false
   variance_threshold: 0.15
   uncertainty_threshold: 0.3
+  judge_prompt: 'Reward runs that stay on brief, respect APIs, and deliver correct answers.'
 ```
 
-- **`judge_prompt`**: Steer evaluation criteria toward specific domain objectives. The evaluator includes this prompt when deriving principles and scoring the trajectory.
-- **Judge toggles**: Enable or disable built-in judges through `active_judges`. Custom judges can be added by extending `atlas.evaluation.judges`.
-- **Escalation models**: `small_model` handles the fast path; `large_model` resolves disagreements when variance or uncertainty exceed the configured thresholds.
-- **Retry behaviour**: The orchestrator retries when the aggregated score falls below `0.6` (built-in default). Adjust `max_retries` in the orchestration block to cap how many attempts are made.
+See [`Reward Design`](/concepts/reward-design#reward-system-in-the-atlas-sdk) for guidance on composing ensembles and custom judges.
 
-**Defining domain-agnostic objectives:**
-The RIM block lets you express generic quality criteria (like security guardrails, compliance checks, or output correctness) in natural language through judge prompts—no model training required. Each judge evaluates a dimension (e.g., "Does this response avoid prompt injection?", "Is the reasoning process sound?") and the system reconciles multiple judge opinions via ensemble and escalation. Importantly, this scoring loop never modifies model weights; it operates purely at inference time to provide feedback signals that steer behavior and inform retry decisions. Think of RIM as an evaluation and governance layer, not a training mechanism. See [`Reward Design`](/concepts/reward-design) for examples of how to define objectives through judge prompts.
+## Adaptive Teaching Block (`adaptive_teaching`)
 
-Learn more in [`Reward Design`](/concepts/reward-design#reward-system-in-the-atlas-sdk).
+Configures triage, probing, and lane routing for the adaptive dual-agent pair—your agent plus the verifying teacher (`atlas-sdk/atlas/config/models.py:185-227`).
 
-## Adaptive Teaching (`adaptive_teaching`)
+| Parameter | Type / Default | Required? | Why adjust |
+| --- | --- | --- | --- |
+| `enabled` | `bool` (default `true`) | No | Disable to bypass adaptive routing entirely. |
+| `certify_first_run` | `bool` (default `true`) | No | Force first-time personas through `paired` certification. |
+| `mode_override` | Literal \| `null` | No | Pin execution to `auto`, `paired`, `coach`, or `escalate`. |
+| `triage_adapter` | `str \| null` | No | Reference a custom dossier builder. |
+| `default_tags` | `List[str]` (default `[]`) | No | Apply default metadata to persona memories. |
+| `probe.llm` | `LLMParameters \| null` | No | Override the capability probe model. |
+| `probe.thresholds` | `auto=0.85`, `paired=0.65`, `coach=0.35` | No | Adjust lane cut-offs; order must satisfy `auto ≥ paired ≥ coach`. |
+| `probe.fallback_mode` | Literal (`"paired"` default) | No | Lane chosen when the probe cannot decide. |
+| `probe.evidence_limit` | `int` (default `6`, range `1..32`) | No | Limit how many supporting reasons the probe collects. |
+| `probe.timeout_seconds` | `float` (default `15.0`) | No | Extend for slower models. |
+| `reward.type` | Literal `rim` (default) \| `python` | No | Switch to a custom reward objective. |
+| `reward.import_path` / `attribute` | `str` / `str` | Required when `type="python"` | Point at your custom scorer. |
+| `reward.focus_prompt` | `str \| null` | No | Give the reward model an extra steer for this deployment. |
 
-This block powers the triage → probe → adaptive-mode controller. Leave it at the defaults to inherit the out-of-the-box behaviour or customise it to align with your governance rules.
+Example of forcing coach mode:
 
 ```yaml
 adaptive_teaching:
   enabled: true
-  certify_first_run: true
-  mode_override: null            # Force a lane when governance requires it
-  triage_adapter: atlas.utils.triage:default_build_dossier
+  mode_override: coach
   default_tags:
     - tenant:demo
     - domain:sre
   probe:
     thresholds:
-      auto: 0.85
-      paired: 0.65
-      coach: 0.40
+      auto: 0.9
+      paired: 0.7
+      coach: 0.4
     fallback_mode: coach
-    evidence_limit: 6
-    timeout_seconds: 15
-  reward:
-    type: rim                     # or "python" for a custom objective
-    focus_prompt: null
 ```
 
-- **`enabled`** / **`mode_override`**: Globally toggle the adaptive controller or pin the runtime to `auto`, `paired`, `coach`, or `escalate`.
-- **`certify_first_run`**: When `true`, the first time a persona fingerprint appears it is forced through a `paired` certification and the verdict is cached.
-- **`triage_adapter`**: A dotted path to a Python callable that returns a `TriageDossier`. Use `atlas triage init --domain <code|sre|support>` to scaffold a custom adapter.
-- **`default_tags`**: Labels automatically attached to persona memories and adaptive telemetry.
-- **`probe`**: Configures the capability probe LLM. Adjust the confidence thresholds, fallback behaviour, evidence length, or timeout. Set `probe.llm` if you want to override the default Gemini model.
-- **`reward`**: Override the reward objective. Set `type: rim` for the built-in evaluator or `type: python` to point at a custom scorer via `import_path`/`attribute`. Use `focus_prompt` to steer the evaluation toward specific quality criteria—the evaluator includes this prompt when deriving principles and scoring the trajectory.
+## Storage Block (`storage`)
 
-See the [Adaptive Runtime Guide](/runtime_adaptive_flow) for a walkthrough of how these fields shape triage, probing, and lane decisions.
+Controls Postgres persistence (`atlas-sdk/atlas/config/models.py:299-307`). Omit the block or set `storage: null` for ephemeral runs.
 
-## Storage (`storage`)
+| Parameter | Type / Default | Required? | Why adjust |
+| --- | --- | --- | --- |
+| `database_url` | `str` | Yes (when block present) | Point at your managed or local Postgres instance. |
+| `min_connections` | `int` (default `1`) | No | Increase for burstier workloads. |
+| `max_connections` | `int` (default `5`) | No | Upper bound for connection pool size. |
+| `statement_timeout_seconds` | `float` (default `30.0`) | No | Abort long-running queries sooner. |
 
-Postgres persistence for traces and learning memory—**required for continual improvement across runs**.
+Tip: `atlas storage up` scaffolds a Docker Compose file with sensible defaults and exposes Postgres on `localhost:5433`.
+
+## Metadata
+
+| Parameter | Type / Default | Required? | Why adjust |
+| --- | --- | --- | --- |
+| `metadata` | `Dict[str, Any]` (default `{}`) | No | Attach labels consumed by your monitoring stack. |
+
+<Warning>
+Legacy configs may still include a `prompt_rewrite` block, but the runtime now rejects it (`atlas-sdk/atlas/core/__init__.py` raises a `ValueError`). Remove the block and rely on explicit `student.prompts` / `teacher.prompts` instead.
+</Warning>
+
+## Cheat Sheet
+
+| Goal | Section to edit | Pointer |
+| --- | --- | --- |
+| Swap to Anthropic or Gemini | `agent` | Use the `http_api` adapter and supply the matching transport payload. |
+| Tighten or loosen retries | `orchestration` + `rim` | Adjust `max_retries`, `variance_threshold`, and `uncertainty_threshold`. |
+| Persist adaptive memories | `storage` | Add a Postgres URL or run `atlas storage up`. |
+| Force a supervision lane | `adaptive_teaching` | Set `mode_override` to `auto`, `paired`, `coach`, or `escalate`. |
+| Personalise prompts | `student.prompts` / `teacher.prompts` | Override templates or reuse `prompt_guidance`. |
+| Enforce JSON output | `agent` (`response_format`) | Provide OpenAI-compatible schemas or swap to `http_api` with custom validation. |
+
+## Validated Example (Quickstart)
+
+This minimal config (from `atlas-sdk/configs/examples/openai_agent.yaml`) matches the ready-to-run OpenAI example in the SDK repository:
 
 ```yaml
+agent:
+  type: openai
+  name: example-openai-agent
+  system_prompt: |
+    You are an OpenAI model acting as the Atlas Student. Follow instructions carefully and respond with JSON when asked.
+  tools: []
+  llm:
+    provider: openai
+    model: gpt-5-mini
+    api_key_env: OPENAI_API_KEY
+    temperature: 0.2
+    max_output_tokens: 2048
+  response_format: null
+
+teacher:
+  llm:
+    provider: openai
+    model: gpt-5-mini
+    api_key_env: OPENAI_API_KEY
+    temperature: 0.1
+    max_output_tokens: 2048
+
+rim:
+  small_model:
+    provider: google
+    model: gemini/gemini-2.5-flash
+    api_key_env: GEMINI_API_KEY
+    max_output_tokens: 8096
+  large_model:
+    provider: google
+    model: gemini/gemini-2.5-flash
+    api_key_env: GEMINI_API_KEY
+    max_output_tokens: 8096
+  judge_prompt: 'reward the agent for attending the issues mentioned in the task'
+  variance_threshold: 0.15
+  uncertainty_threshold: 0.3
+
 storage:
-  database_url: postgresql://localhost:5432/atlas
+  database_url: postgresql://atlas:atlas@localhost:5433/atlas
   min_connections: 1
   max_connections: 5
   statement_timeout_seconds: 30
 ```
 
-**How storage enables learning:**
-Without storage, each run is isolated—no memory persists between sessions. With storage enabled, ATLAS remembers what guidance worked on past tasks and retrieves those successful patterns for similar future runs. This persistent memory drives token efficiency gains and faster resolution on repeated scenarios. The system learns at inference time by recalling helpful strategies, not by modifying model weights.
+## Related Guides
 
-**You control where data lives:**
-When enabled, all traces write only to the Postgres database you provide via `database_url`—your self-hosted, cloud-managed, or local instance. ATLAS never operates its own data store or intermediary sink. You retain complete ownership and access control. Leave `storage: null` to run in ephemeral mode (no persistence), but note that this disables cross-session learning. Enable storage when you want continual gains:
-
-```bash
-arc-atlas \
-  --database-url postgresql://localhost:5432/atlas \
-  --output traces/runtime.jsonl \
-  --trajectory-event-limit 500 \
-  --status succeeded
-```
-
-Need a local instance quickly? Run `atlas storage up` to generate a Docker Compose file and start Postgres with sensible defaults.
-
-## Persona prompts & guidance
-
-Atlas derives persona text by combining the adapter’s `system_prompt` with helper templates in `atlas.prompts`. Customize behaviour by:
-
-- Providing explicit strings under `student.prompts` and `teacher.prompts`.
-- Adjusting the adapter’s base `system_prompt`.
-- Calling `atlas.prompts.build_student_prompts` / `build_teacher_prompts` in your own tooling before handing prompts to the config.
-- Supplying optional `prompt_guidance` dicts (per persona) when you need to inject structured hints that the runtime merges into prompts at execution time.
-
-## Cheat Sheet
-
-| Goal | Section to edit | Quick pointer |
-|------|-----------------|---------------|
-| Swap to Anthropic via HTTP | `agent` | Use the `http_api` adapter and point `transport.base_url` to your service. |
-| Increase reasoning depth | `student` and `teacher` | Raise the `max_..._tokens` limits for the planner, executor, or guidance. | 
-| Steer adaptive routing | `adaptive_teaching` | Tweak probe thresholds, default tags, or set `mode_override`. |
-| Persist sessions | `storage` | Provide a Postgres URL or run `atlas storage up` and export with `arc-atlas`. |
-| Tighten the quality bar | `rim` | Lower `variance_threshold` / `uncertainty_threshold` or disable lenient judges in `active_judges`. |
-| Personalize prompts | `student.prompts` / `teacher.prompts` | Override the templates directly or use `atlas.prompts` helpers. |
-
-## Next Steps
-
-- Walk through the runtime loop in [`How Orchestration Works`](/sdk/orchestration) and keep the [`Adaptive Runtime Guide`](/runtime_adaptive_flow) nearby for controller tuning.
-- Choose the right connector in [`Bring Your Own Agent`](/sdk/adapters).
-- See how runtime roles compare to training in [`Student & Teacher Roles`](/sdk/student-teacher-roles).
+- [`Bring Your Own Agent`](/sdk/adapters) — Adapter-specific tutorials.
+- [`How Orchestration Works`](/sdk/orchestration) — Dual-agent control flow (student agent + verifying teacher) deep dive.
+- [`Adaptive Runtime Guide`](/runtime_adaptive_flow) — Detailed explanation of probes, lanes, and certification.
+- [`Reward Design`](/concepts/reward-design) — Building and tuning judge ensembles.

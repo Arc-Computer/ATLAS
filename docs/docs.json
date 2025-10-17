@@ -28,15 +28,15 @@
               "sdk/configuration",
               "sdk/export-traces",
               "sdk/orchestration",
+              "runtime_adaptive_flow",
               "sdk/adapters",
-              "sdk/student-teacher-roles"
+              "sdk/student-verifying-teacher-roles"
             ]
           },
           {
             "group": "Core Concepts",
             "pages": [
-              "concepts/teacher-student-paradigm",
-              "concepts/adaptive-teaching-protocol",
+              "concepts/adaptive-dual-agent-reasoning",
               "concepts/hybrid-learning",
               "concepts/reward-design",
               "architecture/system-overview"

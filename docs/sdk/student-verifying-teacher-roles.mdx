@@ -1,26 +1,26 @@
 ---
-title: Student & Teacher Roles
-description: Understand how the Student and Teacher collaborate at runtime and how those roles differ from ATLAS training.
-sidebarTitle: Student & Teacher
+title: Student & Verifying Teacher Roles
+description: Understand how your agent (the Student) and the Verifying Teacher collaborate at runtime versus their roles during training.
+sidebarTitle: Dual-Agent Roles
 icon: users
 ---
 
-In Atlas, the terms “Student” and “Teacher” are used in two primary contexts: the SDK runtime and model training. While the names are the same, their responsibilities shift.
+Atlas uses the same “student” and “teacher” labels in two contexts—the adaptive runtime loop and offline training—but the responsibilities shift. At runtime the student is your agent executing the task; the teacher is a verifying reviewer that provides guidance and approvals. During training those labels refer to the models being optimized.
 
 <Note>
-**Runtime vs. Training:** The SDK runtime focuses on orchestrating an existing agent to complete a task. Model training focuses on optimizing a model’s performance for future tasks. For the conceptual overview, start with the [`Teacher-Student Paradigm`](/concepts/teacher-student-paradigm).
+**Runtime vs. Training:** The SDK runtime orchestrates an existing agent to complete a task with real-time oversight. Model training optimizes teacher checkpoints for future tasks. For the conceptual overview, start with [`Adaptive Dual-Agent Reasoning`](/concepts/adaptive-dual-agent-reasoning).
 </Note>
 
 ## Two Contexts, One Vocabulary
 
-| Context | Student | Teacher | Primary Goal |
+| Context | Student (your agent) | Verifying teacher | Primary Goal |
 |---------|---------|---------|---------------|
-| **SDK Runtime** | The planner, executor, and synthesizer that calls your agent. | The plan reviewer, output validator, and guidance author. | Deliver a reliable answer for the current task. |
-| **Model Training** | The model being improved (e.g., a new policy checkpoint). | The supervising model providing feedback during optimization. | Improve the long-term performance of the Student model. |
+| **SDK Runtime** | Planner, executor, and synthesizer personas that drive your agent. | Plan reviewer, validator, and guidance author that certifies answers. | Ship a reliable answer for the current task. |
+| **Model Training** | The model being improved (e.g., a new policy checkpoint). | The supervising model providing feedback during optimization. | Improve the long-term performance of the student model. |
 
-The runtime roles now live in `atlas/personas/`, while the training roles are part of the broader Atlas training system. Every runtime episode also flows through the adaptive controller described in [`adaptive_teaching`](/sdk/configuration#adaptive_teaching): triage builds the dossier, a capability probe chooses a lane, and then the Student/Teacher pair behave differently depending on whether the mode is `auto`, `paired`, `coach`, or `escalate`.
+The runtime personas live in `atlas/personas/`, while the training roles are part of the broader Atlas training system. Every runtime episode also flows through the adaptive controller described in [`adaptive_teaching`](/sdk/configuration#adaptive_teaching): triage builds a dossier, a capability probe chooses a lane, and then the student/teacher duo behave differently depending on whether the mode is `auto`, `paired`, `coach`, or `escalate`.
 
-## The Runtime Student
+## The Runtime Student (your agent)
 
 Located in `atlas/personas/student.py`, the runtime Student performs three key actions:
 
@@ -30,15 +30,15 @@ Located in `atlas/personas/student.py`, the runtime Student performs three key a
 
 Key configuration levers include prompt templates (`student.prompts`), token budgets (`max_*_tokens`), and tool behavior (`tool_choice`).
 
-## The Runtime Teacher
+## The Runtime Verifying Teacher
 
-Defined in `atlas/personas/teacher.py`, the runtime Teacher acts as the quality assurance layer.
+Defined in `atlas/personas/teacher.py`, the runtime teacher acts as the quality-assurance layer.
 
-1. **Plan Review**: Approves or rewrites the Student's plan (`areview_plan`). In `auto`/`paired`, this may be skipped entirely if the runtime converts the task into a single-shot step.
-2. **Validation**: Validates either the final answer (`paired`) or every step (`coach`/`escalate`) via `avalidate_step`. The Teacher also records certification verdicts when the lane is `paired`.
-3. **Guidance**: When validation fails or the reward score is below the retry threshold, the Teacher generates guidance (`agenerate_guidance`) that is fed back into the next attempt and logged inside the execution context.
+1. **Plan review**: Approves or rewrites the student’s plan (`areview_plan`). In `auto`/`paired`, this may be skipped entirely if the runtime collapses the task into a single-shot step.
+2. **Validation**: Certifies either the final answer (`paired`) or every step (`coach`/`escalate`) via `avalidate_step`, recording certification verdicts when the lane is `paired`.
+3. **Guidance**: When validation fails or the reward score is below the retry threshold, the teacher generates guidance (`agenerate_guidance`) that feeds the next attempt and is logged in the execution context.
 
-Configuration options include the Teacher's LLM (`teacher.llm`), token limits for feedback (`max_review_tokens`), and plan caching (`plan_cache_seconds`).
+Configuration options include the teacher’s LLM (`teacher.llm`), token limits for feedback (`max_review_tokens`), and plan caching (`plan_cache_seconds`).
 
 ## The Runtime Feedback Loop
 
@@ -68,7 +68,7 @@ flowchart TD
 
 To keep the contexts clear, remember this summary:
 
-- In the **SDK runtime**, the Student is the *doer* (planner/executor) and the Teacher is the *reviewer*, with their exact responsibilities modulated by the adaptive lane chosen for that task.
+- In the **SDK runtime**, the student is your agent (planner/executor) and the verifying teacher is the reviewer who guides and certifies work, with responsibilities modulated by the adaptive lane chosen for that task.
 - In **model training**, the Student is the *model being improved*, and the Teacher is the *expert coach* providing feedback.
 
 When you see documentation referencing GRPO or reward shaping, you are in the Atlas Core training context. Discussions about continual learning now live in the SDK runtime documentation.

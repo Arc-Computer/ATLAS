@@ -10,7 +10,7 @@ icon: diagram-project
 ATLAS is an architecture for production teams that need AI agents to improve from user interactions and feedback after deployment. It wraps any existing agent framework with the components needed to create a closed-loop, continual learning system.
 
 The core components are:
-1.  **[Reasoning Core](/concepts/teacher-student-paradigm)**: A Teacher-Student model pair that enhances agent capabilities.
+1.  **[Reasoning Core](/concepts/adaptive-dual-agent-reasoning)**: Adaptive dual-agent reasoning—your agent paired with a verifying teacher that enhances outcomes.
 2.  **[Reward System](/concepts/reward-design)**: Turns implicit and explicit user feedback into a dense reward signal.
 3.  **[Learning Engine](/concepts/hybrid-learning)**: Uses offline GRPO to update models based on rewards, while the atlas-sdk runtime handles continual learning in production.
 4.  **Persistent Memory**: Stores all interactions for analysis and retraining. This layer is configurable to use local disk, a cloud bucket (e.g., S3), or a production database (e.g., Postgres) for storage.
@@ -39,7 +39,7 @@ The Atlas SDK provides the entry point to this learning loop. It is responsible 
 graph TD
     subgraph "SDK Runtime (Live Execution)"
         A[Task Request] --> B(atlas.core.run);
-        B --> C{Student-Teacher Loop};
+        B --> C{Adaptive Dual-Agent Loop};
         C -- Plan, Execute, Review --> C;
         C --> D[Final Answer];
         C --> E((Traces));
