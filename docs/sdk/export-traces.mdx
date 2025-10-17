@@ -118,7 +118,7 @@ The exporter writes one JSON object per line. Each record aligns with `AtlasSess
 
 > **Tip:** Compress large exports with `xz` or `gzip`—the loader streams line-by-line, so you can decompress on the fly if desired.
 
-Use `adaptive_summary` to audit routing choices, probe evidence, and certification status; `triage_dossier` captures the structured context that informed the decision; `personas_used` and `persona_updates` show how memory evolved during the run. Each step also carries structured `artifacts` captured during execution and a `deliverable` payload that mirrors what the Student hands back to downstream systems.
+Use `adaptive_summary` to audit routing choices, probe evidence, and certification status; `triage_dossier` captures the structured context that informed the decision (see [`triage dossier`](/reference/glossary#triage-dossier)); `personas_used` and `persona_updates` highlight which [`personas`](/reference/glossary#persona) were active and how memory evolved during the run. Each step also carries structured `artifacts` captured during execution and a `deliverable` payload that mirrors what the Student hands back to downstream systems.
 
 ## 3. Feed the training stack
 

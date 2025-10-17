@@ -21,7 +21,7 @@ Keep `atlas.core.run(..., stream_progress=True)` enabled while tuning configs—
 | --- | --- | --- | --- |
 | `agent` | Adapter union (`http_api` \| `python` \| `openai`) | Yes | Connects the orchestrator to your underlying agent transport. |
 | `teacher` | `TeacherConfig` | Yes | Defines the verifying teacher persona, LLM, and feedback limits. |
-| `rim` | `RIMConfig` | Yes | Configures the reward ensemble that drives retries and adaptive feedback. |
+| `rim` | `RIMConfig` | Yes | Configures the [`RIM`](/reference/glossary#rim-reward-integration-module) ensemble that drives retries and adaptive feedback. |
 | `student` | `StudentConfig` (token caps default to `2048`) | No | Controls your agent’s (student) prompts, tool usage, and token budgets. |
 | `orchestration` | `OrchestrationConfig` (`max_retries=1`, `step_timeout_seconds=900`, `rim_guidance_tag="rim_feedback"`, `emit_intermediate_steps=true`) | No | Governs retries, timeouts, and telemetry emission. |
 | `adaptive_teaching` | `AdaptiveTeachingConfig` (`enabled=true`) | No | Triage, probe, and lane-selection policy. |

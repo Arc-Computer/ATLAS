@@ -25,10 +25,10 @@
             "group": "SDK Runtime",
             "pages": [
               "sdk/quickstart",
+              "runtime_adaptive_flow",
               "sdk/configuration",
               "sdk/export-traces",
               "sdk/orchestration",
-              "runtime_adaptive_flow",
               "sdk/adapters",
               "sdk/student-verifying-teacher-roles"
             ]

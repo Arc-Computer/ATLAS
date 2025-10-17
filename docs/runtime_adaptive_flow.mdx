@@ -22,7 +22,7 @@ Looking for the personas behind each role? Read the [`Student & Verifying Teache
 
 <Steps>
   <Step title="Triage the request">
-    A triage adapter builds a dossier from the incoming task, prior personas, and recent telemetry. Custom adapters can enrich the dossier with business-specific metadata.
+    A triage adapter builds a [`triage dossier`](/reference/glossary#triage-dossier) from the incoming task, prior [`personas`](/reference/glossary#persona), and recent telemetry. Custom adapters can enrich the dossier with business-specific metadata.
   </Step>
   <Step title="Probe capability">
     A lightweight probe model scores confidence and surfaces evidence. The orchestrator stores the score, evidence, and lane suggestion in `adaptive_summary`.
@@ -34,7 +34,7 @@ Looking for the personas behind each role? Read the [`Student & Verifying Teache
     The student plans and executes, while the verifying teacher reviews, validates, and issues guidance according to the active lane. Retries only fire in lanes that permit them.
   </Step>
   <Step title="Score and persist">
-    RIM judges score the outcome, certification verdicts are recorded, and telemetry flows to the console or storage backends. Export these traces with `arc-atlas` for offline training.
+    [`RIM`](/reference/glossary#rim-reward-integration-module) judges score the outcome, certification verdicts are recorded, and telemetry flows to the console or storage backends. Export these traces with `arc-atlas` for offline training.
   </Step>
 </Steps>
 
