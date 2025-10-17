@@ -1,187 +1,59 @@
 title: Atlas Workflow Overview
-description: "Understand the end-to-end Atlas loop, then dive into the runtime quickstart or the training pipeline."
+description: "Pick the right Atlas path, then jump directly into the runtime or training quickstarts."
 sidebarTitle: Workflow Overview
 icon: rocket
 ---
 
-ATLAS is designed for production AI engineers. In under an hour you can plug the Teacher–Student loop into your existing agent, stream telemetry to your terminal, export training traces, and feed them into the GRPO trainer.
+Atlas gives you two complementary workflows: the **runtime SDK**, which wraps your agent in an adaptive dual-agent loop (student + verifying teacher), and the **Atlas Core training stack**, which turns exported traces into new teacher checkpoints. Use this page as the router—each link below sends you to the detailed guide.
 
 <Info>
-**Choose your path:**
-- **Runtime orchestration only** — Complete Steps 1–4 to wrap your agent with Atlas quality control and export traces (requires only `pip install arc-atlas`).
-- **Runtime + training pipeline** — Continue through Step 5 to feed exported traces into GRPO training (requires the [Atlas Core training repository](https://github.com/Arc-Computer/ATLAS)).
+**Prefer the hands-on instructions?** Head to the [`SDK Quickstart`](/sdk/quickstart) for the runtime walkthrough or the [`Offline Training Guide`](/training/offline/grpo-training) for GRPO. Keep this page bookmarked to remember the order of operations.
 </Info>
 
-<Tip>
-Need the runtime instructions immediately? Head straight to the [`SDK Quickstart`](/sdk/quickstart) for the hands-on walkthrough. This page stays high level so teams can plan the full export → train loop.
-</Tip>
+## Pick Your Workflow
 
-*End-to-end flow:* Install SDK → Configure BYOA → Run Teacher/Student/Reward loop → Export traces → Train.
+- **Runtime orchestration only** — Install the SDK, point it at your agent, run tasks with the verifying teacher in the loop, and (optionally) persist traces. Ideal when you just need quality control and telemetry.  
+  → Start with [`SDK Quickstart`](/sdk/quickstart) and the [`Configuration Reference`](/sdk/configuration).
 
-## Step 1 — Install the runtime and set credentials
+- **Runtime + training pipeline** — Do everything above, then feed the exported JSONL traces into Atlas Core to train or evaluate a new teacher checkpoint.  
+  → Follow [`Training Configuration`](/training/configuration) and the [`Offline Training Guide`](/training/offline/grpo-training).
 
-```bash
-python -m pip install --upgrade arc-atlas
-```
+## Runtime Checklist
 
-Create a `.env` (or use your secret manager) with the LLM keys you plan to call:
+<Steps>
+  <Step title="Install & set credentials">
+    `pip install arc-atlas`, export your API keys, or add them to `.env`. See Step 0 in the [`SDK Quickstart`](/sdk/quickstart#prerequisites).
+  </Step>
+  <Step title="Bring your own agent">
+    Copy the closest template in `atlas-sdk/configs/examples/`, update the `agent` block, and review the dual-agent options in [`SDK Configuration`](/sdk/configuration#agent).
+  </Step>
+  <Step title="Run your first task">
+    Execute `atlas.core.run(...)` exactly as shown in the quickstart. Watch the console streamer to see which lane the verifying teacher selects.
+  </Step>
+  <Step title="Persist & export (optional)">
+    Add a `storage:` block and run `arc-atlas --database-url ... --output traces.jsonl` when you want training-ready JSONL. Reference [`Export Runtime Sessions`](/sdk/export-traces).
+  </Step>
+</Steps>
 
-```bash
-OPENAI_API_KEY=sk-...
-# optional extras
-GEMINI_API_KEY=...
-AZURE_OPENAI_API_KEY=...
-```
+## Offline Training Checklist (Optional)
 
-Load those variables before you orchestrate runs.
+<Steps>
+  <Step title="Load runtime traces">
+    Point `configs/data/runtime_traces.yaml` at your exported JSONL. The loader is defined in `custom_data.runtime_trace_data`.
+  </Step>
+  <Step title="Launch GRPO or scoring">
+    Use `python scripts/run_offline_pipeline.py --export-path <traces.jsonl>` or compose Hydra overrides manually. See the [`Offline Training Guide`](/training/offline/grpo-training).
+  </Step>
+  <Step title="Redeploy the verifying teacher">
+    Once the run finishes, point the SDK runtime at the new checkpoint and repeat the loop.
+  </Step>
+</Steps>
 
-## Step 2 — Point ATLAS at your agent (Bring Your Own Agent, BYOA, in 5 minutes)
+## Reference Map
 
-Atlas ships YAML templates for the three adapter families. Copy the closest example from the SDK (`configs/examples/`) and edit the `agent` block. For instance, to wrap a local HTTP service:
+- **Concepts**: [`Adaptive Dual-Agent Reasoning`](/concepts/adaptive-dual-agent-reasoning), [`Reward System`](/concepts/reward-design)
+- **Runtime docs**: [`SDK Quickstart`](/sdk/quickstart), [`SDK Configuration`](/sdk/configuration), [`Student & Verifying Teacher Roles`](/sdk/student-teacher-roles), [`Runtime Orchestration`](/sdk/orchestration)
+- **Training docs**: [`Training Configuration`](/training/configuration), [`Offline Training Guide`](/training/offline/grpo-training)
+- **Intro narrative**: [`Introduction`](/introduction) for the end-to-end story
 
-<Tip>
-**Understanding Student & Teacher roles:** The config below references `student` and `teacher` blocks. The **Student** is your base agent (the model executing tasks), and the **Teacher** is a reviewer that provides real-time feedback to improve outputs—no model weights are modified. This two-persona architecture enables quality control and adaptive guidance at runtime. See [`Student & Teacher Roles`](/sdk/student-teacher-roles) for the complete mental model.
-</Tip>
-
-```yaml
-# configs/my_http_agent.yaml
-agent:
-  type: http_api
-  name: my-http-agent
-  system_prompt: |
-    You are the Atlas Student. Solve the task carefully and justify decisions.
-  tools: []
-  transport:
-    base_url: http://localhost:8080/agent
-    timeout_seconds: 60
-
-student:
-  max_plan_tokens: 1024
-  max_step_tokens: 1024
-  max_synthesis_tokens: 1024
-
-teacher:
-  llm:
-    provider: openai
-    model: gpt-4o-mini
-    api_key_env: OPENAI_API_KEY
-```
-
-Swap the adapter for OpenAI (`type: openai`) or a local Python callable (`type: python`) if that fits your stack. The rest of the file—`student`, `teacher`, `rim`, `orchestration`—ships with sensible defaults. See [`SDK Configuration`](/sdk/configuration) for every field.
-
-## Step 3 — Run the adaptive runtime with telemetry
-
-Every call to `atlas.core.run` now begins with a triage dossier and capability probe. Those signals decide which lane the orchestrator chooses for the task:
-
-- `auto` keeps latency low with a single-shot execution and no validation when confidence is high.
-- `paired` runs single-shot but routes through a one-time certification check (ideal for first-run fingerprints).
-- `coach` condenses the reviewed plan into a single step with validation plus an optional retry for lightweight supervision.
-- `escalate` keeps the full stepwise plan, enabling rich guidance, retries, and detailed telemetry.
-
-```python
-from atlas.core import run
-
-result = run(
-    task="Summarize the latest AI news",
-    config_path="configs/my_http_agent.yaml",
-    stream_progress=True,
-)
-```
-
-When `stream_progress=True` and stdout is interactive, `atlas.runtime.telemetry.ConsoleTelemetryStreamer` auto-enables to print the accepted plan (if any), retries, tool calls, lane choice, probe confidence, and reward scores as they happen. Set `stream_progress=False` to silence streaming, or leave it unset and Atlas will auto-detect.
-
-<Note>
-Need persistence? Add a `storage:` block in your YAML (see below) so every session lands in Postgres for export.
-</Note>
-
-## Step 4 — Persist and export traces
-
-Enable storage:
-
-<Note>
-**Data ownership and control:** All session data writes exclusively to the Postgres database *you* provide and control. ATLAS never operates its own data sink or accesses your database—the `database_url` points to your infrastructure (self-hosted, cloud-managed, or local). If you prefer ephemeral sessions, simply omit the `storage` block entirely, and no persistent data will be created. This step is completely optional and governed by your data policies.
-</Note>
-
-```yaml
-storage:
-  database_url: postgresql://atlas:atlas@localhost:5432/atlas
-  min_connections: 1
-  max_connections: 5
-```
-
-After a run (or a batch of runs) export the traces to JSONL:
-
-```bash
-arc-atlas \
-  --database-url postgresql://atlas:atlas@localhost:5432/atlas \
-  --output traces/aime-batch.jsonl \
-  --trajectory-event-limit 500 \
-  --status succeeded
-```
-
-<Note>
-Ensure Postgres is running and reachable before exporting. You can launch it with `docker compose up -d postgres` (using the repo's compose file) or `brew services start postgresql`.
-</Note>
-
-<Tip>
-If another tool has claimed the `atlas` command on your machine, invoke the exporter with `python -m atlas.cli.export ...` or ensure `arc-atlas` resolves first on `PATH`.
-</Tip>
-
-Each JSONL record maps to the shared runtime schema (`task`, `adaptive_summary`, triage dossier, plan/step traces, per-step `reward` with nested judges, guidance history, validation, tool metadata, plus optional `artifacts` and `deliverable` payloads). Preview a single record with `jq`:
-
-```bash
-jq '.' traces/aime-batch.jsonl | head
-```
-
----
-
-## Training Integration (Optional)
-
-<Note>
-**Training integration (optional):** The remaining steps assume you have cloned the Atlas training repository and provisioned the required GPU resources. If you only need runtime orchestration, you can stop after Step 4.
-</Note>
-
-## Step 5 — Train or score with the runtime dataset
-
-Point the core training stack at the exported file using the provided loader:
-
-```yaml
-# configs/data/runtime_traces.yaml
-make_dataset_fn:
-  _target_: custom_data.runtime_trace_data.get_runtime_trace_dataset
-  export_path: traces/aime-batch.jsonl
-  eval_split_ratio: 0.1
-```
-
-Now launch GRPO or a scoring job exactly as you would with any other dataset. The trainer sees the same reward structure that the runtime produced, so step-level improvements translate directly into policy updates. See [`Training Your Own Teacher`](/training/offline/grpo-training) for the full recipe and the [`Training Configuration`](/training/configuration) guide for Hydra overrides.
-
-Run the helper CLI to kick off training without assembling overrides:
-
-```bash
-python scripts/run_offline_pipeline.py --export-path traces/aime-batch.jsonl
-```
-
-Pass `--wandb-project`, `--output-dir`, or additional `--override` flags as needed.
-
-## Optional — Advanced optimisation
-
-Once the loop is running end-to-end, you can layer on additional optimization strategies:
-
-- **Custom judges** for domain-specific scoring.
-- **Full GRPO retraining** when you need a bespoke teacher checkpoint.
-- **SDK continual learning** if you need rapid, task-specific adaptation between offline runs.
-
-Each of these uses the same exported traces, so you can adopt them incrementally as your workloads grow.
-
-## Checklist
-
-**SDK runtime (required):**
-- [x] Installed `arc-atlas` and exported API keys
-- [x] Wrapped the agent with a YAML config
-- [x] Streamed telemetry for a real task
-- [x] Enabled Postgres storage and exported JSONL traces
-
-**Training integration (optional):**
-- [x] Consumed traces in the training stack
-
-You now have the full Atlas workflow configured. Completing Steps 1–4 gives you runtime orchestration with exportable traces; finishing Step 5 bridges those traces into the training stack for GRPO training.
+Once you know which path you’re on, jump into the linked guide and follow it end-to-end—the detailed quickstarts now carry all of the copy-paste commands.

@@ -35,8 +35,7 @@
           {
             "group": "Core Concepts",
             "pages": [
-              "concepts/teacher-student-paradigm",
-              "concepts/adaptive-teaching-protocol",
+              "concepts/adaptive-dual-agent-reasoning",
               "concepts/hybrid-learning",
               "concepts/reward-design",
               "architecture/system-overview"

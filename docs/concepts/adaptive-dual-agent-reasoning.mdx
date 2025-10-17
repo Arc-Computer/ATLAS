@@ -1,0 +1,174 @@
+---
+title: Adaptive Dual-Agent Reasoning
+description: How your agent partners with a verifying teacher to deliver safer, higher-quality results.
+sidebarTitle: Dual-Agent Concept
+icon: chalkboard-user
+---
+
+ATLAS hinges on an adaptive dual-agent reasoning loop: your production agent (the **student**) stays frozen, while a specialized **verifying teacher** evaluates its plan, provides targeted guidance, and confirms the final answer. The partnership boosts quality without touching model weights and works across any provider—API-only or self-hosted.
+
+Think of it as pairing every agent run with an expert reviewer. The reviewer doesn’t replace your agent; it inspects the approach, corrects mistakes, and signs off before results ship to users.
+
+## Core Concept
+
+- **Student (your agent)** – Any LLM or tool stack executing the task (GPT, Claude, Gemini, local checkpoints, custom code).
+- **Verifying teacher** – An 8B specialized model trained to diagnose gaps, inject guidance, and certify answers.
+- **Outcome** – Better answers, higher safety, and richer telemetry—without retraining the underlying agent.
+
+### Why it’s model agnostic
+
+| Traditional approach | Adaptive dual-agent reasoning |
+| --- | --- |
+| Retrain or fine-tune the agent | Keep the agent frozen and add a verifying teacher |
+| Requires model access & GPUs | Works with API-only models |
+| Risk of regression | Preserves baseline capabilities |
+| Weeks to deploy updates | Hours to roll out new teacher checkpoints |
+
+For wiring details, see [`Student & Verifying Teacher Roles`](/sdk/student-teacher-roles) for the runtime personas and [`Offline Training`](/training/offline/grpo-training) to learn how new teachers are trained.
+
+## Why it works
+
+### 1. Asymmetric specialization
+
+The teacher focuses solely on teaching. It doesn’t need to outperform the agent at solving tasks; it needs to spot blind spots, orchestrate retries, and provide precise interventions.
+
+> **Analogy:** A senior reviewer doesn’t code faster than the whole team—they prevent critical mistakes, guide architecture decisions, and approve releases.
+
+### 2. Inference-time enhancement
+
+Guidance happens through prompts at runtime:
+
+1. The teacher inspects the task, telemetry, and prior attempts.
+2. It scores capability, triages risk, and drafts guidance.
+3. The guidance is merged into the agent’s context.
+4. The agent re-runs with the added teaching and produces the final answer.
+
+No gradient steps, checkpoints, or weight updates are required.
+
+### 3. Adaptive intensity
+
+The teacher adjusts effort based on confidence:
+
+- **High confidence:** Light-touch verification or a single checklist.
+- **Medium confidence:** Paired review of the final result.
+- **Low confidence:** Step-by-step coaching with retries.
+
+You pay only for the oversight you need, run-by-run.
+
+## Deployment requirements
+
+| Component | Specification | Purpose |
+| --- | --- | --- |
+| Verifying teacher | 8B RL-trained model | Generates adaptive guidance & certifications |
+| Student agent | Any size / provider | Executes the actual work |
+| Context window | 4k–32k tokens | Accommodates guidance + agent output |
+| Latency overhead | ~30% | Extra pass for analysis and teaching |
+
+## Performance snapshot (τ²-bench, mms_issue subset)
+
+| System | Pass@1 | Notes |
+| --- | --- | --- |
+| **ATLAS dual-agent** | **24.0%** | Minimal degradation across retries |
+| GPT-4.1 | 18.0% | −8 pts from Pass@1 to Pass@4 |
+| Claude 3.7 Sonnet | 18.0% | −16 pts drop across retries |
+| o4-mini | 12.0% | −10 pts drop across retries |
+| Qwen3-8B (student only) | 4.1% | No teacher guidance |
+
+**Key takeaways**
+
+- **6× lift** on the same student by adding the verifying teacher.
+- **Stable retries:** The teacher keeps success rates high on subsequent attempts.
+- **Cross-domain transfer:** A math-trained teacher can supervise telecom debugging tasks because it enforces process, not domain answers.
+
+### Aggregate impact
+
+- **Average accuracy gain (runtime + GRPO):** +15.7 %
+- **Maximum domain lift:** +29.6 %
+- **Non-degradation rate:** 97 %
+- **Token efficiency:** ~50 % reduction
+- **Completion rate:** +31 %
+
+## Benefits vs. other approaches
+
+### Fine-tuning / RLHF
+
+- No retraining or weight access required.
+- Zero risk of catastrophic forgetting.
+- Deploy new guidance in hours, not weeks.
+
+### Prompt engineering
+
+- Adaptive, not one-shot tuning.
+- Systematic and measurable improvements.
+- Token use scales with confidence (fast lanes stay cheap).
+
+### Ensembles
+
+- Single agent executes the work; no multi-model voting.
+- Lower cost and latency for comparable quality.
+- Guidance is inspectable and auditable.
+
+## Training the verifying teacher
+
+1. **Supervised warmup (SFT)** – Teach baseline review behaviors (4–6 hours on 8× H100).
+2. **GRPO fine-tuning** – Optimize for student improvement and calibrated confidence (24–36 hours on 8× H100).
+
+Rewards come from measured student gains, so the teacher is incentivized to deliver guidance that genuinely improves outcomes.
+
+## Integration patterns
+
+### SDK runtime orchestration
+
+Integrate via the SDK to wrap your agent with adaptive lanes (auto, paired, coach, escalate). The runtime logs every teaching decision and reward signal for later analysis.
+
+### Offline GRPO training
+
+Export runtime traces (`arc-atlas --output traces.jsonl`) and run `python scripts/run_offline_pipeline.py --export-path <traces>.jsonl` to produce updated teacher checkpoints. Point the SDK back at the new weights to close the loop.
+
+## Best practices
+
+<AccordionGroup>
+  <Accordion title="Selecting the teacher checkpoint">
+    - **ATLAS-8B-Thinking**: Analytical, math-heavy domains  
+    - **ATLAS-8B-Instruct**: Code generation, structured workflows  
+    - **Custom GRPO**: Train on your exported traces for domain-specific oversight
+  </Accordion>
+  <Accordion title="Qualifying student agents">
+    Confirm the agent supports:  
+    - System prompts or instruction conditioning  
+    - Sufficient context window (>4k tokens)  
+    - Deterministic decoding (control temperature/top_p)
+  </Accordion>
+  <Accordion title="Operational tips">
+    - Cache teacher guidance for repetitive tickets  
+    - Batch similar tasks for throughput  
+    - Stream intermediate verdicts for human-on-the-loop monitoring  
+    - Track token budgets per lane to manage cost
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<CardGroup cols="2">
+  <Card title="Runtime Orchestration" icon="arrows-rotate" href="/sdk/orchestration">
+    Dive into the lane logic, telemetry, and orchestration flow.
+  </Card>
+  <Card title="Deploy to Production" icon="plug" href="/integration/inference-only">
+    Learn how to operate the dual-agent loop in production infrastructure.
+  </Card>
+  <Card title="Reward System" icon="trophy" href="/concepts/reward-design">
+    Understand how guidance quality is quantified.
+  </Card>
+  <Card title="Performance Benchmarks" icon="chart-line" href="/examples/sota-on-tau-squared-bench">
+    Explore τ²-bench results in detail.
+  </Card>
+  <Card title="Offline Training" icon="dumbbell" href="/training/offline/grpo-training">
+    Run SFT + GRPO to evolve your verifying teacher.
+  </Card>
+</CardGroup>
+
+## References
+
+- [ATLAS Technical Report](/reference/technical-report) — Architecture and evaluations
+- [Offline Training Guide](/training/offline/grpo-training) — Hands-on teacher training walkthrough
+- [SRE Case Study](/examples/sre-root-cause-analysis) — Applying the loop to incident management

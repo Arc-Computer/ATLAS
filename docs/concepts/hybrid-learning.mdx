@@ -95,7 +95,7 @@ In production, the atlas-sdk runtime constantly evaluates teacher guidance, capt
 *With pre-trained teacher models
 
 <Note>
-  Baseline figures reflect the runtime Student–Teacher loop plus GRPO training. Online continual learning now lives in the [`atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) runtime.
+  Baseline figures reflect the runtime dual-agent loop (student + verifying teacher) plus GRPO training. Online continual learning now lives in the [`atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) runtime.
 </Note>
 
 ### Case Study: Validated Cross-Domain Transfer
@@ -212,8 +212,8 @@ The hybrid architecture enables "Compounding Intelligence" through:
 ## Next Steps
 
 <CardGroup cols="2">
-  <Card title="Adaptive Teaching Protocol" icon="chalkboard-user" href="/concepts/adaptive-teaching-protocol">
-    Understand the two-pass teaching mechanism
+  <Card title="Adaptive Dual-Agent Reasoning" icon="chalkboard-user" href="/concepts/adaptive-dual-agent-reasoning">
+    Understand the two-pass dual-agent mechanism
   </Card>
   <Card title="Online Learning" icon="layer-group" href="/training/online/continuous-learning">
     Learn how skills accumulate over time

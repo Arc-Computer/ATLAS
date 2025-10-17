@@ -24,12 +24,12 @@ Across internal and external benchmarks this closed loop delivers an average **+
 
 ATLAS gives you a single harness that captures value on every turn of the loop:
 
-- **Runtime orchestrator** – `atlas.core.run` triages every task, runs a capability probe, routes it into `auto`, `paired`, `coach`, or `escalate`, and then wraps your agent in the Student↔Teacher reviewer while streaming telemetry through `atlas.runtime.telemetry`.
+- **Runtime orchestrator** – `atlas.core.run` triages every task, runs a capability probe, routes it into `auto`, `paired`, `coach`, or `escalate`, and then wraps your agent in an adaptive dual-agent reasoning loop guided by reward signals: your agent (the student) collaborates with a verifying teacher that reviews every decision while telemetry streams through `atlas.runtime.telemetry`.
 - **Data engine** – every run streams structured traces and reward signals into Postgres (`storage` block) and exports JSONL via the SDK CLI (`arc-atlas --database-url ... --output traces.jsonl`). You own the dataset that reflects how your production agent actually behaves.
 - **Training pipeline** – feed those traces straight into the offline stack (`custom_data.runtime_trace_data.get_runtime_trace_dataset`, GRPO trainers) to ship bespoke teachers or policy checkpoints without hand-labeling.
 
 **What ATLAS does and doesn't do with your data:**
-The runtime loop operates purely through feedback—no model weights are modified during production execution. The Student↔Teacher interaction happens via prompts and rewards that steer behavior in real time without touching the underlying models. Weight updates are entirely optional: you choose when to run offline GRPO training jobs on your own infrastructure. Persistent memory (trace storage) can stay disabled for ephemeral sessions, or you can point it at your own Postgres instance—ATLAS never controls or accesses your data stores. You retain complete ownership and control over what gets stored, where it lives, and whether persistence is enabled at all.
+The runtime loop operates purely through feedback—no model weights are modified during production execution. This dual-agent interaction keeps your agent (student) paired with a verifying teacher that guides behavior in real time without touching the underlying models. Weight updates are entirely optional: you choose when to run offline GRPO training jobs on your own infrastructure. Persistent memory (trace storage) can stay disabled for ephemeral sessions, or you can point it at your own Postgres instance—ATLAS never controls or accesses your data stores. You retain complete ownership and control over what gets stored, where it lives, and whether persistence is enabled at all.
 
 Use the runtime for instant lift, then plug the same traces into GRPO when you need custom weights—the data you collect in production is the fuel for both. Online continual learning now lives in the [atlas-sdk](https://github.com/Arc-Computer/atlas-sdk) repository.
 
@@ -61,7 +61,7 @@ Choose your starting point:
   <Card title="SDK Runtime Orchestration" icon="workflow" href="/sdk/quickstart">
     Use the Atlas orchestrator to run an existing agent with a closed-loop learning system. Get started in minutes.
   </Card>
-  <Card title="Offline Training (Atlas Core)" icon="graduation-cap" href="/quickstart">
+  <Card title="Offline Training (Atlas Core)" icon="graduation-cap" href="/training/offline/grpo-training">
     Convert exported runtime traces into GRPO training jobs, evaluate reward deltas, and ship updated teacher checkpoints.
   </Card>
 </CardGroup>

@@ -41,7 +41,7 @@ trainer.train()
 trainer.save_model("./output/final_model")
 ```
 
-```python title="Teacher-Student Training"
+```python title="Dual-Agent Teacher Training"
 from trainers import TeacherGRPOTrainer
 from configs import TeacherGRPOConfig
 
@@ -143,7 +143,7 @@ GRPOTrainer is the main trainer class for Group Relative Policy Optimization, ex
 
 ## TeacherGRPOTrainer
 
-Specialized trainer for adaptive teaching with teacher-student paradigm.
+Specialized trainer for adaptive dual-agent teaching (student agent + verifying teacher).
 
 ### Class Overview
 

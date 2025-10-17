@@ -18,7 +18,7 @@ Atlas is the learning layer for production agents, giving them a way to adapt an
 
 | When you need… | Use | Highlights |
 |----------------|-----|------------|
-| Runtime continual learning: triage → probe → lane routing, telemetry, JSONL export | [`Arc-Computer/atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) | Drop-in runtime harness, storage helpers (`atlas storage up`), exporter (`arc-atlas`), persona telemetry |
+| Runtime continual learning: triage → probe → lane routing, telemetry, JSONL export | [`Arc-Computer/atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) | Drop-in runtime harness with a verifying teacher, storage helpers (`atlas storage up`), exporter (`arc-atlas`), persona telemetry |
 | Offline optimization: GRPO training, reward adapters, analysis utilities | `Arc-Computer/ATLAS` (this repo) | GRPO trainer, RIM reward system, data loaders, launch scripts |
 
 <div align="center">
@@ -33,7 +33,7 @@ Atlas is the learning layer for production agents, giving them a way to adapt an
   <p><em>Runtime episodes feed the reward system and persistent memory; Atlas Core consumes those exports to train new teachers with GRPO.</em></p>
 </div>
 
-- **Reasoning Core** – Student and Teacher personas live in `atlas-sdk`, wrapping your agent with adaptive supervision in lanes (`auto`, `paired`, `coach`, `escalate`).
+- **Reasoning Core** – Student and verifying teacher personas live in `atlas-sdk`, wrapping your agent with adaptive supervision in lanes (`auto`, `paired`, `coach`, `escalate`).
 - **Reward System (RIM)** – Shared evaluators score every step and session; the same judges label runtime telemetry and training data.
 - **Learning Engine** – This repo’s GRPO trainer ingests exported traces (`arc-atlas`) to produce updated teacher checkpoints.
 - **Persistent Memory** – Postgres + JSONL exports capture triage dossiers, adaptive summaries, persona updates, and reward payloads so the learning loop compounds over time.
