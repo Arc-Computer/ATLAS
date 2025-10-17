@@ -53,6 +53,9 @@ graph TD
 
 ### Model Presets (`configs/model/`)
 
+<AccordionGroup>
+  <Accordion title="Model Presets Reference">
+
 | Parameter | Default / Example | Notes |
 | --- | --- | --- |
 | `model_name_or_path` | Required (e.g., `Qwen/Qwen3-8B` in `qwen3_8b.yaml`) | Override in run configs to target a different checkpoint. |
@@ -67,7 +70,13 @@ graph TD
 | `peft_config._target_` | `hydra_utils.trl.get_peft_config` | Automatically derives PEFT configuration from `use_peft`. |
 | `qwen3_8b.yaml` overrides | `model_args.model_revision: main`, `torch_dtype: bfloat16`, `attn_implementation: flash_attention_2` | Treat as a template for adding new architectures. |
 
+</Accordion>
+</AccordionGroup>
+
 ### Dataset Presets (`configs/data/`)
+
+<AccordionGroup>
+  <Accordion title="Dataset Presets Reference">
 
 | Parameter | Default / Example | Notes |
 | --- | --- | --- |
@@ -83,7 +92,13 @@ graph TD
 | `dataset_path` | `traces/export.jsonl` (`runtime_traces.yaml`) | Point at exported JSONL from the runtime SDK. |
 | `make_dataset_fn._target_` | `custom_data.runtime_trace_data.get_runtime_trace_dataset`, `custom_data.arc_atlas_rl_data.get_arc_atlas_rl_dataset`, `custom_data.sft_data.load_formatted_sft_dataset` | Loader entrypoints for runtime, RL, and SFT data respectively. |
 
+</Accordion>
+</AccordionGroup>
+
 ### Trainer Base Defaults (`configs/trainer/base.yaml`)
+
+<AccordionGroup>
+  <Accordion title="Trainer Base Defaults Reference">
 
 | Parameter | Default | Notes |
 | --- | --- | --- |
@@ -105,11 +120,17 @@ graph TD
 | `ddp_timeout` | `18000` seconds | Applies to distributed training rendezvous. |
 | `trainer_args._target_` | _(set by derived trainers)_ | Base config leaves the target blank; algorithm-specific files provide it. |
 
+</Accordion>
+</AccordionGroup>
+
 <Info>
 `gradient_accumulation_steps` is inferred at runtime using `gradient_accumulation_steps = train_batch_size / (per_device_train_batch_size × number_of_devices)` (see `train.py:55-103`). Provide any two values and the launcher resolves the third.
 </Info>
 
 ### GRPO Algorithm Controls (`configs/trainer/grpo.yaml`)
+
+<AccordionGroup>
+  <Accordion title="GRPO Algorithm Controls Reference">
 
 | Parameter | Default | Notes |
 | --- | --- | --- |
@@ -160,7 +181,13 @@ graph TD
 | `trainer_args._target_` | `trainers.GRPOConfig` | Hydrated with the same fields above. |
 | `trainer._target_` | `trainers.GRPOTrainer` | Main GRPO training loop implementation. |
 
+</Accordion>
+</AccordionGroup>
+
 ### Teacher GRPO Overlay (`configs/trainer/teacher_grpo.yaml`)
+
+<AccordionGroup>
+  <Accordion title="Teacher GRPO Overlay Reference">
 
 | Parameter | Default / Example | Notes |
 | --- | --- | --- |
@@ -176,6 +203,9 @@ graph TD
 | `trainer_args.teacher_adaptive_template` | Multiline template | See **Default prompt templates** below. |
 | `trainer_args.student_with_teaching_template` | Multiline template | See **Default prompt templates** below. |
 | `trainer._target_` | `trainers.TeacherGRPOTrainer` | Specialised trainer that incorporates diagnostic prompts. |
+
+</Accordion>
+</AccordionGroup>
 
 <details>
   <summary><strong>Default prompt templates</strong></summary>

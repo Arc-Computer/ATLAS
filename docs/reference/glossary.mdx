@@ -50,6 +50,15 @@ Percentage of interactions where performance remains equal to or better than bas
 ### Compounding Intelligence
 The accumulation and transfer of learned skills across tasks and domains through the hybrid architecture.
 
+### RIM (Reward Integration Module)
+Atlas's reward ensemble that evaluates every step and final answer using multiple judging LLMs. The runtime (`RIMConfig`) routes each interaction through small and large judges, aggregates their scores, and decides whether to retry, certify, or persist guidance.
+
+### Persona
+Runtime persona prompt bundles (planner, executor, synthesizer, verifier) that shape student and teacher behaviour. Personas can be updated via memory, tagged for reuse, and inspected in exported traces to understand how guidance evolved.
+
+### Triage Dossier
+Structured context produced by the triage adapter before execution begins. The dossier summarises task metadata, risks, history, and persona hints; it informs the capability probe and lane selection and is exported with every runtime trace.
+
 ## Metrics
 
 ### TES (Teaching Efficiency Score)
