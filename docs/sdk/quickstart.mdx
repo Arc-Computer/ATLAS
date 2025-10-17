@@ -38,7 +38,7 @@ We recommend keeping credentials in a `.env` file and loading them with `dotenv`
 
 ## Step 1 – Run the Quickstart Task
 
-The `configs/examples/openai_agent.yaml` configuration enables the adaptive runtime out of the box. It includes a small `storage` block so you can persist sessions immediately—set `storage: null` if you prefer purely in-memory runs.
+The `configs/examples/openai_agent.yaml` configuration (in the [`atlas-sdk` repository](https://github.com/Arc-Computer/atlas-sdk/tree/main/configs/examples)) enables the adaptive runtime out of the box. Clone that repo—or download the file directly—so the `config_path` below resolves. It includes a small `storage` block so you can persist sessions immediately; set `storage: null` if you prefer purely in-memory runs.
 
 <div align="center">
   <img src="/images/adaptive-runtime.png" alt="Atlas SDK adaptive runtime flow diagram showing triage, probe, and lane routing" width="900" />
@@ -110,7 +110,7 @@ graph LR
 
 The `openai_agent.yaml` config defines the runtime behavior. Here’s a high-level look at the key sections:
 
-- **`agent`**: Specifies the agent to run the task. The quickstart uses the OpenAI adapter with `gpt-4o-mini` and no tools, requiring only an `OPENAI_API_KEY`.
+- **`agent`**: Specifies the agent to run the task. The quickstart uses the OpenAI adapter with `gpt-5-mini` and no tools, requiring only an `OPENAI_API_KEY`.
 - **`student`**: Configures the planner, executor, and synthesizer roles with their respective prompts and token limits.
 - **`teacher`**: Defines the review and guidance agent, which also has its own model and token budget.
 - **`orchestration`**: Sets runtime parameters like the number of retries (default: 1) and step timeouts.

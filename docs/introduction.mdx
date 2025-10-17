@@ -20,13 +20,19 @@ ATLAS wraps any base model (GPT, Claude, Gemini, open source checkpoints, or you
 
 Across internal and external benchmarks this closed loop delivers an average **+15.7 % accuracy lift**, **97 % non-degradation**, and **~50 % token savings** versus baseline agents. Offline GRPO fine-tuning then pushes longer-horizon improvements when you want to train custom checkpoints.
 
-## Runtime + Data Engine for ML Engineers
+## Runtime for ML Engineers
 
-ATLAS gives you a single harness that captures value on every turn of the loop:
+ATLAS gives you a single harness that captures value on every turn of the loop. To try it locally, start by installing the Atlas SDK runtime:
+
+```bash
+pip install arc-atlas
+```
+
+Clone the [`atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) repository if you want the ready-made configs and examples.
 
 - **Runtime orchestrator** – `atlas.core.run` triages every task, runs a capability probe, routes it into `auto`, `paired`, `coach`, or `escalate`, and then wraps your agent in an adaptive dual-agent reasoning loop guided by reward signals: your agent (the student) collaborates with a verifying teacher that reviews every decision while telemetry streams through `atlas.runtime.telemetry`.
-- **Data engine** – every run streams structured traces and reward signals into Postgres (`storage` block) and exports JSONL via the SDK CLI (`arc-atlas --database-url ... --output traces.jsonl`). You own the dataset that reflects how your production agent actually behaves.
-- **Training pipeline** – feed those traces straight into the offline stack (`custom_data.runtime_trace_data.get_runtime_trace_dataset`, GRPO trainers) to ship bespoke teachers or policy checkpoints without hand-labeling.
+- **Runtime exports** – every run streams structured traces and reward signals into Postgres (`storage` block) and exports JSONL via the SDK CLI (`arc-atlas --database-url ... --output traces.jsonl`). You own the dataset that reflects how your production agent actually behaves.
+- **Training pipeline** – feed those traces straight into the offline stack via the [`Runtime Traces dataset config`](/training/configuration#dataset-presets) and the GRPO trainers to ship bespoke teachers or policy checkpoints without hand-labeling.
 
 **What ATLAS does and doesn't do with your data:**
 The runtime loop operates purely through feedback—no model weights are modified during production execution. This dual-agent interaction keeps your agent (student) paired with a verifying teacher that guides behavior in real time without touching the underlying models. Weight updates are entirely optional: you choose when to run offline GRPO training jobs on your own infrastructure. Persistent memory (trace storage) can stay disabled for ephemeral sessions, or you can point it at your own Postgres instance—ATLAS never controls or accesses your data stores. You retain complete ownership and control over what gets stored, where it lives, and whether persistence is enabled at all.
@@ -46,7 +52,11 @@ Every stage feeds the next—the same traces you capture at runtime become the f
 
 ## Getting Started: Two Paths
 
-Atlas is a comprehensive framework with two primary entry points. Most teams begin with the SDK to orchestrate an existing agent, then graduate to the training workflows for deeper optimization. For hands-on instructions, see the [Quickstart tutorial](/quickstart) and the [`SDK Quickstart`](/sdk/quickstart).
+Atlas is a comprehensive framework with two primary entry points. Most teams begin with the SDK to orchestrate an existing agent, then graduate to the training workflows for deeper optimization.
+
+<Info>
+🔧 Ready to ship code? Start with the [`SDK Quickstart`](/sdk/quickstart)—it walks through installation, configuration, and running your first dual-agent task in minutes.
+</Info>
 
 | I want to... | Use this Path | Key Docs |
 |--------------|----------|--------------|
@@ -68,10 +78,10 @@ Choose your starting point:
 
 ### Production Checklist
 
-1. **Runtime config** – choose the closest template (`configs/examples/openai_agent.yaml`, `http_agent.yaml`, or `python_agent.yaml`) and point it at your agent.
+1. **Runtime config** – choose the closest template ([`configs/examples/openai_agent.yaml`](https://github.com/Arc-Computer/atlas-sdk/blob/main/configs/examples/openai_agent.yaml), [`http_agent.yaml`](https://github.com/Arc-Computer/atlas-sdk/blob/main/configs/examples/http_agent.yaml), or [`python_agent.yaml`](https://github.com/Arc-Computer/atlas-sdk/blob/main/configs/examples/python_agent.yaml)) from the atlas-sdk repo and point it at your agent.
 2. **Secrets & telemetry** – export your LLM keys, set `stream_progress=True`, and enable Postgres with the `storage` block when you’re ready to persist sessions.
 3. **Export pipeline** – schedule `arc-atlas --database-url ... --output traces.jsonl` after runs to materialize the dataset.
-4. **Learning loop** – feed the JSONL into `custom_data.runtime_trace_data.get_runtime_trace_dataset` and train with GRPO when you need custom checkpoints.
+4. **Learning loop** – feed the JSONL into the [`Runtime Traces` dataset config](/training/configuration#dataset-presets) and train with GRPO when you need custom checkpoints.
 
 This workflow keeps the runtime, telemetry, and training stack in lockstep so every production interaction grows your private dataset.
 
