@@ -107,7 +107,7 @@ Guides the student agent’s prompts and token budgets. When `prompts` is omitte
 | `max_synthesis_tokens` | `int` (default `2048`) | No | Allow longer final answers. |
 | `tool_choice` | Literal `auto` \| `required` (default `auto`) | No | Force tool invocation on every step when governance demands it. |
 
-Example (excerpt from `atlas-sdk/configs/examples/sdk_quickstart.yaml`):
+Example override (add explicit prompts to your config):
 
 ```yaml
 student:
@@ -155,7 +155,7 @@ Controls retry semantics and telemetry.
 | `rim_guidance_tag` | `str` (default `"rim_feedback"`) | No | Change when your prompts expect a different insertion tag. |
 | `emit_intermediate_steps` | `bool` (default `true`) | No | Toggle console/storage streaming of intermediate events. |
 
-Example (from `atlas-sdk/configs/examples/sdk_quickstart.yaml`):
+Example override (pairing with the prompts above):
 
 ```yaml
 orchestration:
@@ -277,63 +277,51 @@ Legacy configs may still include a `prompt_rewrite` block, but the runtime now r
 
 ## Validated Example (Quickstart)
 
-This minimal config (from `atlas-sdk/configs/examples/sdk_quickstart.yaml`) exercises every major block and can be copied as a starting point:
+This minimal config (from `atlas-sdk/configs/examples/openai_agent.yaml`) matches the ready-to-run OpenAI example in the SDK repository:
 
 ```yaml
 agent:
   type: openai
-  name: sdk-quickstart-openai
+  name: example-openai-agent
   system_prompt: |
-    You are the Atlas Student. Follow the task instructions carefully and keep responses concise.
+    You are an OpenAI model acting as the Atlas Student. Follow instructions carefully and respond with JSON when asked.
   tools: []
   llm:
     provider: openai
-    model: gpt-4o-mini
+    model: gpt-5-mini
     api_key_env: OPENAI_API_KEY
-    temperature: 0.0
-    max_output_tokens: 768
-
-student:
-  max_plan_tokens: 1024
-  max_step_tokens: 1024
-  max_synthesis_tokens: 1024
+    temperature: 0.2
+    max_output_tokens: 2048
+  response_format: null
 
 teacher:
   llm:
     provider: openai
-    model: gpt-4o-mini
+    model: gpt-5-mini
     api_key_env: OPENAI_API_KEY
     temperature: 0.1
-    max_output_tokens: 768
-  plan_cache_seconds: 300
-
-orchestration:
-  max_retries: 1
-  step_timeout_seconds: 600
-  rim_guidance_tag: rim_feedback
-  emit_intermediate_steps: true
+    max_output_tokens: 2048
 
 rim:
   small_model:
     provider: google
     model: gemini/gemini-2.5-flash
     api_key_env: GEMINI_API_KEY
-    max_output_tokens: 512
+    max_output_tokens: 8096
   large_model:
     provider: google
     model: gemini/gemini-2.5-flash
     api_key_env: GEMINI_API_KEY
-    max_output_tokens: 768
+    max_output_tokens: 8096
+  judge_prompt: 'reward the agent for attending the issues mentioned in the task'
   variance_threshold: 0.15
   uncertainty_threshold: 0.3
 
-adaptive_teaching:
-  enabled: true
-  certify_first_run: true
-  default_tags:
-    - tenant:demo
-
-storage: null
+storage:
+  database_url: postgresql://atlas:atlas@localhost:5433/atlas
+  min_connections: 1
+  max_connections: 5
+  statement_timeout_seconds: 30
 ```
 
 ## Related Guides

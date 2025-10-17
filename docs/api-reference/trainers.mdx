@@ -15,51 +15,64 @@ ATLAS provides specialized trainer classes for different training paradigms. Eac
 
 <CodeGroup>
 ```python title="Standard GRPO Training"
-from trainers import GRPOTrainer
-from configs import GRPOConfig
+from trainers import GRPOTrainer, GRPOConfig
+from RIM.reward_adapter import RIMReward
 
-# Initialize configuration
-config = GRPOConfig(
+# Minimal training arguments (TrainingArguments requires an output_dir)
+grpo_args = GRPOConfig(
+    output_dir="./output/grpo",
     model_name_or_path="Arc-Intelligence/ATLAS-8B-Thinking",
     learning_rate=5e-6,
     num_train_epochs=3,
-    beta=0.04  # KL penalty
+    per_device_train_batch_size=4,
+    gradient_accumulation_steps=4,
+    beta=0.04,  # KL penalty
+    logging_steps=10,
 )
 
-# Create trainer
+reward = RIMReward(config_path="configs/rim_config.yaml")
+
 trainer = GRPOTrainer(
-    config=config,
+    model=grpo_args.model_name_or_path,
+    reward_funcs=reward,
+    args=grpo_args,
     train_dataset=train_data,
     eval_dataset=eval_data,
-    tokenizer=tokenizer
+    processing_class=tokenizer,
 )
 
-# Train model
 trainer.train()
-
-# Save final model
-trainer.save_model("./output/final_model")
+trainer.save_model("./output/grpo/checkpoint-final")
 ```
 
 ```python title="Dual-Agent Teacher Training"
-from trainers import TeacherGRPOTrainer
-from configs import TeacherGRPOConfig
+from trainers import TeacherGRPOTrainer, GRPOConfig
+from RIM.reward_adapter import RIMReward
 
-config = TeacherGRPOConfig(
-    teacher_model="Arc-Intelligence/ATLAS-8B-Thinking",
-    student_model="meta-llama/Llama-3.2-8B-Instruct",
-    adaptive_teaching=True
+teacher_args = GRPOConfig(
+    output_dir="./output/teacher-grpo",
+    model_name_or_path="Arc-Intelligence/ATLAS-8B-Thinking",
+    learning_rate=5e-6,
+    num_train_epochs=3,
+    per_device_train_batch_size=1,
+    gradient_accumulation_steps=8,
+    beta=0.04,
+    logging_steps=10,
 )
+
+reward = RIMReward(config_path="configs/rim_offline_config.yaml")
 
 trainer = TeacherGRPOTrainer(
-    config=config,
+    model=teacher_args.model_name_or_path,
+    reward_funcs=reward,
+    args=teacher_args,
     train_dataset=train_data,
-    student_model=student_model,
-    teacher_model=teacher_model
+    processing_class=tokenizer,
+    student_model="meta-llama/Llama-3.2-8B-Instruct",
 )
 
-# Train with adaptive protocol
 trainer.train()
+trainer.save_model("./output/teacher-grpo/checkpoint-final")
 ```
 
 ```python title="SFT Warmup"
@@ -151,7 +164,7 @@ TeacherGRPOTrainer extends GRPOTrainer to implement the two-pass teaching protoc
 
 - Inherits from both `GRPOTrainer` and `TeacherTrainer`
 - Accepts `student_model` parameter in constructor
-- Implements diagnostic probing and adaptive teaching templates
+- Implements diagnostic probing and verifying-teacher guidance templates
 - Manages both teacher and student models during training
 
 <AccordionGroup>
@@ -192,7 +205,7 @@ TeacherGRPOTrainer extends GRPOTrainer to implement the two-pass teaching protoc
     ```
 
     ### generate_guidance()
-    Create adaptive teaching:
+    Create verifying-teacher guidance:
     ```python
     def generate_guidance(
         self,

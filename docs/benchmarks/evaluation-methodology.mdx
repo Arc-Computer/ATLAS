@@ -7,7 +7,7 @@ icon: flask
 
 ## Core Principles
 
-ATLAS evaluation verifies that adaptive teaching improves student outcomes without degrading performance for capable students. The framework measures both quantitative metrics and qualitative teaching effectiveness.
+ATLAS evaluation verifies that the adaptive dual-agent loop (student + verifying teacher) improves outcomes without degrading performance for capable students. The framework measures both quantitative metrics and qualitative guidance effectiveness.
 
 <CardGroup cols="3">
   <Card title="Non-Degradation" icon="shield">
@@ -34,13 +34,13 @@ ATLAS evaluation verifies that adaptive teaching improves student outcomes witho
     ```
   </Step>
 
-  <Step title="Teacher-Assisted Evaluation">
+  <Step title="Dual-Agent Evaluation">
     Apply ATLAS two-pass protocol:
     ```python
     # Pass 1: Diagnostic probe (≤50 tokens)
     capability = teacher.diagnose(student_response)
 
-    # Pass 2: Adaptive teaching (≤200 tokens)
+    # Pass 2: Verifying-teacher guidance (≤200 tokens)
     guidance = teacher.generate_guidance(capability, task)
     enhanced_response = student.generate(task, guidance)
     ```

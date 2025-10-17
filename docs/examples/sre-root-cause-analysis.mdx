@@ -23,7 +23,7 @@ Standard language models exhibit suboptimal performance on systematic debugging 
 **Task:** Diagnose service mesh configuration errors causing 503 errors in a Kubernetes cluster
 **Data Source:** Scenarios from ITBench, providing reproducible incidents on Kubernetes environments
 **Baseline Model:** Standard 8B parameter instruction-tuned LLM
-**ATLAS Configuration:** Two-pass adaptive teaching protocol with 50-token diagnostic probe
+**ATLAS Configuration:** Two-pass adaptive dual-agent protocol (student + verifying teacher) with a 50-token diagnostic probe
 **Evaluation Metric:** Correct root cause identification within resource constraints
 
 ## Results: Progressive Performance Improvement

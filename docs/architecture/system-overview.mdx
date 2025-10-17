@@ -39,7 +39,7 @@ The Atlas SDK provides the entry point to this learning loop. It is responsible 
 graph TD
     subgraph "SDK Runtime (Live Execution)"
         A[Task Request] --> B(atlas.core.run);
-        B --> C{Student-Teacher Loop};
+        B --> C{Adaptive Dual-Agent Loop};
         C -- Plan, Execute, Review --> C;
         C --> D[Final Answer];
         C --> E((Traces));
