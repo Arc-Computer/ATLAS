@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import asyncio
 import json
 import os
 import sys
@@ -12,12 +13,15 @@ from pathlib import Path
 from statistics import mean
 from typing import Iterable, List, Optional, Tuple
 
+from copy import deepcopy
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SDK_PATH = REPO_ROOT / "external" / "atlas-sdk"
 if SDK_PATH.exists():
     sys.path.insert(0, str(SDK_PATH))
 
-from atlas import run  # type: ignore
+from atlas import arun  # type: ignore
+from atlas.runtime.orchestration.execution_context import ExecutionContext  # type: ignore
 
 from scripts.arcops_cyber.scoring import score_answer
 
@@ -51,8 +55,10 @@ class RunRecord:
     task_id: str
     incident: str
     question: str
-    success: float
-    rationale: str
+    session_reward_score: Optional[float]
+    session_reward: Optional[dict]
+    audit_success: Optional[float]
+    audit_rationale: Optional[str]
     final_answer: str
     latency_ms: Optional[float]
     tokens_total: Optional[int]
@@ -65,8 +71,10 @@ class RunRecord:
             "task_id": self.task_id,
             "incident": self.incident,
             "question": self.question,
-            "success": self.success,
-            "rationale": self.rationale,
+            "session_reward_score": self.session_reward_score,
+            "session_reward": self.session_reward,
+            "audit_success": self.audit_success,
+            "audit_rationale": self.audit_rationale,
             "final_answer": self.final_answer,
             "latency_ms": self.latency_ms,
             "tokens_total": self.tokens_total,
@@ -137,10 +145,11 @@ def _summarise(records: List[RunRecord]) -> dict:
     def build_summary(rows: List[RunRecord]) -> dict:
         return {
             "count": len(rows),
-            "success_rate": _avg([r.success for r in rows]),
+            "avg_reward_score": _avg([r.session_reward_score for r in rows]),
             "avg_latency_ms": _avg([r.latency_ms for r in rows]),
             "avg_tokens_total": _avg([r.tokens_total for r in rows]),
             "avg_teacher_tokens": _avg([r.teacher_guidance_tokens for r in rows]),
+            "audit_success_rate": _avg([r.audit_success for r in rows]),
         }
 
     scenario_summary = {
@@ -151,7 +160,36 @@ def _summarise(records: List[RunRecord]) -> dict:
     return {"overall": overall, "scenarios": scenario_summary}
 
 
-def run_batch(mode: str, scenarios: List[tuple[str, dict]], limit: Optional[int] = None) -> Tuple[List[RunRecord], dict]:
+async def _run_single_task(prompt: str, config_path: str) -> tuple:
+    """Execute a single task via the async Atlas runtime and capture metadata."""
+    context = ExecutionContext.get()
+    context.reset()
+    result = await arun(
+        task=prompt,
+        config_path=config_path,
+        stream_progress=False,
+    )
+    metadata = deepcopy(context.metadata)
+    context.reset()
+    return result, metadata
+
+
+def _normalise_reward_payload(payload: object) -> tuple[Optional[float], Optional[dict]]:
+    if payload is None:
+        return None, None
+    if hasattr(payload, "to_dict"):
+        payload = payload.to_dict()  # type: ignore[assignment, union-attr]
+    if isinstance(payload, dict):
+        score = payload.get("score")
+        try:
+            score_val = float(score) if score is not None else None
+        except (TypeError, ValueError):
+            score_val = None
+        return score_val, payload
+    return None, None
+
+
+async def _run_batch_async(mode: str, scenarios: List[tuple[str, dict]], limit: Optional[int] = None) -> Tuple[List[RunRecord], dict]:
     config_path = CONFIGS[mode]
     results: List[RunRecord] = []
     for label, scenario in scenarios:
@@ -159,12 +197,15 @@ def run_batch(mode: str, scenarios: List[tuple[str, dict]], limit: Optional[int]
         incident = scenario["incident"]
         for q in scenario["questions"]:
             task_meta = build_task_prompt(Path(q["context_path"]))
-            result = run(
-                task=task_meta["prompt"],
-                config_path=config_path,
-                stream_progress=False,
-            )
-            score, rationale = score_answer(task_meta["gold_answer"], result.final_answer)
+            result, metadata = await _run_single_task(task_meta["prompt"], config_path)
+
+            reward_summary = metadata.get("session_reward") or metadata.get("reward_summary")
+            reward_score, reward_payload = _normalise_reward_payload(reward_summary)
+
+            audit_score = audit_rationale = None
+            if task_meta.get("gold_answer"):
+                audit_score, audit_rationale = score_answer(task_meta["gold_answer"], result.final_answer)
+
             step_metadata = result.step_results[0].metadata if result.step_results else {}
             latency_ms, tokens_total, teacher_tokens = extract_metrics(step_metadata)
             record = RunRecord(
@@ -172,8 +213,10 @@ def run_batch(mode: str, scenarios: List[tuple[str, dict]], limit: Optional[int]
                 task_id=task_meta["task_id"],
                 incident=incident,
                 question=task_meta["question"],
-                success=score,
-                rationale=rationale,
+                session_reward_score=reward_score,
+                session_reward=reward_payload,
+                audit_success=audit_score,
+                audit_rationale=audit_rationale,
                 final_answer=result.final_answer,
                 latency_ms=latency_ms,
                 tokens_total=tokens_total,
@@ -186,6 +229,10 @@ def run_batch(mode: str, scenarios: List[tuple[str, dict]], limit: Optional[int]
                 return results, summary
     summary = _summarise(results)
     return results, summary
+
+
+def run_batch(mode: str, scenarios: List[tuple[str, dict]], limit: Optional[int] = None) -> Tuple[List[RunRecord], dict]:
+    return asyncio.run(_run_batch_async(mode, scenarios, limit))
 
 
 def main() -> None:

@@ -22,15 +22,15 @@ teacher:
 
 rim:
   small_model:
-    provider: openai
-    model: gpt-5-mini
-    api_key_env: OPENAI_API_KEY
-    max_output_tokens: 512
+    provider: gemini
+    model: gemini/gemini-2.5-flash
+    api_key_env: GEMINI_API_KEY
+    max_output_tokens: 4096
   large_model:
     provider: openai
     model: gpt-5
     api_key_env: OPENAI_API_KEY
-    max_output_tokens: 512
+    max_output_tokens: 1024
   judge_prompt: "Reward the agent for identifying the correct indicator based on the provided incident context."
   variance_threshold: 0.15
   uncertainty_threshold: 0.3
