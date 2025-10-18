@@ -15,6 +15,7 @@
         "groups": [
           {
             "group": "Getting Started",
+            "icon": "rocket",
             "pages": [
               "introduction",
               "quickstart",
@@ -22,20 +23,31 @@
             ]
           },
           {
-            "group": "SDK Runtime",
+            "group": "SDK Guides",
+            "icon": "code",
             "pages": [
               "sdk/quickstart",
-              "runtime_adaptive_flow",
               "sdk/configuration",
+              "sdk/adapters",
               "sdk/export-traces",
               "sdk/orchestration",
-              "sdk/adapters",
               "sdk/student-verifying-teacher-roles"
             ]
           },
           {
-            "group": "Core Concepts",
+            "group": "Training",
+            "icon": "brain",
             "pages": [
+              "training/configuration",
+              "training/offline/grpo-training",
+              "training/online/continuous-learning"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "icon": "lightbulb",
+            "pages": [
+              "runtime_adaptive_flow",
               "concepts/adaptive-dual-agent-reasoning",
               "concepts/hybrid-learning",
               "concepts/reward-design",
@@ -43,54 +55,8 @@
             ]
           },
           {
-            "group": "Training",
-            "pages": [
-              "training/configuration",
-              "training/online/continuous-learning",
-              {
-                "group": "Offline Training",
-                "pages": [
-                  "training/offline/grpo-training"
-                ]
-              }
-            ]
-          },
-          {
-            "group": "Examples & Case Studies",
-            "pages": [
-              "examples/custom-implementation",
-              {
-                "group": "Case Studies",
-                "pages": [
-                  "examples/sre-root-cause-analysis",
-                  "examples/sota-on-tau-squared-bench"
-                ]
-              }
-            ]
-          },
-          {
-            "group": "Integration",
-            "pages": [
-              "integration/inference-only",
-              "integration/production-deployment"
-            ]
-          },
-          {
-            "group": "Benchmarks",
-            "pages": [
-              "benchmarks/evaluation-methodology",
-              "benchmarks/reproduction"
-            ]
-          },
-          {
-            "group": "API Reference",
-            "pages": [
-              "api-reference/trainers",
-              "api-reference/training-configs"
-            ]
-          },
-          {
             "group": "Reference",
+            "icon": "book",
             "pages": [
               "reference/technical-report",
               "reference/models",
@@ -99,14 +65,23 @@
               "reference/troubleshooting",
               "reference/faq"
             ]
+          },
+          {
+            "group": "Benchmarks",
+            "icon": "chart-bar",
+            "pages": [
+              "benchmarks/evaluation-methodology",
+              "benchmarks/reproduction"
+            ]
           }
         ]
       },
       {
         "tab": "API Reference",
+        "icon": "terminal",
         "groups": [
           {
-            "group": "API Reference",
+            "group": "Training API",
             "pages": [
               "api-reference/trainers",
               "api-reference/training-configs"

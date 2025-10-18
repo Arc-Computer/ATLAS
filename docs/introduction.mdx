@@ -2,6 +2,7 @@
 title: Introduction
 description: A Continual Learning Framework for Production LLM Agents
 sidebarTitle: Introduction
+icon: home
 ---
 
 <div align="center">
@@ -10,19 +11,33 @@ sidebarTitle: Introduction
 
 <br/>
 
-ATLAS makes AI agents that learn from every interaction in production.
+Atlas enables continual learning for production agents. The runtime SDK wraps any agent in an adaptive dual-agent reasoning loop (student + teacher) guided by reward signals that triages tasks, probes capability, and routes to the right supervision lane. Atlas Core turns those runtime episodes into optimized teacher checkpoints with offline reinforcement learning (RL) training.
 
-Instead of treating your deployed agents as static systems that need constant retraining, ATLAS gives them the ability to improve from real-world usage. You get an agent that compounds knowledge over time, building a durable library of domain expertise instead of relearning the same fixes repeatedly.
+You get an agent that compounds knowledge over time, building a durable library of domain expertise instead of treating deployment as a static endpoint that needs constant retraining—while driving down the cost of reasoning models through improved efficiency.
 
 ## How It Works: Closed-Loop Learning System
 
 ATLAS wraps any base model (GPT, Claude, Gemini, open source checkpoints, or your own) with an inference-time closed-loop learning system that observes the agent's action space in its live environment. The system executes tasks with built-in quality control that reviews every decision, and the Reward System scores the outcome. That signal can immediately trigger retries or feed downstream training jobs. The same loop powers both the runtime SDK (real-time quality control) and the training stack (offline optimization).
 
-Across internal and external benchmarks this closed loop delivers an average **+15.7 % accuracy lift**, **97 % non-degradation**, and **~50 % token savings** versus baseline agents. Offline GRPO fine-tuning then pushes longer-horizon improvements when you want to train custom checkpoints.
+## What ATLAS Provides
+
+ATLAS wraps your existing agent framework with four components that create a complete learning loop:
+
+1. **Reasoning Core**: Dual-agent reasoning loop (student + verifying teacher) that guides execution and captures learning signals
+2. **[Reward System](/concepts/reward-design)**: Turns user feedback into dense reward signals (achieves 93.7% accuracy on RewardBench V2)
+3. **Learning Engine**: Uses offline reinforcement learning (GRPO) to update models based on rewards
+4. **Persistent Memory**: Stores all interactions in structured trace files for analysis and retraining
+
+Together, these components form a closed-loop system: interaction traces flow into the reward system, the learning engine upgrades the reasoning core, and the refreshed models redeploy so your agent improves performance with each task.
+
+<div align="center">
+  <img src="/images/system-architecture.png" alt="ATLAS System Architecture" width="800" />
+  <p><em>ATLAS keeps your agent in a learn–evaluate–update cycle.</em></p>
+</div>
 
 ## Runtime for ML Engineers
 
-ATLAS gives you a single harness that captures value on every turn of the loop. To try it locally, start by installing the Atlas SDK runtime:
+The Atlas SDK wraps any agent and turns every task into a structured learning episode. Install it to get started:
 
 ```bash
 pip install arc-atlas
@@ -34,10 +49,15 @@ Clone the [`atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) repository if
 - **Runtime exports** – every run streams structured traces and reward signals into Postgres (`storage` block) and exports JSONL via the SDK CLI (`arc-atlas --database-url ... --output traces.jsonl`). You own the dataset that reflects how your production agent actually behaves.
 - **Training pipeline** – feed those traces straight into the offline stack via the [`Runtime Traces dataset config`](/training/configuration#dataset-presets) and the GRPO trainers to ship bespoke teachers or policy checkpoints without hand-labeling.
 
-**What ATLAS does and doesn't do with your data:**
-The runtime loop operates purely through feedback—no model weights are modified during production execution. This dual-agent interaction keeps your agent (student) paired with a verifying teacher that guides behavior in real time without touching the underlying models. Weight updates are entirely optional: you choose when to run offline GRPO training jobs on your own infrastructure. Persistent memory (trace storage) can stay disabled for ephemeral sessions, or you can point it at your own Postgres instance—ATLAS never controls or accesses your data stores. You retain complete ownership and control over what gets stored, where it lives, and whether persistence is enabled at all.
+<Note>
+**Data Ownership**: Atlas never modifies model weights during runtime—only RL training (which you control) updates weights. Trace storage is optional and self-hosted. You own all data.
+</Note>
 
-Use the runtime for instant lift, then plug the same traces into GRPO when you need custom weights—the data you collect in production is the fuel for both. Online continual learning now lives in the [atlas-sdk](https://github.com/Arc-Computer/atlas-sdk) repository.
+The runtime provides immediate quality improvements through dual-agent orchestration. Export the same traces to train custom checkpoints with GRPO—captured traces become training data for both runtime and offline RL training.
+
+<Note>
+**Runtime vs. Training**: Online continual learning (adaptive runtime with dual-agent orchestration) is implemented in the [atlas-sdk](https://github.com/Arc-Computer/atlas-sdk). Offline RL training (GRPO) is implemented in Atlas Core (this repository).
+</Note>
 
 ### End-to-End Lifecycle at a Glance
 
@@ -48,15 +68,28 @@ Use the runtime for instant lift, then plug the same traces into GRPO when you n
 | Export + train workflow | [`scripts/run_offline_pipeline.py`](https://github.com/Arc-Computer/ATLAS/blob/main/scripts/run_offline_pipeline.py) | Convert runtime traces into a new teacher checkpoint | Minutes to launch (training time depends on compute) |
 | Custom training | [GRPO pipeline](/training/offline/grpo-training) | Bespoke teacher checkpoint, ready to deploy | Multi-hour job on GPUs |
 
-Every stage feeds the next—the same traces you capture at runtime become the fuel for optimization and training.
+Every stage feeds the next—runtime traces become the input for optimization and training.
 
 ## Getting Started: Two Paths
 
-Atlas is a comprehensive framework with two primary entry points. Most teams begin with the SDK to orchestrate an existing agent, then graduate to the training workflows for deeper optimization.
+Choose your starting point based on your goal:
 
 <Info>
 🔧 Ready to ship code? Start with the [`SDK Quickstart`](/sdk/quickstart)—it walks through installation, configuration, and running your first dual-agent task in minutes.
 </Info>
+
+<div align="center">
+  <video
+    controls
+    width="800"
+    style={{borderRadius: '12px'}}
+    src="/images/Atlas.sdk-high.mp4"
+  >
+  </video>
+  <p><em>See the Atlas SDK in action: from installation to measurable performance gains across real examples.</em></p>
+</div>
+
+<br/>
 
 | I want to... | Use this Path | Key Docs |
 |--------------|----------|--------------|
@@ -75,40 +108,6 @@ Choose your starting point:
     Convert exported runtime traces into GRPO training jobs, evaluate reward deltas, and ship updated teacher checkpoints.
   </Card>
 </CardGroup>
-
-### Production Checklist
-
-1. **Runtime config** – choose the closest template ([`configs/examples/openai_agent.yaml`](https://github.com/Arc-Computer/atlas-sdk/blob/main/configs/examples/openai_agent.yaml), [`http_agent.yaml`](https://github.com/Arc-Computer/atlas-sdk/blob/main/configs/examples/http_agent.yaml), or [`python_agent.yaml`](https://github.com/Arc-Computer/atlas-sdk/blob/main/configs/examples/python_agent.yaml)) from the atlas-sdk repo and point it at your agent.
-2. **Secrets & telemetry** – export your LLM keys, set `stream_progress=True`, and enable Postgres with the `storage` block when you’re ready to persist sessions.
-3. **Export pipeline** – schedule `arc-atlas --database-url ... --output traces.jsonl` after runs to materialize the dataset.
-4. **Learning loop** – feed the JSONL into the [`Runtime Traces` dataset config](/training/configuration#dataset-presets) and train with GRPO when you need custom checkpoints.
-
-This workflow keeps the runtime, telemetry, and training stack in lockstep so every production interaction grows your private dataset.
-
-## What ATLAS Provides
-
-ATLAS wraps your existing agent framework with four components that create a complete learning loop:
-
-1. **Reasoning Core**: A closed-loop learning system that enhances your agent's capabilities
-2. **[Reward System](/concepts/reward-design)**: Turns user feedback into dense reward signals (achieves 93.7% accuracy on RewardBench V2)
-3. **Learning Engine**: Uses offline reinforcement learning (GRPO) to update models based on rewards. Online continual learning now lives in the atlas-sdk runtime.
-4. **Persistent Memory**: Stores all interactions in structured trace files for analysis and retraining
-
-Together, these components form a closed-loop system: interaction traces flow into the reward system, the learning engine upgrades the reasoning core, and the refreshed models redeploy so your agent gets sharper with every episode.
-
-<div align="center">
-  <img src="/images/system-architecture.png" alt="ATLAS System Architecture" width="800" />
-  <p><em>ATLAS keeps your agent in a learn–evaluate–update cycle.</em></p>
-</div>
-
-## Compared to Alternatives
-
-| What you're doing today | How ATLAS helps |
-| :--- | :--- |
-| **Fine-tuning/RLHF** for every change | ATLAS enhances any model without modifying its weights—adapts in hours, not weeks |
-| **Prompt engineering** that's brittle | ATLAS evolves teaching strategies based on performance data, creating reproducible improvements |
-| **Traditional RL** requiring massive compute | ATLAS separates heavy offline training from lightweight runtime continual learning |
-| **RAG/memory** for knowledge gaps | ATLAS also improves your agent's core reasoning and problem-solving process |
 
 ## Research & Resources
 
