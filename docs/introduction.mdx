@@ -25,7 +25,7 @@ ATLAS wraps your existing agent framework with four components that create a com
 
 1. **Reasoning Core**: Dual-agent reasoning loop (student + verifying teacher) that guides execution and captures learning signals
 2. **[Reward System](/concepts/reward-design)**: Turns user feedback into dense reward signals (achieves 93.7% accuracy on RewardBench V2)
-3. **Learning Engine**: Uses offline reinforcement learning (GRPO) to update models based on rewards. Online continual learning now lives in the atlas-sdk runtime.
+3. **Learning Engine**: Uses offline reinforcement learning (GRPO) to update models based on rewards
 4. **Persistent Memory**: Stores all interactions in structured trace files for analysis and retraining
 
 Together, these components form a closed-loop system: interaction traces flow into the reward system, the learning engine upgrades the reasoning core, and the refreshed models redeploy so your agent improves performance with each task.
@@ -53,7 +53,11 @@ Clone the [`atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) repository if
 **Data Ownership**: Atlas never modifies model weights during runtime—only RL training (which you control) updates weights. Trace storage is optional and self-hosted. You own all data.
 </Note>
 
-The runtime provides immediate quality improvements through dual-agent orchestration. Export the same traces to train custom checkpoints with GRPO—captured traces become training data for both runtime and offline RL training. Online continual learning now lives in the [atlas-sdk](https://github.com/Arc-Computer/atlas-sdk) repository.
+The runtime provides immediate quality improvements through dual-agent orchestration. Export the same traces to train custom checkpoints with GRPO—captured traces become training data for both runtime and offline RL training.
+
+<Note>
+**Runtime vs. Training**: Online continual learning (adaptive runtime with dual-agent orchestration) is implemented in the [atlas-sdk](https://github.com/Arc-Computer/atlas-sdk). Offline RL training (GRPO) is implemented in Atlas Core (this repository).
+</Note>
 
 ### End-to-End Lifecycle at a Glance
 

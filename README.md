@@ -65,7 +65,7 @@ Hydra bundles Atlas defaults into composable groups:
 Starter configs ship in:
 
 - `configs/examples/quickstart.yaml` (minimal overrides for the helper script)
-- `configs/demo/runtime_grpo.yaml` (documented walkthrough used in the Mintlify docs)
+- `configs/run/teacher_rcl.yaml` (reward conditioned learning recipe for GRPO training)
 
 Deep dives and override recipes live in the [Training Configuration guide](https://docs.arc.computer/training/configuration).
 
@@ -86,7 +86,7 @@ Deep dives and override recipes live in the [Training Configuration guide](https
      --export-path traces/runtime.jsonl \
      output_dir=results/teacher-grpo
    ```
-   Override Hydra arguments (model, batch size, GPUs) as needed; the helper wires up `configs/run/teacher_grpo.yaml` by default.
+   Override Hydra arguments (model, batch size, GPUs) as needed; the helper wires up `configs/run/teacher_rcl.yaml` by default.
 
 3. **Redeploy the checkpoint**
    Point the runtime SDK at `results/teacher-grpo/rl_checkpoint/` (or your chosen output dir) to load the new teacher, then rerun `atlas.core.run` to close the loop.
