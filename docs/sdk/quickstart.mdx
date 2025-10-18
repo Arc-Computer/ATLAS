@@ -110,14 +110,6 @@ Think of `atlas.core.run` as a project manager who never gets tired—now fronte
 - **Execute** – each step runs with lane-specific guidance, validation, and retries.
 - **Evaluate** – the Reward System scores the work, deciding whether to reuse guidance and how to update persona memories.
 
-```mermaid
-graph LR
-    A[Configure] --> B[Plan]
-    B --> C[Review]
-    C --> D[Execute]
-    D --> E[Evaluate]
-```
-
 ## Configuration Breakdown
 
 The `openai_agent.yaml` config defines the runtime behavior. Here’s a high-level look at the key sections:
