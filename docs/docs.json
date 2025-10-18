@@ -69,13 +69,6 @@
             ]
           },
           {
-            "group": "Integration",
-            "pages": [
-              "integration/inference-only",
-              "integration/production-deployment"
-            ]
-          },
-          {
             "group": "Benchmarks",
             "pages": [
               "benchmarks/evaluation-methodology",
