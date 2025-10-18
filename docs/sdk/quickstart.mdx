@@ -79,7 +79,7 @@ python -c "from atlas.core import run; result = run(task='Summarize the latest A
 
 You should see an adaptive summary headline in the console stream (for example, `Adaptive: mode=coach confidence=0.58 certification=True`) followed by the usual plan-reason-synthesize loop. The runtime triages the request, runs a capability probe, chooses one of four lanes (`auto`, `paired`, `coach`, `escalate`), and then executes the dual-agent loop—your student plus the verifying teacher—with lane-specific supervision. `atlas.runtime.telemetry.ConsoleTelemetryStreamer` auto-enables when stdout is a TTY; force it on/off with `stream_progress=True/False` in the `run` call.
 
-Need a local Postgres instance? Run `atlas init` to write `atlas-postgres.yaml` and start the database via Docker. Skip it (or tear it down) if you’re running without persistence.
+Need a local Postgres instance? The CLI ships with `atlas init`, which writes `atlas-postgres.yaml` and starts the database via Docker. Skip it (or tear it down) if you’re running without persistence.
 
 ### BYOA in 5 Minutes
 
@@ -119,7 +119,6 @@ The `openai_agent.yaml` config defines the runtime behavior. Here’s a high-lev
 - **`teacher`**: Defines the review and guidance agent, which also has its own model and token budget.
 - **`orchestration`**: Sets runtime parameters like the number of retries (default: 1) and step timeouts.
 - **`rim`** (Reward System): Defines the judges and arbiter that score the final answer for quality and helpfulness. This score determines if a retry is needed.
-- **`adaptive_teaching`**: Controls the triage adapter, capability probe thresholds, certification policy, default tags, and reward overrides. See the [`Configuration reference`](/sdk/configuration#adaptive_teaching) and the [Adaptive Runtime guide](/runtime_adaptive_flow) for details.
 - **`storage`**: Point at Postgres to persist episodes; remove the block or set it to `null` for in-memory experiments.
 - **`student.prompts` / `teacher.prompts`**: Optional overrides. Atlas derives persona text from `atlas.prompts`; customize behaviour by editing these prompt blocks directly.
 
