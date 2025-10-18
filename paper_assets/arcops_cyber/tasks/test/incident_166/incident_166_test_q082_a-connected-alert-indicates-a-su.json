@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_166_test_q082",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A security incident was identified that included a suspicious inbox manipulation rule set on the inbox of laylaw@vnevado.alpineskihouse.co. This might be an indication of a compromise where the mailbox could be used for spreading phishing emails and gaining unauthorized access to other accounts and devices. The user created a MoveToFolder rule named ITCleanup on their own inbox to move messages to a folder named RSS Feeds.",
+  "question": "A connected alert indicates a suspicious SAP authentication. What is the IP address associated with this risky sign-in to SAP?",
+  "gold_answer": "107.253.5.27",
+  "solution_steps": [
+    "A suspicious inbox rule named `ITCleanup` was created on the inbox of the user `Jordan P (laylaw@vnevado.alpineskihouse.co)` to move messages to a folder named `RSS Feeds`, which may indicate account compromise.",
+    "There was a suspicious SAP authentication from the IP address `107.253.5.27`, which may indicate that a user account with a risky sign-in alert in Microsoft Entra ID was compromised and used to access sensitive financial information."
+  ],
+  "metadata": {
+    "start_alert": 5,
+    "end_alert": 23,
+    "start_entities": [
+      2,
+      4,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "end_entities": [
+      25
+    ],
+    "shortest_alert_path": [
+      5,
+      7,
+      23
+    ]
+  }
+}

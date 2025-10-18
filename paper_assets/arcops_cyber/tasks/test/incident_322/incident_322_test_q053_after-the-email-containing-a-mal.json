@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_322_test_q053",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "In the course of a security incident, an email containing a malicious URL (`dj01161621.bravesand-e1ccd718.eastus.azurecontainerapps.io`) was sent from `raphaelt@vnevado.alpineskihouse.co`. The sender's IP address was `202.205.215.225`. The email was addressed to Hailey Johnson (`Hailey Johnson@vnevado.alpineskihouse.co`) whose user ID is `5e5dd0bd-f7ed-4583-8e9e-52f91e31a360`. The email was delivered but later removed due to the malicious URL it contained. Can you identify the email recipient who clicked on the potentially malicious URL?",
+  "question": "After the email containing a malicious URL was sent, it appears a user clicked on it. Can you identify the email recipient who clicked on the potentially malicious URL?",
+  "gold_answer": "alyssat@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "The email account `alyssat@vnevado.alpineskihouse.co` received an email with a malicious URL.",
+    "The user with the email account `alyssat@vnevado.alpineskihouse.co` clicked on the malicious URL."
+  ],
+  "metadata": {
+    "start_alert": 2,
+    "end_alert": 0,
+    "start_entities": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      2,
+      1,
+      0
+    ]
+  }
+}

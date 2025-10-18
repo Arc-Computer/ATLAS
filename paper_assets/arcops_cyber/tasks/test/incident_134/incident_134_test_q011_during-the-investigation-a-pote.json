@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_test_q011",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A security incident involving a BEC (Business Email Compromise) financial fraud has been identified. A suspicious inbox rule that hides incoming email messages was created in a risky Azure Active Directory session. The activity was traced back to the IP address `237.7.81.122`.",
+  "question": "During the investigation, a potentially malicious URL click by a user was detected. Can you identify the recipient of the email that contained the malicious URL?",
+  "gold_answer": "raphaelt@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "The account `Nina Park` was involved in a risky Azure Active Directory session where a suspicious inbox rule was created, potentially indicative of a business email compromise (BEC) aimed at financial fraud.",
+    "The user with the email `raphaelt@vnevado.alpineskihouse.co` clicked on a potentially malicious URL."
+  ],
+  "metadata": {
+    "start_alert": 17,
+    "end_alert": 0,
+    "start_entities": [
+      16
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      17,
+      6,
+      0
+    ]
+  }
+}

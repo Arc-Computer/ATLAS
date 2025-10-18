@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_39_train_q010",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "During a recent security incident starting from the alert 'Multiple dual-purpose tools were dropped', multiple known public tools, which could also be used for malicious reasons were dropped on a device. This might indicate attackers attempting credential theft, privilege escalation, and lateral movement. Following this, there was an alert regarding a suspicious file registered as a service, suggesting an attacker might be attempting persistence. The next alert, 'Possible use of the Rubeus kerberoasting tool', suggests that the Rubeus tool was observed on the endpoint, which can perform attacks related to Kerberos authentication, such as kerberoasting or pass-the-ticket attacks.",
+  "question": "Can you identify the Azure AD user ID related to the account observed using the Rubeus kerberoasting tool?",
+  "gold_answer": "97e6a954-b6bd-48a5-808c-bd8464cce677",
+  "solution_steps": [
+    "Multiple dual-purpose tools, including `psexesvc.exe`, were dropped on the device.",
+    "A suspicious file was registered as a service on the host `vnevado-win10b`.",
+    "The Rubeus kerberoasting tool was possibly used by the account with AadUserId `97e6a954-b6bd-48a5-808c-bd8464cce677`."
+  ],
+  "metadata": {
+    "start_alert": 62,
+    "end_alert": 0,
+    "start_entities": [
+      31,
+      63,
+      64,
+      67,
+      40,
+      68,
+      66,
+      38,
+      45,
+      71
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      62,
+      24,
+      21,
+      10,
+      0
+    ]
+  }
+}

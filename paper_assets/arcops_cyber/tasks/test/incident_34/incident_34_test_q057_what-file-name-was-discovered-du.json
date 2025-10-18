@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_34_test_q057",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A suspicious process on host `vnevado-win10e` connected to an Azure Active Directory Device ID `02b8f519-1123-4228-b32a-ccb78af3449f` executed a PowerShell command. The account `samuelf`, identified by SID `S-1-5-21-1870156660-7534030218-135086563-1193`, is involved in this activity which includes processes like `powershell.exe`.",
+  "question": "What file name was discovered during the analysis of the suspicious PowerShell activity?",
+  "gold_answer": "winatp-intro-backdoor.exe",
+  "solution_steps": [
+    "A command in PowerShell was executed by a suspicious process using the account with SID `S-1-5-21-1870156660-7534030218-135086563-1193`.",
+    "A suspicious PowerShell activity was observed involving a file named `winatp-intro-backdoor.exe`."
+  ],
+  "metadata": {
+    "start_alert": 3,
+    "end_alert": 10,
+    "start_entities": [
+      1,
+      2,
+      4,
+      5,
+      6,
+      8,
+      9
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      3,
+      5,
+      10
+    ]
+  }
+}

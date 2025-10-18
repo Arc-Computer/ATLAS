@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_39_test_q057",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A suspicious incident was observed where a remote session on `vnevado-dc` led to the execution of the `psexesvc.exe` process by the user `lucasb`. This session was noted with the IP address `141.216.110.153` and involved the execution parameters `7668__2024-06-27t14:34:10.0201983z__psexesvc.exe`. Following this, a suspicious service was launched, indicating potential attacker activity to maintain persistence or elevate privileges on the device.",
+  "question": "What is the process ID and command line of the suspicious service that was launched on the device?",
+  "gold_answer": "ProcessId: 684, CommandLine: `services.exe`",
+  "solution_steps": [
+    "A remote session dropped and launched the file `psexesvc.exe`.",
+    "A suspicious service was launched with the process ID `684` using the command line `services.exe` at `2024-06-26t17:11:52.8075185z`."
+  ],
+  "metadata": {
+    "start_alert": 60,
+    "end_alert": 90,
+    "start_entities": [
+      13,
+      14,
+      15,
+      20,
+      25,
+      61
+    ],
+    "end_entities": [
+      91
+    ],
+    "shortest_alert_path": [
+      60,
+      5,
+      90
+    ]
+  }
+}

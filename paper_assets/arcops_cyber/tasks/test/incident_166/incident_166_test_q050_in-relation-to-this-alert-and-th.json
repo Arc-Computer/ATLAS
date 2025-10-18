@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_166_test_q050",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A suspicious SAP authentication alert was triggered because a user account with a risky sign-in in Microsoft Entra ID accessed the SAP enterprise application software. An attacker might be using compromised credentials to search through SAP with the aim of recording or modifying sensitive financial information. The cloud application involved has an AppId of `100` and the IP address used was `107.253.5.27`.",
+  "question": "In relation to this alert and the connected suspicious inbox manipulation rule, what is the IP address associated with the creation of the suspicious inbox rule?",
+  "gold_answer": "255.246.85.58",
+  "solution_steps": [
+    "The user account with SID `S-1-5-21-1740051960-3534030288-108486866-1602` was used to sign in to SAP, triggering a suspicious SAP authentication alert due to a risky sign-in.",
+    "A suspicious inbox rule manipulation was detected on the inbox of the user Jordan P (laylaw@vnevado.alpineskihouse.co), originating from the IP address `255.246.85.58`."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 5,
+    "start_entities": [
+      24,
+      25
+    ],
+    "end_entities": [
+      15
+    ],
+    "shortest_alert_path": [
+      23,
+      8,
+      5
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_322_test_q047",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "As part of a suspicious Azure Resource Management (ARM) activities involving a risky user session, an IP address `253.1.244.215` was identified. This alert was triggered based on a Microsoft Defender for Cloud alert related to ARM and Microsoft Entra ID Protection risk scores.",
+  "question": "Related to this incident, there was an alert where a user accessed a link in an email that was later quarantined by zero-hour auto purge (ZAP). Can you find the URL of the link accessed by the user?",
+  "gold_answer": "https://dj01161621.bravesand-e1ccd718.eastus.azurecontainerapps.io/",
+  "solution_steps": [
+    "There were suspicious Azure Resource Management activities performed by a user with AadUserId `5e5dd0bd-f7ed-4583-8e9e-52f91e31a360` in a risky session.",
+    "The user accessed a link `https://dj01161621.bravesand-e1ccd718.eastus.azurecontainerapps.io/` in an email that was later quarantined by zero-hour auto purge (ZAP)."
+  ],
+  "metadata": {
+    "start_alert": 32,
+    "end_alert": 23,
+    "start_entities": [
+      31
+    ],
+    "end_entities": [
+      24
+    ],
+    "shortest_alert_path": [
+      32,
+      9,
+      23
+    ]
+  }
+}

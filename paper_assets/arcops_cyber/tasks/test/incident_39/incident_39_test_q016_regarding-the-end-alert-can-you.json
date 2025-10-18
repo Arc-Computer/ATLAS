@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_39_test_q016",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A malicious credential theft tool execution was detected where the tool `mimikatz.exe` was executed with a command line intent to dump users' credentials using the script `get-krbticket.ps1`. The process involved was `powershell.exe` and it targeted a user in the domain `vnevado.alpineskihouse.co`.",
+  "question": "Regarding the end alert, can you identify the IP address involved in the detected malicious credential theft tool execution?",
+  "gold_answer": "65.233.23.156",
+  "solution_steps": [
+    "A known credential theft tool execution was detected involving the account with SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "A known credential theft tool execution was detected involving the IP address `65.233.23.156`."
+  ],
+  "metadata": {
+    "start_alert": 44,
+    "end_alert": 111,
+    "start_entities": [
+      17,
+      37,
+      38,
+      45
+    ],
+    "end_entities": [
+      113
+    ],
+    "shortest_alert_path": [
+      44,
+      28,
+      111
+    ]
+  }
+}

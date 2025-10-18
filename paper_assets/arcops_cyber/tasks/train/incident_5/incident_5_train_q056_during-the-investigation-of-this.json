@@ -1,0 +1,40 @@
+{
+  "task_id": "incident_5_train_q056",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A security incident was reported involving system recovery setting tampering and possible attempts to access Primary Refresh Token (PRT). It was observed that the file `vssblatemp.exe` was executed on host `vnevado-win11t` with commands like `vssblatemp.exe delete shadows /all` and `bcdedit /set recoveryenabled no`. This suggests that adversaries might be trying to delete built-in operating system data and turn off recovery services. Subsequently, there were attempts to access the PRT on the same device.",
+  "question": "During the investigation of this security incident, the Mimikatz credential theft tool was detected. Can you provide the file name associated with this detection?",
+  "gold_answer": "mimidrv.sys",
+  "solution_steps": [
+    "System recovery setting tampering was observed on a device by an account with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "There was a possible attempt to access Primary Refresh Token (PRT) by a process with ExtractedFileName `browsercore.exe`.",
+    "There was another possible attempt to access Primary Refresh Token (PRT) on a host with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`.",
+    "The Mimikatz credential theft tool was detected on the device, specifically the file `mimidrv.sys`."
+  ],
+  "metadata": {
+    "start_alert": 79,
+    "end_alert": 151,
+    "start_entities": [
+      1,
+      2,
+      3,
+      11,
+      68,
+      69,
+      80,
+      81
+    ],
+    "end_entities": [
+      152
+    ],
+    "shortest_alert_path": [
+      79,
+      3,
+      118,
+      40,
+      36,
+      35,
+      151
+    ]
+  }
+}

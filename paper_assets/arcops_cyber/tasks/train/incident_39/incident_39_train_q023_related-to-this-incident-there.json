@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_39_train_q023",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A multi-stage security incident involving initial access and possible lateral movement was reported. During the investigation, it was identified that a file `psexesvc.exe` was launched, and commands initiating `rubeus.exe` were executed. This activity is indicative of the Rubeus tool usage to perform Kerberoasting and possibly pass-the-ticket attack techniques.",
+  "question": "Related to this incident, there was observed lateral movement to another device following a suspicious network event. Can you identify the IP address associated with the device to which the attacker was moving laterally?",
+  "gold_answer": "35.202.74.47",
+  "solution_steps": [
+    "There is activity indicating the use of the Rubeus tool on host with AadDeviceId `fafdcd65-46c6-45a6-aa85-ec9b77ca0bcb`.",
+    "There was a lateral movement observed from IP address `35.202.74.47`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 57,
+    "start_entities": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "end_entities": [
+      43
+    ],
+    "shortest_alert_path": [
+      0,
+      11,
+      57
+    ]
+  }
+}

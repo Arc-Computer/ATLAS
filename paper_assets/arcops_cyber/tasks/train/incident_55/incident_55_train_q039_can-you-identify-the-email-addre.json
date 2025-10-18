@@ -1,0 +1,40 @@
+{
+  "task_id": "incident_55_train_q039",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "In a security incident involving multiple alerts, a malicious email with a URL (`http://kn017721628.wittytree-b6f239d6.northeurope.azurecontainerapps.io/`) was sent to and removed from the mailbox of `santiago@vnevado.alpineskihouse.co`. Later, the incident revealed an internal phishing campaign and a sequence of suspicious exploration activities, which indicated that an attacker might be coordinating lateral movements. Finally, it was observed that a suspicious service was created to execute potentially malicious commands on MB-ADFS.",
+  "question": "Can you identify the email address of the user who created the suspicious service `DDLOXJDSQSNGMUKKFUXQ` on MB-ADFS?",
+  "gold_answer": "gsmith@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "The user account with SID `S-1-5-11-7842151660-4834030208-105586563-1139` received an email containing a malicious URL.",
+    "The user account with SID `S-1-5-21-561436748-3867387497-1732241745-3701` was observed sending phishing emails internally, possibly indicating compromise.",
+    "A suspicious process `powershell.exe` was detected executing a series of windows commands, likely performing exploration activities.",
+    "The process was initiated by a user with AadUserId `ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5`.",
+    "The user `gsmith@niseko.alpineskihouse.co` created a suspicious service `DDLOXJDSQSNGMUKKFUXQ` on `MB-ADFS` to potentially execute malicious commands."
+  ],
+  "metadata": {
+    "start_alert": 70,
+    "end_alert": 101,
+    "start_entities": [
+      71,
+      72,
+      73,
+      74,
+      79
+    ],
+    "end_entities": [
+      103
+    ],
+    "shortest_alert_path": [
+      70,
+      77,
+      88,
+      2,
+      57,
+      8,
+      52,
+      20,
+      101
+    ]
+  }
+}

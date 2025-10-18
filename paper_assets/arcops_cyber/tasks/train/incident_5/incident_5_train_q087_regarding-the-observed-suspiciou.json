@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_5_train_q087",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "An alert indicates suspicious remote activity initiated on a machine, which may include actions like initiating interactive sessions, modifying files, passing WMI commands, creating scheduled tasks, and other potentially malicious activities from a remote machine. There are multiple processes observed during this activity such as `get-userprttoken.ps1` executed by powershell script, several `bcdedit` commands altering boot status and recovery settings, and even a curl request to vectorsandarrows.com. This alert occurred on host `vnevado-win11u`.",
+  "question": "Regarding the observed suspicious activity on `vnevado-win11u`, can you identify the host that had its system recovery settings tampered with?",
+  "gold_answer": "vnevado-win11t",
+  "solution_steps": [
+    "Suspicious remote activity was initiated which led to the execution of `vssblatemp.exe` on host `vnevado-win11t`.",
+    "vssblatemp.exe was likely used to tamper with system recovery settings on host `vnevado-win11t`."
+  ],
+  "metadata": {
+    "start_alert": 88,
+    "end_alert": 79,
+    "start_entities": [
+      90,
+      7,
+      89,
+      78,
+      59,
+      42,
+      8,
+      6,
+      47,
+      77
+    ],
+    "end_entities": [
+      68
+    ],
+    "shortest_alert_path": [
+      88,
+      11,
+      79
+    ]
+  }
+}

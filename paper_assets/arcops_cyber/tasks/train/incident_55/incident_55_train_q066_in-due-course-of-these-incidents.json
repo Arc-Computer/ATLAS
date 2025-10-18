@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_train_q066",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "There has been a sequence of suspicious activities involving an OAuth application associated with user Luciano Herrera (Luciano Herrera@niseko.alpineskihouse.co). Initially, there was an unusual addition of credentials to the OAuth app SimulandApp. This pattern is indicative of potential app compromise, potentially spreading phishing, exfiltrating data, or gaining access to other accounts and devices. Later, a sequence of exploration activities involving windows commands was observed, which can be used by attackers to identify valuable assets and coordinate lateral movement.",
+  "question": "In due course of these incidents, an email containing a malicious URL was detected and removed after delivery. Can you identify the IP address from which this email was sent?",
+  "gold_answer": "119.36.50.193",
+  "solution_steps": [
+    "User Luciano Herrera with AadUserId `2de70991-2799-4a95-b734-8e3df3a50118` performed an unusual addition of credentials to the OAuth app SimulandApp using a Password type credential.",
+    "Another user with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0` executed a suspicious sequence of exploration activities.",
+    "An email containing a malicious URL, sent from IP address `119.36.50.193`, was delivered and later removed."
+  ],
+  "metadata": {
+    "start_alert": 108,
+    "end_alert": 92,
+    "start_entities": [
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      109
+    ],
+    "end_entities": [
+      95
+    ],
+    "shortest_alert_path": [
+      108,
+      11,
+      57,
+      3,
+      92
+    ]
+  }
+}

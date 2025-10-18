@@ -1,0 +1,25 @@
+{
+  "task_id": "incident_55_train_q059",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "An alert was triggered indicating that an individual accessed a sensitive DKM key related to an ADFS object with the ID 4cac49d3-29d3-407e-8c9b-b7ebb21541b2. The SID linked to this activity is `S-2-5-21-571436798-3864380397-1837441745-3206` and the associated Azure AD UserID is `ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5`.",
+  "question": "Identify the account name associated with the action of reading the DKM key for the specified ADFS object.",
+  "gold_answer": "gsmith",
+  "solution_steps": [
+    "The account `gsmith` read the DKM key of the ADFS object with id `4cac49d3-29d3-407e-8c9b-b7ebb21541b2`."
+  ],
+  "metadata": {
+    "start_alert": 106,
+    "end_alert": 106,
+    "start_entities": [
+      19,
+      20
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      106
+    ]
+  }
+}

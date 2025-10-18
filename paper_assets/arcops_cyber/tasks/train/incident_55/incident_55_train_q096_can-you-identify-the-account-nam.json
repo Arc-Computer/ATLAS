@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_55_train_q096",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A suspicious sequence of exploration activities was detected on the network where multiple instances of `whoami.exe` were executed with different command lines indicating potential reconnaissance activities by an attacker. The process IDs observed were 13812, 14260, and 1104, each running `whoami.exe` with various parameters to gather user information.",
+  "question": "Can you identify the account name associated with the suspicious system hardware discovery activity?",
+  "gold_answer": "bjenkins",
+  "solution_steps": [
+    "A suspicious sequence of exploration activities was conducted by the account `bjenkins`.",
+    "Suspicious system hardware discovery was performed using the account `bjenkins`."
+  ],
+  "metadata": {
+    "start_alert": 57,
+    "end_alert": 0,
+    "start_entities": [
+      54,
+      58,
+      59,
+      60
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      57,
+      1,
+      0
+    ]
+  }
+}

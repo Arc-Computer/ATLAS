@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_322_test_q013",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "A security incident involving a Malicious URL detected in Proxy logs was noticed on 2024-08-01, associated with a connection from the IP address `231.60.52.209` to `login.micro.demo.antoinetest.ovh`. This was linked to a host `vnevado-win11h.vnevado.alpineskihouse.co`. Subsequently, another alert on the same day identified a malicious URL click event, leading to the detection of suspicious Azure Resource Management (ARM) activities. These activities were performed by a user account that signed in to a risky session and triggered further alerts based on Microsoft Defender for Cloud.",
+  "question": "Can you provide the IP address associated with the suspicious Azure Resource Management activities?",
+  "gold_answer": "253.1.244.215",
+  "solution_steps": [
+    "A connection from the host `vnevado-win11h` to login.micro.demo.antoinetest.ovh was detected in proxy logs, indicating a possible malicious URL.",
+    "The user account `Hailey Johnson` clicked on a malicious URL on the device `vnevado-win11h`.",
+    "Suspicious Azure Resource Management activities were performed from the IP address `253.1.244.215`, indicating a potentially risky user session."
+  ],
+  "metadata": {
+    "start_alert": 11,
+    "end_alert": 32,
+    "start_entities": [
+      12,
+      14,
+      15
+    ],
+    "end_entities": [
+      31
+    ],
+    "shortest_alert_path": [
+      11,
+      13,
+      33,
+      6,
+      32
+    ]
+  }
+}

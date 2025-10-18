@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_39_test_q008",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A security incident was detected involving a user named Ethan Brooks, who accessed a potentially malicious link in an email that was quarantined by zero-hour auto purge (ZAP). The accessed link was `https://ac27145722.livelygrass-8d4c4013.eastus2.azurecontainerapps.io/`. This alert was triggered based on a Microsoft Defender for Office 365 alert.",
+  "question": "Given the recent incident, there was also an attempt to disable Microsoft Defender Antivirus service. Can you identify the account name associated with this suspicious activity?",
+  "gold_answer": "tgs2z",
+  "solution_steps": [
+    "The user with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1` accessed a link in an email that was quarantined by zero-hour auto purge (ZAP).",
+    "There was an attempt to disable the Microsoft Defender Antivirus service by the account with Name `tgs2z`, indicating a possible attempt to evade detection."
+  ],
+  "metadata": {
+    "start_alert": 141,
+    "end_alert": 35,
+    "start_entities": [
+      117,
+      118,
+      137
+    ],
+    "end_entities": [
+      27
+    ],
+    "shortest_alert_path": [
+      141,
+      29,
+      35
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_166_test_q085",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A suspicious email was sent by `laylaw@vnevado.alpineskihouse.co` to `tony@avoriaz.alpineskihouse.co` with the related IP address `255.246.85.58`. The user account associated with this suspicious email activity was identified with AAD user ID `89e933b9-5b2e-4bd6-bcdf-033db707ef82` and SID `S-1-5-21-1740051960-3534030288-108486866-1602`. This activity is linked to an ongoing BEC (business email compromise) fraud attempt.",
+  "question": "",
+  "gold_answer": "Jordan P@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "The user account with email `Jordan P@vnevado.alpineskihouse.co` sent suspicious emails which might indicate that the account has been compromised as part of a business email compromise (BEC) fraud attempt."
+  ],
+  "metadata": {
+    "start_alert": 18,
+    "end_alert": 18,
+    "start_entities": [
+      22,
+      19,
+      1,
+      8,
+      15,
+      20,
+      21
+    ],
+    "end_entities": [
+      7
+    ],
+    "shortest_alert_path": [
+      18
+    ]
+  }
+}

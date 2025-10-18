@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_55_test_q040",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "In a security incident involving unusual addition of credentials to an OAuth app, user Luciano Herrera performed an addition of a credential to the application SimulandApp, indicating possible compromise. The user added a credential of type Password to the app using the email `Luciano Herrera@niseko.alpineskihouse.co`. The activity was noted from the IP address `2801:e0a:1eb:dea0:642e:5bb6:d315:fbb3`.",
+  "question": "In the context of the same security incident, what is the Security Identifier (SID) of the account involved in the suspicious sequence of exploration activities?",
+  "gold_answer": "S-1-5-21-561436748-3867387497-1732241745-3701",
+  "solution_steps": [
+    "The user with SID `S-1-5-21-551436448-9871687716-9837441745-1903` which belongs to Luciano Herrera (pwilson@niseko.alpineskihouse.co) performed an unusual addition of credentials to the application SimulandApp using a credential of type Password.",
+    "A suspicious sequence of exploration activities was performed by the user with SID `S-1-5-21-561436748-3867387497-1732241745-3701`, involving the execution of a set of windows commands."
+  ],
+  "metadata": {
+    "start_alert": 108,
+    "end_alert": 57,
+    "start_entities": [
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      109
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      108,
+      10,
+      57
+    ]
+  }
+}

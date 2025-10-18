@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_39_test_q068",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A security incident occurred where user Ethan Brooks (Email: Ethan Brooks@vnevado.alpineskihouse.co) accessed a link in an email that was quarantined by zero-hour auto purge (ZAP). This incident was flagged by Microsoft Defender for Office 365. Additionally, there is a related event where PsExec was used to launch a command on a remote device, suggesting potential lateral movement. This series of activities culminated in a remote session dropping and executing a file, potentially indicating a malware propagation attempt.",
+  "question": "What is the IP address associated with the remote session that dropped and executed a file?",
+  "gold_answer": "141.216.110.153",
+  "solution_steps": [
+    "The user with SID `S-5-7-21-1843151660-3234030288-105586167-1422` accessed a link in an email that was quarantined by zero-hour auto purge (ZAP).",
+    "PsExec was used to launch a command on a remote device using the file `rubeus.exe`.",
+    "A remote session from IP address `141.216.110.153` dropped and executed a file, potentially indicating an attempt at lateral movement or propagation."
+  ],
+  "metadata": {
+    "start_alert": 141,
+    "end_alert": 34,
+    "start_entities": [
+      117,
+      118,
+      137
+    ],
+    "end_entities": [
+      25
+    ],
+    "shortest_alert_path": [
+      141,
+      28,
+      95,
+      7,
+      34
+    ]
+  }
+}

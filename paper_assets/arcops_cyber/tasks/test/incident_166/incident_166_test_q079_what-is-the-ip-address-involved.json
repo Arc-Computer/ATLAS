@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_166_test_q079",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "There was a suspicious event suggesting a possible BEC financial fraud indicated by traces involving the account Jordan P with the email `Jordan P@vnevado.alpineskihouse.co`. This event was linked to an ongoing Password Spray attack detected during the same timeframe. This suggests that attackers are actively trying to compromise accounts by spraying known passwords across different accounts.",
+  "question": "What is the IP address involved in the Password Spray attack?",
+  "gold_answer": "95.202.65.202",
+  "solution_steps": [
+    "Suspicious events with business email compromise characteristics were observed with account AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "A password spray attack was detected from IP address `95.202.65.202`."
+  ],
+  "metadata": {
+    "start_alert": 29,
+    "end_alert": 28,
+    "start_entities": [
+      6,
+      7,
+      8
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      29,
+      1,
+      28
+    ]
+  }
+}

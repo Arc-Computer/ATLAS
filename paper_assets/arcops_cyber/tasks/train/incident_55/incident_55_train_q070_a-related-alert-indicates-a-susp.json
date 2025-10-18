@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_55_train_q070",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A known public tool observed under an unexpected filename `iy2orr1e.rrg.exe` was launched by an account with Sid `S-2-5-21-571436798-3864380397-1837441745-3206` and associated with process ID 3116. This might be an attempt to hide the usage of that tool for malicious purposes.",
+  "question": "A related alert indicates a suspicious service registration. Can you identify the name of the process that was registered as a service?",
+  "gold_answer": "services.exe",
+  "solution_steps": [
+    "A known public tool, which could be used for malicious reasons, was observed under an unexpected filename on host `mb-adfs`.",
+    "A system program `services.exe` was registered as a service, indicating a possible attempt to establish persistence or gain system privileges."
+  ],
+  "metadata": {
+    "start_alert": 32,
+    "end_alert": 61,
+    "start_entities": [
+      18,
+      19,
+      20,
+      28,
+      29
+    ],
+    "end_entities": [
+      63
+    ],
+    "shortest_alert_path": [
+      32,
+      26,
+      61
+    ]
+  }
+}

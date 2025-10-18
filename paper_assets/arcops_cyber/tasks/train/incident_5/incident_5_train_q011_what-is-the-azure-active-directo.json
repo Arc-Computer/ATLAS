@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_5_train_q011",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A known credential theft tool named `mimikatz.exe` was executed on 2024-07-04, indicating a potential credential theft attempt, involving a series of processes like `notepad.exe` and `cmd.exe`. Following this activity, there was a lateral movement alert reported on 2024-07-10 towards the jump server `Vnevado-jump`. In another connected alert on 2024-07-04, there was an indication of potentially compromised assets exhibiting ransomware-like behavior, suggesting that an attacker might be using a specific user account, IP, or device to spread ransomware.",
+  "question": "What is the Azure Active Directory User ID (AadUserId) of the account associated with the potentially compromised assets exhibiting ransomware-like behavior?",
+  "gold_answer": "731adb71-b11c-4bbf-850b-57989b350e96",
+  "solution_steps": [
+    "A known credential theft tool execution was detected on host `vnevado-win10v`.",
+    "There was a lateral movement detected to the jump server from IP address `99.83.111.100` using PSExec.",
+    "Potentially compromised assets are exhibiting ransomware-like behavior, an attacker might be using the user account with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`."
+  ],
+  "metadata": {
+    "start_alert": 130,
+    "end_alert": 147,
+    "start_entities": [
+      20,
+      24,
+      30,
+      31,
+      32
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      130,
+      34,
+      174,
+      42,
+      147
+    ]
+  }
+}

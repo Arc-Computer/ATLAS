@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q014",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "In a recent case of suspicious remote activity observed on a machine named `mb-adfs`, there were several processes involved including `lsass.exe`, `cmd.exe`, and `powershell.exe`. This activity was flagged due to the potential initiation of interactive sessions, modification of files, WMI commands, or creating scheduled tasks which could be malicious. The observed processes were linked with different Process IDs and timestamps.",
+  "question": "Can you identify the SID of the account that executed the suspicious LDAP query?",
+  "gold_answer": "S-1-5-21-551436448-9871687716-9837441745-1903",
+  "solution_steps": [
+    "Suspicious remote activity was initiated using `powershell.exe`.",
+    "A suspect LDAP query was executed by an account with SID `S-1-5-21-551436448-9871687716-9837441745-1903`."
+  ],
+  "metadata": {
+    "start_alert": 37,
+    "end_alert": 64,
+    "start_entities": [
+      24,
+      40,
+      23,
+      39,
+      25,
+      19,
+      26,
+      22,
+      17,
+      18
+    ],
+    "end_entities": [
+      10
+    ],
+    "shortest_alert_path": [
+      37,
+      8,
+      64
+    ]
+  }
+}

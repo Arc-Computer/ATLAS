@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_55_test_q096",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A system program `services.exe` was registered as a service on 2024-07-04 which could indicate a malicious intent to establish persistence or gain system privileges. Following this, there was a Suspicious Task Scheduler activity involving a process that might indicate an attempt to launch malicious code automatically and establish persistence. The series of activities also included a malicious PowerShell Cmdlet invocation linked to potential credential theft, exploitation, network reconnaissance or code injection.",
+  "question": "What is the name of the user account associated with the malicious PowerShell Cmdlet invocation?",
+  "gold_answer": "bjenkins",
+  "solution_steps": [
+    "A suspicious service was registered on host `mb-adfs`.",
+    "The process `powershell.exe` used Task Scheduler to create, modify, or delete a task, which is indicative of potential malicious activity.",
+    "The user account `bjenkins` invoked a malicious PowerShell Cmdlet on the machine."
+  ],
+  "metadata": {
+    "start_alert": 61,
+    "end_alert": 51,
+    "start_entities": [
+      62,
+      63
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      61,
+      26,
+      33,
+      8,
+      51
+    ]
+  }
+}

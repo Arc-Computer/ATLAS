@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_55_train_q006",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "During a security incident, a series of events were flagged indicating suspicious sequence of exploration activities starting with a powershell script `contosoadfsblatempcreds.ps1` being executed and multiple `whoami.exe` checks being run. One notable observation was a process making use of a series of Windows commands which could be utilized to identify assets of value and coordinate lateral movement post-compromise.",
+  "question": "In the final alert, who was the user account involved in attempting to hide the use of a dual-purpose tool?",
+  "gold_answer": "gsmith",
+  "solution_steps": [
+    "A process called `whoami.exe` was launched, which can be used for malicious exploration activities.",
+    "The suspicious commands were executed by a user with AadUserId `ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5`.",
+    "A known public tool that could be used for malicious purposes was observed under an unexpected filename, associated with the account `gsmith`."
+  ],
+  "metadata": {
+    "start_alert": 57,
+    "end_alert": 32,
+    "start_entities": [
+      12,
+      13,
+      4,
+      59,
+      6,
+      15,
+      60,
+      11,
+      5,
+      3
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      57,
+      54,
+      52,
+      20,
+      32
+    ]
+  }
+}

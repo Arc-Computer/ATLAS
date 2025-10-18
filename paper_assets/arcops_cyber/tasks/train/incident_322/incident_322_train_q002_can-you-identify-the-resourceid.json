@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_322_train_q002",
+  "incident": "incident_322",
+  "split": "train",
+  "context": "A security incident involved suspicious Azure Resource Management (ARM) activities by a user `Hailey Johnson`, who signed in to a risky session. This activity was flagged by Microsoft Defender for Cloud. One part of this incident indicates that the proxy IP address `???` was involved in the suspicious ARM operations. However, it is often seen in malicious activities when threat actors try to hide their source IP. Microsoft Defender for Resource Manager detected a resource management operation from an IP address that is associated with proxy services, such as TOR.",
+  "question": "Can you identify the ResourceId related to the ARM operation from the suspicious proxy IP address?",
+  "gold_answer": "/subscriptions/7e838342-601f-4552-9baf-0dfb300cf555/resourcegroups/ctfcat/providers/microsoft.devtestlab/schedules/shutdown-computevm-vnevado-dc",
+  "solution_steps": [
+    "There were suspicious Azure Resource Management activities performed using IP address `253.1.244.215`.",
+    "A resource management operation from a suspicious proxy IP address associated with TOR was attempted on the Azure resource with ResourceId `/subscriptions/7e838342-601f-4552-9baf-0dfb300cf555/resourcegroups/ctfcat/providers/microsoft.devtestlab/schedules/shutdown-computevm-vnevado-dc`."
+  ],
+  "metadata": {
+    "start_alert": 32,
+    "end_alert": 25,
+    "start_entities": [
+      6,
+      7,
+      8,
+      9,
+      31
+    ],
+    "end_entities": [
+      30
+    ],
+    "shortest_alert_path": [
+      32,
+      31,
+      25
+    ]
+  }
+}

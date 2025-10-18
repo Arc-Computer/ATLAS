@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_train_q094",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A suspicious remote activity was detected on 2024-07-04 on a machine which might indicate attempts to initiate interactive sessions, modify files, pass WMI commands, create scheduled tasks, and other potentially malicious activities from a remote machine. Further investigation revealed that a `cmd.exe` with ProcessId of 8896 was used to launch `powershell.exe` with an encoded command, and other related processes like `lsass.exe` were also active.",
+  "question": "At what time was the dual-purpose tool attempting to hide its usage executed and what was the command line used?",
+  "gold_answer": "Time: 2024-07-02t09:48:23.9439954, Command Line: \"iy2orr1e.rrg.exe\" -windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=",
+  "solution_steps": [
+    "The account `gsmith` was observed to initiate suspicious remote activity.",
+    "A known public tool was used under the filename `iy2orr1e.rrg.exe` with the command line `-windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=` at `2024-07-02t09:48:23.9439954z`, with Process ID `3116`."
+  ],
+  "metadata": {
+    "start_alert": 37,
+    "end_alert": 32,
+    "start_entities": [
+      39,
+      17,
+      21,
+      23,
+      24,
+      38,
+      8,
+      40,
+      25,
+      22
+    ],
+    "end_entities": [
+      28
+    ],
+    "shortest_alert_path": [
+      37,
+      18,
+      32
+    ]
+  }
+}

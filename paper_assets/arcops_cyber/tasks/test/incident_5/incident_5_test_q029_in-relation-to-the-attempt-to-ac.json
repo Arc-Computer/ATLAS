@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_5_test_q029",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident raised flags due to suspicious WMI process creation observed on a machine, which is indicative of possible malware activity. This was connected to a chain of processes including `get-userprttoken.ps1` and `curl` attempts. WMI is often utilized by malware to spawn new processes, breaking process trees and further infecting a machine.",
+  "question": "In relation to the attempt to access Primary Refresh Token (PRT), can you identify the name of the process involved in this activity?",
+  "gold_answer": "browsercore.exe",
+  "solution_steps": [
+    "There was a suspicious WMI process creation by the user with SID `S-1-5-21-1840191660-8534830288-125585561-1522`.",
+    "There was a possible attempt to access Primary Refresh Token (PRT) by a process with the extracted file name `browsercore.exe`."
+  ],
+  "metadata": {
+    "start_alert": 117,
+    "end_alert": 118,
+    "start_entities": [
+      6,
+      11,
+      59,
+      77,
+      78,
+      89,
+      90
+    ],
+    "end_entities": [
+      40
+    ],
+    "shortest_alert_path": [
+      117,
+      2,
+      118
+    ]
+  }
+}

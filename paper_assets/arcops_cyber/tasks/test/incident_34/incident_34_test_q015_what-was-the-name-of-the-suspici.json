@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_test_q015",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A security incident involved in Suspicious PowerShell download or encoded command execution and Powershell dropping a suspicious file on the machine was identified. An attacker might be using PowerShell to execute their payload in memory without leaving a trace or touching the disk. A process executed PowerShell to download a file or run an encoded command. The process `winword.exe` launched this PowerShell execution using the script `rs4_winatp-intro-invoice.docm`. This action is suspicious and needs further investigation.",
+  "question": "What was the name of the suspicious file that was dropped and executed by PowerShell on the machine?",
+  "gold_answer": "winatp-intro-backdoor.exe",
+  "solution_steps": [
+    "A process executed PowerShell to download a file or run an encoded command using the account with SID `S-1-5-21-1870156660-7534030218-135086563-1193`.",
+    "PowerShell dropped a suspicious file named `winatp-intro-backdoor.exe` on the machine and executed it."
+  ],
+  "metadata": {
+    "start_alert": 26,
+    "end_alert": 25,
+    "start_entities": [
+      11,
+      12
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      26,
+      5,
+      25
+    ]
+  }
+}

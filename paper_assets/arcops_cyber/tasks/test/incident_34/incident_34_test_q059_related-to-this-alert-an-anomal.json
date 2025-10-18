@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_test_q059",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "In a recent security incident, on 2024-07-04, there was a detection of a suspicious PowerShell download or encoded command execution. The process `winword.exe` with Process ID `9780` and command line `\"winword.exe\" c:\\scripts\\rs4_winatp-intro-invoice.docm` was involved. This type of behavior often indicates an attacker trying to download external payloads or execute commands to bypass security mechanisms.",
+  "question": "Related to this alert, an anomalous scheduled task was created around the same time. Can you identify the file name of the process used to create the scheduled task?",
+  "gold_answer": "schtasks.exe",
+  "solution_steps": [
+    "A process executed PowerShell to download a file or run an encoded command. This activity is associated with the user account having SID `S-1-5-21-1870156660-7534030218-135086563-1193`.",
+    "An anomalous scheduled task was created using the process `schtasks.exe`."
+  ],
+  "metadata": {
+    "start_alert": 26,
+    "end_alert": 20,
+    "start_entities": [
+      11,
+      12
+    ],
+    "end_entities": [
+      14
+    ],
+    "shortest_alert_path": [
+      26,
+      5,
+      20
+    ]
+  }
+}

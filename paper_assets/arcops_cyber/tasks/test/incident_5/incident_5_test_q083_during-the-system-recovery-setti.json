@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_5_test_q083",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "As part of a Ransomware infection observed in our organization, file backups were deleted via WMI or VSSAdmin on the host `vnevado-win10r`. The process involved was identified with ProcessId__CreatedTimeUtc__CommandLine `7236__2024-06-20t09:10:51.2193152z__vssblatemp.exe delete shadows /all`. Further investigation identified that system recovery setting tampering was observed on the same host, where adversaries might be attempting to delete or remove built-in operating systems data and turn off recovery services to prevent recovering a corrupted system. This may deny access to available backups and recovery options.",
+  "question": "During the system recovery setting tampering, what process and command line was used to disable automatic Windows recovery features?",
+  "gold_answer": "Process Id: 4828, Command Line: `bcdedit /set recoveryenabled no`",
+  "solution_steps": [
+    "An attack was detected where file backups were deleted via `vssblatemp.exe`.",
+    "System recovery settings were tampered with using the process `bcdedit.exe` which was launched with the command line `bcdedit /set recoveryenabled no` at `2024-06-20t09:31:59.6743318z` with Process ID `4828`."
+  ],
+  "metadata": {
+    "start_alert": 70,
+    "end_alert": 76,
+    "start_entities": [
+      60,
+      64,
+      65
+    ],
+    "end_entities": [
+      78
+    ],
+    "shortest_alert_path": [
+      70,
+      11,
+      76
+    ]
+  }
+}

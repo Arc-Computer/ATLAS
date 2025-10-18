@@ -1,0 +1,37 @@
+{
+  "task_id": "incident_55_train_q061",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A security incident was detected where a potentially malicious URL was clicked by a user named `Lucas Grey` (Email: Lucas Grey@niseko.alpineskihouse.co). Following this event, there were suspicious sequences of exploration activities observed that involved a process executing a set of windows commands, which can be used by attackers to identify valuable assets and coordinate lateral movement after system compromise. Another part of this incident indicates the use of a known public tool with an unusual filename, suggesting an attempt to hide its malicious usage.",
+  "question": "What is the command line of the process that attempted to hide the use of a dual-purpose tool?",
+  "gold_answer": "5752__2024-07-06t00:00:01.7155092z__\"iy2orr1e.rrg.exe\" -windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=",
+  "solution_steps": [
+    "The user with SID `S-1-5-21-561436748-3867387497-1732241745-3701` clicked on a potentially malicious URL.",
+    "There was a suspicious sequence of exploration activities involving the process `whoami.exe`.",
+    "The user with SID `S-2-5-21-571436798-3864380397-1837441745-3206` performed a suspicious sequence of exploration activities.",
+    "An attempt to hide the use of a dual-purpose tool was observed with the process command line `iy2orr1e.rrg.exe -windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=` at `2024-07-06t00:00:01.7155092z`, with Process ID `5752`."
+  ],
+  "metadata": {
+    "start_alert": 104,
+    "end_alert": 68,
+    "start_entities": [
+      89,
+      90,
+      91,
+      93,
+      94
+    ],
+    "end_entities": [
+      69
+    ],
+    "shortest_alert_path": [
+      104,
+      2,
+      57,
+      54,
+      52,
+      19,
+      68
+    ]
+  }
+}

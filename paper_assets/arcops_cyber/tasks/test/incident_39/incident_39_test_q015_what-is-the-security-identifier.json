@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_39_test_q015",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A suspected overpass-the-hash attack was identified where Emma Clark, a Helpdesk Administrator, attempted to authenticate against VNEVADO-DC from VNEVADO-Win10V. This activity was flagged due to its potential to be part of a larger attack involving Kerberos authentication.",
+  "question": "What is the security identifier (Sid) of the account that had a successful logon using overpass-the-hash with potentially stolen credentials?",
+  "gold_answer": "S-2-2-78",
+  "solution_steps": [
+    "A successful logon using overpass-the-hash with potentially stolen credentials was detected for the account with Sid `S-2-2-78` on 2024-07-04 22:35:01.696210+00:00.",
+    "A suspected overpass-the-hash attack involved the account with Sid `S-1-5-21-1540151660-3530000288-105586595-1517` (Emma Clark, Helpdesk Administrator) on VNEVADO-Win10V attempting to authenticate against VNEVADO-DC on 2024-07-10 11:24:45.313631+00:00."
+  ],
+  "metadata": {
+    "start_alert": 119,
+    "end_alert": 52,
+    "start_entities": [
+      115,
+      116,
+      120,
+      121
+    ],
+    "end_entities": [
+      53
+    ],
+    "shortest_alert_path": [
+      119,
+      2,
+      52
+    ]
+  }
+}

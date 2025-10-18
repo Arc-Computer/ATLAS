@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_5_test_q002",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "An incident involving a ransomware payload remotely launched on device `vnevado-win11u` with AadDeviceId `bc00e484-d0e5-4da4-9472-95568cccc07e` and IP address `99.83.111.100` has been detected. The attackers might be attempting to encrypt content on this device. Additionally, there is a notable change in typical user behavior that may indicate a compromise.",
+  "question": "What is the command line of the suspicious process involved in the user behavior change on device `vnevado-win11u`?",
+  "gold_answer": "88__2024-06-20t09:29:42.3927529z__curl http://vectorsandarrows.com",
+  "solution_steps": [
+    "A ransomware payload was remotely launched by the user with SID `S-1-5-21-1840191660-8534830288-125585561-1522` at `2024-07-04 22:35:03.038773+00:00`.",
+    "Suspicious hands on keyboard user behavior was detected on this device, involving a process with Process ID `88` launched with the command line `curl http://vectorsandarrows.com` at `2024-06-20t09:29:42.3927529z`."
+  ],
+  "metadata": {
+    "start_alert": 139,
+    "end_alert": 66,
+    "start_entities": [
+      7,
+      8,
+      42
+    ],
+    "end_entities": [
+      67
+    ],
+    "shortest_alert_path": [
+      139,
+      2,
+      66
+    ]
+  }
+}

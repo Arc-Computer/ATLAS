@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_55_test_q052",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A suspect LDAP query was executed, indicating potential reconnaissance activity. The query was performed using the file `powershell.exe` with script `ldaprequest.ps1` by the user `pwilson` associated with IP address `72.5.72.208`. This can indicate that an attacker is trying to gather information about the organization's structure by querying the domain controller for administrative users and groups and other interesting assets. This data might help attackers gain higher privileges and access important assets in the organization.",
+  "question": "Can you provide the URL of the malicious site that was clicked on the device as part of this incident?",
+  "gold_answer": "https://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/",
+  "solution_steps": [
+    "A suspicious LDAP query was executed on the host `mb-winclient`, indicating potential reconnaissance activity.",
+    "A malicious URL `https://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/` was clicked on the same host."
+  ],
+  "metadata": {
+    "start_alert": 64,
+    "end_alert": 107,
+    "start_entities": [
+      4,
+      8,
+      9,
+      10,
+      11,
+      65,
+      66
+    ],
+    "end_entities": [
+      97
+    ],
+    "shortest_alert_path": [
+      64,
+      14,
+      107
+    ]
+  }
+}

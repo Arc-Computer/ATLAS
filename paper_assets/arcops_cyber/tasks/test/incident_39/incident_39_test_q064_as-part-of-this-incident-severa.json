@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_39_test_q064",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A Mimikatz credential theft tool was detected on a device on July 4, 2024. Mimikatz is a hacktool that can harvest various types of credentials, including plaintext passwords, password hashes, smartcard PINs, and Kerberos tickets. The detected command line activity involved the `mimikatz.exe` process using the `lsadump::dcsync` command to target the domain `vnevado.alpineskihouse.co`. This indicates that an attacker might be trying to harvest credentials to log into this or other devices on the network.",
+  "question": "As part of this incident, several dual-purpose tools were also dropped on the device. Can you identify one of the dual-purpose tools that was dropped?",
+  "gold_answer": "psexesvc.exe",
+  "solution_steps": [
+    "The Mimikatz credential theft tool was detected attempting to harvest credentials to log into this or other devices on the network, associated with the account having AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1`.",
+    "Multiple dual-purpose tools, including `psexesvc.exe`, were dropped on the device, indicating potential preparation for credential theft, privilege escalation, or lateral movement."
+  ],
+  "metadata": {
+    "start_alert": 108,
+    "end_alert": 62,
+    "start_entities": [
+      30
+    ],
+    "end_entities": [
+      24
+    ],
+    "shortest_alert_path": [
+      108,
+      29,
+      62
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_test_q070",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident started with lateral movement detected from IP address `83.162.58.168`. The alert was flagged as 'Possible lateral movement' and indicated that an attacker might be trying to gather data or elevate privileges by moving across different devices. This alert was based on a Microsoft Defender for Endpoint alert. Shortly after, at 2024-07-04 22:35:03.652724+00:00, a 'Command and Control behavior' alert was triggered due to malware activities. This malware was active and necessitated precautionary measures. Finally, an alert flagged as 'Possible attempt to access Primary Refresh Token (PRT)' was observed, indicating an attempt to access Azure AD authentication resources which could facilitate lateral movement or credential theft.",
+  "question": "What is the hostname of the device where a possible attempt to access Primary Refresh Token (PRT) was detected?",
+  "gold_answer": "vnevado-win10s",
+  "solution_steps": [
+    "There was possible lateral movement observed on another device associated with AadDeviceId `e5799261-6720-4297-961e-bd9ca4275033`.",
+    "Command and control behavior related to malware was blocked, and the associated account name is `dp5hn`.",
+    "A possible attempt to access the Primary Refresh Token (PRT) was detected on the host `vnevado-win10s`."
+  ],
+  "metadata": {
+    "start_alert": 103,
+    "end_alert": 113,
+    "start_entities": [
+      104
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      103,
+      69,
+      149,
+      1,
+      113
+    ]
+  }
+}

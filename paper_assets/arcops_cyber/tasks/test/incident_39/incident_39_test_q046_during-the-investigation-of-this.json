@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_39_test_q046",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "During a recent incident, a malicious email containing a URL (`https://ac27145722.livelygrass-8d4c4013.eastus2.azurecontainerapps.io/`) was sent by `k1pt7ez@vnevado.alpineskihouse.co` and delivered to Ethan Brooks (`Ethan Brooks@vnevado.alpineskihouse.co`). This email was later removed. The sender IP was `118.254.65.186`. This is part of a larger incident, and further investigation is underway.",
+  "question": "During the investigation of this incident, a suspicious sequence of exploration activities was detected. Can you provide the name of the account involved in these suspicious activities?",
+  "gold_answer": "tgs2z",
+  "solution_steps": [
+    "The email account with SID `S-5-7-21-1843151660-3234030288-105586167-1422` received an email with a malicious URL that was delivered and later removed.",
+    "A suspicious sequence of exploration activities was performed by the user account named `tgs2z`."
+  ],
+  "metadata": {
+    "start_alert": 138,
+    "end_alert": 77,
+    "start_entities": [
+      117,
+      118,
+      136,
+      137,
+      139,
+      140
+    ],
+    "end_entities": [
+      27
+    ],
+    "shortest_alert_path": [
+      138,
+      28,
+      77
+    ]
+  }
+}

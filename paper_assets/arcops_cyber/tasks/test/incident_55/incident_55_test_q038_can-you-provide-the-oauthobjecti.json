@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q038",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A security incident was reported which indicated a suspicious sequence of exploration activities involving various processes like `powershell.exe` and `whoami.exe`, executed on a host identified by AadDeviceId `7661dfd4-218f-4016-8a87-66d68a7f098e`. The activities were linked to user accounts `pwilson` and `bjenkins`. Subsequently, the user `pwilson` (username: pwilson@niseko.alpineskihouse.co) was observed performing an unusual addition of credentials to the application SimulandApp. This behavior might indicate that the application has been compromised with the intention to spread phishing, exfiltrate data, or access other accounts and devices.",
+  "question": "Can you provide the OAuthObjectId for the application to which the credentials were unusually added by the user?",
+  "gold_answer": "a66a4b44-d1f7-4563-95bf-a89d1b05b325",
+  "solution_steps": [
+    "The user with AadUserId `2de70991-2799-4a95-b734-8e3df3a50118` executed a suspicious sequence of exploration activities.",
+    "The user Luciano Herrera (pwilson@niseko.alpineskihouse.co) added a credential of type Password to the OAuth application `SimulandApp` with OAuthObjectId `a66a4b44-d1f7-4563-95bf-a89d1b05b325`."
+  ],
+  "metadata": {
+    "start_alert": 57,
+    "end_alert": 108,
+    "start_entities": [
+      12,
+      7,
+      13,
+      6,
+      59,
+      15,
+      4,
+      2,
+      9,
+      1
+    ],
+    "end_entities": [
+      86
+    ],
+    "shortest_alert_path": [
+      57,
+      11,
+      108
+    ]
+  }
+}

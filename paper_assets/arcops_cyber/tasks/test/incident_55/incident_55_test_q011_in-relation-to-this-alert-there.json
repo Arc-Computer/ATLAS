@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_55_test_q011",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "As part of a suspicious sequence of exploration activities reported on 2024-07-04, a process executed a set of Windows commands like `powershell.exe` and `whoami.exe`. These specific commands are often used by attackers to identify valuable assets and coordinate lateral movement after compromising a machine.",
+  "question": "In relation to this alert, there was an attempt to extract ADFS private keys using a suspicious LDAP query. Can you identify the name of the account that was involved in this attempt?",
+  "gold_answer": "gsmith",
+  "solution_steps": [
+    "Suspicious activities were initiated by the user with SID `S-2-5-21-571436798-3864380397-1837441745-3206`, involving a set of windows commands.",
+    "A suspicious LDAP query was launched by the user account `gsmith`, indicating a possible attempt to extract ADFS private keys or lateral movement."
+  ],
+  "metadata": {
+    "start_alert": 52,
+    "end_alert": 43,
+    "start_entities": [
+      8,
+      25,
+      53,
+      54,
+      55,
+      56
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      52,
+      19,
+      43
+    ]
+  }
+}

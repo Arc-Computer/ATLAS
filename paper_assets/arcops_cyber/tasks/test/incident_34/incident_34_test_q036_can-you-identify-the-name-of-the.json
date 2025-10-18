@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_test_q036",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "During the investigation of a potential reconnaissance activity involving a suspicious LDAP query, it was found that `winword.exe` was used to execute a command file located at `c:\\scripts\\rs4_winatp-intro-invoice.docm`. This indicates that attackers may be attempting to learn the organization's structure by querying the domain controller for administrative users and groups, with the aim of gaining higher privileges. There is further suspicious activity involving Task Scheduler detected in the same timeframe.",
+  "question": "Can you identify the name of the process that was used to create, modify, or delete a task in Task Scheduler as part of this suspicious activity?",
+  "gold_answer": "schtasks.exe",
+  "solution_steps": [
+    "A suspicious LDAP query was executed by the account with SID `S-1-5-21-1870156660-7534030218-135086563-1193`, indicating potential reconnaissance activity.",
+    "A suspicious Task Scheduler activity was observed where the process `schtasks.exe` was used to create, modify, or delete a task, likely an attempt to establish persistence."
+  ],
+  "metadata": {
+    "start_alert": 24,
+    "end_alert": 21,
+    "start_entities": [
+      11,
+      12
+    ],
+    "end_entities": [
+      14
+    ],
+    "shortest_alert_path": [
+      24,
+      5,
+      21
+    ]
+  }
+}

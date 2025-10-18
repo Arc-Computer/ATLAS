@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_55_test_q095",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "Related alerts might indicate further compromise actions.",
+  "question": "In a related alert within the same incident, it mentions a suspicious sequence of exploration activities involving a different account. Can you provide the name of the account involved in this suspicious exploration?",
+  "gold_answer": "bjenkins",
+  "solution_steps": [
+    "The user Luciano Herrera (pwilson@niseko.alpineskihouse.co) added an unusual credential of type Password to the application SimulandApp, which may indicate that the account with AadUserId `2de70991-2799-4a95-b734-8e3df3a50118` has been compromised.",
+    "The account with name `bjenkins` was involved in a suspicious sequence of exploration activities, executing a set of windows commands that could be used for identifying valuable assets and coordinating lateral movements after compromising a machine."
+  ],
+  "metadata": {
+    "start_alert": 80,
+    "end_alert": 57,
+    "start_entities": [
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      80,
+      11,
+      57
+    ]
+  }
+}

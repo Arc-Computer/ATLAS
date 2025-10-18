@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_5_train_q090",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A security incident was identified where potentially compromised assets exhibited ransomware-like behavior, impacting multiple devices. An attacker may have used a specific user account or IP to move laterally across the network, spreading ransomware. Automated remediation might be necessary to disable the compromised account or device. The IP `99.83.111.100` and file `kiters.7z` were involved in this activity.",
+  "question": "Related to this incident, there was also a malware that established command and control behavior. Can you provide the URL that was associated with this command and control activity?",
+  "gold_answer": "http://vectorsandarrows.com/",
+  "solution_steps": [
+    "Potentially compromised assets exhibiting ransomware-like behavior were detected on the host `vnevado-win11u`.",
+    "A command and control behavior was blocked, associated with the URL `http://vectorsandarrows.com/`."
+  ],
+  "metadata": {
+    "start_alert": 147,
+    "end_alert": 73,
+    "start_entities": [
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      53,
+      54
+    ],
+    "end_entities": [
+      74
+    ],
+    "shortest_alert_path": [
+      147,
+      7,
+      73
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_5_test_q033",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident involving 'CommandAndControl' malware detected during lateral movement flagged a potential attacker trying to move laterally to the device `vnevado-win10r` from another network device. The malware was detected via the command line process `curl http://vectorsandarrows.com`, initiated by the account `dp5hn` with Sid `S-1-5-21-1840191660-8534830288-125585561-1522`.",
+  "question": "Can you identify the SID of the account involved in the suspicious remote activity on 2024-07-04 at 22:35:00.896765+00:00?",
+  "gold_answer": "S-0-6-5",
+  "solution_steps": [
+    "The user account with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96` was involved in a lateral movement where 'CommandAndControl' malware was detected.",
+    "Suspicious remote activities were observed initiated by the user with SID `S-0-6-5`."
+  ],
+  "metadata": {
+    "start_alert": 158,
+    "end_alert": 57,
+    "start_entities": [
+      1,
+      2,
+      3,
+      61,
+      64,
+      65
+    ],
+    "end_entities": [
+      47
+    ],
+    "shortest_alert_path": [
+      158,
+      3,
+      57
+    ]
+  }
+}

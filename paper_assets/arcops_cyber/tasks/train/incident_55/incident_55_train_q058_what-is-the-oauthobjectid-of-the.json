@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_55_train_q058",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "In a recent security incident, a suspicious service registration was detected involving a system program `services.exe`, which may suggest malicious intent to establish persistence or gain system privileges. This incident was connected to a series of suspicious exploration activities that involved executing a set of Windows commands to identify valuable assets and coordinate lateral movement. A user Luciano Herrera (pwilson@niseko.alpineskihouse.co) performed an unusual addition of credentials to the application SimulandApp, indicating a potential compromise used for phishing, data exfiltration, or unauthorized access.",
+  "question": "What is the OAuthObjectId of the application SimulandApp to which Luciano Herrera added the unusual credentials?",
+  "gold_answer": "a66a4b44-d1f7-4563-95bf-a89d1b05b325",
+  "solution_steps": [
+    "A suspicious service was registered on the host `mb-adfs`.",
+    "A process named `powershell.exe` was involved in a suspicious sequence of exploration activities.",
+    "The suspicious sequence of exploration activities was associated with an account having SID `S-1-5-21-551436448-9871687716-9837441745-1903`.",
+    "An unusual addition of credentials was made to an OAuth application with OAuthObjectId `a66a4b44-d1f7-4563-95bf-a89d1b05b325` by the user Luciano Herrera (pwilson@niseko.alpineskihouse.co)."
+  ],
+  "metadata": {
+    "start_alert": 61,
+    "end_alert": 80,
+    "start_entities": [
+      62,
+      63
+    ],
+    "end_entities": [
+      86
+    ],
+    "shortest_alert_path": [
+      61,
+      26,
+      52,
+      8,
+      57,
+      10,
+      80
+    ]
+  }
+}

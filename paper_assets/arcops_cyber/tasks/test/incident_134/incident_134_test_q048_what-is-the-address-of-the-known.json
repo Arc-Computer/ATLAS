@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_134_test_q048",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A potentially malicious URL click was detected on 2024-07-17 by a user whose mailbox address is raphaelt@vnevado.alpineskihouse.co, and the URL clicked was `http://ms175052280.orangecliff-f53f26fd.eastus.azurecontainerapps.io/`. The email involving this URL was sent from alyssat@vnevado.alpineskihouse.co to raphaelt@vnevado.alpineskihouse.co and involved a user named Nina Park. As part of the investigation, it was found that a sign-in occurred from a known malicious IP address during or around the time of this URL click.",
+  "question": "What is the address of the known malicious IP from which the sign-in occurred?",
+  "gold_answer": "170.54.121.63",
+  "solution_steps": [
+    "A user with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1` has clicked on a link that was found to be malicious.",
+    "There was a sign-in from a known malicious IP address `170.54.121.63` during or around the time of sign-in."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 23,
+    "start_entities": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      10
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      0,
+      9,
+      23
+    ]
+  }
+}

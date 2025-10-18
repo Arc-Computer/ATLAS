@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_5_train_q041",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "During an investigation of a security incident on 2024-07-04, a known credential theft tool execution command line involving `conhost.exe` was detected. This indicates an attempt to dump users' credentials, keys, and plain-text passwords using the tool.",
+  "question": "What is the name of the file involved in the suspicious access to LSASS service?",
+  "gold_answer": "hid.dll",
+  "solution_steps": [
+    "The account with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1` executed a known credential theft tool.",
+    "Suspicious access was detected to the LSASS service involving file `hid.dll`."
+  ],
+  "metadata": {
+    "start_alert": 131,
+    "end_alert": 15,
+    "start_entities": [
+      132,
+      133
+    ],
+    "end_entities": [
+      27
+    ],
+    "shortest_alert_path": [
+      131,
+      18,
+      15
+    ]
+  }
+}

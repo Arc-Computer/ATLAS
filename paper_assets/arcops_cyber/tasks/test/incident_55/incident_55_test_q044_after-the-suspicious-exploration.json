@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q044",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A security incident involving a suspicious sequence of exploration activities was detected on a host where a process called a set of windows commands. These commands can potentially be used by attackers to identify assets of value and coordinate lateral movement after compromising a machine. One of the processes identified during this exploration was `whoami.exe`. This was executed by the account `gsmith`.",
+  "question": "After the suspicious exploration activities, a system program was registered as a service. What is the name of the executable file that was registered as a service?",
+  "gold_answer": "services.exe",
+  "solution_steps": [
+    "A suspicious sequence of exploration activities was recorded on host `mb-adfs`.",
+    "A system program named `services.exe` was registered as a service which indicates a possible attempt to establish persistence or gain system privileges."
+  ],
+  "metadata": {
+    "start_alert": 52,
+    "end_alert": 61,
+    "start_entities": [
+      19,
+      53,
+      18,
+      8,
+      44,
+      29,
+      28,
+      20,
+      55,
+      54
+    ],
+    "end_entities": [
+      63
+    ],
+    "shortest_alert_path": [
+      52,
+      26,
+      61
+    ]
+  }
+}

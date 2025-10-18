@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_322_test_q004",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "As part of a security incident, a user named `Hailey Johnson` with email `Hailey Johnson@vnevado.alpineskihouse.co` accessed a link `https://dj01161621.bravesand-e1ccd718.eastus.azurecontainerapps.io/` in an email. This email was subsequently quarantined by zero-hour auto purge (ZAP). This alert was based on a Microsoft Defender for Office 365 alert.",
+  "question": "Given that Hailey Johnson clicked on the suspicious link, can you determine her Azure Active Directory (AAD) User ID?",
+  "gold_answer": "5e5dd0bd-f7ed-4583-8e9e-52f91e31a360",
+  "solution_steps": [
+    "The user with AadUserId `5e5dd0bd-f7ed-4583-8e9e-52f91e31a360` accessed a link in an email that was later quarantined by zero-hour auto purge (ZAP)."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 23,
+    "start_entities": [
+      6,
+      7,
+      24,
+      8
+    ],
+    "end_entities": [
+      9
+    ],
+    "shortest_alert_path": [
+      23
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_55_train_q053",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A security incident involving suspicious service registration was flagged indicating a system program `services.exe` was registered as a service. This can indicate malicious intent to establish persistence or gain system privileges.",
+  "question": "There is also an attempt to hide the use of a dual-purpose tool under an unexpected filename in the same incident. Can you find the name of the account involved in this activity?",
+  "gold_answer": "gsmith",
+  "solution_steps": [
+    "A system program was registered as a service on host `mb-adfs`, which could indicate malicious intent to establish persistence or gain system privileges.",
+    "The account `gsmith` was detected attempting to hide the use of a dual-purpose tool under an unexpected filename, indicating potential malicious activity."
+  ],
+  "metadata": {
+    "start_alert": 61,
+    "end_alert": 32,
+    "start_entities": [
+      62,
+      63
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      61,
+      26,
+      32
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "task_id": "incident_55_test_q013",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A recent security incident involving an Ongoing hands-on-keyboard attack via the Impacket toolkit and suspicious system hardware discovery was detected. The Impacket tool was used to attempt lateral movement across the network. This was discovered on host `mb-adfs`, with processes like `lsass.exe` and `powershell.exe` being involved. The alerts indicate attempts to gather information about the target device or network for later attacks, possibly discovering hardware information. Additionally, a known technique was used to perform these malicious activities.",
+  "question": "During this period, it was detected that a user clicked on a potentially malicious URL. Can you identify the primary address of the mailbox associated with this user?",
+  "gold_answer": "bjenkins@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "A hands-on-keyboard attack via the Impacket toolkit was detected with the suspicious execution of `powershell.exe` on a device.",
+    "Suspicious system hardware discovery was carried out by the account with SID `S-1-5-21-561436748-3867387497-1732241745-3701`.",
+    "The mailbox `bjenkins@niseko.alpineskihouse.co` had a user that clicked on a potentially malicious URL."
+  ],
+  "metadata": {
+    "start_alert": 16,
+    "end_alert": 104,
+    "start_entities": [
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      25,
+      26
+    ],
+    "end_entities": [
+      93
+    ],
+    "shortest_alert_path": [
+      16,
+      8,
+      0,
+      2,
+      104
+    ]
+  }
+}

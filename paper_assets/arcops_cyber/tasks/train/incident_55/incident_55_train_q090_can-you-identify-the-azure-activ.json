@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_55_train_q090",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A suspected Active Directory attack was detected on host `MB-DC1` where it read the DKM key of ADFS object id `4cac49d3-29d3-407e-8c9b-b7ebb21541b2`. Following this, Luciano Herrera (CIO) on host `MB-WINCLIENT` sent 1 replication request to `MB-DC1`, indicating a possible DCSync attack. Further investigation revealed a suspicious LDAP query executed on the host, indicating potential reconnaissance activity which could be used by attackers to gain higher privileges and access important assets in the organization.",
+  "question": "Can you identify the Azure Active Directory (AAD) user ID related to the suspicious sequence of exploration activities?",
+  "gold_answer": "ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5",
+  "solution_steps": [
+    "The host `MB-DC1` read the DKM key of ADFS object id 4cac49d3-29d3-407e-8c9b-b7ebb21541b2, which is suspected to be malicious.",
+    "The account with Sid `S-1-5-21-551436448-9871687716-9837441745-1903`, belonging to Luciano Herrera (CIO) on host `MB-WINCLIENT`, sent a replication request to `MB-DC1`, suspected of a DCSync attack.",
+    "A suspicious LDAP query was executed using the process `powershell.exe`, indicating potential reconnaissance activity.",
+    "Suspicious exploration activities were performed by the account with AadUserId `ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5`, involving a set of windows commands that could be used to identify valuable assets and coordinate lateral movement."
+  ],
+  "metadata": {
+    "start_alert": 105,
+    "end_alert": 52,
+    "start_entities": [
+      99
+    ],
+    "end_entities": [
+      20
+    ],
+    "shortest_alert_path": [
+      105,
+      99,
+      98,
+      10,
+      64,
+      8,
+      52
+    ]
+  }
+}

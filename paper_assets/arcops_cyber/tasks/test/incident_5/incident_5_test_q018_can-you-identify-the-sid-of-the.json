@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_5_test_q018",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A ransomware payload was remotely launched on the host `vnevado-win11u` (AadDeviceId: bc00e484-d0e5-4da4-9472-95568cccc07e). Attackers might be attempting to encrypt content on this device, rendering it unusable to users. This was part of a larger security incident that involved suspicious remote activity on the same machine, including attempts to initiate interactive sessions, modify files, pass WMI commands, create scheduled tasks, and other potentially malicious activities.",
+  "question": "Can you identify the SID of the account which was involved in the suspicious remote activity?",
+  "gold_answer": "S-0-6-5",
+  "solution_steps": [
+    "A ransomware payload was launched remotely on the device using the account `dp5hn`.",
+    "Suspicious remote activity was observed involving the user with SID `S-0-6-5`."
+  ],
+  "metadata": {
+    "start_alert": 139,
+    "end_alert": 107,
+    "start_entities": [
+      7,
+      8
+    ],
+    "end_entities": [
+      47
+    ],
+    "shortest_alert_path": [
+      139,
+      1,
+      107
+    ]
+  }
+}

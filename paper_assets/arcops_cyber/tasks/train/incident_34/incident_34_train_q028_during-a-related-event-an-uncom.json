@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_34_train_q028",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "In a security incident where PowerShell was used to drop a suspicious file named `winatp-intro-backdoor.exe` on the machine and executed it, the command line arguments used for PowerShell included several base64 encoded strings indicative of a potential attack. This was part of a multi-stage incident involving several processes.",
+  "question": "During a related event, an uncommon file was created and added to a Run Key, and an attacker might have used it to maintain access. Can you find the IP address related to this suspicious activity?",
+  "gold_answer": "72.5.72.208",
+  "solution_steps": [
+    "The user account with SID `S-1-5-21-1870156660-7534030218-135086563-1193` executed a suspicious file via Powershell on the machine.",
+    "An uncommon file was created from IP address `72.5.72.208` and was added to a Run Key, indicating a potential persistence mechanism by an attacker."
+  ],
+  "metadata": {
+    "start_alert": 25,
+    "end_alert": 23,
+    "start_entities": [
+      7,
+      8,
+      16
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      25,
+      5,
+      23
+    ]
+  }
+}

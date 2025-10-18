@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_39_test_q027",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A security incident was detected involving a suspicious file `psexesvc.exe` registered as a service on host `vnevado-win10b`. This was reported because the file might have been registered as a service by an attacker for persistence. The file was associated with the account `LocalSystem`, which corresponds to the AadUserId `97e6a954-b6bd-48a5-808c-bd8464cce677`, and the attacker's activity involved the IP address `141.216.110.153`.",
+  "question": "What is the name of the user account associated with the suspicious file registration, potentially indicating attacker activity?",
+  "gold_answer": "fk8mq",
+  "solution_steps": [
+    "A file with suspicious attributes or involved in possible breach activity was registered as a service by the account `fk8mq`."
+  ],
+  "metadata": {
+    "start_alert": 21,
+    "end_alert": 21,
+    "start_entities": [
+      3,
+      22,
+      23,
+      25,
+      24,
+      11,
+      10,
+      2
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      21
+    ]
+  }
+}

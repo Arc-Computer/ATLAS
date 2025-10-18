@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_5_test_q074",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident related to the Manatee Tempest activity group has been detected. This actor, tracked by Microsoft and known to be a Russia-based cybercriminal group, has been active since June 2014 and is notorious for its Dridex banking trojan campaigns. The group partners with Mustard Tempest to facilitate access to target networks via methods such as drive-by downloads, malvertising, and FakeUpdates infections. They use a BLISTER loader to deploy Cobalt Strike beacons for lateral movement and ransomware deployment. Recently, on host identified by `vnevado-win10s` with the AadDeviceId `f5b847aa-8712-4bf6-b4f7-ed6cd89e1505`, a process with ProcessId `6460` was initiated to execute a command to curl a suspicious URL (`http://vectorsandarrows.com`).",
+  "question": "What is the AadDeviceId of the host connected to the end alert which involves the same Manatee Tempest activity group?",
+  "gold_answer": "e5799261-6720-4297-961e-bd9ca4275033",
+  "solution_steps": [
+    "There is an activity by the Manatee Tempest group involving an account with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "There is an activity by the Manatee Tempest group targeting a host with AadDeviceId `e5799261-6720-4297-961e-bd9ca4275033`."
+  ],
+  "metadata": {
+    "start_alert": 136,
+    "end_alert": 75,
+    "start_entities": [
+      12,
+      13,
+      99
+    ],
+    "end_entities": [
+      69
+    ],
+    "shortest_alert_path": [
+      136,
+      3,
+      75
+    ]
+  }
+}

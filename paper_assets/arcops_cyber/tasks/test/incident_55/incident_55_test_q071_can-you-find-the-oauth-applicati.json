@@ -1,0 +1,37 @@
+{
+  "task_id": "incident_55_test_q071",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A multi-stage security incident involving malicious email delivery, internal phishing campaign, and process injection was detected. An initial email was delivered to and removed from the mailbox of `santiago@vnevado.alpineskihouse.co`, which contained a malicious URL (`http://kn017721628.wittytree-b6f239d6.northeurope.azurecontainerapps.io/`). Later alerts noted a compromised user account sending internal phishing emails and suspicious code injection into processes.",
+  "question": "Can you find the OAuth application ID where the user Luciano Herrera added the credentials in an unusual manner?",
+  "gold_answer": "4d9476b8-6ae6-459b-a273-5837c15b5981",
+  "solution_steps": [
+    "The email account `S-1-5-11-7842151660-4834030208-105586563-1139` received an email with a malicious URL.",
+    "The user with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0` sent phishing emails from a compromised device inside the organization.",
+    "A process was injected with potentially malicious code involving the user with AadUserId `2de70991-2799-4a95-b734-8e3df3a50118`.",
+    "User Luciano Herrera (pwilson@niseko.alpineskihouse.co) performed an unusual addition of credentials to the OAuth application SimulandApp with OAuthAppId `4d9476b8-6ae6-459b-a273-5837c15b5981`, indicating a possible compromise."
+  ],
+  "metadata": {
+    "start_alert": 70,
+    "end_alert": 108,
+    "start_entities": [
+      71,
+      72,
+      73,
+      74,
+      79
+    ],
+    "end_entities": [
+      85
+    ],
+    "shortest_alert_path": [
+      70,
+      77,
+      88,
+      3,
+      41,
+      11,
+      108
+    ]
+  }
+}

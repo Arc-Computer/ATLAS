@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_166_test_q087",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A security incident involving multiple suspicious activities including SAP authentication and inbox manipulation was detected. This incident indicates that an attacker might have taken control of a user account to search through SAP with the possibility of recording or modifying sensitive financial information. This was identified by a risky sign-in alert in Microsoft Entra ID, wherein the attack initiated from IP address `107.253.5.27` using app ID `100`.",
+  "question": "Related to the suspicious SAP authentication incident, a user's inbox had rules manipulated suspiciously. Can you find the IP address from which the inbox manipulation originated?",
+  "gold_answer": "255.246.85.58",
+  "solution_steps": [
+    "The user account with email `Jordan P@vnevado.alpineskihouse.co` signed in to SAP with a risky sign-in alert detected by Microsoft Entra ID, indicating potential compromise and intentions to record or modify sensitive financial information.",
+    "There was a suspicious inbox manipulation rule detected from the IP address `255.246.85.58`, indicating that an attacker might be manipulating a user's inbox to delete or move messages or folders for data exfiltration purposes."
+  ],
+  "metadata": {
+    "start_alert": 26,
+    "end_alert": 16,
+    "start_entities": [
+      24,
+      25
+    ],
+    "end_entities": [
+      15
+    ],
+    "shortest_alert_path": [
+      26,
+      7,
+      16
+    ]
+  }
+}

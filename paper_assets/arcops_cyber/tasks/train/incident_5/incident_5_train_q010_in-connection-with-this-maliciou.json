@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_5_train_q010",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A significant security incident was reported where all file snapshots and shadow copies were deleted via WMI or VSSAdmin, which is often associated with ransomware infections. The process involved was `vssblatemp.exe` and it was launched with the command line `vssblatemp.exe delete shadows /all`. This incident ties back to the Iranian MOIS operators who have been known to deploy limited-impact wipers.",
+  "question": "In connection with this malicious activity, 'CommandAndControl' malware was detected during an attempt to move laterally within the network. Can you provide the process command line that was used to execute the detected 'CommandAndControl' malware?",
+  "gold_answer": "5572__2024-06-20t09:32:04.8002759z__curl http://vectorsandarrows.com",
+  "solution_steps": [
+    "The account `dp5hn` was involved in the deletion of file backups via WMI or VSSAdmin, which is a common tactic during Ransomware infections.",
+    "The 'CommandAndControl' malware was detected on a device, indicating that an attacker might be using this malware to move laterally within the network with the process ID `5572`, created on `2024-06-20t09:32:04.8002759z`, using the command line `curl http://vectorsandarrows.com`."
+  ],
+  "metadata": {
+    "start_alert": 121,
+    "end_alert": 128,
+    "start_entities": [
+      11,
+      77
+    ],
+    "end_entities": [
+      6
+    ],
+    "shortest_alert_path": [
+      121,
+      1,
+      128
+    ]
+  }
+}

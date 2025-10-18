@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_5_test_q085",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A recent security incident indicates a tampering of system recovery settings on device `vnevado-win11t`. Adversaries might have attempted to delete or remove built-in operating system data and turn off recovery services. The command lines used by adversaries to disable or delete system recovery features include using `vssblatemp.exe` to delete all volume shadow copies.",
+  "question": "In a related alert, there is evidence of system recovery settings being tampered with on the same device. Can you determine the command line used to delete all volume shadow copies on this system?",
+  "gold_answer": "vssblatemp.exe delete shadows /all",
+  "solution_steps": [
+    "A user with the SID `S-1-5-21-1840191660-8534830288-125585561-1522` exhibited suspicious behavior on their device indicating potential compromise.",
+    "System recovery settings on the same device were tampered with, suggesting an attempt to disable recovery features. This action was performed by a process with Process ID `1900` at `2024-06-20t09:32:02.4640548z` using the command line `vssblatemp.exe delete shadows /all`."
+  ],
+  "metadata": {
+    "start_alert": 66,
+    "end_alert": 76,
+    "start_entities": [
+      67,
+      68,
+      69
+    ],
+    "end_entities": [
+      77
+    ],
+    "shortest_alert_path": [
+      66,
+      2,
+      76
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_55_train_q075",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "During an investigation into a suspicious system hardware discovery alert where the process `svchost.exe` with Process ID 2880 was used, which raised suspicion regarding potential attacker activities to gather information about the target device or network for later attacks.",
+  "question": "As part of this incident, there was an alert for a malicious PowerShell Cmdlet invocation. Can you identify the name of the file associated with this malicious PowerShell Cmdlet?",
+  "gold_answer": "contosoadfsblatempcreds.ps1",
+  "solution_steps": [
+    "The account `bjenkins` used a known tool or technique to gather information on a device.",
+    "A malicious PowerShell Cmdlet `contosoadfsblatempcreds.ps1` was invoked on the machine."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 51,
+    "start_entities": [
+      5,
+      6
+    ],
+    "end_entities": [
+      42
+    ],
+    "shortest_alert_path": [
+      0,
+      1,
+      51
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_5_train_q022",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A system recovery tampering incident was observed on host `vnevado-win11t`. The incident involved the deletion of volume shadow copies, which compromises the system's recovery capabilities by removing backup options.",
+  "question": "What was the name of the process involved in deleting all volume shadow copies during the system recovery tampering incident?",
+  "gold_answer": "vssblatemp.exe",
+  "solution_steps": [
+    "Suspicious remote activity was observed using the process `vssblatemp.exe`.",
+    "System recovery settings were tampered using the process `vssblatemp.exe` with command line `vssblatemp.exe delete shadows /all` on `2024-06-20t09:32:02.4640548z` with Process ID `1900`."
+  ],
+  "metadata": {
+    "start_alert": 107,
+    "end_alert": 76,
+    "start_entities": [
+      59,
+      47,
+      81,
+      68,
+      108,
+      42,
+      109,
+      69,
+      67,
+      80
+    ],
+    "end_entities": [
+      77
+    ],
+    "shortest_alert_path": [
+      107,
+      11,
+      76
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_5_test_q045",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident involving the Manatee Tempest activity group was reported. This Russia-based cybercriminal group, which has been active since June 2014, is known for malware campaigns including the Dridex banking trojan. They often gain initial access through methods such as drive-by downloads and malvertising, facilitated by their partnership with Mustard Tempest. As part of this security incident, a suspicious WMI process creation was observed on the machine `vnevado-win10r`, which might be an indicator of malware using WMI to spawn new processes and further infect the machine.",
+  "question": "Can you provide the command line details of the suspicious WMI process observed on the machine?",
+  "gold_answer": "7332__2024-06-20t09:32:01.3894288z__bcdedit /set bootstatuspolicy ignoreallfailures",
+  "solution_steps": [
+    "The Russia-based cybercriminal group Manatee Tempest is involved in an activity targeting an account with SID `S-1-5-21-1840191660-8534830288-125585561-1522`.",
+    "A suspicious WMI process creation was observed with Process ID `7332` at `2024-06-20t09:32:01.3894288z` using the command line `bcdedit /set bootstatuspolicy ignoreallfailures`."
+  ],
+  "metadata": {
+    "start_alert": 135,
+    "end_alert": 117,
+    "start_entities": [
+      4,
+      5,
+      61,
+      64,
+      65
+    ],
+    "end_entities": [
+      89
+    ],
+    "shortest_alert_path": [
+      135,
+      2,
+      117
+    ]
+  }
+}

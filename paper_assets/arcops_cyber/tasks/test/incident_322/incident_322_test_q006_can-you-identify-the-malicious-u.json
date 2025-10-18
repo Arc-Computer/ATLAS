@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_322_test_q006",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "A security incident involving multiple alerts started with attackers potentially using Ntdsutil for Active Directory manipulation. Following this, Microsoft Defender for Resource Manager detected a resource management operation possibly linked to proxy services. This led to the discovery that a malicious URL was later clicked on a device within the organization.",
+  "question": "Can you identify the malicious URL that was clicked on the device?",
+  "gold_answer": "https://dj01161621.bravesand-e1ccd718.eastus.azurecontainerapps.io/",
+  "solution_steps": [
+    "There is a collection of active directory information with ntdsutil.exe on host `vnevado-dc`.",
+    "Azure Resource Manager operation was performed by account `Hailey Johnson` from a suspicious proxy IP address.",
+    "A malicious URL `https://dj01161621.bravesand-e1ccd718.eastus.azurecontainerapps.io/` was clicked on a device."
+  ],
+  "metadata": {
+    "start_alert": 22,
+    "end_alert": 33,
+    "start_entities": [
+      17,
+      18,
+      19,
+      20
+    ],
+    "end_entities": [
+      24
+    ],
+    "shortest_alert_path": [
+      22,
+      21,
+      25,
+      6,
+      33
+    ]
+  }
+}

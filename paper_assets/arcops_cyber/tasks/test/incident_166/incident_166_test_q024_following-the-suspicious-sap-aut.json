@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_166_test_q024",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "This incident might be related to a broader attack campaign. Keep an eye on the sequence of events and note how the suspicious SAP authentication may tie into subsequent malicious activities.",
+  "question": "Following the suspicious SAP authentication incident, there was a password spray attack on 2024-07-23. Can you provide the IP address from which the password spray attack was detected?",
+  "gold_answer": "95.202.65.202",
+  "solution_steps": [
+    "A user account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82` signed in to SAP under a risky sign-in alert.",
+    "A password spray attack was detected from IP address `95.202.65.202`."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 28,
+    "start_entities": [
+      6,
+      7,
+      8,
+      24,
+      25
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      23,
+      1,
+      28
+    ]
+  }
+}

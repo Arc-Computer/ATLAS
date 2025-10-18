@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_5_train_q031",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "The possible attempt to access Primary Refresh Token (PRT) was detected on 2024-07-04 22:35:00.619840+00:00. It involves key artifacts of Azure AD authentication. Attackers might use PRT to move laterally or steal credentials within the organization. The alert is linked with process activity involving `powershell.exe` and `browsercore.exe`.",
+  "question": "Who was the user account detected in the subsequent alert for the same attempt to access the Primary Refresh Token (PRT)?",
+  "gold_answer": "dp5hn",
+  "solution_steps": [
+    "There was a possible attempt to access Primary Refresh Token (PRT) using the process with filename `browsercore.exe`.",
+    "The account with the name `dp5hn` was involved in a possible attempt to access Primary Refresh Token (PRT)."
+  ],
+  "metadata": {
+    "start_alert": 36,
+    "end_alert": 118,
+    "start_entities": [
+      16,
+      17,
+      18,
+      20,
+      34,
+      35,
+      37,
+      38,
+      39
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      36,
+      40,
+      118
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_39_test_q020",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A familiar credential theft tool `mimikatz.exe` was executed to possibly dump users' credentials, prompting a security alert. Closely following this event was an indication of a Rubeus tool activity which is known to utilize Kerberos authentication vulnerabilities.",
+  "question": "Following this event, there was an activity indicating the use of the Rubeus kerberoasting tool. Could you determine the process and command line that was used to perform the suspected kerberoasting activity?",
+  "gold_answer": "`powershell.exe c:\\m365dattack\\get-krbticket.ps1`",
+  "solution_steps": [
+    "A malicious credential theft tool was executed by the account with SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "The Rubeus kerberoasting tool was potentially used via the powershell command `powershell.exe c:\\m365dattack\\get-krbticket.ps1` at `2024-06-27t14:32:46.5860644z`, with Process ID `6636`."
+  ],
+  "metadata": {
+    "start_alert": 89,
+    "end_alert": 107,
+    "start_entities": [
+      31,
+      67
+    ],
+    "end_entities": [
+      36
+    ],
+    "shortest_alert_path": [
+      89,
+      28,
+      107
+    ]
+  }
+}

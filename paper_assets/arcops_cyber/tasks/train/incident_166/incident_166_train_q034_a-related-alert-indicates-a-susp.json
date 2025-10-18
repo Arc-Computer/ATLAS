@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_train_q034",
+  "incident": "incident_166",
+  "split": "train",
+  "context": "A security incident involving BEC financial fraud occurred, where a suspicious inbox rule that hides incoming email messages was created in a risky Azure Active Directory session. An attacker might be attempting to conduct financial fraud via business email compromise (BEC). The source of this activity was traced to the IP address `255.246.85.58`.",
+  "question": "A related alert indicates a suspicious SAP authentication involving a cloud application. Can you identify the AppId of the cloud application that was involved in the suspicious SAP authentication?",
+  "gold_answer": "100",
+  "solution_steps": [
+    "A suspicious inbox rule that hides incoming email messages was created for the email account `Jordan P@vnevado.alpineskihouse.co`.",
+    "A user account with a risky sign-in alert in Microsoft Entra ID signed in to the SAP application with AppId `100`."
+  ],
+  "metadata": {
+    "start_alert": 17,
+    "end_alert": 26,
+    "start_entities": [
+      15
+    ],
+    "end_entities": [
+      24
+    ],
+    "shortest_alert_path": [
+      17,
+      7,
+      26
+    ]
+  }
+}

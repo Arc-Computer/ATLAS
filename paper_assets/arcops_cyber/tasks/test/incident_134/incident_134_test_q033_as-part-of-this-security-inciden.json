@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_test_q033",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A user was signed in from an unusual location and browser during a password spray attack. An IP address associated with this incident is `170.54.121.63`. This indicates that an attacker might have compromised the user account for unauthorized access to the network. The incident involves Account compromise following a password-spray attack.",
+  "question": "As part of this security incident, there was also a suspicious BEC financial fraud involving another IP address. Can you identify the IP address connected to the BEC financial fraud?",
+  "gold_answer": "237.7.81.122",
+  "solution_steps": [
+    "The user account `Nina Park` was compromised following a password-spray attack.",
+    "A suspicious inbox rule was created from IP address `237.7.81.122` in a risky Azure Active Directory session, indicating a potential business email compromise (BEC) attempt."
+  ],
+  "metadata": {
+    "start_alert": 25,
+    "end_alert": 17,
+    "start_entities": [
+      12
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      25,
+      6,
+      17
+    ]
+  }
+}

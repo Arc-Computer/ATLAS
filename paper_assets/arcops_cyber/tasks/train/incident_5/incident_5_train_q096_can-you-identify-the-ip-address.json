@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_train_q096",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A potential attempt to access a Primary Refresh Token (PRT) through the process `browsercore.exe` was detected on 2024-07-04. PRT is crucial for Azure AD authentication across various devices, and attackers might try to exploit it to move laterally or steal credentials. Subsequently, it was identified that a compromised user account was involved in delivering ransomware-related files across multiple devices. This indicates potential lateral movement and broader infection attempts within the network.",
+  "question": "Can you identify the IP address associated with the lateral movement to the jump server Vnevado-jump?",
+  "gold_answer": "141.216.110.153",
+  "solution_steps": [
+    "There was a possible attempt to access the Primary Refresh Token (PRT) associated with the AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "A user account may have been compromised and used to deliver ransomware-related files from IP address `99.83.111.100`.",
+    "Lateral movement using PSExec was detected to the jump server with IP address `141.216.110.153`."
+  ],
+  "metadata": {
+    "start_alert": 82,
+    "end_alert": 174,
+    "start_entities": [
+      83
+    ],
+    "end_entities": [
+      177
+    ],
+    "shortest_alert_path": [
+      82,
+      3,
+      41,
+      42,
+      174
+    ]
+  }
+}

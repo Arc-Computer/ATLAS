@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q004",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A suspicious system hardware discovery took place on a device named `mb-winclient`, which might be associated with gathering information on the device or network for later attacks. Several accounts such as `pwilson` and `bjenkins` were involved in various processes, using scripts like `contosoadfsblatempcreds.ps1` via `powershell.exe`. The incident also includes `svchost.exe` running with network services.",
+  "question": "Can you identify the IP address of the sender in the emails containing malicious URLs that were removed after delivery?",
+  "gold_answer": "119.36.50.193",
+  "solution_steps": [
+    "An account with SID `S-1-5-21-561436748-3867387497-1732241745-3701` was involved in a suspicious system hardware discovery.",
+    "An email containing a malicious URL was sent from IP address `119.36.50.193` and subsequently removed after delivery."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 92,
+    "start_entities": [
+      8,
+      13,
+      11,
+      12,
+      14,
+      5,
+      9,
+      7,
+      4,
+      1
+    ],
+    "end_entities": [
+      95
+    ],
+    "shortest_alert_path": [
+      0,
+      2,
+      92
+    ]
+  }
+}

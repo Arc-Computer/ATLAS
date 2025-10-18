@@ -1,0 +1,38 @@
+{
+  "task_id": "incident_39_test_q066",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "'Kekeo' malware was detected on the device `vnevado-win10b`, where file `psexesvc.exe` was executed. The malware detection indicates a potential lateral movement attempt. An investigation revealed that multiple dual-purpose tools were dropped on the device, which may have been used for malicious activities including credential theft, privilege escalation, and lateral movement.",
+  "question": "Can you identify the account name that was detected executing the malicious credential theft tool?",
+  "gold_answer": "tgs2z",
+  "solution_steps": [
+    "The file `rubeus.exe` was detected as 'Kekeo' malware during lateral movement.",
+    "Multiple dual-purpose tools were dropped by the account with SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "The user account `tgs2z` executed a malicious credential theft tool."
+  ],
+  "metadata": {
+    "start_alert": 110,
+    "end_alert": 44,
+    "start_entities": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      10,
+      11,
+      23,
+      25
+    ],
+    "end_entities": [
+      27
+    ],
+    "shortest_alert_path": [
+      110,
+      65,
+      62,
+      28,
+      44
+    ]
+  }
+}

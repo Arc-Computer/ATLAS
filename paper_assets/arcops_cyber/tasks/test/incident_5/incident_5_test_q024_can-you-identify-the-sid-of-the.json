@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_test_q024",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident was reported involving Command and Control behavior being blocked, suggesting that malware was found running or had persistence mechanisms on the machine `vnevado-win10r`. The process id `1332` was observed running the command `curl http://vectorsandarrows.com` on this host with AadDeviceId `9d4887ba-0b69-47d6-89bc-9b32787f379e`. This malware was designated as active, requiring precautionary measures to be taken to check for residual infection signs.",
+  "question": "Can you identify the SID of the account associated with the suspicious remote activity observed on this machine?",
+  "gold_answer": "S-0-6-5",
+  "solution_steps": [
+    "A command and control behavior was blocked for the account with SID `S-1-5-21-1840191660-8534830288-125585561-1522`.",
+    "Suspicious remote activity was observed for the account with SID `S-0-6-5`."
+  ],
+  "metadata": {
+    "start_alert": 137,
+    "end_alert": 140,
+    "start_entities": [
+      61,
+      64,
+      65,
+      74
+    ],
+    "end_entities": [
+      47
+    ],
+    "shortest_alert_path": [
+      137,
+      2,
+      140
+    ]
+  }
+}

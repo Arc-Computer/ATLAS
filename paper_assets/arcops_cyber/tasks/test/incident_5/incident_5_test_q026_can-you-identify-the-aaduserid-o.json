@@ -1,0 +1,42 @@
+{
+  "task_id": "incident_5_test_q026",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "To further investigate the incident, 'CommandAndControl' malware was detected on the targeted device. An attacker might be attempting to move laterally from another device on the network.",
+  "question": "Can you identify the AadUserId of the account related to the CommandAndControl malware that was detected during lateral movement?",
+  "gold_answer": "731adb71-b11c-4bbf-850b-57989b350e96",
+  "solution_steps": [
+    "Active malware was detected running or with persistence mechanisms on the machine associated with account `tgs2z` on `2024-07-04`.",
+    "Lateral movement detected using PSExec to the jump server at IP address `99.83.111.100` on `2024-07-10`.",
+    "Potential compromise and ransomware-like behavior detected on host with AadDeviceId `e5799261-6720-4297-961e-bd9ca4275033` on `2024-07-04`.",
+    "Command and control malware detected during lateral movement involving user with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96` on `2024-07-04`."
+  ],
+  "metadata": {
+    "start_alert": 150,
+    "end_alert": 127,
+    "start_entities": [
+      30,
+      19,
+      23,
+      111,
+      31,
+      29,
+      33,
+      24,
+      32,
+      92
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      150,
+      16,
+      174,
+      42,
+      157,
+      69,
+      127
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_166_test_q078",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "During a security incident, a user's inbox rules were manipulated in a suspicious manner at 10:00:07 AM on July 22, 2024. The account related to this manipulation is Jordan P with the email Jordan P@vnevado.alpineskihouse.co. The attacker might have accessed this inbox to move messages or folders, potentially exfiltrating data from your organization. The IP address involved in this alert is 255.246.85.58, and the application with AppId 20893 was also related.",
+  "question": "What is the AppId of the cloud application that was related to the suspicious inbox manipulation rule in Jordan P's account?",
+  "gold_answer": "11161",
+  "solution_steps": [
+    "A user's inbox rules were manipulated in a suspicious manner. The affected account's email is `Jordan P@vnevado.alpineskihouse.co`.",
+    "A suspicious inbox rule was set on the inbox of the user Jordan P with the email `laylaw@vnevado.alpineskihouse.co`. The user created a MoveToFolder rule named ITCleanup on their own inbox, to move messages to a folder named RSS Feeds. The cloud application involved has the AppId `11161`."
+  ],
+  "metadata": {
+    "start_alert": 16,
+    "end_alert": 5,
+    "start_entities": [
+      1,
+      6,
+      7,
+      8,
+      11,
+      15
+    ],
+    "end_entities": [
+      13
+    ],
+    "shortest_alert_path": [
+      16,
+      7,
+      5
+    ]
+  }
+}

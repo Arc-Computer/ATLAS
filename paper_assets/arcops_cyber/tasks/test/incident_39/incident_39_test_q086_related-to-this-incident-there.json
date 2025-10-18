@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_39_test_q086",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "As part of a security incident, a user named Ethan Brooks accessed a malicious link (`https://ac27145722.livelygrass-8d4c4013.eastus2.azurecontainerapps.io/`) in an email that was quarantined by zero-hour auto purge (ZAP). This alert was triggered based on a Microsoft Defender for Office 365 alert.",
+  "question": "Related to this incident, there was also a sign-in attempt using a deceptive user account. Can you identify the name of the deceptive user account used in that sign-in attempt?",
+  "gold_answer": "tgs2z",
+  "solution_steps": [
+    "A user with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1` accessed a link in an email that was quarantined by zero-hour auto purge (ZAP).",
+    "A sign-in attempt with a deceptive user account named `tgs2z` was detected."
+  ],
+  "metadata": {
+    "start_alert": 141,
+    "end_alert": 41,
+    "start_entities": [
+      117,
+      118,
+      137
+    ],
+    "end_entities": [
+      27
+    ],
+    "shortest_alert_path": [
+      141,
+      29,
+      41
+    ]
+  }
+}

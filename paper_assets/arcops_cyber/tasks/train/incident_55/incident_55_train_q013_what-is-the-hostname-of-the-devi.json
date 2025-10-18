@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_55_train_q013",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "During a recent security investigation, it was identified that host `MB-DC1` read the DKM key of an ADFS object (`4cac49d3-29d3-407e-8c9b-b7ebb21541b2`). Following this, there was a suspected DCSync attack where a replication request was sent from `MB-WINCLIENT` by Luciano Herrera (CIO) to `MB-DC1`. Then, it was observed that a known tool or technique was used to gather information on a device in a suspicious system hardware discovery attempt. Eventually, a suspicious Task Scheduler activity was reported where a process involved in earlier malicious activity used Task Scheduler to create, modify, or delete a task. This might be an attempt to launch malicious code automatically and establish persistence. For further information on this threat, read the corresponding threat analytics report.",
+  "question": "What is the hostname of the device involved in the suspicious Task Scheduler activity?",
+  "gold_answer": "mb-adfs",
+  "solution_steps": [
+    "The host `MB-DC1` read the DKM key of ADFS object id `4cac49d3-29d3-407e-8c9b-b7ebb21541b2`.",
+    "The account with AadUserID `2de70991-2799-4a95-b734-8e3df3a50118`, used the host `MB-WINCLIENT` to send a replication request to `MB-DC1`.",
+    "A known tool or technique using `powershell.exe` was used to gather system hardware information.",
+    "A process associated with suspicious activity used Task Scheduler on the host `mb-adfs` to create, modify, or delete a task."
+  ],
+  "metadata": {
+    "start_alert": 105,
+    "end_alert": 33,
+    "start_entities": [
+      99
+    ],
+    "end_entities": [
+      26
+    ],
+    "shortest_alert_path": [
+      105,
+      99,
+      98,
+      11,
+      0,
+      8,
+      33
+    ]
+  }
+}

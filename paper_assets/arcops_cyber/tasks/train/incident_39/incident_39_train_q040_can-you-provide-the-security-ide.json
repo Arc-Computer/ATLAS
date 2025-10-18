@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_train_q040",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "During a security incident where a known credential theft tool named 'mimikatz.exe' was executed on the host `vnevado-win10v`, it was detected through the command line indicating attempts to dump users' credentials and passwords. Multiple dual-purpose tools were then dropped on the same device, and subsequently, 'Kekeo' malware was identified during a lateral movement attempt.",
+  "question": "Can you provide the Security Identifier (SID) of the account involved in the lateral movement detection of 'Kekeo' malware?",
+  "gold_answer": "S-1-5-21-1540151660-3530000288-105586595-1517",
+  "solution_steps": [
+    "A known credential theft tool named `mimikatz.exe` was executed.",
+    "Multiple dual-purpose tools including `rubeus.exe` were dropped on the device, which might be used for credential theft, privilege escalation, and lateral movement.",
+    "The 'Kekeo' malware was detected on the device, indicating an attempt for lateral movement, involving the account with SID `S-1-5-21-1540151660-3530000288-105586595-1517`."
+  ],
+  "metadata": {
+    "start_alert": 89,
+    "end_alert": 110,
+    "start_entities": [
+      27,
+      28,
+      29,
+      31,
+      32,
+      33,
+      67
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      89,
+      31,
+      62,
+      65,
+      110
+    ]
+  }
+}

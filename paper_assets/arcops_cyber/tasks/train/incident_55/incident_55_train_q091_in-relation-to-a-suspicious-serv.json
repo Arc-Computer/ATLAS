@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_55_train_q091",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A suspicious LDAP query aimed at extracting ADFS private keys or facilitating lateral movement on the network was flagged on host `mb-adfs`. The suspicious process `iy2orr1e.rrg.exe` was launched multiple times with hidden window style and encoded commands. This incident is part of a larger investigation where we need to identify the user's activities that might be malicious.",
+  "question": "In relation to a suspicious service creation on host `MB-ADFS`, which user account is associated with this activity?",
+  "gold_answer": "gsmith@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "The account `gsmith` executed a suspicious LDAP query targeting ADFS private keys on `2024-07-04 22:35:02.751926+00:00`.",
+    "The same account `gsmith` (Email: `gsmith@niseko.alpineskihouse.co`) created a suspicious service named `DDLOXJDSQSNGMUKKFUXQ` on `2024-07-10 11:24:45.488649+00:00` to execute potentially malicious commands on MB-ADFS."
+  ],
+  "metadata": {
+    "start_alert": 43,
+    "end_alert": 101,
+    "start_entities": [
+      26,
+      28,
+      29,
+      44
+    ],
+    "end_entities": [
+      103
+    ],
+    "shortest_alert_path": [
+      43,
+      18,
+      101
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q050",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "As part of an internal phishing campaign, a user was observed to have sent phishing emails from this device to recipients inside the organization. The user account might have been compromised in an attempt by an attacker to move laterally inside the organization. This event was flagged based on an alert from Microsoft Defender for Office 365. Furthermore, suspicious access to the LSASS service was noted, which attackers often exploit to obtain clear-text passwords. This was followed by a sequence of exploration activities using windows commands which indicated an attempt to identify assets of value and coordinate further lateral movement.",
+  "question": "Can you identify the name of the account involved in the suspicious sequence of exploration activities?",
+  "gold_answer": "gsmith",
+  "solution_steps": [
+    "A user with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0` sent phishing emails from within the organization, indicating a potential compromise of the account.",
+    "There was suspicious access to the LSASS service using `powershell.exe`, which might have been used to decrypt and obtain clear-text passwords.",
+    "Suspicious exploration activities were performed by the account `gsmith`, which involved executing windows commands to identify valuable assets and coordinate lateral movement."
+  ],
+  "metadata": {
+    "start_alert": 88,
+    "end_alert": 52,
+    "start_entities": [
+      75,
+      76,
+      77,
+      78,
+      89,
+      90,
+      91
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      88,
+      3,
+      45,
+      8,
+      52
+    ]
+  }
+}

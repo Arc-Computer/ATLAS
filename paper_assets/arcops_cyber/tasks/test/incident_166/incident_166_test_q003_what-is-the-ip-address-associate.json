@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_166_test_q003",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A user connected to a business email compromise (BEC)-related incident signed in to SAP in a suspicious manner using IP `107.253.5.27`. The user might have an intention of recording or modifying sensitive financial information in SAP which could later be used for phishing or social engineering. This alert was triggered by a Microsoft Defender XDR alert.",
+  "question": "What is the IP address associated with the suspicious emails sent by the possibly compromised user related to the BEC fraud attempt?",
+  "gold_answer": "255.246.85.58",
+  "solution_steps": [
+    "The user account `Jordan P` signed in to SAP in a suspicious manner, possibly searching or modifying sensitive financial information.",
+    "Suspicious emails were sent by a possibly compromised user account related to an ongoing BEC fraud attempt from the IP address `255.246.85.58`."
+  ],
+  "metadata": {
+    "start_alert": 27,
+    "end_alert": 18,
+    "start_entities": [
+      24,
+      25
+    ],
+    "end_entities": [
+      21
+    ],
+    "shortest_alert_path": [
+      27,
+      6,
+      18
+    ]
+  }
+}

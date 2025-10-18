@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_5_test_q057",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "The security incident involves suspicious WMI process creation, which is a common tactic used by malware to break process trees and infect a machine. We observed several processes on the `vnevado-win10s` host, including suspicious commands such as `vssblatemp.exe delete shadows /all`, `bcdedit /set recoveryenabled no`, `curl http://vectorsandarrows.com`, and `powershell -file c:\\scripts\\get-userprttoken.ps1`. These commands were executed around the same time frame, raising concerns about potential malicious activities.",
+  "question": "Can you identify the command line details for the process that reflects the suspicious WMI process creation on the same machine `vnevado-win10s`?",
+  "gold_answer": "4828__2024-06-20t09:31:59.6743318z__bcdedit /set recoveryenabled no",
+  "solution_steps": [
+    "A suspicious WMI process creation was observed involving the execution of the PowerShell script `get-userprttoken.ps1`.",
+    "A suspicious WMI process creation was observed with the command line `bcdedit /set recoveryenabled no` at `2024-06-20t09:31:59.6743318z` with Process ID `4828`."
+  ],
+  "metadata": {
+    "start_alert": 144,
+    "end_alert": 117,
+    "start_entities": [
+      10,
+      12,
+      13,
+      97,
+      99,
+      141,
+      142
+    ],
+    "end_entities": [
+      78
+    ],
+    "shortest_alert_path": [
+      144,
+      59,
+      117
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_39_test_q084",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "During the investigation of a security incident involving account lookups and potential credential harvesting, an alert was triggered on 2024-07-04 indicating anomalous account lookups. It was observed that the process `net.exe` was executed multiple times to gather information about domain users and groups. An attacker might be gathering information about potential targets.",
+  "question": "Related to this incident, the 'Kekeo' malware was detected and was active. Can you identify the AadUserId associated with the malware activity?",
+  "gold_answer": "97e6a954-b6bd-48a5-808c-bd8464cce677",
+  "solution_steps": [
+    "There is an anomalous chain of attempts to look up user account information on host `vnevado-win10v`.",
+    "The Rubeus tool was detected on the endpoint, with the file `rubeus.exe` indicating possible kerberoasting or pass-the-ticket attacks.",
+    "The `Kekeo` malware was detected and was active, associated with the account having AadUserId `97e6a954-b6bd-48a5-808c-bd8464cce677`."
+  ],
+  "metadata": {
+    "start_alert": 94,
+    "end_alert": 100,
+    "start_entities": [
+      80,
+      81,
+      82,
+      83,
+      84
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      94,
+      32,
+      107,
+      7,
+      100
+    ]
+  }
+}

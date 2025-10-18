@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_5_train_q003",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "During a security incident on 2024-07-04, all file snapshots and shadow copies were deleted on host `vnevado-win10r` using the process `vssblatemp.exe`, which is common during a ransomware infection. The incident involved remote activities that were identified as suspicious, including potential attempts to initiate interactive sessions, modify files, or pass WMI commands.",
+  "question": "What was the IP address involved in the suspicious remote activity observed on host `vnevado-win10r` during this incident?",
+  "gold_answer": "99.83.111.100",
+  "solution_steps": [
+    "All file snapshots and shadow copies have been deleted via the process `vssblatemp.exe`.",
+    "Suspicious remote activity was initiated from IP address `99.83.111.100`."
+  ],
+  "metadata": {
+    "start_alert": 70,
+    "end_alert": 140,
+    "start_entities": [
+      60,
+      64,
+      65
+    ],
+    "end_entities": [
+      42
+    ],
+    "shortest_alert_path": [
+      70,
+      11,
+      140
+    ]
+  }
+}

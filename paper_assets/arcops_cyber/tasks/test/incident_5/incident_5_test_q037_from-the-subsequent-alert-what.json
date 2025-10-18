@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_5_test_q037",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "An alert reported that the LSASS process memory was modified, potentially to bypass security measures. During this incident, a suspicious process `notepad.exe` was observed running on host `vnevado-win10v` with specific command line arguments. Another alert was subsequently triggered indicating that a Windows Sysinternals tool was renamed and executed.",
+  "question": "From the subsequent alert, what was the name of the Windows Sysinternals tool that was renamed before it was launched?",
+  "gold_answer": "mimikatz.exe",
+  "solution_steps": [
+    "The LSASS process memory was modified from IP address `107.224.99.179`.",
+    "A Windows Sysinternals tool was renamed to `mimikatz.exe` and then launched, which might indicate malicious activity."
+  ],
+  "metadata": {
+    "start_alert": 115,
+    "end_alert": 122,
+    "start_entities": [
+      35,
+      34,
+      17,
+      20,
+      16,
+      18,
+      30,
+      32,
+      31
+    ],
+    "end_entities": [
+      19
+    ],
+    "shortest_alert_path": [
+      115,
+      20,
+      122
+    ]
+  }
+}

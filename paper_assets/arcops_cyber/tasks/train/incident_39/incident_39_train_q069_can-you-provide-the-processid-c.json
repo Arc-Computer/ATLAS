@@ -1,0 +1,40 @@
+{
+  "task_id": "incident_39_train_q069",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A known credential theft tool execution command line was detected on host `vnevado-win10v`, involving processes such as `powershell.exe` and `mimikatz.exe`. The credential theft tool `mimikatz.exe` was executed with Process ID 4112 and the following command line: `mimikatz.exe privilege::debug sekurlsa::pth /user:kyleg /ntlm:96def1a633fc6790124d5f8fe31cc72b /domain:vnevado.alpineskihouse.co /run:\"powershell.exe dir \\vnevado-win10b\\c$\"` on the host. Subsequently, PsExec was used to launch a command on a remote device. There was also activity indicating the use of the Rubeus tool for potential kerberoasting attacks. Finally, a suspicious service was launched on the device during this sequence of events.",
+  "question": "Can you provide the ProcessId, CreatedTime, and CommandLine for the suspicious service that was launched on the device?",
+  "gold_answer": "ProcessId: 5912, CreatedTime: 2024-06-27t14:32:53.2267179z, CommandLine: psexesvc.exe",
+  "solution_steps": [
+    "A known credential theft tool was executed on host `vnevado-win10v`.",
+    "The Rubeus kerberoasting tool was possibly used on process `psexesvc.exe` with Process ID `5512` and command line `psexesvc.exe` at `2024-06-27t14:33:27.3525354z`.",
+    "PsExec was launched to execute a command, saving output to `adminticket.txt`.",
+    "A suspicious service was launched through the process `psexesvc.exe` with Process ID `5912` and command line `psexesvc.exe` at `2024-06-27t14:32:53.2267179z`."
+  ],
+  "metadata": {
+    "start_alert": 39,
+    "end_alert": 90,
+    "start_entities": [
+      17,
+      27,
+      28,
+      29,
+      31,
+      32,
+      33,
+      40
+    ],
+    "end_entities": [
+      59
+    ],
+    "shortest_alert_path": [
+      39,
+      32,
+      95,
+      8,
+      0,
+      4,
+      90
+    ]
+  }
+}

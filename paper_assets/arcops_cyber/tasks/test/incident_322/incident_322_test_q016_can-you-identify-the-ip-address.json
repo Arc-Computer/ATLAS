@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_322_test_q016",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "A user, Hailey Johnson, accessed a link `https://dj01161621.bravesand-e1ccd718.eastus.azurecontainerapps.io/` in an email that was later quarantined by zero-hour auto purge (ZAP). This alert was triggered based on a Microsoft Defender for Office 365 alert. This action is part of a broader investigation involving potentially malicious URLs being accessed.",
+  "question": "Can you identify the IP address associated with the malicious URL that was clicked?",
+  "gold_answer": "172.33.118.200",
+  "solution_steps": [
+    "A user accessed a link `https://dj01161621.bravesand-e1ccd718.eastus.azurecontainerapps.io/` in an email that was subsequently quarantined by ZAP.",
+    "A malicious URL was clicked on from the device with IP address `172.33.118.200`."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 33,
+    "start_entities": [
+      6,
+      7,
+      8,
+      9,
+      24
+    ],
+    "end_entities": [
+      35
+    ],
+    "shortest_alert_path": [
+      23,
+      24,
+      33
+    ]
+  }
+}

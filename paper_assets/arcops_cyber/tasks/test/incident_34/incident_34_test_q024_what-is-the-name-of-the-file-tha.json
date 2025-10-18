@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_34_test_q024",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A command in PowerShell was executed by a suspicious process on a host `vnevado-win10e`. The process may have been initiated by the user `samuelf` whose SID is `S-1-5-21-1870156660-7534030218-135086563-1193`. The file `powershell.exe` was involved and has been linked to potentially malicious activity, likely used by an attacker to bypass security protection mechanisms.",
+  "question": "What is the name of the file that PowerShell dropped and executed on the machine?",
+  "gold_answer": "winatp-intro-backdoor.exe",
+  "solution_steps": [
+    "A command in PowerShell was executed by a suspicious process associated with AadUserId `16320fec-8d90-403b-b7fe-78f715d4728d`.",
+    "PowerShell dropped a suspicious file named `winatp-intro-backdoor.exe` on the machine and executed it."
+  ],
+  "metadata": {
+    "start_alert": 3,
+    "end_alert": 25,
+    "start_entities": [
+      1,
+      2,
+      4,
+      5,
+      6,
+      8,
+      9
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      3,
+      6,
+      25
+    ]
+  }
+}

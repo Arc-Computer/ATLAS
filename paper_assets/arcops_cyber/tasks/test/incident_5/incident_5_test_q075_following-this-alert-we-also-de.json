@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_5_test_q075",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident involving the deletion of all file snapshots and shadow copies via WMI or VSSAdmin, which is common during ransomware infection, was detected. The process `vssblatemp.exe` with process ID 1900 was used to perform the deletion. This incident might be part of a larger malicious campaign as described in the Activity Profile: Iranian MOIS operators opportunistically deploy limited-impact wiper in response to Israel-Hamas war.",
+  "question": "Following this alert, we also detected malicious command and control behavior. Can you provide the URL associated with this command and control behavior?",
+  "gold_answer": "http://vectorsandarrows.com/",
+  "solution_steps": [
+    "File backups were deleted on host `vnevado-win11u`, commonly associated with ransomware infection.",
+    "A command and control behavior originating from the URL `http://vectorsandarrows.com/` was blocked, indicating an active malware infection."
+  ],
+  "metadata": {
+    "start_alert": 121,
+    "end_alert": 73,
+    "start_entities": [
+      11,
+      77
+    ],
+    "end_entities": [
+      74
+    ],
+    "shortest_alert_path": [
+      121,
+      7,
+      73
+    ]
+  }
+}

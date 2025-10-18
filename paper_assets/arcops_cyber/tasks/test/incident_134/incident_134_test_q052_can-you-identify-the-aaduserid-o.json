@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_test_q052",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "In a recent incident, a password spray attack was detected originating from the IP address `170.54.121.63`. This type of attack involves attempting to access multiple accounts by using commonly used passwords. During our investigation, it is observed that there was a sign-in from an anonymous IP address (e.g. Tor browser, anonymizer VPNs) which is connected to the password spray attack.",
+  "question": "Can you identify the AadUserId of the account involved in the sign-in from the anonymous IP address?",
+  "gold_answer": "e036dee7-fa23-42ef-a019-468c8d3401f1",
+  "solution_steps": [
+    "A password spray attack was detected on account with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1`.",
+    "A sign-in from an anonymous IP address was detected for the same account with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1`."
+  ],
+  "metadata": {
+    "start_alert": 24,
+    "end_alert": 11,
+    "start_entities": [
+      12
+    ],
+    "end_entities": [
+      9
+    ],
+    "shortest_alert_path": [
+      24,
+      9,
+      11
+    ]
+  }
+}

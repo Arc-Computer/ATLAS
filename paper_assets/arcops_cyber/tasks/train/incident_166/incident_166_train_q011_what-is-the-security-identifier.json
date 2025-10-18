@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_166_train_q011",
+  "incident": "incident_166",
+  "split": "train",
+  "context": "As part of investigating a suspicious SAP authentication incident where a user account with a risky sign-in alert in Microsoft Entra ID signed in to SAP, we identified a user account `Jordan P` with email `Jordan P@vnevado.alpineskihouse.co` and associated IP address `107.253.5.27`. This suspicious activity might indicate that an attacker took control of the user account to search through SAP for modifying or recording sensitive financial information, which could be utilized for later stages such as phishing or social engineering.",
+  "question": "What is the Security Identifier (Sid) of the user account that was involved in the suspicious SAP authentication?",
+  "gold_answer": "S-1-5-21-1740051960-3534030288-108486866-1602",
+  "solution_steps": [
+    "The user account `Jordan P` signed in to SAP with a risky sign-in alert.",
+    "The user with SID `S-1-5-21-1740051960-3534030288-108486866-1602` signed in to SAP with a risky sign-in alert."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 26,
+    "start_entities": [
+      1,
+      6,
+      7,
+      24,
+      25
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      23,
+      6,
+      26
+    ]
+  }
+}

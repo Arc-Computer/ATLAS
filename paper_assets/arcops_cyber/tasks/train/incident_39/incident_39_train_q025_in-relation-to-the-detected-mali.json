@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_39_train_q025",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "As part of a sign-in attempt using a deceptive user account detected on the host `vnevado-win10b` with IP address `141.216.110.153`, attackers might be using the account to perform various attack activities, including lateral movement and accessing sensitive data. Additionally, a known credential theft tool execution was detected shortly after.",
+  "question": "In relation to the detected malicious credential theft tool execution, what is the IP address associated with this activity?",
+  "gold_answer": "65.233.23.156",
+  "solution_steps": [
+    "A sign-in attempt was detected using a deceptive user account `kyleg` on host `vnevado-win10v`.",
+    "Malicious credential theft tool execution was detected coming from IP address `65.233.23.156`."
+  ],
+  "metadata": {
+    "start_alert": 75,
+    "end_alert": 111,
+    "start_entities": [
+      10,
+      11,
+      23,
+      25
+    ],
+    "end_entities": [
+      113
+    ],
+    "shortest_alert_path": [
+      75,
+      42,
+      41,
+      32,
+      111
+    ]
+  }
+}

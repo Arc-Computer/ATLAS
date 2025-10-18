@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_34_train_q031",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "As part of a recent multi-stage security incident involving execution and discovery on a device, an anomalous scheduled task was created potentially indicating an attacker's attempt to obtain persistence. The task involved processes such as `powershell.exe` and `schtasks.exe`. Further review of this incident is necessary.",
+  "question": "Related to this incident, there was also an anomaly detected in the ASEP registry. Can you identify the IP address associated with this anomaly?",
+  "gold_answer": "72.5.72.208",
+  "solution_steps": [
+    "An anomalous scheduled task was created by a user with AadUserId `16320fec-8d90-403b-b7fe-78f715d4728d`.",
+    "An anomaly was detected in ASEP registry with a suspicious entry associated with IP address `72.5.72.208`."
+  ],
+  "metadata": {
+    "start_alert": 20,
+    "end_alert": 17,
+    "start_entities": [
+      7,
+      8,
+      13,
+      14
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      20,
+      6,
+      17
+    ]
+  }
+}

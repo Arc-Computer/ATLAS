@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_55_test_q002",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A security incident was detected where a malicious PowerShell Cmdlet `powershell.exe` was invoked on the machine `mb-winclient` with the script `contosoadfsblatempcreds.ps1` executed. This Cmdlet is potentially associated with credential theft, exploitation, network reconnaissance or code injection. The process was identified with Process ID 13968.",
+  "question": "Can you identify the AadDeviceId of the host where this malicious activity was observed?",
+  "gold_answer": "7661dfd4-218f-4016-8a87-66d68a7f098e",
+  "solution_steps": [
+    "A malicious PowerShell Cmdlet was invoked on the machine with AadDeviceId `7661dfd4-218f-4016-8a87-66d68a7f098e`."
+  ],
+  "metadata": {
+    "start_alert": 51,
+    "end_alert": 51,
+    "start_entities": [
+      4,
+      12,
+      8,
+      14,
+      10,
+      2,
+      3,
+      1,
+      42,
+      9
+    ],
+    "end_entities": [
+      15
+    ],
+    "shortest_alert_path": [
+      51
+    ]
+  }
+}

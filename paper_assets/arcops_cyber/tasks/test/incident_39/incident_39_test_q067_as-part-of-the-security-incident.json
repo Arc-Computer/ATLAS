@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_39_test_q067",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A security incident was initiated by Ethan Brooks (Account Executive) on VNEVADO-Win10V who performed a user and IP address reconnaissance using SMB sessions on VNEVADO-DC. During this incident, Ethan Brooks enumerated SMB sessions and retrieved recent IP addresses of 2 accounts.",
+  "question": "As part of the security incident, multiple dual-purpose tools were also dropped on a device. Can you identify the name of one such tool that was dropped?",
+  "gold_answer": "rubeus.exe",
+  "solution_steps": [
+    "The user with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1` executed an SMB reconnaissance on VNEVADO-DC to retrieve recent IP addresses.",
+    "Multiple dual-purpose tools including `rubeus.exe` were dropped on the device, which could potentially be used for malicious activities."
+  ],
+  "metadata": {
+    "start_alert": 114,
+    "end_alert": 62,
+    "start_entities": [
+      115,
+      116,
+      117,
+      118
+    ],
+    "end_entities": [
+      65
+    ],
+    "shortest_alert_path": [
+      114,
+      29,
+      62
+    ]
+  }
+}

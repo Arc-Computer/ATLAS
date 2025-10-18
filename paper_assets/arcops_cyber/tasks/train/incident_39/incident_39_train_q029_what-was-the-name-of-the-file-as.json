@@ -1,0 +1,37 @@
+{
+  "task_id": "incident_39_train_q029",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A remote session on host `vnevado-win10b` dropped and executed a file, potentially indicating an attempt by an attacker or malware to move laterally or propagate. During this incident, a detected malware named 'Kekeo' was flagged. Such malware can perform annoying, disruptive, or harmful actions on affected machines, and potentially replicate and spread to other machines.",
+  "question": "What was the name of the file associated with the 'Kekeo' malware detected during this incident?",
+  "gold_answer": "rubeus.exe",
+  "solution_steps": [
+    "A remote session dropped a file and executed it on the account `fk8mq`.",
+    "The 'Kekeo' malware was detected in the file named `rubeus.exe`.",
+    "The 'Kekeo' malware was detected again in the file named `rubeus.exe` and it was active."
+  ],
+  "metadata": {
+    "start_alert": 34,
+    "end_alert": 92,
+    "start_entities": [
+      1,
+      2,
+      3,
+      9,
+      10,
+      11,
+      23,
+      25
+    ],
+    "end_entities": [
+      65
+    ],
+    "shortest_alert_path": [
+      34,
+      1,
+      100,
+      65,
+      92
+    ]
+  }
+}

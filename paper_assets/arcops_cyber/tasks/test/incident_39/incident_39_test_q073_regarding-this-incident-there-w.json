@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_39_test_q073",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A security incident involving possible use of the Rubeus kerberoasting tool was detected. This tool can perform kerberoasting, pass-the-ticket, and other attack techniques that exploit Kerberos authentication. During such attacks, attackers often request Kerberos tickets for an account's SPN and then decrypt them to get plaintext credentials or perform pass-the-ticket to authenticate without decrypting the tickets. On the noted endpoint, the Rubeus tool was executed with a command to dump credentials and save them into a file `adminticket.txt`.",
+  "question": "Regarding this incident, there was an alert about successful logon using overpass-the-hash with potentially stolen credentials. What IP address was involved in this suspicious logon attempt?",
+  "gold_answer": "141.216.110.153",
+  "solution_steps": [
+    "The Rubeus tool was possibly used on an account with the name `fk8mq`.",
+    "A successful logon using overpass-the-hash was detected from the IP address `141.216.110.153`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 52,
+    "start_entities": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "end_entities": [
+      25
+    ],
+    "shortest_alert_path": [
+      0,
+      1,
+      52
+    ]
+  }
+}

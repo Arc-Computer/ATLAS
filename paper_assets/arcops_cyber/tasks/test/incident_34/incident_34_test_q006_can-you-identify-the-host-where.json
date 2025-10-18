@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_34_test_q006",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A suspicious PowerShell command line activity was observed on a machine, which may indicate possible malicious use by attackers. The investigation aims to identify and review artifacts for possible remediation.",
+  "question": "Can you identify the host where the automated investigation was manually started by user u141@ash.alpineskihouse.co?",
+  "gold_answer": "vnevado-win10e",
+  "solution_steps": [
+    "A suspicious PowerShell activity was observed on the machine `vnevado-win10e`.",
+    "An automated investigation was manually initiated on host `vnevado-win10e` by user `u141(u141@ash.alpineskihouse.co)`."
+  ],
+  "metadata": {
+    "start_alert": 10,
+    "end_alert": 0,
+    "start_entities": [
+      9,
+      7,
+      5,
+      4,
+      16,
+      13,
+      12,
+      6,
+      8,
+      11
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      10,
+      1,
+      0
+    ]
+  }
+}

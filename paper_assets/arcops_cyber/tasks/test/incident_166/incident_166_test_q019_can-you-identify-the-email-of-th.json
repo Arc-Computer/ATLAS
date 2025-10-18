@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_test_q019",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "During a security incident, there was a sign-in from an anonymous IP address `95.202.65.202`, indicating possible use of a Tor browser or anonymizer VPNs. Following this, a user account with a risky sign-in alert in Microsoft Entra ID signed in to SAP, which might suggest an attacker taking control of an account to manipulate sensitive financial information in SAP systems.",
+  "question": "Can you identify the email of the user account that signed in to SAP with a risky sign-in alert?",
+  "gold_answer": "Jordan P@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "A user account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82` signed in from an anonymous IP address.",
+    "The user account with the email `Jordan P@vnevado.alpineskihouse.co`, which had a risky sign-in alert in Microsoft Entra ID, signed in to SAP."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 23,
+    "start_entities": [
+      2
+    ],
+    "end_entities": [
+      7
+    ],
+    "shortest_alert_path": [
+      0,
+      1,
+      23
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_39_train_q036",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A recent security incident raised a File dropped and launched from remote location alert for an IP address 141.216.110.153 indicating a remote session dropped a file 'psexesvc.exe' and executed it. This incident might be indicative of an attempt to move laterally or propagate malware.",
+  "question": "Related to this alert, there was a possible lateral movement event. Can you identify the IP address associated with this possible lateral movement?",
+  "gold_answer": "35.202.74.47",
+  "solution_steps": [
+    "A file was dropped and launched from a remote location on host `vnevado-win10b`.",
+    "Possible lateral movement was observed with a suspicious network event from the IP address `35.202.74.47`."
+  ],
+  "metadata": {
+    "start_alert": 58,
+    "end_alert": 57,
+    "start_entities": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      23,
+      25,
+      59
+    ],
+    "end_entities": [
+      43
+    ],
+    "shortest_alert_path": [
+      58,
+      10,
+      57
+    ]
+  }
+}

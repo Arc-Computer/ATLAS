@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_322_test_q045",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "A suspicious Azure Resource Management (ARM) activity was flagged for user Hailey Johnson (email: Hailey Johnson@vnevado.alpineskihouse.co) from IP address 253.1.244.215. This alert was triggered based on a Microsoft Defender for Cloud alert related to ARM and Microsoft Entra ID Protection risk scores. Following this, a suspicious Azure Resource Manager operation from a proxy IP address was detected, often seen in malicious activities where threat actors try to hide the source IP.",
+  "question": "In relation to the suspicious Azure Resource Management activities, what file name was extracted when Ntdsutil was used to collect Active Directory information?",
+  "gold_answer": "powershell.exe",
+  "solution_steps": [
+    "Suspicious Azure Resource Management activities were performed by a risky user with the email `Hailey Johnson@vnevado.alpineskihouse.co`.",
+    "There was a suspicious Azure Resource Manager operation detected from the host `vnevado-dc`, which is associated with proxy services such as TOR.",
+    "The process `powershell.exe` was used to collect Active Directory information using ntdsutil, indicative of a potential attack targeting Active Directory for persistence or lateral movement."
+  ],
+  "metadata": {
+    "start_alert": 32,
+    "end_alert": 22,
+    "start_entities": [
+      6,
+      7,
+      8,
+      9,
+      31
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      32,
+      7,
+      25,
+      21,
+      22
+    ]
+  }
+}

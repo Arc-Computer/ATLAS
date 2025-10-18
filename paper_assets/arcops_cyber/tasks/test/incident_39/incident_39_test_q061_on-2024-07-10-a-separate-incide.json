@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_test_q061",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "In a suspicious incident on 2024-07-04, an attacker executed several processes like `mimikatz.exe` and `powershell.exe` to potentially obtain clear-text passwords from the LSASS service's memory. This activity was performed on the host identified by AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`.",
+  "question": "On 2024-07-10, a separate incident indicated that a user accessed a link in a ZAP-quarantined email. What is the account name of the user involved in this activity?",
+  "gold_answer": "Ethan Brooks",
+  "solution_steps": [
+    "A potentially unauthorized user with SID `S-5-7-21-1843151660-3234030288-105586167-1422` accessed the LSASS service to obtain clear-text passwords.",
+    "The user `Ethan Brooks` accessed a link in an email that was quarantined by zero-hour auto purge (ZAP)."
+  ],
+  "metadata": {
+    "start_alert": 102,
+    "end_alert": 141,
+    "start_entities": [
+      17,
+      31,
+      37,
+      38,
+      56,
+      33,
+      68,
+      67,
+      27,
+      45
+    ],
+    "end_entities": [
+      117
+    ],
+    "shortest_alert_path": [
+      102,
+      28,
+      141
+    ]
+  }
+}

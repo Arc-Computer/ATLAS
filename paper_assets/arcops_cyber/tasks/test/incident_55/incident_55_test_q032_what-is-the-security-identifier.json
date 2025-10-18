@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_55_test_q032",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A suspicious service registration was detected where the program `services.exe` was registered as a service. This can indicate malicious intent to establish persistence or gain system privileges. This incident happened on 2024-07-04. Following this activity, suspicious remote activity was also observed involving potentially harmful attempts such as initiating interactive sessions or modifying files. The timeline continued with a suspicious LDAP query execution which could indicate reconnaissance activity. LDAP queries are often used by attackers to learn about the organization's structure, administrative users, groups, and assets.",
+  "question": "What is the Security Identifier (SID) of the account that executed the suspicious LDAP query related to this incident?",
+  "gold_answer": "S-1-5-21-551436448-9871687716-9837441745-1903",
+  "solution_steps": [
+    "A system program was registered as a service on host `mb-adfs`, indicating potential malicious intent to establish persistence or gain system privileges.",
+    "Suspicious activity was remotely initiated on the machine `mb-adfs`, which involved executing `powershell.exe`.",
+    "A suspicious LDAP query was executed from an account with SID `S-1-5-21-551436448-9871687716-9837441745-1903`, indicating potential reconnaissance activity."
+  ],
+  "metadata": {
+    "start_alert": 61,
+    "end_alert": 64,
+    "start_entities": [
+      62,
+      63
+    ],
+    "end_entities": [
+      10
+    ],
+    "shortest_alert_path": [
+      61,
+      26,
+      37,
+      8,
+      64
+    ]
+  }
+}

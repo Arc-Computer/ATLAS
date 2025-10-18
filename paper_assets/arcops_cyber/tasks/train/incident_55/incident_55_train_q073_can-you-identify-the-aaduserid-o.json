@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_55_train_q073",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A malicious URL `https://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/` was clicked on a device, which is part of a broader security incident involving multiple alerts and potential attacker activity. This incident may involve attackers using a set of Windows commands to identify valuable assets and coordinate lateral movement after compromising a machine.",
+  "question": "Can you identify the AadUserId of the account that might be involved in the suspicious sequence of exploration activities?",
+  "gold_answer": "a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0",
+  "solution_steps": [
+    "On 2024-07-10 at 11:24:45.667104+00:00, a malicious URL was clicked on a device with AadDeviceId `7661dfd4-218f-4016-8a87-66d68a7f098e`.",
+    "On 2024-07-04 at 22:35:03.197761+00:00, a sequence of suspicious exploration activities was performed by a user with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0`."
+  ],
+  "metadata": {
+    "start_alert": 107,
+    "end_alert": 57,
+    "start_entities": [
+      97
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      107,
+      15,
+      57
+    ]
+  }
+}

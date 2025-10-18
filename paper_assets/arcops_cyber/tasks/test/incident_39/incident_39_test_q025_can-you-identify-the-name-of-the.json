@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_39_test_q025",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "Recently, an anomalous chain of attempts to look up user account information was observed indicating a potential attacker gathering information about targets. During this incident, the process `net.exe` was executed multiple times with different commands, possibly to enumerate users and groups within the domain. One of these executions included the script `domaindominance27.ps1`.",
+  "question": "Can you identify the name of the deceptive user account that was used during the suspicious sign-in attempt?",
+  "gold_answer": "kyleg",
+  "solution_steps": [
+    "An anomalous chain of attempts to look up user account information was observed for the account with SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "A sign-in attempt was detected using a deceptive user account with the name `kyleg`."
+  ],
+  "metadata": {
+    "start_alert": 94,
+    "end_alert": 41,
+    "start_entities": [
+      18,
+      66,
+      80,
+      81,
+      82,
+      83,
+      84
+    ],
+    "end_entities": [
+      42
+    ],
+    "shortest_alert_path": [
+      94,
+      28,
+      41
+    ]
+  }
+}

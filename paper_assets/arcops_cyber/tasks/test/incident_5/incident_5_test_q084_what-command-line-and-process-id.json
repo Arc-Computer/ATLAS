@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_5_test_q084",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A suspicious remote activity was observed on a machine named `vnevado-win10s`. This alert flagged potentially malicious activities such as modifying files, passing WMI commands, and creating scheduled tasks from a remote machine. One of the processes involved had the ExtractedFileName `get-userprttoken.ps1`. The ProcessId__CreatedTimeUtc__CommandLine for this process was `6168__2024-06-20t09:10:53.0701359z__powershell -file c:\\scripts\\get-userprttoken.ps1`.",
+  "question": "What command line and process ID were used for the tampering of system recovery settings observed earlier?",
+  "gold_answer": "Process Id: 1900, Command Line: vssblatemp.exe delete shadows /all",
+  "solution_steps": [
+    "There was suspicious remote activity initiated on the machine with the process `vssblatemp.exe` detected at `2024-07-04 22:35:03.258229+00:00`.",
+    "System recovery setting tampering was observed using the process `vssblatemp.exe` deleting all volume shadow copies with Process ID `1900` at `2024-06-20t09:32:02.4640548z`."
+  ],
+  "metadata": {
+    "start_alert": 140,
+    "end_alert": 76,
+    "start_entities": [
+      99,
+      142,
+      13,
+      10,
+      12,
+      47,
+      141,
+      59,
+      97,
+      42
+    ],
+    "end_entities": [
+      77
+    ],
+    "shortest_alert_path": [
+      140,
+      11,
+      76
+    ]
+  }
+}

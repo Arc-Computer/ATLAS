@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_train_q002",
+  "incident": "incident_134",
+  "split": "train",
+  "context": "A sign-in was detected from an anonymous IP address `170.54.121.63` (e.g., Tor browser or anonymizer VPNs). This is part of a broader multi-stage security incident where a user account was involved.",
+  "question": "In relation to the detected potentially malicious URL click, who was the recipient of the malicious email message?",
+  "gold_answer": "raphaelt@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "The user with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1` signed in from an anonymous IP address.",
+    "The mail recipient `raphaelt@vnevado.alpineskihouse.co` clicked on a malicious URL."
+  ],
+  "metadata": {
+    "start_alert": 11,
+    "end_alert": 0,
+    "start_entities": [
+      12
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      11,
+      9,
+      0
+    ]
+  }
+}

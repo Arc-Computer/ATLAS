@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_34_test_q076",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "As part of the recent security incident, an anomalous scheduled task was created involving the file `winatp-intro-backdoor.exe` on host `vnevado-win10e`. The incident involves a user account named `samuelf`. Attackers might have used Task Scheduler to run malicious code automatically to establish persistence.",
+  "question": "What was the command line used by the process that ran the suspicious task scheduled named `yrei`?",
+  "gold_answer": "1616__2024-06-26t12:00:40.6793914z__\"schtasks.exe\" /run /tn yrei",
+  "solution_steps": [
+    "An anomalous scheduled task was created, using the command line `schtasks.exe /create /sc once /tn yrei /tr \"c:\\users\\samuelf\\onedrive - (new) alpineskihouse\\desktop\\winatp-intro-backdoor.exe\" /st 11:58 /f` at `2024-06-26T12:00:40.0878355Z`, with Process ID `1348`.",
+    "Suspicious Task Scheduler activity was detected, using the command line `schtasks.exe /run /tn yrei` at `2024-06-26T12:00:40.6793914Z`, with Process ID `1616`."
+  ],
+  "metadata": {
+    "start_alert": 20,
+    "end_alert": 21,
+    "start_entities": [
+      7,
+      6,
+      2,
+      13,
+      1,
+      9,
+      5,
+      8,
+      4
+    ],
+    "end_entities": [
+      15
+    ],
+    "shortest_alert_path": [
+      20,
+      13,
+      21
+    ]
+  }
+}

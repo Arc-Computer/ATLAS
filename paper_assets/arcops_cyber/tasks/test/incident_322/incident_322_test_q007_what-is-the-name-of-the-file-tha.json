@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_322_test_q007",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "A resource management operation from an IP address associated with proxy services, like TOR, was detected on Azure Resource Manager. The operation was initiated using the account with the email Hailey Johnson@vnevado.alpineskihouse.co. Such behavior is often seen in malicious activities where threat actors attempt to hide their source IP.",
+  "question": "What is the name of the file that was used to collect Active Directory information using the Ntdsutil command?",
+  "gold_answer": "powershell.exe",
+  "solution_steps": [
+    "There is a suspicious Azure Resource Manager operation from a proxy IP address on host `vnevado-dc`.",
+    "The attacker launched `powershell.exe` to collect Active Directory information using Ntdsutil."
+  ],
+  "metadata": {
+    "start_alert": 25,
+    "end_alert": 22,
+    "start_entities": [
+      7,
+      31,
+      8,
+      6,
+      29,
+      28,
+      27,
+      30,
+      9,
+      26
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      25,
+      21,
+      22
+    ]
+  }
+}

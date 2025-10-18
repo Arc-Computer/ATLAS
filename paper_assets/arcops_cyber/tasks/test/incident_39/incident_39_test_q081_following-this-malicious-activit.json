@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_39_test_q081",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "During an investigation following the execution of a known credential theft tool detected on 2024-07-04, a suspicious command line involving `powershell.exe` and `mimikatz.exe` was observed on the host `vnevado-win10v`. The account involved was `tgs2z` with SID `S-5-7-21-1843151660-3234030288-105586167-1422` and AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1`. The specific command for `mimikatz.exe` included privilege escalation attempts and indicated potential lateral movement across the network.",
+  "question": "Following this malicious activity, multiple dual-purpose tools were detected. Can you identify the script file name that was dropped during this follow-up alert?",
+  "gold_answer": "domaindominance27.ps1",
+  "solution_steps": [
+    "A known credential theft tool execution command line was detected on the host with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`.",
+    "Multiple dual-purpose tools, including file `domaindominance27.ps1`, were dropped on the same device."
+  ],
+  "metadata": {
+    "start_alert": 39,
+    "end_alert": 62,
+    "start_entities": [
+      17,
+      27,
+      28,
+      29,
+      31,
+      32,
+      33,
+      40
+    ],
+    "end_entities": [
+      66
+    ],
+    "shortest_alert_path": [
+      39,
+      33,
+      62
+    ]
+  }
+}

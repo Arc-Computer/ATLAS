@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_55_test_q094",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "Our security monitoring system detected a potentially malicious URL click activity by the mailbox `bjenkins@niseko.alpineskihouse.co`. This incident may be connected to an internal phishing campaign where a user sent phishing emails to recipients within the organization, suggesting a possible compromise of the user account in an attempt by an attacker to move laterally inside the organization.",
+  "question": "In relation to the internal phishing campaign, can you provide the Azure AD UserID associated with the compromised account?",
+  "gold_answer": "28058d92-fc24-4869-9231-6546a34b00f2",
+  "solution_steps": [
+    "A user with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0` clicked on a link that was found to be malicious.",
+    "Another user with AadUserId `28058d92-fc24-4869-9231-6546a34b00f2` was observed to have sent phishing emails within the organization, indicating a potential account compromise and lateral movement attempt."
+  ],
+  "metadata": {
+    "start_alert": 104,
+    "end_alert": 88,
+    "start_entities": [
+      93,
+      94
+    ],
+    "end_entities": [
+      78
+    ],
+    "shortest_alert_path": [
+      104,
+      3,
+      88
+    ]
+  }
+}

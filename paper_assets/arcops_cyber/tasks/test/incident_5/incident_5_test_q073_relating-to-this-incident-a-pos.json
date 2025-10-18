@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_5_test_q073",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "As part of the process leading to the discovery of an unknown malware, we found that components such as `cmd.exe`, `mimikatz.exe`, and `notepad.exe` were executed to conduct unwanted malicious activities. While the investigation revealed that an alert was raised due to the detection of this malware, the machine should still be thoroughly examined to rule out any possible infection.",
+  "question": "Relating to this incident, a possible attempt to access the Primary Refresh Token (PRT) was detected. Can you identify the file name of the process involved in this attempt?",
+  "gold_answer": "browsercore.exe",
+  "solution_steps": [
+    "An unknown malware was detected with the IP address `107.224.99.179` and was active.",
+    "There was a possible attempt to access the Primary Refresh Token (PRT) via the process `browsercore.exe`."
+  ],
+  "metadata": {
+    "start_alert": 110,
+    "end_alert": 36,
+    "start_entities": [
+      31,
+      33,
+      92,
+      30,
+      19,
+      111,
+      24,
+      56,
+      23,
+      29
+    ],
+    "end_entities": [
+      40
+    ],
+    "shortest_alert_path": [
+      110,
+      20,
+      36
+    ]
+  }
+}

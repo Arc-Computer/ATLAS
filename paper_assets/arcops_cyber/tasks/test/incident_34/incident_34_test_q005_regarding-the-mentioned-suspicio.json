@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_34_test_q005",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A suspicious PowerShell activity was observed on the machine, which may indicate that PowerShell was used during installation, exploration, or in some cases in lateral movement activities typically used by attackers. This activity often bypasses security protection mechanisms by executing payloads in memory without touching the disk. It was noted that a PowerShell command line involving 'powershell.exe' was executed, potentially for malicious purposes.",
+  "question": "Regarding the mentioned suspicious PowerShell activity, it was followed by the creation of an uncommon file added to a Run Key. Can you identify the IP address observed during this activity?",
+  "gold_answer": "72.5.72.208",
+  "solution_steps": [
+    "A suspicious PowerShell activity was observed on the machine, associated with the account SID `S-1-5-21-1870156660-7534030218-135086563-1193`.",
+    "An uncommon file was created and added to a Run Key on the machine, and was associated with the IP address `72.5.72.208`."
+  ],
+  "metadata": {
+    "start_alert": 10,
+    "end_alert": 23,
+    "start_entities": [
+      7,
+      8,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      10,
+      5,
+      23
+    ]
+  }
+}

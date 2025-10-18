@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_test_q008",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident involving system recovery setting tampering was observed on a device. Adversaries might be attempting to delete or remove built-in operating system data and turn off recovery services to prevent recovering a corrupted system. This may deny access to available backups and recovery options. The process `vssblatemp.exe` was executed with the command to delete all volume shadow copies, and the process `bcdedit` was used to disable automatic Windows recovery features.",
+  "question": "What is the host name of the device involved in this tampering incident?",
+  "gold_answer": "vnevado-win10s",
+  "solution_steps": [
+    "Potential tampering of system recovery settings observed on host `vnevado-win10s`. Adversaries might use utilities like vssblatemp.exe, wmic, wbblatemp.exe, or bcdedit.exe to disable or delete system recovery features."
+  ],
+  "metadata": {
+    "start_alert": 96,
+    "end_alert": 96,
+    "start_entities": [
+      13,
+      3,
+      11,
+      2,
+      10,
+      97,
+      1
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      96
+    ]
+  }
+}

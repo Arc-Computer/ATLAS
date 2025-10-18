@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_5_train_q043",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "During the recent incident on July 4th, 2024, there was possible ransomware activity identified, where numerous file system changes involved appending the extension `.lockbit` to the file `characterical.zip`. This is suspected to be indicative of mass encryption by ransomware. This suspicious activity was flagged based on known malicious extensions from past ransomware incidents.",
+  "question": "There is a linked suspicious remote activity involved in this incident. Can you determine the name of the script file that was remotely executed?",
+  "gold_answer": "get-userprttoken.ps1",
+  "solution_steps": [
+    "Possible ransomware activity was detected based on a known malicious extension and observed file system changes on the device associated with the account `dp5hn`.",
+    "Suspicious remote activity was detected on the machine involving the process `get-userprttoken.ps1`."
+  ],
+  "metadata": {
+    "start_alert": 159,
+    "end_alert": 107,
+    "start_entities": [
+      94,
+      95
+    ],
+    "end_entities": [
+      59
+    ],
+    "shortest_alert_path": [
+      159,
+      1,
+      107
+    ]
+  }
+}

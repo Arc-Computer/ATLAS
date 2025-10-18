@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_55_test_q018",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "During the investigation of a suspicious sequence of exploration activities conducted on the host `mb-adfs` using processes like `iy2orr1e.rrg.exe` and `powershell.exe`, it was found that reconnaissance was performed via LDAP queries. Following these activities, an unusual addition of credentials to the OAuth application SimulandApp was observed.",
+  "question": "Can you identify the email of the user who added credentials to the OAuth application SimulandApp?",
+  "gold_answer": "pwilson@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "A suspicious sequence of exploration activities was conducted using `powershell.exe`.",
+    "A suspect LDAP query was executed by the user with AadUserId `2de70991-2799-4a95-b734-8e3df3a50118`.",
+    "The user Luciano Herrera (pwilson@niseko.alpineskihouse.co) performed an unusual addition of credentials to the application SimulandApp (OAuthAppId `4d9476b8-6ae6-459b-a273-5837c15b5981`)."
+  ],
+  "metadata": {
+    "start_alert": 52,
+    "end_alert": 80,
+    "start_entities": [
+      19,
+      26,
+      44,
+      20,
+      55,
+      29,
+      28,
+      18,
+      53,
+      25
+    ],
+    "end_entities": [
+      85
+    ],
+    "shortest_alert_path": [
+      52,
+      8,
+      64,
+      11,
+      80
+    ]
+  }
+}

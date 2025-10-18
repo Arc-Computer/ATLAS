@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_39_test_q055",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A security incident involving a suspicious file registered as a service was flagged. This occurred when a file named `psexesvc.exe` with potential breach activity was registered on the host `vnevado-win10b` under the account `LocalSystem` identified by SID `S-0-6-5`. This alert, indicating an attempt by an attacker to establish persistence, was linked to several entities.",
+  "question": "During the investigation of this incident, it was found that Emma Clark (Helpdesk Administrator) attempted to authenticate against a domain controller. What is the hostname of the system from which Emma Clark attempted to authenticate?",
+  "gold_answer": "VNEVADO-Win10V",
+  "solution_steps": [
+    "An attacker might have registered a suspicious file as a service using the account with SID `S-1-5-21-1540151660-3530000288-105586595-1517`.",
+    "Emma Clark (Helpdesk Administrator) attempted to authenticate against VNEVADO-DC from VNEVADO-Win10V, which is suspected to be an overpass-the-hash attack."
+  ],
+  "metadata": {
+    "start_alert": 21,
+    "end_alert": 119,
+    "start_entities": [
+      1,
+      10,
+      11,
+      22,
+      23,
+      24,
+      25
+    ],
+    "end_entities": [
+      120
+    ],
+    "shortest_alert_path": [
+      21,
+      2,
+      119
+    ]
+  }
+}

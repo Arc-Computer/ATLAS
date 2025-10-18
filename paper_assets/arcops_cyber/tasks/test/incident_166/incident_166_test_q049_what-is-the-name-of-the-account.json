@@ -1,0 +1,26 @@
+{
+  "task_id": "incident_166_test_q049",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A security incident involving BEC financial fraud has been reported, indicating that a suspicious inbox rule that hides incoming email messages was created during a risky Azure Active Directory session. The account associated has the Sid: S-1-5-21-1740051960-3534030288-108486866-1602 and the IP address: 255.246.85.58 among other identifiers.",
+  "question": "What is the name of the account that was involved in creating the suspicious inbox rule in this BEC financial fraud incident?",
+  "gold_answer": "Jordan P",
+  "solution_steps": [
+    "A suspicious inbox rule that hides incoming email messages was created in the email account `Jordan P` as part of a potential BEC financial fraud attempt."
+  ],
+  "metadata": {
+    "start_alert": 17,
+    "end_alert": 17,
+    "start_entities": [
+      8,
+      15,
+      1
+    ],
+    "end_entities": [
+      6
+    ],
+    "shortest_alert_path": [
+      17
+    ]
+  }
+}

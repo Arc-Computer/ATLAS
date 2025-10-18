@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_39_test_q048",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A security incident was detected involving a deceptive user account `kyleg` on the host `vnevado-win10b`. This device has the AadDeviceId `fafdcd65-46c6-45a6-aa85-ec9b77ca0bcb` and the IP address `141.216.110.153`. A sign-in attempt was made using this deceptive account, which could indicate a potential attacker is trying to use it for malicious activities including accessing sensitive data. Further investigation revealed a sequence of alerts indicating potential human-operated malicious activity on the same device, which might lead to ransomware or other harmful payloads.",
+  "question": "Related to this investigation, there is a suspected overpass-the-hash attack (Kerberos). Can you provide the email of the helpdesk administrator who attempted to authenticate against VNEVADO-DC from VNEVADO-Win10V?",
+  "gold_answer": "Emma Clark@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "A sign-in attempt was detected using a deceptive user account with the name `kyleg`.",
+    "A sequence of alerts indicated potential human-operated malicious activity associated with AadUserId `97e6a954-b6bd-48a5-808c-bd8464cce677`.",
+    "Helpdesk Administrator `Emma Clark` attempted to authenticate against VNEVADO-DC from VNEVADO-Win10V, indicating a suspected overpass-the-hash attack."
+  ],
+  "metadata": {
+    "start_alert": 75,
+    "end_alert": 119,
+    "start_entities": [
+      10,
+      11,
+      23,
+      25,
+      42
+    ],
+    "end_entities": [
+      121
+    ],
+    "shortest_alert_path": [
+      75,
+      42,
+      109,
+      3,
+      119
+    ]
+  }
+}

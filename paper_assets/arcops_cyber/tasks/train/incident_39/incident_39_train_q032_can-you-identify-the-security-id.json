@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_train_q032",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "Involving a security incident where an attacker might be gathering information about potential targets, a series of anomalous account lookups were detected, with activities conducted using the `net.exe` process to query user and group information on the domain. Shortly after, suspicious access to the LSASS service was detected, indicating potential credential theft to obtain clear-text passwords, likely intending lateral movement across the network. This can lead to an attack where overpass-the-hash method is employed for successful logon using stolen credentials.",
+  "question": "Can you identify the Security Identifier (SID) of the account that was used in the overpass-the-hash attack?",
+  "gold_answer": "S-2-2-78",
+  "solution_steps": [
+    "An anomalous chain of attempts to look up user account information has been observed on host `vnevado-win10v`.",
+    "Suspicious access to the LSASS service has been detected, involving the process `lsass.exe`.",
+    "An attacker successfully logged on using an overpass-the-hash attack with the account having SID `S-2-2-78`."
+  ],
+  "metadata": {
+    "start_alert": 94,
+    "end_alert": 52,
+    "start_entities": [
+      18,
+      66,
+      80,
+      81,
+      82,
+      83,
+      84
+    ],
+    "end_entities": [
+      53
+    ],
+    "shortest_alert_path": [
+      94,
+      32,
+      102,
+      56,
+      52
+    ]
+  }
+}

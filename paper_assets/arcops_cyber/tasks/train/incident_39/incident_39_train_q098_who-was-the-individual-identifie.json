@@ -1,0 +1,37 @@
+{
+  "task_id": "incident_39_train_q098",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A series of security alerts were noted, including a suspicious account creation, user and IP address reconnaissance via SMB, and a suspected overpass-the-hash attack involving authentication attempts against VNEVADO-DC.",
+  "question": "Who was the individual identified as the Helpdesk Administrator attempting to authenticate against VNEVADO-DC during the suspected overpass-the-hash attack (Kerberos)?",
+  "gold_answer": "Emma Clark",
+  "solution_steps": [
+    "A new user account with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1` was created, which might indicate an attempt to maintain access to the device or organization.",
+    "Ethan Brooks (Account Executive) on host `VNEVADO-Win10V` enumerated SMB sessions on host `VNEVADO-DC`, retrieving recent IP addresses of 2 accounts.",
+    "Emma Clark (Helpdesk Administrator) on host `VNEVADO-Win10V` attempted to authenticate against host `VNEVADO-DC`, which might indicate a suspected overpass-the-hash attack."
+  ],
+  "metadata": {
+    "start_alert": 48,
+    "end_alert": 119,
+    "start_entities": [
+      17,
+      18,
+      27,
+      32,
+      33,
+      49,
+      50,
+      51
+    ],
+    "end_entities": [
+      120
+    ],
+    "shortest_alert_path": [
+      48,
+      29,
+      114,
+      115,
+      119
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_5_train_q034",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A recent security incident involving possible ransomware actions and credential theft attempts has been flagged. Initially, we observed that all file snapshots and shadow copies were deleted using `vssblatemp.exe` on the host `vnevado-win10r`. This may have been an attempt to cover tracks commonly associated with ransomware infections. Subsequently, there were attempts to access the Primary Refresh Token (PRT) which is critical for Azure AD authentication on various devices. These activities could enable attackers to move laterally within the organization or steal credentials. The incident may be connected with ongoing investigations into the Midnight Blizzard credential attacks.",
+  "question": "As part of a follow-up investigation, what is the file name of the malware detected and was active in the final alert?",
+  "gold_answer": "mimikatz.exe",
+  "solution_steps": [
+    "The account `dp5hn` deleted all file snapshots and shadow copies, which is common during ransomware infection.",
+    "There was a possible attempt to access Primary Refresh Token (PRT) via the process `browsercore.exe`.",
+    "There was another possible attempt to access Primary Refresh Token (PRT) on the host with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`.",
+    "Unknown malware named `mimikatz.exe` was detected and was active."
+  ],
+  "metadata": {
+    "start_alert": 70,
+    "end_alert": 110,
+    "start_entities": [
+      1,
+      2,
+      3,
+      11,
+      60,
+      64,
+      65
+    ],
+    "end_entities": [
+      19
+    ],
+    "shortest_alert_path": [
+      70,
+      1,
+      113,
+      40,
+      36,
+      35,
+      110
+    ]
+  }
+}

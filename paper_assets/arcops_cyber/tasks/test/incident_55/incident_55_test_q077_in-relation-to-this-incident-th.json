@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_55_test_q077",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "During an investigation of a security incident, we detected that user `Lucas Grey` clicked on a potentially malicious URL (`http://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/`) on 2024-07-10. The incident also involved a mailbox with the primary address `bjenkins@niseko.alpineskihouse.co`, indicating further malicious activities might be involved. A connected alert was generated for suspicious sequence of exploration activities.",
+  "question": "In relation to this incident, there was an alert for a suspicious sequence of exploration activities that occurred earlier. Can you identify the name of the account associated with these activities?",
+  "gold_answer": "gsmith",
+  "solution_steps": [
+    "The user with SID `S-1-5-21-561436748-3867387497-1732241745-3701` clicked on a potentially malicious URL.",
+    "A process named `powershell.exe` was identified as part of suspicious sequence of exploration activities.",
+    "The account named `gsmith` was involved in the suspicious sequence of exploration activities."
+  ],
+  "metadata": {
+    "start_alert": 104,
+    "end_alert": 52,
+    "start_entities": [
+      89,
+      90,
+      91,
+      93,
+      94
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      104,
+      2,
+      57,
+      8,
+      52
+    ]
+  }
+}

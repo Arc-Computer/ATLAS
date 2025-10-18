@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_55_test_q089",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A security incident involving a suspicious service registration was observed, where the system program `services.exe` was registered as a service on 2024-07-04. This can indicate malicious intent to establish persistence or gain system privileges.",
+  "question": "In connection with this incident, an attempt was made to hide the use of a dual-purpose tool on 2024-07-06. Can you identify the Security Identifier (Sid) for the account involved?",
+  "gold_answer": "S-2-5-21-571436798-3864380397-1837441745-3206",
+  "solution_steps": [
+    "A suspicious service registration was detected on host `mb-adfs`.",
+    "An attempt to hide the use of a dual-purpose tool was detected by an account with SID `S-2-5-21-571436798-3864380397-1837441745-3206`."
+  ],
+  "metadata": {
+    "start_alert": 61,
+    "end_alert": 68,
+    "start_entities": [
+      62,
+      63
+    ],
+    "end_entities": [
+      19
+    ],
+    "shortest_alert_path": [
+      61,
+      26,
+      68
+    ]
+  }
+}

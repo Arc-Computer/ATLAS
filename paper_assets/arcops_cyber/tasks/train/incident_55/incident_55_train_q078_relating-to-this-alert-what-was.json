@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_55_train_q078",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "On 2024-07-10, an alert was raised for a suspected AD FS DKM key read by the account with email `gsmith@niseko.alpineskihouse.co`. Specifically, gsmith read the DKM key of ADFS object id 4cac49d3-29d3-407e-8c9b-b7ebb21541b2.",
+  "question": "Relating to this alert, what was the hostname of the device involved in the attempt to hide the use of a dual-purpose tool?",
+  "gold_answer": "mb-adfs",
+  "solution_steps": [
+    "The account with AadUserId `ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5` read the DKM key of ADFS object id 4cac49d3-29d3-407e-8c9b-b7ebb21541b2.",
+    "There was an attempt to hide use of a dual-purpose tool on host `mb-adfs`."
+  ],
+  "metadata": {
+    "start_alert": 106,
+    "end_alert": 68,
+    "start_entities": [
+      103
+    ],
+    "end_entities": [
+      26
+    ],
+    "shortest_alert_path": [
+      106,
+      20,
+      68
+    ]
+  }
+}

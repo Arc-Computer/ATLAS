@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_test_q024",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A user account was potentially compromised following a password-spray attack. The attacker signed in from an unusual location with IP `170.54.121.63`. This attack raises the risk of unauthorized access to the network.",
+  "question": "Regarding a related alert about a potentially malicious URL click, can you identify the sender IP address of the suspicious mail message?",
+  "gold_answer": "254.241.243.229",
+  "solution_steps": [
+    "The account `Nina Park` was compromised following a password spray attack as an attacker managed to sign in from an unusual location and browser.",
+    "A potentially malicious URL was clicked, which was sent from the IP address `254.241.243.229`."
+  ],
+  "metadata": {
+    "start_alert": 25,
+    "end_alert": 0,
+    "start_entities": [
+      12
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      25,
+      6,
+      0
+    ]
+  }
+}

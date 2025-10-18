@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_34_test_q052",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "In a recent security incident reported as 'Suspicious PowerShell download or encoded command execution', a process on host 'vnevado-win10e' executed 'powershell.exe' with a specific command to download or run an encoded payload. This activity is often used by attackers to bypass security protection mechanisms by executing their payload in memory without leaving a trace. Additionally, there is a related alert indicating that an anomalous scheduled task was created, which could be used for persistence.",
+  "question": "What is the name of the process that was used to create the anomalous scheduled task related to this alert?",
+  "gold_answer": "schtasks.exe",
+  "solution_steps": [
+    "A process with Process ID `8604` executed `powershell.exe` on `2024-06-26t12:00:39.2886108z` with an encoded command to potentially download a file or run a command without touching the disk.",
+    "The executable `schtasks.exe` was used on `2024-07-04 22:35:01.260626+00:00` to create an anomalous scheduled task that might be used by an attacker for persistence."
+  ],
+  "metadata": {
+    "start_alert": 22,
+    "end_alert": 20,
+    "start_entities": [
+      1,
+      2,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "end_entities": [
+      14
+    ],
+    "shortest_alert_path": [
+      22,
+      7,
+      20
+    ]
+  }
+}

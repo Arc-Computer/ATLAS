@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_166_test_q010",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A user named Jordan P, with the email address `Jordan P@vnevado.alpineskihouse.co`, and IP address `107.253.5.27` was involved in a business email compromise-related alert after signing in to SAP suspiciously. This sign-in might indicate that an attacker has taken control of the account to modify or record sensitive financial information, which could be used in further attacks such as phishing or social engineering. The incident was triggered based on an alert from Microsoft Defender XDR.",
+  "question": "There was a sign-in from an anonymous IP address related to this security incident. Can you identify that IP address?",
+  "gold_answer": "192.238.237.190",
+  "solution_steps": [
+    "A user with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82` involved in a business email compromise-related alert signed in to SAP in a suspicious manner. This might indicate that an attacker has taken control of the account to search through and potentially modify sensitive financial information in SAP.",
+    "There was a sign-in from an anonymous IP address `192.238.237.190`, potentially using Tor browser or anonymizer VPNs."
+  ],
+  "metadata": {
+    "start_alert": 27,
+    "end_alert": 3,
+    "start_entities": [
+      6,
+      7,
+      8,
+      24,
+      25
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      27,
+      1,
+      3
+    ]
+  }
+}

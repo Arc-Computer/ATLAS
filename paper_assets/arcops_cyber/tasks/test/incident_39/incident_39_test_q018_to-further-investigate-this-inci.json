@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_test_q018",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A security incident involving SID history injection was detected on a device named `vnevado-dc`. This kind of attack usually involves attackers using various tools to change the SID history of an existing domain account to an SID with elevated privileges. During this incident, the script involving the process `powershell.exe` and `net1 stop ntds` were executed, indicating potential SID history manipulation to gain elevated privileges. Further suspicious activity indicating the use of the Rubeus tool for kerberoasting and potential pass-the-ticket attacks was also observed on the same endpoint. The timeline of the alerts suggests that the attacker may have been using these tools to gain unauthorized access.",
+  "question": "To further investigate this incident, identify the AadUserId associated with the 'Kekeo' malware detection.",
+  "gold_answer": "97e6a954-b6bd-48a5-808c-bd8464cce677",
+  "solution_steps": [
+    "An alert for SID history injection was detected on this device with the process `powershell.exe`.",
+    "The possible use of the Rubeus kerberoasting tool was detected with the process `rubeus.exe`.",
+    "The 'Kekeo' malware was detected and was active, associated with the AadUserId `97e6a954-b6bd-48a5-808c-bd8464cce677`."
+  ],
+  "metadata": {
+    "start_alert": 72,
+    "end_alert": 100,
+    "start_entities": [
+      13,
+      14,
+      15,
+      16,
+      20,
+      73,
+      74
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      72,
+      17,
+      107,
+      7,
+      100
+    ]
+  }
+}

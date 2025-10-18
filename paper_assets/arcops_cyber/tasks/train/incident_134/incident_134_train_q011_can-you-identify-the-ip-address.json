@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_train_q011",
+  "incident": "incident_134",
+  "split": "train",
+  "context": "A security incident involving a Password Spray attack was detected on 2024-07-18 from the IP address `170.54.121.63`. Password spray attacks typically involve attempting to gain unauthorized access to a large number of accounts using a few common passwords. This incident is linked to a suspicious email activity, believed to be related to a business email compromise (BEC) fraud attempt.",
+  "question": "Can you identify the IP address involved with the BEC-related suspicious emails?",
+  "gold_answer": "237.7.81.122",
+  "solution_steps": [
+    "A password spray attack was detected involving the user with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1`.",
+    "Suspicious emails related to a potential BEC fraud attempt were sent from the IP address `237.7.81.122`."
+  ],
+  "metadata": {
+    "start_alert": 24,
+    "end_alert": 18,
+    "start_entities": [
+      12
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      24,
+      9,
+      18
+    ]
+  }
+}

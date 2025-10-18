@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_55_test_q058",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "As part of a security incident, Luciano Herrera (CIO) on MB-WINCLIENT sent a replication request to MB-DC1 indicating a suspected DCSync attack. Such attacks are often aimed to replicate directory services, potentially allowing the attacker to gain higher privileges.",
+  "question": "During the incident, a suspicious LDAP query was executed. Can you provide the IP address from which this LDAP query originated?",
+  "gold_answer": "72.5.72.208",
+  "solution_steps": [
+    "The account with SID `S-1-5-21-551436448-9871687716-9837441745-1903` initiated a suspected DCSync attack, targeting the domain controller MB-DC1 from MB-WINCLIENT.",
+    "There was a suspicious LDAP query from the IP address `72.5.72.208`, possibly indicating reconnaissance activities."
+  ],
+  "metadata": {
+    "start_alert": 98,
+    "end_alert": 64,
+    "start_entities": [
+      81,
+      82,
+      99,
+      100
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      98,
+      10,
+      64
+    ]
+  }
+}

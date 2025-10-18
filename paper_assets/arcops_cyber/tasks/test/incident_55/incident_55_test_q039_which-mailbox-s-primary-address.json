@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_55_test_q039",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A recent security alert indicates that email messages containing a malicious URL `http://kn017721628.wittytree-b6f239d6.northeurope.azurecontainerapps.io/` were delivered and later removed. The emails were sent by `4qs6v9m@vnevado.alpineskihouse.co` from the IP address `106.214.87.198`, and one of the recipients was Nina Sullivan, who can be identified by the AAD User ID `28058d92-fc24-4869-9231-6546a34b00f2` and email address `Nina Sullivan@vnevado.alpineskihouse.co`.",
+  "question": "Which mailbox's primary address was involved in this alert?",
+  "gold_answer": "santiago@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "The mailbox with the primary address `santiago@vnevado.alpineskihouse.co` received an email with a malicious URL that was delivered and later removed."
+  ],
+  "metadata": {
+    "start_alert": 70,
+    "end_alert": 70,
+    "start_entities": [
+      78,
+      75,
+      79,
+      77,
+      73,
+      76,
+      74
+    ],
+    "end_entities": [
+      71
+    ],
+    "shortest_alert_path": [
+      70
+    ]
+  }
+}

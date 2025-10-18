@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_train_q082",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident reported suspicious sequence of exploration activities where a process called a set of Windows commands. These commands can be used by attackers to identify assets of value and coordinate lateral movement after compromising a machine. Several instances of `net.exe` and `whoami.exe` commands were executed within a short period of time.",
+  "question": "As part of the same security incident, a known credential theft tool was executed. Can you identify the name of the tool used for credential theft?",
+  "gold_answer": "mimikatz.exe",
+  "solution_steps": [
+    "A process `powershell.exe` conducted a sequence of suspicious exploration activities on 2024-07-04 22:35:02.508708+00:00.",
+    "A malicious credential theft tool `mimikatz.exe` was executed on 2024-07-04 22:35:00.823035+00:00."
+  ],
+  "metadata": {
+    "start_alert": 77,
+    "end_alert": 39,
+    "start_entities": [
+      18,
+      84,
+      83,
+      82,
+      81,
+      80,
+      79,
+      49,
+      78,
+      51
+    ],
+    "end_entities": [
+      31
+    ],
+    "shortest_alert_path": [
+      77,
+      17,
+      39
+    ]
+  }
+}

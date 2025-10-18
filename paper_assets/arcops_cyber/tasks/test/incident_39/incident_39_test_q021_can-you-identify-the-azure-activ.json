@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_39_test_q021",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A potentially malicious URL click was detected involving user Ethan Brooks (Email: Ethan Brooks@vnevado.alpineskihouse.co) with a URL `https://ac27145722.livelygrass-8d4c4013.eastus2.azurecontainerapps.io/`. Following this, activity indicating the use of the Rubeus kerberoasting tool was observed, which can perform various attacks taking advantage of Kerberos authentication. The next alert observed a file being dropped and launched from a remote location, suggesting a possible lateral movement or propagation attempt by an attacker or malware.",
+  "question": "Can you identify the Azure Active Directory (Azure AD) User ID (AadUserId) associated with the file dropped and launched from the remote location?",
+  "gold_answer": "97e6a954-b6bd-48a5-808c-bd8464cce677",
+  "solution_steps": [
+    "A user with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1` clicked on a potentially malicious URL.",
+    "A possible use of the Rubeus kerberoasting tool, specifically `rubeus.exe`, was detected.",
+    "A file was dropped and launched from a remote location by a user with AadUserId `97e6a954-b6bd-48a5-808c-bd8464cce677`."
+  ],
+  "metadata": {
+    "start_alert": 134,
+    "end_alert": 34,
+    "start_entities": [
+      117,
+      118,
+      135,
+      136,
+      137
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      134,
+      29,
+      107,
+      7,
+      34
+    ]
+  }
+}

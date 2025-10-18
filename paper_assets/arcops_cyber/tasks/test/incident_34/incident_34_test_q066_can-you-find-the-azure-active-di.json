@@ -1,0 +1,24 @@
+{
+  "task_id": "incident_34_test_q066",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "An automated investigation was manually initiated by u141(u141@ash.alpineskihouse.co) on the host `vnevado-win10e.vnevado.alpineskihouse.co`. This investigation is part of a broader effort to identify and review threat artifacts for possible remediation.",
+  "question": "Can you find the Azure Active Directory Device ID (AadDeviceId) for the host `vnevado-win10e.vnevado.alpineskihouse.co`?",
+  "gold_answer": "02b8f519-1123-4228-b32a-ccb78af3449f",
+  "solution_steps": [
+    "An automated investigation was manually started by user `u141` (u141@ash.alpineskihouse.co) on the host `vnevado-win10e.vnevado.alpineskihouse.co` with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 0,
+    "start_entities": [
+      1
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      0
+    ]
+  }
+}

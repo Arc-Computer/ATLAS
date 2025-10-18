@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_134_test_q031",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A potentially malicious URL click was detected in an email sent from `alyssat@vnevado.alpineskihouse.co` to `raphaelt@vnevado.alpineskihouse.co`. The identified URLs are: `http://ms175052280.orangecliff-f53f26fd.eastus.azurecontainerapps.io/` and `https://ms175052280.orangecliff-f53f26fd.eastus.azurecontainerapps.io/`. This incident may involve an attempt to trick the recipient into clicking on a malicious link. This alert is part of a broader investigation into suspicious activities within our organization.",
+  "question": "Which cloud application's AppId was associated with the suspicious inbox manipulation rule?",
+  "gold_answer": "20893",
+  "solution_steps": [
+    "The user with the email `Nina Park@vnevado.alpineskihouse.co` clicked on a potentially malicious URL.",
+    "A suspicious inbox manipulation rule was detected in the cloud application with AppId `20893`, which suggests that an attacker might have gained access to a user's inbox and is manipulating rules to exfiltrate data."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 14,
+    "start_entities": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      10
+    ],
+    "end_entities": [
+      15
+    ],
+    "shortest_alert_path": [
+      0,
+      7,
+      14
+    ]
+  }
+}

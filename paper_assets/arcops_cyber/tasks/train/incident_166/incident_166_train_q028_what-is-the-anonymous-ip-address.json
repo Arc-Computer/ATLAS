@@ -1,0 +1,38 @@
+{
+  "task_id": "incident_166_train_q028",
+  "incident": "incident_166",
+  "split": "train",
+  "context": "A security incident was detected involving a suspicious inbox manipulation rule set on the mailbox of user Jordan P (laylaw@vnevado.alpineskihouse.co). The rule named 'ITCleanup' was configured to move messages to a folder named 'RSS Feeds'. This raises the possibility of the user's account being compromised and potentially used for spreading phishing emails and gaining access to other accounts and devices.",
+  "question": "What is the anonymous IP address that was used to sign-in, which might be related to this suspicious activity?",
+  "gold_answer": "95.202.65.202",
+  "solution_steps": [
+    "A suspicious inbox manipulation rule was set on the inbox of the user `Jordan P (laylaw@vnevado.alpineskihouse.co)` at `2024-07-22 09:49:55.558204+00:00`, which may indicate a potential compromise of the account.",
+    "The IP address `95.202.65.202` was used to sign in anonymously on `2024-07-22 08:45:32.664841+00:00`.",
+    "The IP address `95.202.65.202` is associated with the suspicious inbox manipulation alert.",
+    "The user `Jordan P (laylaw@vnevado.alpineskihouse.co)` created a MoveToFolder rule named `ITCleanup` to move messages to a folder named `RSS Feeds`."
+  ],
+  "metadata": {
+    "start_alert": 5,
+    "end_alert": 0,
+    "start_entities": [
+      8,
+      4,
+      10,
+      12,
+      11,
+      13,
+      14,
+      6,
+      9,
+      15
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      5,
+      2,
+      0
+    ]
+  }
+}

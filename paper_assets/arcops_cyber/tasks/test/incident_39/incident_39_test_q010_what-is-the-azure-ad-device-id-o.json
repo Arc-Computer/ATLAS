@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_39_test_q010",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "As part of a recent security incident, Julian Burke, an IT director, had a Kerberos ticket used in a pass-the-ticket attack to access multiple resources and there were indications of lateral movement across devices.",
+  "question": "What is the Azure AD Device ID of the host where possible lateral movement was detected?",
+  "gold_answer": "fafdcd65-46c6-45a6-aa85-ec9b77ca0bcb",
+  "solution_steps": [
+    "Julian Burke (IT director) on host `VNEVADO-Win10V` sent a replication request to `VNEVADO-DC`.",
+    "An actor took Julian Burke's Kerberos ticket and used it on host `VNEVADO-Win10V` to access 4 resources from IP address `35.202.74.47`.",
+    "There is a possible lateral movement involving device with AadDeviceId `fafdcd65-46c6-45a6-aa85-ec9b77ca0bcb`."
+  ],
+  "metadata": {
+    "start_alert": 122,
+    "end_alert": 57,
+    "start_entities": [
+      14,
+      15,
+      115,
+      116,
+      123,
+      124
+    ],
+    "end_entities": [
+      11
+    ],
+    "shortest_alert_path": [
+      122,
+      123,
+      130,
+      43,
+      57
+    ]
+  }
+}

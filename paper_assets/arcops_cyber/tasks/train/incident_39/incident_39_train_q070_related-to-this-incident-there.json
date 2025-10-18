@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_39_train_q070",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A known credential theft tool `mimikatz.exe` was detected running a command line involving `powershell.exe` on host `vnevado-win10v`. The process, with an ID of 6880, was executed on `2024-06-27` and utilized for privileged operations which might indicate an intent to dump users' credentials. This is part of a broader security incident involving malicious activities across multiple endpoints.",
+  "question": "Related to this incident, there were emails containing a malicious URL that were delivered and later removed. Can you identify the primary email address of the mailbox involved in this alert?",
+  "gold_answer": "tgs2z@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "The user account with SID `S-5-7-21-1843151660-3234030288-105586167-1422` has executed a known credential theft tool.",
+    "The mailbox `tgs2z@vnevado.alpineskihouse.co` received email messages containing malicious URLs that were subsequently removed."
+  ],
+  "metadata": {
+    "start_alert": 104,
+    "end_alert": 138,
+    "start_entities": [
+      17,
+      31,
+      32,
+      33,
+      68
+    ],
+    "end_entities": [
+      136
+    ],
+    "shortest_alert_path": [
+      104,
+      28,
+      138
+    ]
+  }
+}

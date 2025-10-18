@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_test_q079",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "As part of a recent incident, emails containing malicious URLs were sent to various recipients. One of the affected mailboxes belonged to `tgs2z@vnevado.alpineskihouse.co`, and the emails were subsequently removed after delivery. The sender IP was `118.254.65.186`. In a related alert, the Mimikatz credential theft tool was detected on a device, which is often used by attackers to harvest credentials and gain unauthorized access. This incident is linked to a suspicious service that was launched, which is a common technique used by attackers to maintain persistence or elevate privileges.",
+  "question": "What is the AadUserId of the account associated with the suspicious service launched in this incident?",
+  "gold_answer": "7fcf9695-68fc-4258-864d-e1e5b166c66f",
+  "solution_steps": [
+    "The email account with SID `S-5-7-21-1843151660-3234030288-105586167-1422` received an email with a malicious URL that was later removed.",
+    "The Mimikatz credential theft tool was detected through the process `powershell.exe`.",
+    "A suspicious service was launched by a user with AadUserId `7fcf9695-68fc-4258-864d-e1e5b166c66f`."
+  ],
+  "metadata": {
+    "start_alert": 138,
+    "end_alert": 12,
+    "start_entities": [
+      117,
+      118,
+      135,
+      136,
+      137,
+      139,
+      140
+    ],
+    "end_entities": [
+      15
+    ],
+    "shortest_alert_path": [
+      138,
+      28,
+      108,
+      17,
+      12
+    ]
+  }
+}

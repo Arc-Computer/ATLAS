@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_55_test_q012",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "During a security incident investigation, it was observed that the account `gsmith@niseko.alpineskihouse.co` read the DKM key of an ADFS object with id 4cac49d3-29d3-407e-8c9b-b7ebb21541b2. This might indicate unauthorized accessing of sensitive AD FS information.",
+  "question": "Regarding the suspicious remote activity observed, which executable file was used during this activity?",
+  "gold_answer": "powershell.exe",
+  "solution_steps": [
+    "The account `gsmith` read the DKM key of ADFS object id `4cac49d3-29d3-407e-8c9b-b7ebb21541b2`.",
+    "There was suspicious remote activity involving the file `powershell.exe`. This suggests possibly malicious attempts to initiate interactive sessions, modify files, pass WMI commands, create scheduled tasks, and other similar activities."
+  ],
+  "metadata": {
+    "start_alert": 106,
+    "end_alert": 37,
+    "start_entities": [
+      103
+    ],
+    "end_entities": [
+      21
+    ],
+    "shortest_alert_path": [
+      106,
+      18,
+      37
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q078",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "On 2024-07-04, there was a security incident involving the host `mb-winclient` where a process (`powershell.exe`) running the script `contosoadfsblatempcreds.ps1` was injected with potentially malicious code. Code injection can lead to abnormal behaviors such as network communications to external servers.",
+  "question": "A few days later, on 2024-07-07, an alert was triggered for the unusual addition of credentials to an OAuth app by a user named Luciano Herrera. Can you provide the name and instance of the cloud application affected?",
+  "gold_answer": "office 365__microsoft 365",
+  "solution_steps": [
+    "A potentially malicious code was injected into a process by the user with SID `S-1-5-21-551436448-9871687716-9837441745-1903`.",
+    "The user Luciano Herrera (pwilson@niseko.alpineskihouse.co) performed an unusual addition of credentials to the OAuth application SimulandApp in the cloud application `office 365` instance `microsoft 365`."
+  ],
+  "metadata": {
+    "start_alert": 41,
+    "end_alert": 80,
+    "start_entities": [
+      3,
+      1,
+      8,
+      42,
+      14,
+      12,
+      2,
+      15,
+      13,
+      9
+    ],
+    "end_entities": [
+      83
+    ],
+    "shortest_alert_path": [
+      41,
+      10,
+      80
+    ]
+  }
+}

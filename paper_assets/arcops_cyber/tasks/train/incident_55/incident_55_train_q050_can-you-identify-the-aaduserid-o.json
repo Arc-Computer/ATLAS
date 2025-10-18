@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_55_train_q050",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "There is an ongoing security incident involving suspicious activities on host `mb-adfs` where an account with name `gsmith` and account Sid `S-2-5-21-571436798-3864380397-1837441745-3206` executed a file `iy2orr1e.rrg.exe` using command line `3116__2024-07-02t09:48:23.9439954z__\"iy2orr1e.rrg.exe\" -windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=`. The incident includes hands-on-keyboard attacks via the Impacket toolkit and code injection activities, indicating possible attempts to move laterally across the network and execute malicious payloads.",
+  "question": "Can you identify the AadUserId of the account that was associated with the process that injected potentially malicious code?",
+  "gold_answer": "a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0",
+  "solution_steps": [
+    "A known public tool was observed under an unexpected filename, which might be an attempt to hide the usage of that tool for malicious purposes by an account with AadUserId `ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5`.",
+    "Suspicious execution of a command via Impacket toolkit was observed, using the process `powershell.exe`. This indicates a potential hands-on-keyboard attack where attackers might be attempting to move laterally across the network.",
+    "A process was injected with potentially malicious code by an account with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0`. This injected code indicates suspicious activity as the target process may behave abnormally, such as opening a listening port or connecting to a command and control server."
+  ],
+  "metadata": {
+    "start_alert": 32,
+    "end_alert": 41,
+    "start_entities": [
+      18,
+      19,
+      20,
+      26,
+      28,
+      29
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      32,
+      20,
+      16,
+      8,
+      41
+    ]
+  }
+}

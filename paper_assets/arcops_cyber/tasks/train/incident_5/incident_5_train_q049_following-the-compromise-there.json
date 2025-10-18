@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_5_train_q049",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A security incident involving a possible compromised user account was reported, where the account was observed dropping ransomware-related files (`get-userprttoken.ps1`, `characterical.zip`, and `characterical.zip.lockbit`) on several devices. This suggests that an attacker may have compromised the user account to infect many devices with ransomware. The compromised account has the following details: Name: `dp5hn`, AadUserId: `731adb71-b11c-4bbf-850b-57989b350e96`, Sid: `S-1-5-21-1840191660-8534830288-125585561-1522`, IP Address: `99.83.111.100`. Automated remediation actions may have been taken to disable the account.",
+  "question": "Following the compromise, there was a possible lateral movement observed. Can you identify the IP address involved in the lateral movement attempt?",
+  "gold_answer": "83.162.58.168",
+  "solution_steps": [
+    "A user account was observed dropping a ransomware-related file on the host `vnevado-win11t`.",
+    "Lateral movement was observed from the IP address `83.162.58.168` in close time proximity to a suspicious network event."
+  ],
+  "metadata": {
+    "start_alert": 93,
+    "end_alert": 103,
+    "start_entities": [
+      1,
+      2,
+      3,
+      42,
+      47,
+      48,
+      94,
+      95
+    ],
+    "end_entities": [
+      104
+    ],
+    "shortest_alert_path": [
+      93,
+      68,
+      103
+    ]
+  }
+}

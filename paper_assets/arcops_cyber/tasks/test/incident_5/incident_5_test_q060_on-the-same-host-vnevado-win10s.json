@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_5_test_q060",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident was detected involving 'CommandAndControl' malware which attempted lateral movement on the host `vnevado-win10s` with AadDeviceId `f5b847aa-8712-4bf6-b4f7-ed6cd89e1505`. Additionally, a process with ProcessId `6460` was observed running the command `curl http://vectorsandarrows.com`. Further investigation revealed another process with ProcessId 4828 that was executed.",
+  "question": "On the same host `vnevado-win10s`, there was a tampering activity observed. Can you identify the command that was executed to disable the automatic Windows recovery features?",
+  "gold_answer": "bcdedit /set recoveryenabled no",
+  "solution_steps": [
+    "The 'CommandAndControl' malware was detected on a device associated with the account `dp5hn`.",
+    "System recovery settings were tampered with using the `bcdedit` command line `bcdedit /set recoveryenabled no` at `2024-06-20T09:31:59.6743318Z`, with Process ID `4828`."
+  ],
+  "metadata": {
+    "start_alert": 98,
+    "end_alert": 76,
+    "start_entities": [
+      12,
+      13,
+      99
+    ],
+    "end_entities": [
+      78
+    ],
+    "shortest_alert_path": [
+      98,
+      1,
+      76
+    ]
+  }
+}

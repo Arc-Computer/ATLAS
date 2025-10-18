@@ -1,0 +1,26 @@
+{
+  "task_id": "incident_322_test_q005",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "As part of a multi-stage security incident involving initial access and collection on multiple endpoints, a file `powershell.exe` was launched on host `vnevado-dc`, executed with encoded commands which indicates a potential attacker might be using Ntdsutil to gather information for persistence or to move laterally in a network or organization.",
+  "question": "During this incident, another suspicious process was identified. Can you provide the process ID and command line details of this associated 'ntdsutil.exe' activity?",
+  "gold_answer": "Process ID: 6748, Command Line: 2024-08-01t12:37:30.2769191z__\"ntdsutil.exe\" \"ac i ntds\" ifm \"create full c:\\temp\" q q",
+  "solution_steps": [
+    "The attacker launched ntdsutil with the command line `ntdsutil.exe ac i ntds ifm create full c:\\temp q q` at `2024-08-01t12:37:30.2769191z`, with Process ID `6748`."
+  ],
+  "metadata": {
+    "start_alert": 22,
+    "end_alert": 22,
+    "start_entities": [
+      21,
+      18,
+      17
+    ],
+    "end_entities": [
+      19
+    ],
+    "shortest_alert_path": [
+      22
+    ]
+  }
+}

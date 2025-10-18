@@ -1,0 +1,38 @@
+{
+  "task_id": "incident_39_test_q007",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "During a recent security incident, multiple alerts have indicated suspicious activity. On 2024-07-04 at 22:35:00.481750+00:00, a file named `psexesvc.exe` and a tool known as Rubeus were involved in an alert labeled 'Possible use of the Rubeus kerberoasting tool'. Following this, there was another related alert involving a host named `vnevado-win10b`.",
+  "question": "In the context of this incident, can you identify the name of the file that was associated with the anomalous account lookups?",
+  "gold_answer": "domaindominance27.ps1",
+  "solution_steps": [
+    "The process `rubeus.exe` was detected, indicating the potential use of the Rubeus tool for kerberoasting or pass-the-ticket attacks.",
+    "The host `vnevado-win10v` is associated with the use of the Rubeus kerberoasting tool, suggesting Kerberos authentication attacks on this endpoint.",
+    "Anomalous account lookups were detected involving the file `domaindominance27.ps1`, indicating potential information gathering about targets."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 94,
+    "start_entities": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      9,
+      10,
+      11
+    ],
+    "end_entities": [
+      66
+    ],
+    "shortest_alert_path": [
+      0,
+      7,
+      107,
+      32,
+      94
+    ]
+  }
+}

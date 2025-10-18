@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_322_train_q021",
+  "incident": "incident_322",
+  "split": "train",
+  "context": "A security incident was flagged involving suspicious Azure Resource Management (ARM) activities by the user `Hailey Johnson` with the email `Hailey Johnson@vnevado.alpineskihouse.co`, during a potentially risky session. Shortly before this, there was also an alert about a resource management operation from a proxy IP address associated with malicious activities. Another linked alert indicates a suspicious credential dump from NTDS.dit, which suggests attackers attempted to obtain user's credentials stored in the domain controller.",
+  "question": "For the Azure Resource Management activities, what is the potential risk associated with the user's email?",
+  "gold_answer": "The potential risk is that the user's email was involved in a session flagged by Microsoft Defender for Cloud alert related to ARM and Microsoft Entra ID Protection risk scores.",
+  "solution_steps": [
+    "There are suspicious Azure Resource Management activities by a risky user with the account name `Hailey Johnson`.",
+    "A resource management operation from the host `vnevado-dc` was detected from an IP address associated with proxy services such as TOR.",
+    "A suspicious credential dump from NTDS.dit occurred by launching ntdsutil.exe with the command line `ntdsutil.exe ac i ntds ifm create full c:\\temp q q` at `2024-08-01t12:37:30.2769191z`, with Process ID `6748`."
+  ],
+  "metadata": {
+    "start_alert": 32,
+    "end_alert": 16,
+    "start_entities": [
+      6,
+      7,
+      8,
+      9,
+      31
+    ],
+    "end_entities": [
+      19
+    ],
+    "shortest_alert_path": [
+      32,
+      6,
+      25,
+      21,
+      16
+    ]
+  }
+}

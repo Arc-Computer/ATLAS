@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_train_q027",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "In a recent security incident, a PowerShell command was executed on 2024-07-04 to download a file or run an encoded command. This is often used by attackers to bypass security protection mechanisms by executing their payload in memory. The command executed was: `powershell.exe -w movedn -exec bypass -command cd /;$filebase64prefix = ...`. This activity was detected under the alert 'Suspicious PowerShell download or encoded command execution'. This incident is suspected to be part of an attack where an uncommon file was created and added to a run key to ensure the attacker retains access after a reboot.",
+  "question": "Can you identify the IP address associated with the creation of the uncommon file that was added to the run key?",
+  "gold_answer": "72.5.72.208",
+  "solution_steps": [
+    "A suspicious PowerShell download or encoded command execution was executed by the account `samuelf`.",
+    "An uncommon file was created and added to a Run Key from IP address `72.5.72.208`. This might be an attempt to maintain persistence on the device by an attacker."
+  ],
+  "metadata": {
+    "start_alert": 22,
+    "end_alert": 23,
+    "start_entities": [
+      7,
+      8
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      22,
+      4,
+      23
+    ]
+  }
+}

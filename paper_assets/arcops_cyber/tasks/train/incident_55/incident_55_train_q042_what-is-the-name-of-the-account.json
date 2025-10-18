@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_55_train_q042",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A security incident involved email messages containing malicious URLs, which were initially delivered and later removed. The malicious URL `http://kn017721628.wittytree-b6f239d6.northeurope.azurecontainerapps.io/` was sent from the mailbox `4qs6v9m@vnevado.alpineskihouse.co` to `santiago@vnevado.alpineskihouse.co` with sender IP `106.214.87.198`. Subsequently, it was observed that a user sent phishing emails from within the organization, indicating a possible compromised account being used to move laterally.",
+  "question": "What is the name of the account that was involved in the suspicious access to the LSASS service?",
+  "gold_answer": "bjenkins",
+  "solution_steps": [
+    "The email account `Nina Sullivan` received an email with a malicious URL that was later removed.",
+    "The user with SID `S-1-5-21-561436748-3867387497-1732241745-3701` sent phishing emails to recipients inside the organization, indicating a compromised account.",
+    "The account `bjenkins` was involved in suspicious access to the LSASS service, indicating potential attempts to decrypt clear-text passwords."
+  ],
+  "metadata": {
+    "start_alert": 70,
+    "end_alert": 45,
+    "start_entities": [
+      71,
+      72,
+      73,
+      74,
+      79
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      70,
+      75,
+      88,
+      2,
+      45
+    ]
+  }
+}

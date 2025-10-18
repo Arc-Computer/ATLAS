@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_39_train_q012",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A potentially malicious URL click was detected involving user Ethan Brooks and the malicious URL `https://ac27145722.livelygrass-8d4c4013.eastus2.azurecontainerapps.io/`. This incident is connected to another alert where PsExec's usage indicated a possible lateral movement attempt by an attacker. The command launched by PsExec could indicate the presence of more severe threats. Subsequently, it was discovered that 'Kekeo' malware was detected and active during this investigation. Malware and unwanted software are undesirable applications that can replicate, spread, and receive commands from remote attackers.",
+  "question": "Can you identify the Azure Active Directory User Id (AadUserId) for the account associated with the detected 'Kekeo' malware activity?",
+  "gold_answer": "97e6a954-b6bd-48a5-808c-bd8464cce677",
+  "solution_steps": [
+    "A user with SID `S-5-7-21-1843151660-3234030288-105586167-1422` clicked on a potentially malicious URL.",
+    "PsExec was used to launch a command on a remote device via the file `rubeus.exe`.",
+    "The account with AadUserId `97e6a954-b6bd-48a5-808c-bd8464cce677` was detected as having 'Kekeo' malware."
+  ],
+  "metadata": {
+    "start_alert": 134,
+    "end_alert": 100,
+    "start_entities": [
+      117,
+      118,
+      135,
+      136,
+      137
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      134,
+      28,
+      95,
+      7,
+      100
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_5_test_q011",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A recent security incident was flagged due to the execution of a known credential theft tool, which was used to dump user's credentials. This was detected on an account from a specific IP address.",
+  "question": "A related alert indicates the presence of a file associated with Mimikatz. Can you identify the name of this file that was detected?",
+  "gold_answer": "mimilib.dll",
+  "solution_steps": [
+    "A known credential theft tool execution command line was detected on the host with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`.",
+    "The Mimikatz credential theft tool, particularly the file `mimilib.dll`, was detected on this device."
+  ],
+  "metadata": {
+    "start_alert": 161,
+    "end_alert": 55,
+    "start_entities": [
+      16,
+      17,
+      18,
+      20,
+      24,
+      29,
+      30,
+      31
+    ],
+    "end_entities": [
+      56
+    ],
+    "shortest_alert_path": [
+      161,
+      35,
+      55
+    ]
+  }
+}

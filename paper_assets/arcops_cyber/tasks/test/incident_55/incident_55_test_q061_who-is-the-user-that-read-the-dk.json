@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_55_test_q061",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "During a security investigation, it was observed that on host `mb-adfs`, a known public tool with the filename `iy2orr1e.rrg.exe` was executed with hidden window style using the command line `iy2orr1e.rrg.exe -windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=`. This might be an attempt to hide the usage of the tool for malicious purposes.",
+  "question": "Who is the user that read the DKM key of the ADFS object id 4cac49d3-29d3-407e-8c9b-b7ebb21541b2?",
+  "gold_answer": "gsmith@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "An account with SID `S-2-5-21-571436798-3864380397-1837441745-3206` attempted to hide the use of a dual-purpose tool by changing its filename.",
+    "The user `gsmith@niseko.alpineskihouse.co` read the DKM key of AD FS object id `4cac49d3-29d3-407e-8c9b-b7ebb21541b2`."
+  ],
+  "metadata": {
+    "start_alert": 68,
+    "end_alert": 106,
+    "start_entities": [
+      26,
+      29,
+      69
+    ],
+    "end_entities": [
+      103
+    ],
+    "shortest_alert_path": [
+      68,
+      19,
+      106
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_55_train_q037",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A suspicious Task Scheduler activity was detected on the host `mb-adfs`. The alert indicated that a process used Task Scheduler to create, modify, or delete a task, which might be an attempt to launch malicious code automatically and establish persistence. The process involved in this suspicious activity was associated with prior malicious activities. As part of the ongoing investigation, it was noted that there was also an attempt to obtain credentials from the LSASS service memory.",
+  "question": "Can you identify the URL that was clicked on the device related to this suspicious activity?",
+  "gold_answer": "https://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/",
+  "solution_steps": [
+    "A suspicious Task Scheduler activity was carried out by the process `powershell.exe`.",
+    "There was suspicious access to the LSASS service on the device with AadDeviceId `7661dfd4-218f-4016-8a87-66d68a7f098e`.",
+    "A malicious URL `https://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/` was clicked on the previously mentioned device."
+  ],
+  "metadata": {
+    "start_alert": 33,
+    "end_alert": 107,
+    "start_entities": [
+      25,
+      26,
+      29,
+      34,
+      35,
+      36
+    ],
+    "end_entities": [
+      97
+    ],
+    "shortest_alert_path": [
+      33,
+      8,
+      45,
+      15,
+      107
+    ]
+  }
+}

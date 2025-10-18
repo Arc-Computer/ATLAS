@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_train_q003",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A sign-in attempt was detected using a deceptive user account `kyleg` with potential attacker activity on the host `vnevado-win10v`. The incident involved human-operated malicious activity, and might potentially lead to ransomware or other harmful payloads on target devices. This activity escalated into a successful logon using overpass-the-hash with potentially stolen credentials.",
+  "question": "What is the Security Identifier (Sid) of the user account involved in the successful logon using an overpass-the-hash attack?",
+  "gold_answer": "S-2-2-78",
+  "solution_steps": [
+    "A sign-in attempt was detected using a deceptive user account `kyleg`.",
+    "Potential human-operated malicious activity was observed on the host `vnevado-win10b`.",
+    "An attacker accessed a resource with a potentially stolen credential in an overpass-the-hash attack using the account SID `S-2-2-78`."
+  ],
+  "metadata": {
+    "start_alert": 41,
+    "end_alert": 52,
+    "start_entities": [
+      27,
+      28,
+      29,
+      32,
+      33,
+      42,
+      43
+    ],
+    "end_entities": [
+      53
+    ],
+    "shortest_alert_path": [
+      41,
+      42,
+      105,
+      10,
+      52
+    ]
+  }
+}

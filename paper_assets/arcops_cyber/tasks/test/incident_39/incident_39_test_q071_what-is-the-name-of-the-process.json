@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_39_test_q071",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "During a recent security incident, a known credential theft tool, `mimikatz.exe`, was executed with the intent to dump user credentials on the domain `vnevado.alpineskihouse.co`. The command line executed was `mimikatz.exe lsadump::dcsync /domain:vnevado.alpineskihouse.co /user:xfbzkp exit`. This incident triggered the alert 'Malicious credential theft tool execution detected', suggesting attempts to capture credentials using malicious tools.",
+  "question": "What is the name of the process that executed a known credential theft tool command line following the detection of `mimikatz.exe`?",
+  "gold_answer": "powershell.exe",
+  "solution_steps": [
+    "The known credential theft tool execution command line was detected for the account `tgs2z`.",
+    "The process associated with the credential theft attempt is `powershell.exe`."
+  ],
+  "metadata": {
+    "start_alert": 26,
+    "end_alert": 104,
+    "start_entities": [
+      30
+    ],
+    "end_entities": [
+      17
+    ],
+    "shortest_alert_path": [
+      26,
+      27,
+      104
+    ]
+  }
+}

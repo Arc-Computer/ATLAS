@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_test_q040",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A password spray attack was detected on 2024-07-23 from the IP address `95.202.65.202`. This attack could potentially be linked to an account-related incident in our environment. As part of the ongoing investigation, it's crucial to tie any suspicious activities related to compromised accounts that resulted in business email compromise (BEC) fraud attempts.",
+  "question": "What is the primary email address of the mailbox from which suspicious BEC-related emails were sent?",
+  "gold_answer": "tony@avoriaz.alpineskihouse.co",
+  "solution_steps": [
+    "A password spray attack was detected targeting the user with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "Suspicious emails were sent by the possibly compromised mailbox `tony@avoriaz.alpineskihouse.co` related to an ongoing BEC fraud attempt."
+  ],
+  "metadata": {
+    "start_alert": 28,
+    "end_alert": 18,
+    "start_entities": [
+      2
+    ],
+    "end_entities": [
+      19
+    ],
+    "shortest_alert_path": [
+      28,
+      1,
+      18
+    ]
+  }
+}

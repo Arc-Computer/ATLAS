@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_39_train_q072",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident was identified involving the launch of a suspicious service on a device, which may be used by attackers to run malicious commands, maintain persistence, or elevate privileges. The incident involved multiple processes including `psexesvc.exe` and `services.exe`. The alert was triggered for a suspicious service start, initially observed with Process ID 7668 and timestamp 2024-06-27T14:34:10.0201983Z for `psexesvc.exe` and Process ID 652 and timestamp 2024-06-19T12:56:00.7201251Z for `services.exe`.",
+  "question": "During the same incident, there was an execution of a known credential theft tool. Can you identify the account name associated with the execution of this malicious tool?",
+  "gold_answer": "tgs2z",
+  "solution_steps": [
+    "There was a suspicious service launched on the host `vnevado-dc`.",
+    "The process `powershell.exe` was started suspiciously on the host `vnevado-dc`.",
+    "The malicious credential theft tool was executed by the account with the name `tgs2z`."
+  ],
+  "metadata": {
+    "start_alert": 86,
+    "end_alert": 44,
+    "start_entities": [
+      5,
+      61,
+      87,
+      88
+    ],
+    "end_entities": [
+      27
+    ],
+    "shortest_alert_path": [
+      86,
+      20,
+      12,
+      17,
+      44
+    ]
+  }
+}

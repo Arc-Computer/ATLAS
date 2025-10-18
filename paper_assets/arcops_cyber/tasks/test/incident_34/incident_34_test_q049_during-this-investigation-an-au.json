@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_34_test_q049",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A suspicious PowerShell activity was detected where a process executed PowerShell to download a file or run an encoded command. This behavior is often associated with attackers attempting to bypass security protection mechanisms by executing their payload in memory without leaving a trace or touching the disk.",
+  "question": "During this investigation, an automated investigation was manually initiated. Can you identify the AadDeviceId of the host that this automated investigation was started on?",
+  "gold_answer": "02b8f519-1123-4228-b32a-ccb78af3449f",
+  "solution_steps": [
+    "There was a suspicious PowerShell download or encoded command execution on device with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f`.",
+    "An automated investigation was manually initiated on the same device `02b8f519-1123-4228-b32a-ccb78af3449f` by user u141 (u141@ash.alpineskihouse.co)."
+  ],
+  "metadata": {
+    "start_alert": 22,
+    "end_alert": 0,
+    "start_entities": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      22,
+      2,
+      0
+    ]
+  }
+}

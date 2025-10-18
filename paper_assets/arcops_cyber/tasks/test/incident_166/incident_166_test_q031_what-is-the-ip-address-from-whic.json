@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_166_test_q031",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "As part of a security incident, a suspicious inbox rule was created in a risky Azure Active Directory session by an account with the name `Jordan P` and email `Jordan P@vnevado.alpineskihouse.co`, indicating a potential business email compromise (BEC) for financial fraud. The IP address associated with this activity was `255.246.85.58`.",
+  "question": "What is the IP address from which the password spray attack was detected?",
+  "gold_answer": "95.202.65.202",
+  "solution_steps": [
+    "An attacker might have attempted to conduct business email compromise by creating a suspicious inbox rule in a risky Azure Active Directory session belonging to the account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "A password spray attack was detected from the IP address `95.202.65.202`."
+  ],
+  "metadata": {
+    "start_alert": 17,
+    "end_alert": 28,
+    "start_entities": [
+      6,
+      7,
+      8,
+      15
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      17,
+      1,
+      28
+    ]
+  }
+}

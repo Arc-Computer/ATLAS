@@ -1,0 +1,26 @@
+{
+  "task_id": "incident_134_test_q022",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A suspicious inbox rule that hides incoming email messages was created in a risky Azure Active Directory session, which could indicate an attempt to conduct business email compromise (BEC) financial fraud. The Azure Active Directory account had the user ID `e036dee7-fa23-42ef-a019-468c8d3401f1`, the SID `S-1-5-21-1874151667-3554330288-105586563-1715`, and accessed from IP address `237.7.81.122`.",
+  "question": "What is the email address associated with the account that might be involved in the BEC financial fraud?",
+  "gold_answer": "Nina Park@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "A suspicious inbox rule was created in the email account `Nina Park@vnevado.alpineskihouse.co` during a risky Azure Active Directory session, possibly indicating an attempt to conduct business email compromise (BEC) for financial fraud."
+  ],
+  "metadata": {
+    "start_alert": 17,
+    "end_alert": 17,
+    "start_entities": [
+      9,
+      8,
+      16
+    ],
+    "end_entities": [
+      7
+    ],
+    "shortest_alert_path": [
+      17
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_322_train_q023",
+  "incident": "incident_322",
+  "split": "train",
+  "context": "A security incident was reported where a user accessed a link in an email that was subsequently quarantined by zero-hour auto purge (ZAP). This alert triggers further investigations as it could indicate potential malicious activities. The link accessed by the user was `https://dj01161621.bravesand-e1ccd718.eastus.azurecontainerapps.io/`.",
+  "question": "Following this incident, an Azure Resource Manager operation was detected from a suspicious proxy IP address. Can you identify the Subscription ID involved in this suspicious activity?",
+  "gold_answer": "7e838342-601f-4552-9baf-0dfb300cf555",
+  "solution_steps": [
+    "The user with SID `S-1-5-21-1840151686-3534835288-156286563-1127` accessed a link in an email that was subsequently quarantined by ZAP.",
+    "There is a suspicious Azure Resource Manager operation from a proxy IP address involving the Azure subscription with ID `7e838342-601f-4552-9baf-0dfb300cf555`."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 25,
+    "start_entities": [
+      24
+    ],
+    "end_entities": [
+      26
+    ],
+    "shortest_alert_path": [
+      23,
+      8,
+      25
+    ]
+  }
+}

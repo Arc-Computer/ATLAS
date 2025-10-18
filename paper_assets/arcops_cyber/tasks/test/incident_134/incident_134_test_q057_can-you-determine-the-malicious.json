@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_134_test_q057",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A security incident was reported on 2024-07-18 indicating that the account `Nina Park` with email `Nina Park@vnevado.alpineskihouse.co` was potentially compromised following a password-spray attack. This incident involved an unusual sign-in from a location and browser, suggesting unauthorized access to the network. Immediate investigation is recommended to mitigate security risks.",
+  "question": "Can you determine the malicious IP address associated with this account sign-in activity during the time of the compromise?",
+  "gold_answer": "170.54.121.63",
+  "solution_steps": [
+    "A user was signed in from an unusual location and browser during a password spray attack using the IP address `170.54.121.63`.",
+    "There was a sign-in from a malicious IP address `170.54.121.63` during or around the time of the sign-in."
+  ],
+  "metadata": {
+    "start_alert": 25,
+    "end_alert": 23,
+    "start_entities": [
+      6,
+      7,
+      8
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      25,
+      12,
+      23
+    ]
+  }
+}

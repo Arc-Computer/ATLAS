@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_5_train_q046",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A security incident was flagged when a known credential theft tool execution `mimikatz.exe` with ProcessId `6600` and command line intended to dump users' credentials, keys, plain-text passwords was detected. The IP address associated was `107.224.99.179`. This incident is indicative of malicious activity, potentially compromising user accounts for lateral movement within the network.",
+  "question": "What is the name of the ransomware-related file that was delivered by the compromised user account?",
+  "gold_answer": "characterical.zip.lockbit",
+  "solution_steps": [
+    "A known credential theft tool was detected on the host with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`.",
+    "PSExec was used for lateral movement to the jump server at IP address `99.83.111.100`.",
+    "A possible compromised user account delivered ransomware-related file `characterical.zip.lockbit` on several devices."
+  ],
+  "metadata": {
+    "start_alert": 131,
+    "end_alert": 93,
+    "start_entities": [
+      20,
+      24,
+      30,
+      31,
+      33,
+      132,
+      133
+    ],
+    "end_entities": [
+      95
+    ],
+    "shortest_alert_path": [
+      131,
+      35,
+      174,
+      42,
+      93
+    ]
+  }
+}

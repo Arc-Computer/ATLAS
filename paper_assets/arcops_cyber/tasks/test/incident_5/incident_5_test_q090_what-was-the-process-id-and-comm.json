@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_5_test_q090",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A ransomware payload was remotely launched on a device from the IP address `99.83.111.100`. Attackers might be attempting to encrypt content on this device, rendering it unusable to users. This alert links to suspicious hands-on keyboard user behavior observed on the same device. Suspicious and anomalous user behavior might indicate that a user has been compromised. The end alert indicates that unusual activities, such as changes to the frequency and usage pattern of tools or applications, or the user performing a series of unusual activities, were noticed.",
+  "question": "What was the Process ID and command line observed during the suspicious hands-on keyboard user behavior?",
+  "gold_answer": "Process Id: 88, Command Line: curl http://vectorsandarrows.com",
+  "solution_steps": [
+    "The account `dp5hn` remotely launched a ransomware payload.",
+    "There was suspicious hands-on keyboard behavior detected where a process with ID `88` executed the `curl http://vectorsandarrows.com` command on `2024-06-20t09:29:42.3927529z`."
+  ],
+  "metadata": {
+    "start_alert": 134,
+    "end_alert": 66,
+    "start_entities": [
+      42
+    ],
+    "end_entities": [
+      67
+    ],
+    "shortest_alert_path": [
+      134,
+      1,
+      66
+    ]
+  }
+}

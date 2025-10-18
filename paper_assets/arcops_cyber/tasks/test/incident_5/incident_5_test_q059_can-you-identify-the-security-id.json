@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_5_test_q059",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident involving a possible attempt to access Primary Refresh Token (PRT) was detected. The file `browsercore.exe` was launched with the command line `browsercore.exe` on process ID 1640 at 2024-06-20T09:32:12.1031042Z. The PRT is a key artifact of Azure AD authentication used to enable single sign-on (SSO) across devices. Attackers might attempt to access this token to move laterally within the organization or perform credential theft. For more information, check the Midnight Blizzard credential attacks Threat Analytics report.",
+  "question": "Can you identify the Security Identifier (Sid) associated with the suspicious remote activity observed in this incident?",
+  "gold_answer": "S-0-6-5",
+  "solution_steps": [
+    "There was a possible attempt to access Primary Refresh Token (PRT) for the user with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "Suspicious remote activity was detected involving the account with SID `S-0-6-5`."
+  ],
+  "metadata": {
+    "start_alert": 118,
+    "end_alert": 88,
+    "start_entities": [
+      40,
+      119
+    ],
+    "end_entities": [
+      47
+    ],
+    "shortest_alert_path": [
+      118,
+      3,
+      88
+    ]
+  }
+}

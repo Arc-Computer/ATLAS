@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_39_train_q085",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A sign-in attempt using a deceptive user account was detected on the device with hostname `vnevado-win10v` and IP address `35.202.74.47`. The account involved had the name `tgs2z` and the SID `S-5-7-21-1843151660-3234030288-105586167-1422`. This may indicate an attacker using a fake or decoy account to perform attack activities, including lateral movement and accessing sensitive data.",
+  "question": "What is the file name associated with potential human-operated malicious activity observed on the same device?",
+  "gold_answer": "rubeus.exe",
+  "solution_steps": [
+    "A sign-in attempt was detected using a deceptive user account `kyleg`.",
+    "A sequence of potential human-operated malicious activities was observed, involving a file named `rubeus.exe`."
+  ],
+  "metadata": {
+    "start_alert": 41,
+    "end_alert": 105,
+    "start_entities": [
+      27,
+      28,
+      29,
+      32,
+      33,
+      43
+    ],
+    "end_entities": [
+      65
+    ],
+    "shortest_alert_path": [
+      41,
+      42,
+      105
+    ]
+  }
+}

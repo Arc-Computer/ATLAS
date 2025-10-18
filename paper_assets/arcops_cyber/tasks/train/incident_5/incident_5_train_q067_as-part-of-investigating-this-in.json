@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_5_train_q067",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A Command and Control behavior was blocked due to malware running on the machine. The malware, which was considered active, had a URL `http://vectorsandarrows.com/` involved in its activities. Active malware detections have higher severity ratings, and precautionary measures should be taken to check for residual signs of infection.",
+  "question": "As part of investigating this incident, there was a suspicious WMI process creation observed. Can you find out the file name of the process that was created?",
+  "gold_answer": "vssblatemp.exe",
+  "solution_steps": [
+    "Malware exhibiting Command and Control behavior was detected and blocked for the user account with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "A suspicious WMI process creation involving the executable `vssblatemp.exe` was observed on the machine."
+  ],
+  "metadata": {
+    "start_alert": 149,
+    "end_alert": 145,
+    "start_entities": [
+      74
+    ],
+    "end_entities": [
+      11
+    ],
+    "shortest_alert_path": [
+      149,
+      3,
+      145
+    ]
+  }
+}

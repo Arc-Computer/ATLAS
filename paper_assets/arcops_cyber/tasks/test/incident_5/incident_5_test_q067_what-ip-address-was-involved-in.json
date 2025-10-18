@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_test_q067",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A possible attempt to access a Primary Refresh Token (PRT) was detected on host `vnevado-win11u`, which could be an indication of attackers attempting to gain further access or perform credential theft. The process involved was `browsercore.exe` with a ProcessId__CreatedTimeUtc__CommandLine of `1640__2024-06-20t09:32:12.1031042z__",
+  "question": "What IP address was involved in the ransomware payload that was remotely launched following the attempt to access the Primary Refresh Token (PRT)?",
+  "gold_answer": "99.83.111.100",
+  "solution_steps": [
+    "There was a possible attempt to access their Primary Refresh Token (PRT) by an account with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "A ransomware payload was remotely launched from IP address `99.83.111.100`."
+  ],
+  "metadata": {
+    "start_alert": 118,
+    "end_alert": 143,
+    "start_entities": [
+      7,
+      8,
+      40,
+      119
+    ],
+    "end_entities": [
+      42
+    ],
+    "shortest_alert_path": [
+      118,
+      3,
+      143
+    ]
+  }
+}

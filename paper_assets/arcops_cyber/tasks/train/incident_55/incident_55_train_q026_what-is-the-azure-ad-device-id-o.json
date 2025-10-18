@@ -1,0 +1,25 @@
+{
+  "task_id": "incident_55_train_q026",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A malicious URL `https://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/` was clicked on the device with the hostname `mb-winclient` on 2024-07-10 at 11:24:45.667104+00:00. This event was flagged as part of a security investigation.",
+  "question": "What is the Azure AD Device ID of the host where the malicious URL was clicked?",
+  "gold_answer": "7661dfd4-218f-4016-8a87-66d68a7f098e",
+  "solution_steps": [
+    "A malicious URL was clicked on the device with AadDeviceId `7661dfd4-218f-4016-8a87-66d68a7f098e`."
+  ],
+  "metadata": {
+    "start_alert": 107,
+    "end_alert": 107,
+    "start_entities": [
+      14,
+      97
+    ],
+    "end_entities": [
+      15
+    ],
+    "shortest_alert_path": [
+      107
+    ]
+  }
+}

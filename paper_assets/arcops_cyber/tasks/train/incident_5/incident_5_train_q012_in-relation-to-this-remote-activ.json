@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_5_train_q012",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A suspicious remote activity was observed on the machine `vnevado-win11t`. This alert indicates attempts to initiate interactive sessions, modify files, pass WMI commands, create scheduled tasks, or other potentially malicious activities were initiated remotely on this machine. Notably, there were several processes involved preceding this observation including the execution of the file `get-userprttoken.ps1` via PowerShell, and execution of commands `bcdedit /set recoveryenabled no` and `bcdedit /set bootstatuspolicy ignoreallfailures`.",
+  "question": "In relation to this remote activity, it was found that all file backups were deleted. Can you identify the hostname of the machine on which these deletions occurred?",
+  "gold_answer": "vnevado-win10s",
+  "solution_steps": [
+    "There was a suspicious remote activity initiated by the user with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "File backups were deleted on the host `vnevado-win10s` which indicates a potential ransomware infection."
+  ],
+  "metadata": {
+    "start_alert": 107,
+    "end_alert": 9,
+    "start_entities": [
+      80,
+      59,
+      67,
+      68,
+      69,
+      42,
+      47,
+      81,
+      108,
+      109
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      107,
+      3,
+      9
+    ]
+  }
+}

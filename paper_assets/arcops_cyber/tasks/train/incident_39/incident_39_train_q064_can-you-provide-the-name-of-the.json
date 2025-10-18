@@ -1,0 +1,37 @@
+{
+  "task_id": "incident_39_train_q064",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident involving a potentially malicious URL click was detected, where Ethan Brooks clicked on a malicious link `https://ac27145722.livelygrass-8d4c4013.eastus2.azurecontainerapps.io/`. During the investigation, it was identified that multiple public tools, which can be used for various attack stages including credential theft, privilege escalation, and lateral movement, were dropped on the device. Subsequently, a suspicious service was also started on this device, indicating potential use by attackers to maintain persistence or elevate privileges.",
+  "question": "Can you provide the name of the process that was used to launch the suspicious service on the target device?",
+  "gold_answer": "services.exe",
+  "solution_steps": [
+    "One of the users with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1` clicked on a link that was found to be malicious.",
+    "Multiple known public tools including `powershell.exe` were dropped on the device.",
+    "A suspicious service was launched on the host `vnevado-dc`.",
+    "Another suspicious service was launched involving `services.exe`."
+  ],
+  "metadata": {
+    "start_alert": 134,
+    "end_alert": 86,
+    "start_entities": [
+      117,
+      118,
+      135,
+      136,
+      137
+    ],
+    "end_entities": [
+      88
+    ],
+    "shortest_alert_path": [
+      134,
+      29,
+      76,
+      17,
+      12,
+      20,
+      86
+    ]
+  }
+}

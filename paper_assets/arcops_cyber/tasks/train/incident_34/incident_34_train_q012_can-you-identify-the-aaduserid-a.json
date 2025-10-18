@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_34_train_q012",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "A security incident was reported involving suspicious Task Scheduler activity where a process used Task Scheduler to create, modify, or delete a task, potentially to launch malicious code automatically and establish persistence. The process involved had the command: `schtasks.exe /run /tn yrei`, with a Process ID of 1616. The alert happened on 2024-07-04 at 22:35:01.761898+00:00.",
+  "question": "Can you identify the AadUserId associated with the anomalous scheduled task that was created?",
+  "gold_answer": "16320fec-8d90-403b-b7fe-78f715d4728d",
+  "solution_steps": [
+    "A user with AadUserId `16320fec-8d90-403b-b7fe-78f715d4728d` has been involved in suspicious Task Scheduler activity, potentially attempting to launch malicious code automatically and establish persistence.",
+    "An anomalous scheduled task was created by the same user with AadUserId `16320fec-8d90-403b-b7fe-78f715d4728d`, possibly for persistence purposes."
+  ],
+  "metadata": {
+    "start_alert": 21,
+    "end_alert": 20,
+    "start_entities": [
+      15
+    ],
+    "end_entities": [
+      6
+    ],
+    "shortest_alert_path": [
+      21,
+      6,
+      20
+    ]
+  }
+}

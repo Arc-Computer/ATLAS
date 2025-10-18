@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_39_train_q061",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "During an investigation of a malware detection specified as 'Kekeo' malware, which was reported as active on 2024-07-04, a suspicious process `rubeus.exe` with ProcessId `2608` was found. This malware and related unwanted software are known to perform harmful actions on affected machines and can spread across systems. It is important to check the system thoroughly for signs of infection.",
+  "question": "What is the SID of the account that registered the suspicious file as a service?",
+  "gold_answer": "S-0-6-5",
+  "solution_steps": [
+    "The malware 'Kekeo' was detected and was active on the account named `fk8mq`.",
+    "A suspicious file was registered as a service by the user with SID `S-0-6-5`."
+  ],
+  "metadata": {
+    "start_alert": 100,
+    "end_alert": 21,
+    "start_entities": [
+      7,
+      9,
+      65
+    ],
+    "end_entities": [
+      23
+    ],
+    "shortest_alert_path": [
+      100,
+      1,
+      21
+    ]
+  }
+}

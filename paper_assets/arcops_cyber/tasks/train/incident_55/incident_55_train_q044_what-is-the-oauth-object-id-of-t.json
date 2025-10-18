@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_train_q044",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "In the recent security incident involving email messages containing a malicious URL that were delivered and later removed, Lucas Grey (email: Lucas Grey@niseko.alpineskihouse.co) was one of the involved accounts. This email was sent from santiago@vnevado.alpineskihouse.co to bjenkins@niseko.alpineskihouse.co with the malicious URL `https://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/`. Following this, there was a suspicious sequence of exploration activities linked to an unknown account. The investigation led to another alert indicating that the user Luciano Herrera (pwilson@niseko.alpineskihouse.co) performed an unusual addition of credentials to an OAuth app named SimulandApp. This behavior suggests potential app compromise to spread phishing, exfiltrate data, or gain access to other accounts and devices.",
+  "question": "What is the OAuth Object ID of the compromised application to which credentials were unusually added by Luciano Herrera?",
+  "gold_answer": "a66a4b44-d1f7-4563-95bf-a89d1b05b325",
+  "solution_steps": [
+    "The email account with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0` received an email with a malicious URL which was later removed.",
+    "A suspicious sequence of exploration activities was performed by the account with AadUserId `2de70991-2799-4a95-b734-8e3df3a50118`.",
+    "The user Luciano Herrera (pwilson@niseko.alpineskihouse.co) performed an unusual addition of credentials to the OAuth application `SimulandApp` with OAuthObjectId `a66a4b44-d1f7-4563-95bf-a89d1b05b325`."
+  ],
+  "metadata": {
+    "start_alert": 92,
+    "end_alert": 108,
+    "start_entities": [
+      89,
+      90,
+      93,
+      94,
+      95,
+      96,
+      97
+    ],
+    "end_entities": [
+      86
+    ],
+    "shortest_alert_path": [
+      92,
+      3,
+      57,
+      11,
+      108
+    ]
+  }
+}

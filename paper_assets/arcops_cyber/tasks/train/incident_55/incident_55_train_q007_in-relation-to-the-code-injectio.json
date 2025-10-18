@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_55_train_q007",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "In a recent suspicious activity involving Task Scheduler on host `mb-adfs`, a process `iy2orr1e.rrg.exe` was launched using `schtasks.exe` by the user `adfsadmin` and had run various encoded commands. This could be an attempt to automate the launch of malicious code and establish persistence in the system. A related security incident has been flagged where code injection was detected, indicating malicious behavior in a process memory.",
+  "question": "In relation to the code injection incident, can you specify the IP address the target process connected to which might be linked to a command and control server?",
+  "gold_answer": "72.5.72.208",
+  "solution_steps": [
+    "A suspicious activity using Task Scheduler involved the process `powershell.exe`.",
+    "A process was injected with potentially malicious code, leading to abnormal behaviors possibly connecting to IP address `72.5.72.208`."
+  ],
+  "metadata": {
+    "start_alert": 33,
+    "end_alert": 41,
+    "start_entities": [
+      25,
+      26,
+      29,
+      34,
+      35,
+      36
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      33,
+      8,
+      41
+    ]
+  }
+}

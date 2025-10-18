@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_test_q042",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "On 2024-07-04, multiple known public tools, which could also be used for malicious reasons, were dropped on this device. These tools might be used for various attack stages including credential theft, privilege escalation, and lateral movement. As part of investigating this incident, we found that multiple PowerShell scripts and executables such as `get-krbticket.ps1`, `domaindominance27.ps1`, and `mimikatz.exe` were executed.",
+  "question": "Related to this alert, a known credential theft tool was executed. Can you identify the account SID that was associated with the tool's execution?",
+  "gold_answer": "S-5-7-21-1843151660-3234030288-105586167-1422",
+  "solution_steps": [
+    "Multiple dual-purpose tools were dropped on the device associated with the account SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "A malicious credential theft tool execution was detected on the device associated with the account SID `S-5-7-21-1843151660-3234030288-105586167-1422`."
+  ],
+  "metadata": {
+    "start_alert": 62,
+    "end_alert": 85,
+    "start_entities": [
+      36,
+      66,
+      37,
+      68,
+      24,
+      49,
+      50,
+      70,
+      40,
+      38
+    ],
+    "end_entities": [
+      28
+    ],
+    "shortest_alert_path": [
+      62,
+      28,
+      85
+    ]
+  }
+}

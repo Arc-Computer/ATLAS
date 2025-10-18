@@ -1,0 +1,42 @@
+{
+  "task_id": "incident_5_train_q042",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A suspicious access to the LSASS service was observed on 2024-07-04 at 22:35:00.569686+00:00, where attackers were potentially trying to decrypt user's passwords from the LSASS service's memory to use in lateral movement activities. After this, there was a lateral movement activity detected involving PSExec to the jump server on 2024-07-10 at 11:24:45.260113+00:00. Moreover, a ransomware payload was remotely launched on 2024-07-04 at 22:35:02.812470+00:00, indicating potential encryption of the device's contents. Subsequently, suspicious 'GenRansom' behavior was detected on 2024-07-04 at 22:35:03.581041+00:00, indicating active malware with potential persistence mechanisms in place.",
+  "question": "What is the hostname of the device where the suspicious 'GenRansom' behavior was detected?",
+  "gold_answer": "vnevado-win11t",
+  "solution_steps": [
+    "There was a suspicious access to the LSASS service involving the user with Sid `S-5-7-21-1843151660-3234030288-105586167-1422` on `2024-07-04T22:35:00.569686+00:00`.",
+    "Lateral movement to the jump server with IP address `99.83.111.100` was detected on `2024-07-10T11:24:45.260113+00:00`.",
+    "A ransomware payload was remotely launched on a device with AadDeviceId `e5799261-6720-4297-961e-bd9ca4275033` on `2024-07-04T22:35:02.812470+00:00`.",
+    "Suspicious 'GenRansom' behavior was detected on the host `vnevado-win11t` on `2024-07-04T22:35:03.581041+00:00`."
+  ],
+  "metadata": {
+    "start_alert": 15,
+    "end_alert": 148,
+    "start_entities": [
+      30,
+      33,
+      19,
+      29,
+      24,
+      32,
+      26,
+      21,
+      31,
+      28
+    ],
+    "end_entities": [
+      68
+    ],
+    "shortest_alert_path": [
+      15,
+      17,
+      174,
+      42,
+      134,
+      69,
+      148
+    ]
+  }
+}

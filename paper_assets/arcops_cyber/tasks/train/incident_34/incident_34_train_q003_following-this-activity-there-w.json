@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_34_train_q003",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "During an investigation of a suspicious Task Scheduler activity, we found that the process `schtasks.exe` was used to create and run a task named 'yrei' to execute `winatp-intro-backdoor.exe`. This activity might indicate an attempt to launch malicious code automatically and establish persistence. Refer to the threat analytics report provided for more details.",
+  "question": "Following this activity, there was a suspicious PowerShell download or encoded command execution. Can you provide the process and command line details of the process that executed PowerShell?",
+  "gold_answer": "Process Id: 9780, Command Line: \"winword.exe\" c:\\scripts\\rs4_winatp-intro-invoice.docm",
+  "solution_steps": [
+    "A process (`powershell.exe`) was used in suspicious Task Scheduler activity, potentially to establish persistence by launching malicious code automatically.",
+    "A process with Process ID `9780` launched at `2024-06-26t11:57:20.2959493z` using the command line `winword.exe c:\\scripts\\rs4_winatp-intro-invoice.docm`, possibly for executing encoded PowerShell commands or downloading files."
+  ],
+  "metadata": {
+    "start_alert": 21,
+    "end_alert": 26,
+    "start_entities": [
+      13,
+      14,
+      15
+    ],
+    "end_entities": [
+      11
+    ],
+    "shortest_alert_path": [
+      21,
+      8,
+      26
+    ]
+  }
+}

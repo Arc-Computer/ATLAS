@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_55_train_q098",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "An incident involving suspicious LDAP query execution was detected on hostname `mb-winclient` from IP address `72.5.72.208`, by `pwilson` (AadUserId: 2de70991-2799-4a95-b734-8e3df3a50118). The process `powershell.exe` executed a script `ldaprequest.ps1` created on 2024-07-02 at 09:47:42. The nature of LDAP queries suggests potential reconnaissance attempts to map out administrative users and systems.",
+  "question": "Regarding the associated suspicious remote activity mentioned in the incident, what was the involved file's name?",
+  "gold_answer": "cmd.exe",
+  "solution_steps": [
+    "A suspicious LDAP query was executed using `powershell.exe`.",
+    "There was suspicious remote activity involving the file `cmd.exe`."
+  ],
+  "metadata": {
+    "start_alert": 64,
+    "end_alert": 37,
+    "start_entities": [
+      4,
+      9,
+      10,
+      11,
+      14,
+      15,
+      65,
+      66
+    ],
+    "end_entities": [
+      38
+    ],
+    "shortest_alert_path": [
+      64,
+      8,
+      37
+    ]
+  }
+}

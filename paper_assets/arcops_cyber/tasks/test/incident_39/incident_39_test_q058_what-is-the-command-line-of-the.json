@@ -1,0 +1,37 @@
+{
+  "task_id": "incident_39_test_q058",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A security incident has been detected involving malicious activities across multiple alerts. Initially, an email containing a malicious URL `https://ac27145722.livelygrass-8d4c4013.eastus2.azurecontainerapps.io/` was sent from `k1pt7ez@vnevado.alpineskihouse.co` to `tgs2z@vnevado.alpineskihouse.co`, and later removed due to its malicious nature. Later, an alert indicated that PsExec was used to launch a command on a remote device, suggesting potential lateral movements by an attacker. This alert was followed by an indication of possible use of the Rubeus kerberoasting tool, which compromises Kerberos tickets to obtain credentials or use them directly for authentication.",
+  "question": "What is the command line of the process that was dropped and launched from a remote location during the incident?",
+  "gold_answer": "5912__2024-06-27t14:32:53.2267179z__psexesvc.exe",
+  "solution_steps": [
+    "The email account with SID `S-5-7-21-1843151660-3234030288-105586167-1422` received an email with a malicious URL that was later removed.",
+    "PsExec was used to launch a command on a remote device, and the extracted file was `adminticket.txt`.",
+    "The use of the Rubeus kerberoasting tool was detected using an account named `fk8mq`.",
+    "A remote session dropped and executed a file named `psexesvc.exe` with Process ID `5912` at `2024-06-27t14:32:53.2267179z`."
+  ],
+  "metadata": {
+    "start_alert": 138,
+    "end_alert": 58,
+    "start_entities": [
+      135,
+      136,
+      137,
+      139,
+      140
+    ],
+    "end_entities": [
+      59
+    ],
+    "shortest_alert_path": [
+      138,
+      28,
+      95,
+      8,
+      0,
+      1,
+      58
+    ]
+  }
+}

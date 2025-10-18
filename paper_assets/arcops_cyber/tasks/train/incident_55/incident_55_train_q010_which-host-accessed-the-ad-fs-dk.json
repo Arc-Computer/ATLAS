@@ -1,0 +1,37 @@
+{
+  "task_id": "incident_55_train_q010",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A suspicious service registration involving the executable `services.exe` was detected on a system, indicating possible malicious activities aimed at persistence or escalating privileges. Subsequent alerts identified additional suspicious behaviors, culminating in an alert where a host access a critical directory key.",
+  "question": "Which host accessed the AD FS DKM key during the final alert?",
+  "gold_answer": "MB-DC1",
+  "solution_steps": [
+    "A system program was registered as a service on host `mb-adfs`.",
+    "A renamed system executable `powershell.exe` was launched.",
+    "A process was injected with potentially malicious code by an account with SID `S-1-5-21-551436448-9871687716-9837441745-1903`.",
+    "Luciano Herrera (CIO) on MB-WINCLIENT sent a suspected DCSync attack replication request to host `MB-DC1`.",
+    "Host `MB-DC1` read the DKM key of the ADFS object with id `4cac49d3-29d3-407e-8c9b-b7ebb21541b2`."
+  ],
+  "metadata": {
+    "start_alert": 61,
+    "end_alert": 105,
+    "start_entities": [
+      62,
+      63
+    ],
+    "end_entities": [
+      99
+    ],
+    "shortest_alert_path": [
+      61,
+      26,
+      27,
+      8,
+      41,
+      10,
+      98,
+      99,
+      105
+    ]
+  }
+}

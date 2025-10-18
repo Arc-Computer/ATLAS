@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_5_test_q058",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "As part of a multi-stage ransomware incident detection, suspicious file system changes were observed on the host `vnevado-win11t`, indicating potential ransomware activity that suggests mass file encryption. This finding aligns with the insights provided in relevant Threat Analytics reports on ransomware behavior.",
+  "question": "A related alert indicates possible ransomware activity involving a known malicious file extension. Can you identify the file involved in this activity?",
+  "gold_answer": "get-userprttoken.ps1",
+  "solution_steps": [
+    "Suspicious file system changes indicating potential ransomware activity were detected on host `vnevado-win11t`.",
+    "Possible ransomware activity was identified based on the malicious file `get-userprttoken.ps1` with known malicious extensions."
+  ],
+  "metadata": {
+    "start_alert": 105,
+    "end_alert": 159,
+    "start_entities": [
+      68,
+      69
+    ],
+    "end_entities": [
+      48
+    ],
+    "shortest_alert_path": [
+      105,
+      68,
+      159
+    ]
+  }
+}

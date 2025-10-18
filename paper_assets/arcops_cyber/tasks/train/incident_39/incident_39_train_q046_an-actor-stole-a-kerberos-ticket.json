@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_39_train_q046",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "During a security incident, multiple known public tools like `domaindominance27.ps1`, `psexec.exe`, `mimikatz.exe`, and `rubeus.exe`, which may be used for malicious reasons, were dropped on a device. This might indicate steps for credential theft, privilege escalation, or lateral movement by attackers. Subsequently, a sign-in attempt was detected using a deceptive user account, suggesting a potential attacker might use a decoy account on the device.",
+  "question": "An actor stole a Kerberos ticket from Julian Burke and used it to access resources. Can you identify the security identifier (SID) associated with Julian Burke's account?",
+  "gold_answer": "S-1-0-25-1848151668-3534030238-185306563-542",
+  "solution_steps": [
+    "Multiple dual-purpose tools that could be used for malicious activities were dropped on a device by an account with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1`.",
+    "A sign-in attempt was detected using a deceptive user account from IP address `35.202.74.47`.",
+    "A suspected identity theft (pass-the-ticket) occurred where an actor took Julian Burke (IT director)'s Kerberos ticket from VNEVADO-Win10B and used it on VNEVADO-Win10V to access 4 resources, with the account having SID `S-1-0-25-1848151668-3534030238-185306563-542`."
+  ],
+  "metadata": {
+    "start_alert": 76,
+    "end_alert": 130,
+    "start_entities": [
+      49,
+      50,
+      63,
+      64,
+      65,
+      66
+    ],
+    "end_entities": [
+      133
+    ],
+    "shortest_alert_path": [
+      76,
+      29,
+      41,
+      43,
+      130
+    ]
+  }
+}

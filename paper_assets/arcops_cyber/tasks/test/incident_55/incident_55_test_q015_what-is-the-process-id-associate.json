@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_55_test_q015",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "As part of a suspected attack, the account `gsmith@niseko.alpineskihouse.co` was reported to have read the DKM key of an AD FS (Active Directory Federation Services) object. Following this, there were a series of suspicious exploration activities involving a set of windows commands that could indicate coordinated lateral movement by attackers. This was followed by a process that engaged in suspicious Task Scheduler activity to create, modify, or delete a task. This might be an attempt to launch malicious code automatically and establish persistence. For further details, refer to the threat analytics report: https://security.microsoft.com/threatanalytics3/c9709a39-ac8d-493d-9a63-71da3ca1e745/analystreport.",
+  "question": "What is the process ID associated with the suspicious Task Scheduler activity?",
+  "gold_answer": "4304",
+  "solution_steps": [
+    "The account `gsmith` read the DKM key of ADFS object id `4cac49d3-29d3-407e-8c9b-b7ebb21541b2`.",
+    "There was a suspicious sequence of exploration activities involving a process with filename `iy2orr1e.rrg.exe`.",
+    "A process involved in earlier malicious activity used Task Scheduler to create, modify, or delete a task with Process ID `4304` at `2024-07-02t09:48:23.4654342z`. The command line used was `schtasks.exe /create /ru niseko\\adfsadmin /rp toptc88coob3xvxtpbr8 /sc daily /tn run-exportadfstokensignincert.2024-07-02_09_48_23 /tr ",
+    "iy2orr1e.rrg.exe -windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=",
+    "/st 00:00:00 /f`."
+  ],
+  "metadata": {
+    "start_alert": 106,
+    "end_alert": 33,
+    "start_entities": [
+      103
+    ],
+    "end_entities": [
+      34
+    ],
+    "shortest_alert_path": [
+      106,
+      18,
+      52,
+      29,
+      33
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_test_q045",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "An automated investigation was manually initiated by user `u141@ash.alpineskihouse.co` on host `vnevado-win10e`. The investigation was aimed at identifying and reviewing threat artifacts for possible remediation.",
+  "question": "Also within this investigation, a suspicious Task Scheduler activity was detected. Can you provide the Azure AD user ID (AadUserId) associated with this suspicious Task Scheduler activity?",
+  "gold_answer": "16320fec-8d90-403b-b7fe-78f715d4728d",
+  "solution_steps": [
+    "An Automated investigation was started manually by `u141(u141@ash.alpineskihouse.co)` on device with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f`.",
+    "Suspicious Task Scheduler activity was detected involving a user account with AadUserId `16320fec-8d90-403b-b7fe-78f715d4728d`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 21,
+    "start_entities": [
+      1,
+      2
+    ],
+    "end_entities": [
+      6
+    ],
+    "shortest_alert_path": [
+      0,
+      2,
+      21
+    ]
+  }
+}

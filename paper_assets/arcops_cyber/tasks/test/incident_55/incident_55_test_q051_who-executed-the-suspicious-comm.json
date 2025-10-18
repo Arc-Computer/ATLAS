@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_55_test_q051",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A security incident involved an attempt to hide the usage of a known public tool under the filename `iy2orr1e.rrg.exe` with process ID 5752. This might indicate an effort to hide the tool's malicious use. Additionally, there was suspicious command execution via Impacket, often used in hands-on-keyboard attacks for lateral movement across the network.",
+  "question": "Who executed the suspicious command via the Impacket toolkit on a device which might be attempting lateral movement across the network?",
+  "gold_answer": "LocalSystem",
+  "solution_steps": [
+    "A user with AadUserId `ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5` was observed using a public dual-purpose tool under an unexpected filename, which might indicate an attempt to hide the use of the tool for malicious purposes.",
+    "A suspicious execution of a command via the Impacket toolkit was observed on the device under the account `LocalSystem`. This suggests an ongoing hands-on-keyboard attack where an attacker might be attempting to move laterally across the network."
+  ],
+  "metadata": {
+    "start_alert": 68,
+    "end_alert": 16,
+    "start_entities": [
+      29,
+      69
+    ],
+    "end_entities": [
+      17
+    ],
+    "shortest_alert_path": [
+      68,
+      20,
+      16
+    ]
+  }
+}

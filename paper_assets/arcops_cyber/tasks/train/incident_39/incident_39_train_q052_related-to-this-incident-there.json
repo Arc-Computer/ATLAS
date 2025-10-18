@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_39_train_q052",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident involving malicious credential theft occurred as indicated by the execution of a known credential theft tool. The process `mimikatz.exe` was executed with the command to dump users' credentials. This incident happened on the device which is currently being investigated.",
+  "question": "Related to this incident, there was a sign-in attempt using a deceptive user account. Can you provide the IP address from which the deceptive sign-in attempt was made?",
+  "gold_answer": "35.202.74.47",
+  "solution_steps": [
+    "A malicious credential theft tool was executed on the host `vnevado-win10v`.",
+    "A sign-in attempt was detected using a deceptive user account from IP address `35.202.74.47`."
+  ],
+  "metadata": {
+    "start_alert": 26,
+    "end_alert": 41,
+    "start_entities": [
+      30,
+      31
+    ],
+    "end_entities": [
+      43
+    ],
+    "shortest_alert_path": [
+      26,
+      32,
+      41
+    ]
+  }
+}

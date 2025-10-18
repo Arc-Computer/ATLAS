@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_55_train_q085",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "An alert was triggered on 2024-07-09 indicating that email messages containing a malicious URL were delivered and later removed. The sender of these emails was santiago@vnevado.alpineskihouse.co, with the sender IP address being 119.36.50.193. The malicious URL in the emails was https://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/. Following this, on 2024-07-10, we detected that one of our users clicked on this malicious URL, resulting in a second alert.",
+  "question": "Can you identify the recipient of the email message that contained the malicious URL?",
+  "gold_answer": "Recipient: ???",
+  "solution_steps": [
+    "The email account `bjenkins@niseko.alpineskihouse.co` received an email with a malicious URL, which was later removed.",
+    "A potentially malicious URL `http://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/` was clicked by one of the users."
+  ],
+  "metadata": {
+    "start_alert": 92,
+    "end_alert": 104,
+    "start_entities": [
+      95,
+      96,
+      97
+    ],
+    "end_entities": [
+      91
+    ],
+    "shortest_alert_path": [
+      92,
+      94,
+      104
+    ]
+  }
+}

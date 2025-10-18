@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_test_q071",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident was detected involving a possible attempt to access a Primary Refresh Token (PRT), which is an important artifact for Azure AD authentication. This event was associated with the process `browsercore.exe` running on the host `vnevado-win11t` with the AadDeviceId `e5799261-6720-4297-961e-bd9ca4275033`. PRTs enable Single Sign-On (SSO) and, if compromised, can allow an attacker to move laterally or perform credential theft.",
+  "question": "In this incident, potentially compromised assets are exhibiting ransomware-like behavior. Can you identify the name of the file that has been impacted by ransomware?",
+  "gold_answer": "unstreaming.xlsx.lockbit",
+  "solution_steps": [
+    "There was a possible attempt to access a Primary Refresh Token (PRT) by the user with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "Potentially compromised assets exhibiting ransomware-like behavior were detected, involving a file named `unstreaming.xlsx.lockbit`."
+  ],
+  "metadata": {
+    "start_alert": 82,
+    "end_alert": 147,
+    "start_entities": [
+      40,
+      68,
+      69,
+      83
+    ],
+    "end_entities": [
+      54
+    ],
+    "shortest_alert_path": [
+      82,
+      3,
+      147
+    ]
+  }
+}

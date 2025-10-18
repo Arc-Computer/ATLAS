@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_39_test_q031",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "During a suspected identity theft (pass-the-ticket) incident, an actor used Julian Burke's Kerberos ticket from VNEVADO-Win10B to access resources on VNEVADO-Win10V. This incident has raised concerns about unauthorized access and potential lateral movement within our network. The initial alert was triggered by a suspicious activity involving the IP address `35.202.74.47` and the user account of Julian Burke, an IT director.",
+  "question": "Related to this investigation, we need to check on any remote session activities. Can you identify the account name associated with the recent file drop and execution from a remote location?",
+  "gold_answer": "lucasb",
+  "solution_steps": [
+    "An actor took the Kerberos ticket of Julian Burke (IT director) with AadUserId `7fcf9695-68fc-4258-864d-e1e5b166c66f` and used it from VNEVADO-Win10B to access resources on VNEVADO-Win10V.",
+    "An account `lucasb` was involved in a remote session where a file was dropped and executed, indicating a possible lateral movement or propagation by an attacker or malware."
+  ],
+  "metadata": {
+    "start_alert": 130,
+    "end_alert": 60,
+    "start_entities": [
+      43,
+      115,
+      116,
+      123,
+      124,
+      131,
+      132,
+      133
+    ],
+    "end_entities": [
+      13
+    ],
+    "shortest_alert_path": [
+      130,
+      15,
+      60
+    ]
+  }
+}

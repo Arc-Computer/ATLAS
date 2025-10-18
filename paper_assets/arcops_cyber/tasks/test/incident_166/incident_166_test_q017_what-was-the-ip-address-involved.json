@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_166_test_q017",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A suspicious inbox manipulation rule was detected on 2024-07-22 at 10:00:07.502771+00:00. It appears that an attack may have gained access to the inbox of the user account Jordan P, with the email `Jordan P@vnevado.alpineskihouse.co` and IP address 255.246.85.58. The rules might have been manipulated to delete or move messages or folders to exfiltrate data from the organization. Subsequently, a password spray attack was detected on 2024-07-23.",
+  "question": "What was the IP address involved in the password spray attack detected on 2024-07-23?",
+  "gold_answer": "95.202.65.202",
+  "solution_steps": [
+    "A user's inbox rules were manipulated in a suspicious manner, potentially indicating data exfiltration. The suspicious activity involved the account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "A password spray attack was detected from the IP address `95.202.65.202`."
+  ],
+  "metadata": {
+    "start_alert": 16,
+    "end_alert": 28,
+    "start_entities": [
+      6,
+      7,
+      8,
+      11,
+      15
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      16,
+      1,
+      28
+    ]
+  }
+}

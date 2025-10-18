@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_38_test_q008",
+  "incident": "incident_38",
+  "split": "test",
+  "context": "A suspicious process injection was observed on 2024-07-04, potentially indicating that malicious code is running within a trusted process. The target process may exhibit abnormal behaviors such as connecting to a command and control server. This was part of a series of activities involving a process `notepad.exe` and `powershell.exe` running on the host `vnevado-win11a` with identified IP address `72.5.72.208`. The associated user account is `nathans` with ID `12185914-91dd-4fb9-94f9-3252203b0426`.",
+  "question": "Considering these abnormalities, what is the URL where additional suspicious activity related to fileless attacks was detected?",
+  "gold_answer": "https://wcdstaticfilesprdeus.blob.core.windows.net/wcdstaticfiles/winatp-intro-fileless.txt",
+  "solution_steps": [
+    "A suspicious process injected code and is suspected of malicious behavior, such as opening a listening port or connecting to a command and control server. The related URL is `https://wcdstaticfilesprdeus.blob.core.windows.net/wcdstaticfiles/winatp-intro-fileless.txt`."
+  ],
+  "metadata": {
+    "start_alert": 14,
+    "end_alert": 14,
+    "start_entities": [
+      11,
+      9,
+      6,
+      8,
+      12,
+      1,
+      3,
+      4,
+      7,
+      2
+    ],
+    "end_entities": [
+      13
+    ],
+    "shortest_alert_path": [
+      14
+    ]
+  }
+}

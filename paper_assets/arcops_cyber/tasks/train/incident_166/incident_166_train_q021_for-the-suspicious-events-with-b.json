@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_166_train_q021",
+  "incident": "incident_166",
+  "split": "train",
+  "context": "A recent security incident was detected involving suspicious SAP authentication. A user account with a risky sign-in alert in Microsoft Entra ID signed in to SAP, potentially allowing an attacker to record or modify sensitive financial information. This activity was traced to the application with AppId `100` and IP address `107.253.5.27`.",
+  "question": "For the suspicious events with business email compromise (BEC) characteristics observed later, what is the Security Identifier (SID) of the account involved?",
+  "gold_answer": "S-1-5-21-1740051960-3534030288-108486866-1602",
+  "solution_steps": [
+    "The AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82` signed in to SAP with a risky sign-in alert.",
+    "There were observed suspicious events with business email compromise characteristics involving the user with SID `S-1-5-21-1740051960-3534030288-108486866-1602`."
+  ],
+  "metadata": {
+    "start_alert": 26,
+    "end_alert": 29,
+    "start_entities": [
+      24,
+      25
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      26,
+      1,
+      29
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_test_q027",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "During a security incident on 2024-07-04, a process with ID 10208 executed a suspicious command involving the ASEP registry to run after a reboot. This was detected as an anomaly in the ASEP registry from the IP address `72.5.72.208`. The command used was `reg add hkcu\\software\\microsoft\\windows\\currentversion\\runonce /f /v yrei /t reg_expand_sz /d %userprofile%\\desktop\\winatp-intro-backdoor.exe`. This indicates an attempt to maintain persistence on the compromised machine.",
+  "question": "What is the command involved?",
+  "gold_answer": "reg  add hkcu\\software\\microsoft\\windows\\currentversion\\runonce /f /v yrei /t reg_expand_sz /d %userprofile%\\desktop\\winatp-intro-backdoor.exe",
+  "solution_steps": [
+    "A user with AadUserId `16320fec-8d90-403b-b7fe-78f715d4728d` registered a suspicious command or file in the ASEP registry key.",
+    "A process named `powershell.exe` was used to download a file or run an encoded command, which may indicate an attempt by an attacker to execute malicious payloads in memory without leaving a trace."
+  ],
+  "metadata": {
+    "start_alert": 17,
+    "end_alert": 22,
+    "start_entities": [
+      18,
+      19
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      17,
+      6,
+      22
+    ]
+  }
+}

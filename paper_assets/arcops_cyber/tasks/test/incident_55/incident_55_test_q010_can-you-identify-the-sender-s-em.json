@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q010",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A suspicious sequence of exploration activities was detected on 2024-07-04 involving a series of windows commands that might be used by attackers to identify valuable assets. Malicious emails were later detected and removed.",
+  "question": "Can you identify the sender's email address for the email messages containing malicious URLs that were removed after delivery?",
+  "gold_answer": "santiago@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "A suspicious sequence of exploration activities was performed by the user with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0`.",
+    "Emails containing malicious URLs sent by `santiago@vnevado.alpineskihouse.co` were detected and later removed."
+  ],
+  "metadata": {
+    "start_alert": 57,
+    "end_alert": 92,
+    "start_entities": [
+      15,
+      12,
+      10,
+      58,
+      6,
+      5,
+      60,
+      7,
+      59,
+      13
+    ],
+    "end_entities": [
+      96
+    ],
+    "shortest_alert_path": [
+      57,
+      3,
+      92
+    ]
+  }
+}

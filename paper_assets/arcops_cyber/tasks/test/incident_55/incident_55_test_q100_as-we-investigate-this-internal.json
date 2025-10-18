@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_55_test_q100",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "An internal phishing campaign was detected where a user sent phishing emails to recipients inside the organization. The user, Lucas Grey (Email: Lucas Grey@niseko.alpineskihouse.co), might have had their account compromised. This incident was flagged by Microsoft Defender for Office 365.",
+  "question": "As we investigate this internal phishing campaign, can you identify the email address of the account involved in suspicious activities related to `Lucas Grey@niseko.alpineskihouse.co`?",
+  "gold_answer": "Nina Sullivan@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "The user with the email `Nina Sullivan@vnevado.alpineskihouse.co` was observed to have sent phishing emails to recipients inside the organization, indicating that the account might have been compromised."
+  ],
+  "metadata": {
+    "start_alert": 88,
+    "end_alert": 88,
+    "start_entities": [
+      77,
+      78,
+      2,
+      90,
+      3,
+      91,
+      89
+    ],
+    "end_entities": [
+      76
+    ],
+    "shortest_alert_path": [
+      88
+    ]
+  }
+}

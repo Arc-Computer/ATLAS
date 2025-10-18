@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_134_test_q041",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A sign-in from a malicious IP address `170.54.121.63` was detected at 2024-07-18 13:48:02. This sign-in came from an account with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1`. This might indicate suspicious activity requiring further investigation.",
+  "question": "Following this alert, an account was compromised in a possible password-spray attack. Can you provide the Security Identifier (SID) for the compromised account?",
+  "gold_answer": "S-1-5-21-1874151667-3554330288-105586563-1715",
+  "solution_steps": [
+    "There was a sign-in attempt from a known malicious IP address `170.54.121.63`.",
+    "The user account with SID `S-1-5-21-1874151667-3554330288-105586563-1715` was compromised following a password-spray attack, with the sign-in coming from an unusual location and browser."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 25,
+    "start_entities": [
+      9,
+      12
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      23,
+      12,
+      25
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_5_train_q059",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A security incident related to suspicious remote activity was identified on the machine named `vnevado-win11t`. This incident showed multiple signs of potentially malicious activities such as initiating interactive sessions, modifying files, passing WMI commands, creating scheduled tasks, etc. In this context, suspicious processes were involved, including commands such as `curl http://vectorsandarrows.com`, `vssblatemp.exe delete shadows /all`, and `bcdedit` commands. The attack appears to have involved lateral movement across different devices.",
+  "question": "According to the incident details, there was a lateral movement attempt observed. What is the IP address associated with this lateral movement activity?",
+  "gold_answer": "38.142.109.10",
+  "solution_steps": [
+    "Suspicious remote activity was detected involving the process `vssblatemp.exe`.",
+    "File backups on the host `vnevado-win11u` were deleted using WMI or VSSAdmin, as is common during Ransomware infections.",
+    "Possible lateral movement was observed, linked to the IP address `38.142.109.10`."
+  ],
+  "metadata": {
+    "start_alert": 107,
+    "end_alert": 101,
+    "start_entities": [
+      67,
+      68,
+      69,
+      80,
+      81,
+      108,
+      109
+    ],
+    "end_entities": [
+      102
+    ],
+    "shortest_alert_path": [
+      107,
+      11,
+      121,
+      7,
+      101
+    ]
+  }
+}

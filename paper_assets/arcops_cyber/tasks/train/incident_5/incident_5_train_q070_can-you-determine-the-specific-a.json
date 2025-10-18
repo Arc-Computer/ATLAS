@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_5_train_q070",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "During a security incident on host 'vnevado-win10v', a critical process responsible for enforcing security policies was maliciously altered. Various accounts and processes, including the execution of suspicious commands, were involved in the incident.",
+  "question": "Can you determine the specific active malware detected following the modification of the critical security process?",
+  "gold_answer": "mimikatz.exe",
+  "solution_steps": [
+    "The LSASS process memory on the host with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1` was modified.",
+    "Active malware named `mimikatz.exe` was detected running on the same host."
+  ],
+  "metadata": {
+    "start_alert": 115,
+    "end_alert": 150,
+    "start_entities": [
+      20,
+      17,
+      29,
+      24,
+      31,
+      18,
+      35,
+      34,
+      16
+    ],
+    "end_entities": [
+      19
+    ],
+    "shortest_alert_path": [
+      115,
+      35,
+      150
+    ]
+  }
+}

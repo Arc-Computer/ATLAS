@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_train_q014",
+  "incident": "incident_134",
+  "split": "train",
+  "context": "A security incident involving Business Email Compromise (BEC) financial fraud was identified when a suspicious inbox rule that hides incoming email messages was created during a risky Azure Active Directory session. The incident involves an IP address `237.7.81.122`.",
+  "question": "During the investigation, it was found that emails containing malicious URLs were delivered and later removed. Can you identify the primary address of the mailbox where these emails were delivered?",
+  "gold_answer": "raphaelt@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "The email account `Nina Park` was involved in a suspicious activity where an inbox rule was created to hide incoming email messages, indicating potential BEC financial fraud.",
+    "The mailbox with the primary address `raphaelt@vnevado.alpineskihouse.co` received email messages containing a malicious URL which were later removed."
+  ],
+  "metadata": {
+    "start_alert": 17,
+    "end_alert": 13,
+    "start_entities": [
+      16
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      17,
+      6,
+      13
+    ]
+  }
+}

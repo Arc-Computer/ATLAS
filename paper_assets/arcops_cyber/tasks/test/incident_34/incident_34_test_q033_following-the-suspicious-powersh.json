@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_34_test_q033",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "During an analysis of a security incident, we observed suspicious activity on host `vnevado-win10e` involving the use of PowerShell. PowerShell is often utilized by attackers to execute payloads in memory, bypassing security mechanisms. This incident is linked with further malicious actions on the same host.",
+  "question": "Following the suspicious PowerShell activity, what malicious activity was identified involving a file on the machine?",
+  "gold_answer": "Powershell dropped a suspicious file on the machine and executed it.",
+  "solution_steps": [
+    "A process executed PowerShell to download a file or run an encoded command on host `vnevado-win10e`.",
+    "PowerShell then dropped a suspicious file named `winatp-intro-backdoor.exe` and executed it on the same machine."
+  ],
+  "metadata": {
+    "start_alert": 22,
+    "end_alert": 25,
+    "start_entities": [
+      1,
+      2,
+      4,
+      5,
+      6,
+      8,
+      9
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      22,
+      1,
+      25
+    ]
+  }
+}

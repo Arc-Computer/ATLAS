@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_5_train_q035",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "In a security incident, there was a possible attempt to access Primary Refresh Token (PRT) detected on the host `vnevado-win10s`. The process `browsercore.exe` with Process ID 2676 was involved in this alert. This could potentially indicate an attack to move laterally or perform credential theft by accessing this key artifact of Azure AD authentication. Following this, a suspicious activity involved renaming and launching of a Windows Sysinternals tool.",
+  "question": "What is the file name of the Windows Sysinternals tool that was renamed and launched?",
+  "gold_answer": "mimikatz.exe",
+  "solution_steps": [
+    "A possible attempt to access the Primary Refresh Token (PRT) was detected using the process `browsercore.exe`.",
+    "Another attempt to access the Primary Refresh Token (PRT) was detected using the process `powershell.exe`.",
+    "A Windows Sysinternals tool, specifically `mimikatz.exe`, was renamed and launched, potentially indicating a covert attempt to use the tool for malicious purposes."
+  ],
+  "metadata": {
+    "start_alert": 113,
+    "end_alert": 122,
+    "start_entities": [
+      1,
+      2,
+      3,
+      12,
+      13,
+      114
+    ],
+    "end_entities": [
+      19
+    ],
+    "shortest_alert_path": [
+      113,
+      40,
+      36,
+      38,
+      122
+    ]
+  }
+}

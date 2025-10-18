@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_166_test_q028",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "As part of the ongoing investigation from the suspicious SAP authentication incident where a risky user account flagged by Microsoft Entra ID accessed sensitive financials, a subsequent alert indicated possible BEC (Business Email Compromise) financial fraud attempts.",
+  "question": "What is the name of the account involved in the possible BEC financial fraud detected on 2024-07-23?",
+  "gold_answer": "Jordan P",
+  "solution_steps": [
+    "A user account with the email `Jordan P@vnevado.alpineskihouse.co` had a risky sign-in alert and signed in to SAP.",
+    "Suspicious events with business email compromise (BEC) characteristics were observed for the user account named `Jordan P`."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 29,
+    "start_entities": [
+      24,
+      25
+    ],
+    "end_entities": [
+      6
+    ],
+    "shortest_alert_path": [
+      23,
+      7,
+      29
+    ]
+  }
+}

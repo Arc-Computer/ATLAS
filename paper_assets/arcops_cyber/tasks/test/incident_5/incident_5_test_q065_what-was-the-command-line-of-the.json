@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_5_test_q065",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A serious security incident involving the Mimikatz credential theft tool was detected on a device. Mimikatz is known for harvesting plaintext passwords, password hashes, smartcard PINs, and Kerberos tickets. An attacker might use this tool to obtain credentials to log into this or other devices on the network by impersonating a valid user. The tool was executed with several different command lines indicating privilege escalation and credential theft attempts.",
+  "question": "What was the command line of the process detected with the known credential theft tool execution?",
+  "gold_answer": "7948__2024-06-20t08:59:42.8455252z__conhost.exe 0xffffffff -forcev1",
+  "solution_steps": [
+    "The attacker launched `mimikatz.exe` with the command line `privilege::debug sekurlsa::pth /user:fk8mq /ntlm:96def1a633fc6790124d5f8fe21cc72b /domain:vnevado.alpineskihouse.co /run:..\\notepad.exe \\vnevado-jump cmd.exe` at `2024-06-20t09:05:15.5627318z`, with Process ID `6600`.",
+    "A malicious credential theft tool execution was detected with the command line `conhost.exe 0xffffffff -forcev1` at `2024-06-20t08:59:42.8455252z`, with Process ID `7948`."
+  ],
+  "metadata": {
+    "start_alert": 151,
+    "end_alert": 131,
+    "start_entities": [
+      19,
+      23,
+      29,
+      32,
+      92,
+      111,
+      152,
+      153,
+      154
+    ],
+    "end_entities": [
+      132
+    ],
+    "shortest_alert_path": [
+      151,
+      33,
+      131
+    ]
+  }
+}

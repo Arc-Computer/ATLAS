@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_5_test_q098",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A malicious credential theft tool was detected on a host with potential involvement of an account bearing the Sid `S-5-7-21-1843151660-3234030288-105586167-1422` and originating from an IP address. The alert indicates the execution of a known tool intended to compromise users' credentials and other sensitive information.",
+  "question": "What file name indicates the active malware that was found during this incident?",
+  "gold_answer": "mimikatz.exe",
+  "solution_steps": [
+    "A malicious credential theft tool execution was detected from the IP address `107.224.99.179`.",
+    "Active malware named `mimikatz.exe` was detected running on the machine."
+  ],
+  "metadata": {
+    "start_alert": 156,
+    "end_alert": 150,
+    "start_entities": [
+      34,
+      16,
+      30,
+      31,
+      18,
+      20,
+      24,
+      35,
+      17
+    ],
+    "end_entities": [
+      19
+    ],
+    "shortest_alert_path": [
+      156,
+      20,
+      150
+    ]
+  }
+}

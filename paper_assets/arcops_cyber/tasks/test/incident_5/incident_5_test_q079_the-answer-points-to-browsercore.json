@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_5_test_q079",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A suspicious WMI process creation was observed on the machine. Malware frequently uses WMI to spawn new processes, breaking process trees and further infecting a machine. This activity occurred at 2024-07-04 22:35:03.378778+00:00. During the same incident, there was a possible attempt to access Primary Refresh Token (PRT) detected. A PRT is a key artifact of Azure AD authentication and is a JSON Web Token (JWT) issued to enable single sign-on (SSO) across applications used on devices such as Windows 10 and later versions, iOS, and Android. Attackers might attempt to access this token to move laterally or perform credential theft.",
+  "question": "The answer points to browsercore.exe running at the specified time. This should be further scrutinized to confirm the activity related to PRT access attempt mentioned.",
+  "gold_answer": "7036__2024-06-20t09:29:49.304018z__\"browsercore.exe\"",
+  "solution_steps": [
+    "There was a suspicious WMI process creation detected on the machine with AadDeviceId `e5799261-6720-4297-961e-bd9ca4275033`.",
+    "There was a possible attempt to access the Primary Refresh Token (PRT) through the process `browsercore.exe`, which was executed with Process ID `7036` at `2024-06-20t09:29:49.304018z`."
+  ],
+  "metadata": {
+    "start_alert": 145,
+    "end_alert": 82,
+    "start_entities": [
+      11,
+      59,
+      67,
+      80,
+      81,
+      108,
+      109
+    ],
+    "end_entities": [
+      83
+    ],
+    "shortest_alert_path": [
+      145,
+      69,
+      82
+    ]
+  }
+}

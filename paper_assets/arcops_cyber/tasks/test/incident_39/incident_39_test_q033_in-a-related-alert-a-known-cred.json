@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_39_test_q033",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A security incident was detected where a sign-in attempt occurred using a deceptive user account with the name `kyleg` and associated IP address `35.202.74.47`. This user account might indicate a potential attacker attempting to use fake or decoy accounts for lateral movement and accessing sensitive data.",
+  "question": "In a related alert, a known credential theft tool command line was detected. Can you identify the name of the process file that was used to execute the credential theft tool?",
+  "gold_answer": "mimikatz.exe",
+  "solution_steps": [
+    "A sign-in attempt using a deceptive user account occurred on the device with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`.",
+    "A known malicious credential theft tool `mimikatz.exe` was executed, indicating an attempt to dump users' credentials."
+  ],
+  "metadata": {
+    "start_alert": 41,
+    "end_alert": 39,
+    "start_entities": [
+      42,
+      43
+    ],
+    "end_entities": [
+      31
+    ],
+    "shortest_alert_path": [
+      41,
+      33,
+      39
+    ]
+  }
+}

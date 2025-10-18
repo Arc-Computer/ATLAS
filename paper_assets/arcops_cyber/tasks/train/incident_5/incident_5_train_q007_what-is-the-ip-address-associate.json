@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_5_train_q007",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A security incident revealed possible ransomware activity due to numerous file system changes on a device, including files like `get-userprttoken.ps1`, `characterical.zip`, and `characterical.zip.lockbit`. This activity may indicate mass encryption of files by ransomware. At the same time, a related suspicious behavior involved an attempt to access the Primary Refresh Token (PRT), a crucial authentication artifact in Azure AD, which could facilitate lateral movement or credential theft within the organization.",
+  "question": "What is the IP address associated with the possible attempt to access the Primary Refresh Token (PRT)?",
+  "gold_answer": "107.224.99.179",
+  "solution_steps": [
+    "Numerous file system changes have been observed and are indicative of mass encryption by ransomware on the account with SID `S-1-5-21-1840191660-8534830288-125585561-1522`.",
+    "There was a possible attempt to access the Primary Refresh Token (PRT) by the process `browsercore.exe`.",
+    "The attempt to access the Primary Refresh Token (PRT) was made from the IP address `107.224.99.179`."
+  ],
+  "metadata": {
+    "start_alert": 159,
+    "end_alert": 36,
+    "start_entities": [
+      47,
+      48,
+      94,
+      95
+    ],
+    "end_entities": [
+      20
+    ],
+    "shortest_alert_path": [
+      159,
+      2,
+      71,
+      40,
+      36
+    ]
+  }
+}

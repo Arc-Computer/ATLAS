@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_test_q087",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "For more information, read the Activity Profile: Iranian MOIS operators opportunistically deploy limited-impact wiper in response to Israel-Hamas war Threat Analytics report: https://security.microsoft.com/threatanalytics3/c6674205-df28-453a-9e42-0010b7979bdd/overview?tid4b2462a4-bbee-495a-a0e1-f23ae524cc9c.",
+  "question": "Related to this alert, there was also an incident where file backups were deleted. Can you identify the command used in the process that deleted the file snapshots and shadow copies?",
+  "gold_answer": "vssblatemp.exe delete shadows /all",
+  "solution_steps": [
+    "A possible attempt to access Primary Refresh Token (PRT) was detected for the AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "File backups, including all snapshots and shadow copies, were deleted using process `7236` at `2024-06-20t09:10:51.2193152z` with the command line `vssblatemp.exe delete shadows /all`."
+  ],
+  "metadata": {
+    "start_alert": 82,
+    "end_alert": 70,
+    "start_entities": [
+      40,
+      68,
+      69,
+      83
+    ],
+    "end_entities": [
+      60
+    ],
+    "shortest_alert_path": [
+      82,
+      3,
+      70
+    ]
+  }
+}

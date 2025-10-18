@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_5_train_q044",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A high-severity security incident occurred on 2024-07-04, involving ransomware payload being remotely launched on the device `vnevado-win11t`. This ransomware could potentially encrypt the content on the device, making it inaccessible to users. The attack was linked with an account named `dp5hn` with SID `S-1-5-21-1840191660-8534830288-125585561-1522` and associated IP `99.83.111.100`.",
+  "question": "During the remote ransomware payload launch, a suspicious remote activity was observed. Can you provide the SID of the account associated with this suspicious remote activity?",
+  "gold_answer": "S-0-6-5",
+  "solution_steps": [
+    "A ransomware payload was remotely launched on this device using the account `dp5hn`.",
+    "Suspicious remote activities, such as initiating interactive sessions, modifying files, passing WMI commands, or creating scheduled tasks were observed on this machine using the account with SID `S-0-6-5`."
+  ],
+  "metadata": {
+    "start_alert": 143,
+    "end_alert": 107,
+    "start_entities": [
+      1,
+      2,
+      3,
+      42,
+      68,
+      69
+    ],
+    "end_entities": [
+      47
+    ],
+    "shortest_alert_path": [
+      143,
+      1,
+      107
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_39_train_q084",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "We are examining a security incident involving Emma Clark (Helpdesk Administrator) attempting to authenticate against a domain controller, hinting at a suspected overpass-the-hash attack. The trail includes another alert indicating an incident of suspected identity theft involving the use of Julian Burke (IT director)'s Kerberos ticket on a different device to access several resources.",
+  "question": "What is the device on which Julian Burke's Kerberos ticket was used during the suspected identity theft?",
+  "gold_answer": "VNEVADO-Win10V",
+  "solution_steps": [
+    "Emma Clark (Helpdesk Administrator) on host `VNEVADO-Win10V` attempted to authenticate against `VNEVADO-DC`, potentially indicating an overpass-the-hash attack.",
+    "An actor used Julian Burke (IT director)'s Kerberos ticket from `VNEVADO-Win10B` on `VNEVADO-Win10V` to access 4 resources, indicating a suspected identity theft (pass-the-ticket) with the account SID `S-1-0-25-1848151668-3534030238-185306563-542`."
+  ],
+  "metadata": {
+    "start_alert": 119,
+    "end_alert": 130,
+    "start_entities": [
+      2,
+      3,
+      120,
+      121
+    ],
+    "end_entities": [
+      133
+    ],
+    "shortest_alert_path": [
+      119,
+      116,
+      130
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_39_train_q057",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "An active 'Kekeo' malware was detected according to an alert on 2024-07-04. Malware and unwanted software can perform disruptive, or harmful actions on affected machines and may spread or receive commands from remote attackers. This malware was active, indicating it was running or had persistence mechanisms in place. Connected to this alert, PsExec was used to launch a command on a remote device, which could be part of the attacker's method to move laterally within the organization.",
+  "question": "Regarding the suspicious access to the LSASS service, what file was identified as being used in this attack?",
+  "gold_answer": "get-krbticket.ps1",
+  "solution_steps": [
+    "An active 'Kekeo' malware was detected and is associated with the file `rubeus.exe`.",
+    "PsExec was used to launch a command on a remote device with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`, indicating potential lateral movement.",
+    "Suspicious access to LSASS service was detected, associated with the file `get-krbticket.ps1`, indicating an attempt to obtain clear-text passwords."
+  ],
+  "metadata": {
+    "start_alert": 106,
+    "end_alert": 102,
+    "start_entities": [
+      9
+    ],
+    "end_entities": [
+      38
+    ],
+    "shortest_alert_path": [
+      106,
+      7,
+      95,
+      33,
+      102
+    ]
+  }
+}

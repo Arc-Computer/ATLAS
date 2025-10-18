@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_34_test_q050",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A suspicious PowerShell activity was observed on the machine, which might indicate that PowerShell was used during installation, exploration, or lateral movement activities by attackers. Attackers usually utilize PowerShell to execute their payload in memory without leaving any trace on the disk.",
+  "question": "Can you identify the AadUserId of the user involved in the suspicious PowerShell download or encoded command execution?",
+  "gold_answer": "16320fec-8d90-403b-b7fe-78f715d4728d",
+  "solution_steps": [
+    "There was a suspicious PowerShell activity on the machine initiated by the process `winword.exe` with Process ID `9780` and executed command `c:\\scripts\\rs4_winatp-intro-invoice.docm` at `2024-06-26t11:57:20.2959493z`.",
+    "A user with AadUserId `16320fec-8d90-403b-b7fe-78f715d4728d` executed PowerShell to download a file or run an encoded command."
+  ],
+  "metadata": {
+    "start_alert": 10,
+    "end_alert": 26,
+    "start_entities": [
+      13,
+      14,
+      15,
+      16
+    ],
+    "end_entities": [
+      6
+    ],
+    "shortest_alert_path": [
+      10,
+      11,
+      26
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "task_id": "incident_5_test_q020",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A recent security incident indicated a possible attempt to access the Primary Refresh Token (PRT) on host `vnevado-win10v` using the file `powershell.exe`. The possible incident occurred on July 4th, 2024, and was detected as a Primary Refresh Token (PRT) is critical for Azure AD authentication. This anomaly suggests an attacker might be trying to move laterally or perform credential theft. Another related observation was a suspicious network event indicating possible lateral movement to another device.",
+  "question": "As part of this investigation, could you identify the IP address of the device that the attacker possibly moved to laterally?",
+  "gold_answer": "38.142.109.10",
+  "solution_steps": [
+    "There is a possible attempt to access the Primary Refresh Token (PRT) using the process `browsercore.exe`.",
+    "The attempt to access the PRT originated from the host `vnevado-win11u`.",
+    "There is a possibility of lateral movement originating from the IP address `38.142.109.10` in close time proximity to the suspicious PRT access attempt."
+  ],
+  "metadata": {
+    "start_alert": 36,
+    "end_alert": 101,
+    "start_entities": [
+      16,
+      17,
+      18,
+      20,
+      34,
+      35,
+      37,
+      38,
+      39
+    ],
+    "end_entities": [
+      102
+    ],
+    "shortest_alert_path": [
+      36,
+      40,
+      118,
+      7,
+      101
+    ]
+  }
+}

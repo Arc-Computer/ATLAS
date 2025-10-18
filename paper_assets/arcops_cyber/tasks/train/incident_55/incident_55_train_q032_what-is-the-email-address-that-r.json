@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_55_train_q032",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "As part of a recent security incident, a Windows executable file that had been renamed was launched on the host `mb-adfs`. The file executed was `iy2orr1e.rrg.exe` with process ID 3116, an action that could indicate malicious intent such as running unauthorized code or connecting to an attacker-controlled network address. Following this, a malicious PowerShell Cmdlet was invoked, which could be associated with credential theft or network reconnaissance. Ultimately, emails containing a malicious URL were detected and removed after delivery.",
+  "question": "What is the email address that received the message containing a malicious URL which was later removed after delivery?",
+  "gold_answer": "bjenkins@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "A renamed system executable `powershell.exe` was launched on the machine.",
+    "A malicious PowerShell Cmdlet was invoked by the user with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0`.",
+    "An email containing a malicious URL was delivered and then removed. The recipient was `bjenkins@niseko.alpineskihouse.co`."
+  ],
+  "metadata": {
+    "start_alert": 27,
+    "end_alert": 92,
+    "start_entities": [
+      25,
+      26,
+      28,
+      29,
+      30,
+      31
+    ],
+    "end_entities": [
+      94
+    ],
+    "shortest_alert_path": [
+      27,
+      8,
+      51,
+      3,
+      92
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_train_q072",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "Security incident involving a compromised user account with the account SID `S-0-6-5` delivering ransomware files. The alert was triggered due to the suspicious WMI process creation observed on the machine, which is possibly used by malware to spawn new processes.",
+  "question": "There is also a suspicious WMI process creation related to this incident. Can you provide the command line details of the process observed?",
+  "gold_answer": "`powershell -file c:\\scripts\\get-userprttoken.ps1`",
+  "solution_steps": [
+    "A user account was seen delivering ransomware-related files on host `vnevado-win11t`.",
+    "A suspicious WMI process was created with process ID `6280` at `2024-06-20t09:29:43.9198085z` using the command line `powershell -file c:\\scripts\\get-userprttoken.ps1`."
+  ],
+  "metadata": {
+    "start_alert": 93,
+    "end_alert": 145,
+    "start_entities": [
+      42,
+      47,
+      94,
+      95
+    ],
+    "end_entities": [
+      109
+    ],
+    "shortest_alert_path": [
+      93,
+      68,
+      145
+    ]
+  }
+}

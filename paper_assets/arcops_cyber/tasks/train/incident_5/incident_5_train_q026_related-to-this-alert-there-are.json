@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_5_train_q026",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A known credential theft tool execution command line was detected on 2024-07-04 22:35:02.654051+00:00. The process `mimikatz.exe` was executed on IP `107.224.99.179`, followed by the execution of `notepad.exe` and `cmd.exe`. The attack exploited the credentials to attempt lateral movements within the network. The execution of mimikatz may indicate an attempt to dump users' credentials, keys, plain-text passwords, and more.",
+  "question": "Related to this alert, there are potentially compromised assets exhibiting ransomware-like behavior. Can you find the AadUserId of the account that may be used by the attacker?",
+  "gold_answer": "731adb71-b11c-4bbf-850b-57989b350e96",
+  "solution_steps": [
+    "A malicious credential theft tool execution was detected involving the user account with SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "There was a lateral movement to the jump server Vnevado-jump from the IP address `99.83.111.100`.",
+    "The user account with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96` exhibited ransomware-like behavior, potentially compromising multiple assets."
+  ],
+  "metadata": {
+    "start_alert": 129,
+    "end_alert": 157,
+    "start_entities": [
+      20,
+      24,
+      30,
+      31,
+      33
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      129,
+      17,
+      174,
+      42,
+      157
+    ]
+  }
+}

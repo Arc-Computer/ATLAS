@@ -73,3 +73,6 @@ outputs/
 logs/
 wandb/
 *.log
+
+# External dependencies
+external/

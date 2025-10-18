@@ -1,0 +1,26 @@
+{
+  "task_id": "incident_55_train_q060",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "During a security incident investigation, we identified that a known public tool, which could be used for malicious purposes, was observed under the filename `iy2orr1e.rrg.exe` and was executed with Process ID 5752 and command line args `-windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=`. This activity happened on 2024-07-06 at 00:00:01.7155092 UTC and is suspected to be an attempt to hide the tool usage for malicious purposes.",
+  "question": "Can you provide the process ID and the creation time of the earlier instance of the same tool observed in this investigation?",
+  "gold_answer": "Process ID: 3116, Creation Time: 2024-07-02t09:48:23.9439954",
+  "solution_steps": [
+    "An attempt to hide the use of a dual-purpose tool named `iy2orr1e.rrg.exe` with the command line `iy2orr1e.rrg.exe -windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=` was detected on host `mb-adfs` on `2024-07-02t09:48:23.9439954z` with Process ID `3116`."
+  ],
+  "metadata": {
+    "start_alert": 68,
+    "end_alert": 32,
+    "start_entities": [
+      69
+    ],
+    "end_entities": [
+      28
+    ],
+    "shortest_alert_path": [
+      68,
+      26,
+      32
+    ]
+  }
+}

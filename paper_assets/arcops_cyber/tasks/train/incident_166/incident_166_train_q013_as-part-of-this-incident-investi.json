@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_train_q013",
+  "incident": "incident_166",
+  "split": "train",
+  "context": "A security incident involving a sign-in from an anonymous IP address `192.238.237.190`, which could be from a Tor browser or anonymizer VPNs, was detected on 2024-07-22. This incident is part of a broader investigation into a potential security threat where multiple alerts have been flagged.",
+  "question": "As part of this incident investigation, a password spray attack was detected the next day. Can you get the IP address from which the password spray attack originated?",
+  "gold_answer": "95.202.65.202",
+  "solution_steps": [
+    "There was a sign-in from an anonymous IP address for user with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "A password spray attack was detected from IP address `95.202.65.202`."
+  ],
+  "metadata": {
+    "start_alert": 3,
+    "end_alert": 28,
+    "start_entities": [
+      4
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      3,
+      1,
+      28
+    ]
+  }
+}

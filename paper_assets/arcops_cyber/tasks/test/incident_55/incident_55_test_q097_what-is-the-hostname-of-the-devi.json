@@ -1,0 +1,42 @@
+{
+  "task_id": "incident_55_test_q097",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A security incident involving a suspicious sequence of exploration activities involving various windows commands was observed. One of the commands executed was associated with the process `iy2orr1e.rrg.exe` on host `mb-adfs`. This activity may indicate an attacker identifying valuable assets and preparing to move laterally after compromising the machine. Following this, a malicious PowerShell Cmdlet was invoked on the machine, which could be linked to credential theft, network reconnaissance, or code injection. Later, a suspected DCSync attack was detected, where Luciano Herrera (CIO) on an unknown host sent a replication request to an entity. The last event in the sequence was that the device `MB-DC1` read the DKM key of an ADFS object.",
+  "question": "What is the hostname of the device that sent the replication request in the suspected DCSync attack?",
+  "gold_answer": "MB-WINCLIENT",
+  "solution_steps": [
+    "A suspicious sequence of exploration activities was conducted via the process `powershell.exe`.",
+    "A malicious PowerShell Cmdlet was invoked by the user with SID `S-1-5-21-551436448-9871687716-9837441745-1903`.",
+    "Luciano Herrera (CIO) on the host `MB-WINCLIENT` sent a replication request to the host `MB-DC1`.",
+    "The host `MB-DC1` then read the DKM key of ADFS object id `4cac49d3-29d3-407e-8c9b-b7ebb21541b2`."
+  ],
+  "metadata": {
+    "start_alert": 52,
+    "end_alert": 105,
+    "start_entities": [
+      53,
+      25,
+      20,
+      28,
+      26,
+      19,
+      29,
+      56,
+      18,
+      55
+    ],
+    "end_entities": [
+      99
+    ],
+    "shortest_alert_path": [
+      52,
+      8,
+      51,
+      10,
+      98,
+      99,
+      105
+    ]
+  }
+}

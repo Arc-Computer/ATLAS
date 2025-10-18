@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_34_test_q021",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A suspicious PowerShell activity involving the execution of `powershell.exe` to download a file or run an encoded command was observed on the machine `vnevado-win10e`. PowerShell is often used by attackers to bypass security protection mechanisms by executing their payload in memory without leaving a trace or touching the disk.",
+  "question": "What is the name of the file identified during the suspicious PowerShell command line activity?",
+  "gold_answer": "winatp-intro-backdoor.exe",
+  "solution_steps": [
+    "A suspicious PowerShell executed a command at `2024-06-26t12:00:39.2886108z` with Process ID `8604` including encoded commands and base64 data.",
+    "This PowerShell command was involved in creating and running a file named `winatp-intro-backdoor.exe`."
+  ],
+  "metadata": {
+    "start_alert": 26,
+    "end_alert": 10,
+    "start_entities": [
+      8,
+      12,
+      6,
+      1,
+      9,
+      2,
+      5,
+      4,
+      11
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      26,
+      7,
+      10
+    ]
+  }
+}

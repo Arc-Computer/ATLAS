@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_39_train_q044",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A user named Ethan Brooks from the email `Ethan Brooks@vnevado.alpineskihouse.co` accessed a possibly malicious link `https://ac27145722.livelygrass-8d4c4013.eastus2.azurecontainerapps.io/` in an email that was quarantined by zero-hour auto purge (ZAP). This alert was triggered based on a Microsoft Defender for Office 365 alert.",
+  "question": "In a related alert, it was observed that the Rubeus tool might have been used to perform kerberoasting on this endpoint. What is the username of the account for which Kerberos tickets were requested?",
+  "gold_answer": "tgs2z",
+  "solution_steps": [
+    "The user with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1` accessed a link in an email that was quarantined by zero-hour auto purge (ZAP).",
+    "Activity indicating the use of the Rubeus kerberoasting tool was observed on the account `tgs2z`."
+  ],
+  "metadata": {
+    "start_alert": 141,
+    "end_alert": 107,
+    "start_entities": [
+      117,
+      118,
+      137
+    ],
+    "end_entities": [
+      27
+    ],
+    "shortest_alert_path": [
+      141,
+      29,
+      107
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_train_q028",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "During a recent security incident, a sign-in attempt was detected using a deceptive user account, which could be an indicator of an attacker using a fake or decoy user account on the device `vnevado-win10v`. Following this, multiple known dual-purpose tools, which could be used for malicious activities, were dropped on the same device. Such tools might be used for credential theft, privilege escalation, and lateral movement. This chain of events leads us to a suspicious file being registered as a service, which might indicate an attacker attempting to register the file for persistence.",
+  "question": "Can you identify the account that was used to register the suspicious file as a service?",
+  "gold_answer": "LocalSystem",
+  "solution_steps": [
+    "There was a sign-in attempt using a deceptive user account on host `vnevado-win10v`.",
+    "Multiple dual-purpose tools, including `psexesvc.exe`, were dropped on the device `vnevado-win10v`.",
+    "A suspicious file was registered as a service under the account `LocalSystem`."
+  ],
+  "metadata": {
+    "start_alert": 41,
+    "end_alert": 21,
+    "start_entities": [
+      27,
+      28,
+      29,
+      32,
+      33,
+      42,
+      43
+    ],
+    "end_entities": [
+      22
+    ],
+    "shortest_alert_path": [
+      41,
+      32,
+      62,
+      24,
+      21
+    ]
+  }
+}

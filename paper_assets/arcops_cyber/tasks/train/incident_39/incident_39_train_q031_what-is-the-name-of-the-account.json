@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_train_q031",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident was detected involving PsExec being used to launch a command on a remote device `vnevado-win10v`. This incident might indicate an attacker leveraging PsExec to execute malicious commands and move laterally within the organization. One of the commands involved launching the `rubeus.exe` tool, which is often used for Kerberos ticket attacks.",
+  "question": "What is the name of the account that was observed in the end alert, possibly involved in the kerberoasting attack using the Rubeus tool?",
+  "gold_answer": "fk8mq",
+  "solution_steps": [
+    "PsExec was used to launch a command on a remote device, with the associated file `adminticket.txt`.",
+    "The account `fk8mq` was involved in activity indicating the use of the Rubeus kerberoasting tool, which can perform attacks such as kerberoasting and pass-the-ticket."
+  ],
+  "metadata": {
+    "start_alert": 95,
+    "end_alert": 0,
+    "start_entities": [
+      69,
+      18,
+      32,
+      49,
+      70,
+      36,
+      28,
+      27,
+      97,
+      50
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      95,
+      8,
+      0
+    ]
+  }
+}

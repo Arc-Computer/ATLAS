@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_train_q099",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident involving the execution of a known credential theft tool was detected on host `vnevado-win10v`. A file named `mimikatz.exe` was executed with the intention to dump users' credentials, keys, and plain-text passwords. The process ID for this execution was 5196, and it was initiated by an account with the name `tgs2z`.",
+  "question": "During further investigation, a SID history injection was detected. Can you determine the AadUserId of the account involved in this malicious activity?",
+  "gold_answer": "7fcf9695-68fc-4258-864d-e1e5b166c66f",
+  "solution_steps": [
+    "A credential theft tool execution was detected, targeting the account with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1`.",
+    "Activity indicative of the use of the Rubeus kerberoasting tool was identified, involving the process `powershell.exe`.",
+    "A Security IDentifcation (SID) history injection was detected, involving the account with AadUserId `7fcf9695-68fc-4258-864d-e1e5b166c66f`."
+  ],
+  "metadata": {
+    "start_alert": 89,
+    "end_alert": 93,
+    "start_entities": [
+      27,
+      28,
+      29,
+      31,
+      32,
+      33,
+      67
+    ],
+    "end_entities": [
+      15
+    ],
+    "shortest_alert_path": [
+      89,
+      29,
+      107,
+      17,
+      93
+    ]
+  }
+}

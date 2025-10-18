@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_39_test_q044",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "In a recent incident, a suspicious service was discovered on the device 'vnevado-dc'. The 'services.exe' process was started with command line details `652__2024-06-19t12:56:00.7201251z__services.exe` and `7668__2024-06-27t14:34:10.0201983z__psexesvc.exe`. Attackers may use services to launch malicious commands or programs, maintaining persistence or elevating privileges on the target device.",
+  "question": "In connection with this incident, suspicious remote activity was observed on 2024-07-04. Can you identify the Azure Active Directory (AAD) user ID associated with this suspicious remote activity?",
+  "gold_answer": "97e6a954-b6bd-48a5-808c-bd8464cce677",
+  "solution_steps": [
+    "A suspicious service named `psexesvc.exe` was launched on the device.",
+    "Suspicious remote activity was observed involving an account with AadUserId `97e6a954-b6bd-48a5-808c-bd8464cce677`."
+  ],
+  "metadata": {
+    "start_alert": 86,
+    "end_alert": 101,
+    "start_entities": [
+      20,
+      61,
+      87,
+      88
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      86,
+      5,
+      101
+    ]
+  }
+}

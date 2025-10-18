@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_322_test_q052",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "A file `powershell.exe` with ProcessId 2556 and `ntdsutil.exe` with ProcessId 6748 were observed as part of a recent security incident where attackers might be using Ntdsutil to gather Active Directory information. This incident is marked by various alerts. In a subsequent alert, a suspicious resource management operation was detected from a proxy IP address, followed by a malicious URL clicked on a device. The incident concluded with a connection from IP address 231.60.52.209 to login.micro.demo.antoinetest.ovh identified in the proxy logs.",
+  "question": "What is the IP address detected in the proxy logs for the malicious URL connection?",
+  "gold_answer": "228.3.31.94",
+  "solution_steps": [
+    "An attacker is collecting Active Directory information with ntdsutil.exe on host `vnevado-dc`.",
+    "A suspicious Azure Resource Manager operation was performed through a proxy IP address associated with the email account `Hailey Johnson@vnevado.alpineskihouse.co`.",
+    "A malicious URL was clicked on the device `vnevado-win11h`.",
+    "Suspicious connection from IP address `228.3.31.94` was detected in proxy logs going to login.micro.demo.antoinetest.ovh, associated with the device `vnevado-win11h.vnevado.alpineskihouse.co`."
+  ],
+  "metadata": {
+    "start_alert": 22,
+    "end_alert": 11,
+    "start_entities": [
+      17,
+      18,
+      19,
+      20
+    ],
+    "end_entities": [
+      15
+    ],
+    "shortest_alert_path": [
+      22,
+      21,
+      25,
+      7,
+      33,
+      13,
+      11
+    ]
+  }
+}

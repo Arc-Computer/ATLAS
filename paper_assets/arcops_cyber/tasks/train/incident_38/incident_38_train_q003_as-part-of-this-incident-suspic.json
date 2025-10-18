@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_38_train_q003",
+  "incident": "incident_38",
+  "split": "train",
+  "context": "A security incident involved gathering information on a device using a known tool or technique. This was detected when a process with ID 7472 and the command line `powershell.exe` was executed at `2024-06-26T15:49:15.7860486Z`. This is an indication that attackers might be attempting to collect information about the target device or network for future attacks.",
+  "question": "As part of this incident, suspicious process injection was also observed. Can you find the URL associated with this process injection?",
+  "gold_answer": "https://wcdstaticfilesprdeus.blob.core.windows.net/wcdstaticfiles/winatp-intro-fileless.txt",
+  "solution_steps": [
+    "The account with AadUserId `12185914-91dd-4fb9-94f9-3252203b0426` was involved in a suspicious application window discovery activity.",
+    "A suspicious process injection was observed involving the URL `https://wcdstaticfilesprdeus.blob.core.windows.net/wcdstaticfiles/winatp-intro-fileless.txt`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 14,
+    "start_entities": [
+      5
+    ],
+    "end_entities": [
+      13
+    ],
+    "shortest_alert_path": [
+      0,
+      3,
+      14
+    ]
+  }
+}

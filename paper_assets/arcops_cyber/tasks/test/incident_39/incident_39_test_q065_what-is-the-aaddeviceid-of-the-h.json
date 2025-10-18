@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_39_test_q065",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "In a recent investigation, an attempt to disable the Microsoft Defender Antivirus service was detected. This attempt is considered tampering and could be an indication of an effort to evade detection. The incident is associated with a user identified by `AadUserId` value `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1`, operating on the host `vnevado-win10v`, where the process `powershell.exe` was used to launch the script `get-krbticket.ps1` for extracting Kerberos tickets.",
+  "question": "What is the AadDeviceId of the host involved in this activity?",
+  "gold_answer": "4d8d23e9-a77d-4e33-9435-b8c457e57ca1",
+  "solution_steps": [
+    "An attempt to disable the Microsoft Defender Antivirus service was detected on a host with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`."
+  ],
+  "metadata": {
+    "start_alert": 35,
+    "end_alert": 35,
+    "start_entities": [
+      29,
+      36,
+      37,
+      32,
+      17,
+      28,
+      38,
+      27
+    ],
+    "end_entities": [
+      33
+    ],
+    "shortest_alert_path": [
+      35
+    ]
+  }
+}

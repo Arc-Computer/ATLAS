@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_5_test_q091",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A ransomware payload was remotely launched on the device with hostname `vnevado-win11u` and IP address `99.83.111.100`. The attackers might be attempting to encrypt content on this device, rendering it unusable to users. It is crucial to note that this is indicative of a potential ransomware attack, and further information can be found in the Threat Analytics report provided.",
+  "question": "During the ransomware attack incident on `vnevado-win11u`, a process was used to delete all file snapshots and shadow copies via WMI or VSSAdmin. Can you identify the name of this process?",
+  "gold_answer": "vssblatemp.exe",
+  "solution_steps": [
+    "The ransomware payload was remotely launched for the account `dp5hn`.",
+    "File backups were deleted by the process `vssblatemp.exe` which is common during a ransomware infection."
+  ],
+  "metadata": {
+    "start_alert": 112,
+    "end_alert": 70,
+    "start_entities": [
+      7,
+      8,
+      42
+    ],
+    "end_entities": [
+      11
+    ],
+    "shortest_alert_path": [
+      112,
+      1,
+      70
+    ]
+  }
+}

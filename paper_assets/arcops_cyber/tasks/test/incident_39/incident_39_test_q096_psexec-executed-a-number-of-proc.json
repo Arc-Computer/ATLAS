@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_test_q096",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "During a recent investigation of a security incident, it was detected that PsExec was used to launch various commands on remote devices, which could indicate lateral movement by an attacker. Particularly, commands executed involved tools such as `powershell.exe`, `psexec.exe`, and `net.exe`. PsExec's launch of commands on remote devices at 2024-07-04 22:35:03.229603+00:00 is noteworthy as it might be part of the attack sequence. Soon after, the Mimikatz credential theft tool was detected on this device, which is commonly used for harvesting plaintext passwords, password hashes, smartcard PINs, and Kerberos tickets.",
+  "question": "PsExec executed a number of processes on the remote device, following this, a credential theft tool was detected. What is the name of the credential theft tool detected?",
+  "gold_answer": "mimikatz.exe",
+  "solution_steps": [
+    "The user with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1` used PsExec to launch a command on a remote device.",
+    "The Mimikatz credential theft tool, identified as `mimikatz.exe`, was detected on the device, indicating an attempt to harvest credentials."
+  ],
+  "metadata": {
+    "start_alert": 95,
+    "end_alert": 108,
+    "start_entities": [
+      69,
+      7,
+      49,
+      8,
+      36,
+      96,
+      50,
+      97,
+      70,
+      18
+    ],
+    "end_entities": [
+      64
+    ],
+    "shortest_alert_path": [
+      95,
+      29,
+      108
+    ]
+  }
+}

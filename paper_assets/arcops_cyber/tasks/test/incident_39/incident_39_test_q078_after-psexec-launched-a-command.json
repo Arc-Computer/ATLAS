@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_test_q078",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A known credential theft tool called `mimikatz.exe` was detected executing on the host `vnevado-win10v` with the command line: `mimikatz.exe privilege::debug sekurlsa::logonpasswords exit`. This is part of a recent alert where an attacker might be attempting to dump user credentials, keys, and plain-text passwords. The incident continued with the detection of PsExec launching a command on a remote device, which is often used for lateral movement within an organization.",
+  "question": "After PsExec launched a command on a remote device, a malware named 'Kekeo' was detected. Can you provide the Security Identifier (SID) of the account associated with this event?",
+  "gold_answer": "S-1-5-21-1540151660-3530000288-105586595-1517",
+  "solution_steps": [
+    "A known credential theft tool execution was detected on host with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`.",
+    "PsExec was used to launch `rubeus.exe` on a remote device.",
+    "'Kekeo' malware was detected and was active on account with SID `S-1-5-21-1540151660-3530000288-105586595-1517`."
+  ],
+  "metadata": {
+    "start_alert": 89,
+    "end_alert": 100,
+    "start_entities": [
+      27,
+      28,
+      29,
+      31,
+      32,
+      33,
+      67
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      89,
+      33,
+      95,
+      7,
+      100
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_39_train_q091",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident was reported involving Julian Burke (IT director) who sent a replication request to VNEVADO-DC from the machine VNEVADO-Win10V, which is suspected to be a DCSync attack. During the investigation, it was found that Ethan Brooks (Account Executive) on the same machine enumerated SMB sessions on VNEVADO-DC to retrieve IP addresses of 2 accounts. Ultimately, there was a detection of a command line execution of a known malicious credential theft tool that indicated an intent to dump users' credentials, keys, and plain-text passwords.",
+  "question": "What is the identifier (Name) of the account from the final alert associated with the execution of the malicious credential theft tool?",
+  "gold_answer": "tgs2z",
+  "solution_steps": [
+    "Julian Burke (IT director) on host `VNEVADO-Win10V` sent 1 replication request to `VNEVADO-DC`, indicating a suspected DCSync attack.",
+    "Ethan Brooks (Account Executive) on host `VNEVADO-Win10V` enumerated SMB sessions on `VNEVADO-DC`, retrieving recent IP addresses of 2 accounts. The AadUserId associated with this activity is `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1`.",
+    "A malicious credential theft tool execution was detected with the intent to dump users' credentials. The account linked to this activity is `tgs2z`."
+  ],
+  "metadata": {
+    "start_alert": 122,
+    "end_alert": 26,
+    "start_entities": [
+      14,
+      15,
+      123,
+      124
+    ],
+    "end_entities": [
+      27
+    ],
+    "shortest_alert_path": [
+      122,
+      116,
+      114,
+      29,
+      26
+    ]
+  }
+}

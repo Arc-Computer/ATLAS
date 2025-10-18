@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_39_train_q051",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "As part of a recent security incident involving credential theft using Mimikatz and lateral movement, the Mimikatz tool was detected and various command lines involving `mimikatz.exe` were executed to harvest credentials and potentially log into other devices on the network. Subsequently, a sign-in attempt was detected using a deceptive user account on this device, which might be part of the attack activities aimed at lateral movement and accessing sensitive data.",
+  "question": "What was the IP address used in the deceptive user account sign-in attempt?",
+  "gold_answer": "141.216.110.153",
+  "solution_steps": [
+    "Mimikatz credential theft tool was detected on a device and an account with SID `S-5-7-21-1843151660-3234030288-105586167-1422` might be compromised.",
+    "A sign-in attempt was detected using a deceptive user account named `kyleg`.",
+    "The sign-in attempt using the deceptive user account `kyleg` originated from the IP address `141.216.110.153`."
+  ],
+  "metadata": {
+    "start_alert": 108,
+    "end_alert": 75,
+    "start_entities": [
+      31,
+      30,
+      64,
+      71,
+      40,
+      67,
+      45,
+      17,
+      37,
+      68
+    ],
+    "end_entities": [
+      25
+    ],
+    "shortest_alert_path": [
+      108,
+      28,
+      41,
+      42,
+      75
+    ]
+  }
+}

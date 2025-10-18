@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_test_q001",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "An automated investigation was initiated manually on the host `vnevado-win10e.vnevado.alpineskihouse.co` by user `u141(u141@ash.alpineskihouse.co)`. This investigation aims to identify and review threat artifacts for possible remediation. As part of this investigation, attention is drawn to a suspicious PowerShell activity where a file was downloaded or an encoded command was executed. This activity is often associated with attackers trying to bypass security mechanisms.",
+  "question": "Can you identify the security identifier (SID) of the account associated with the suspicious PowerShell download or encoded command execution?",
+  "gold_answer": "S-1-5-21-1870156660-7534030218-135086563-1193",
+  "solution_steps": [
+    "An automated investigation was started manually by user `u141@ash.alpineskihouse.co` on the host `vnevado-win10e`.",
+    "Suspicious PowerShell activity was detected involving a process that executed PowerShell to download a file or run an encoded command. This activity was associated with the user account having SID `S-1-5-21-1870156660-7534030218-135086563-1193`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 22,
+    "start_entities": [
+      1,
+      2
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      0,
+      1,
+      22
+    ]
+  }
+}

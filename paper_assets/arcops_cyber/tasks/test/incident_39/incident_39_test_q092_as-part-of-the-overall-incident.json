@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_39_test_q092",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A suspected DCSync attack was detected involving Julian Burke, the IT director. Julian Burke on VNEVADO-Win10V sent 1 replication request to VNEVADO-DC, which indicates malicious replication of directory services that might be part of a larger attack scenario. This was indicated by the involvement of the account with Sid `S-1-5-21-1440151660-4837038288-105596163-1120` and AadUserId `7fcf9695-68fc-4258-864d-e1e5b166c66f`.",
+  "question": "As part of the overall incident investigation, it appears that Julian Burke's Kerberos ticket was taken and used for unauthorized access. Can you provide the SID of the account that was involved in the suspected identity theft (pass-the-ticket) attack?",
+  "gold_answer": "S-1-0-25-1848151668-3534030238-185306563-542",
+  "solution_steps": [
+    "Julian Burke (IT director) with AadUserId `7fcf9695-68fc-4258-864d-e1e5b166c66f` sent a replication request to VNEVADO-DC.",
+    "An actor took Julian Burke (IT director)'s Kerberos ticket and used it on VNEVADO-Win10V to access 4 resources, with user SID `S-1-0-25-1848151668-3534030238-185306563-542`."
+  ],
+  "metadata": {
+    "start_alert": 122,
+    "end_alert": 130,
+    "start_entities": [
+      14,
+      15,
+      115,
+      116,
+      123,
+      124
+    ],
+    "end_entities": [
+      133
+    ],
+    "shortest_alert_path": [
+      122,
+      15,
+      130
+    ]
+  }
+}

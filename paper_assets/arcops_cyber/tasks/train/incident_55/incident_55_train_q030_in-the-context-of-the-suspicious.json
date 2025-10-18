@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_train_q030",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A suspicious remote activity was observed on the machine `mb-adfs`. This alert indicated attempts to initiate interactive sessions, modify files, pass WMI commands, create scheduled tasks, and other potentially malicious activities from a remote machine. Various processes such as `cmd.exe`, `lsass.exe`, and `powershell.exe` were involved, and the suspicious activity was associated with a user account.",
+  "question": "In the context of the suspicious service creation alert, which user's email was associated with creating the service DDLOXJDSQSNGMUKKFUXQ?",
+  "gold_answer": "gsmith@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "There was suspicious remote activity initiated by the AadUserId `ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5`.",
+    "The user with email `gsmith@niseko.alpineskihouse.co` created the suspicious service `DDLOXJDSQSNGMUKKFUXQ` on `MB-ADFS`."
+  ],
+  "metadata": {
+    "start_alert": 37,
+    "end_alert": 101,
+    "start_entities": [
+      40,
+      24,
+      25,
+      22,
+      23,
+      8,
+      38,
+      17,
+      21,
+      26
+    ],
+    "end_entities": [
+      103
+    ],
+    "shortest_alert_path": [
+      37,
+      20,
+      101
+    ]
+  }
+}

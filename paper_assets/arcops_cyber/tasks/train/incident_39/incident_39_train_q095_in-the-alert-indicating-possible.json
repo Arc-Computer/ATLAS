@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_train_q095",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A multi-stage security incident involving potential human-operated malicious activity was observed, which might lead to ransomware or other payloads installed on target devices. As part of this incident, the file `rubeus.exe` was used to dump Kerberos tickets on host `vnevado-win10b` by account `kyleg` with IP address `141.216.110.153`.",
+  "question": "In the alert indicating possible use of the Rubeus kerberoasting tool, which SID was associated with the suspicious account activity?",
+  "gold_answer": "S-5-7-21-1843151660-3234030288-105586167-1422",
+  "solution_steps": [
+    "Possible human-operated malicious activity was observed involving the file `adminticket.txt`.",
+    "The Rubeus kerberoasting tool might have been used on an endpoint involving an account with SID `S-5-7-21-1843151660-3234030288-105586167-1422`."
+  ],
+  "metadata": {
+    "start_alert": 105,
+    "end_alert": 107,
+    "start_entities": [
+      65,
+      42,
+      2,
+      10,
+      25,
+      9,
+      23,
+      6,
+      1,
+      3
+    ],
+    "end_entities": [
+      28
+    ],
+    "shortest_alert_path": [
+      105,
+      8,
+      107
+    ]
+  }
+}

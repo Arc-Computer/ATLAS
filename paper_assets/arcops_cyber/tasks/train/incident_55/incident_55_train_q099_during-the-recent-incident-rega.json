@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_55_train_q099",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A security incident involving credential access and potential exfiltration was detected on host `mb-winclient`, linked to user `bjenkins`. Further investigation indicated that during this period, emails containing malicious URLs were delivered and removed. These activities may be related.",
+  "question": "During the recent incident, regarding email messages containing malicious URLs that were removed after delivery, can you provide the sender's IP address of these emails?",
+  "gold_answer": "119.36.50.193",
+  "solution_steps": [
+    "A process accessed the memory of the Local Security Authority Subsystem Service (lsass.exe) on 2024-07-04 to extract credentials associated with the user having AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0`.",
+    "An email containing a malicious URL was sent from the IP address `119.36.50.193` on 2024-07-09 and later removed."
+  ],
+  "metadata": {
+    "start_alert": 67,
+    "end_alert": 92,
+    "start_entities": [
+      1,
+      4,
+      7,
+      8,
+      14,
+      15,
+      24,
+      50
+    ],
+    "end_entities": [
+      95
+    ],
+    "shortest_alert_path": [
+      67,
+      3,
+      92
+    ]
+  }
+}

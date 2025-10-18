@@ -1,0 +1,37 @@
+{
+  "task_id": "incident_55_train_q083",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "As part of a security incident that began with an email containing a malicious URL (`http://kn017721628.wittytree-b6f239d6.northeurope.azurecontainerapps.io/`) being delivered to the mailbox `santiago@vnevado.alpineskihouse.co` and subsequently removed, it was observed that a user sent phishing emails from within the organization possibly indicating their account had been compromised. Further investigation revealed that a process was injected with suspicious code potentially connecting to a C2 server or opening a listening port, which escalated until finally a malicious URL was clicked on a device.",
+  "question": "What was the final malicious URL that was clicked on, indicating the continuation of the suspicious activities?",
+  "gold_answer": "https://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/",
+  "solution_steps": [
+    "The email account with SID `S-1-5-11-7842151660-4834030208-105586563-1139` received and later had an email with a malicious URL removed.",
+    "A user with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0` was observed to have sent phishing emails from their device.",
+    "A process on host `mb-winclient` was injected with potentially malicious code.",
+    "A malicious URL `https://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/` was clicked on that device."
+  ],
+  "metadata": {
+    "start_alert": 70,
+    "end_alert": 107,
+    "start_entities": [
+      71,
+      72,
+      73,
+      74,
+      79
+    ],
+    "end_entities": [
+      97
+    ],
+    "shortest_alert_path": [
+      70,
+      77,
+      88,
+      3,
+      41,
+      14,
+      107
+    ]
+  }
+}

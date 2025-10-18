@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_5_test_q003",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A Mimikatz credential theft tool was detected on a device at 2024-07-04 22:35:03.797541+00:00. Mimikatz is a tool used to harvest plaintext passwords, password hashes, smartcard PINs, and Kerberos tickets. The attacker might be leveraging this tool to harvest credentials to log into this or other devices on the network by impersonating a valid user. Several command line executions involving `mimikatz.exe` were observed, along with connected mimikatz-related files like `mimidrv.sys`, `mimispool.dll`, and `mimilove.exe`. More information can be found in the Mimikatz tool profile Threat Analytics report and the Actor profile: Storm-0875 Threat Analytics report provided by Microsoft.",
+  "question": "Can you identify the IP address involved in the malicious credential theft tool execution detected?",
+  "gold_answer": "107.224.99.179",
+  "solution_steps": [
+    "The Mimikatz credential theft tool was detected on the device with IP address `107.224.99.179`.",
+    "A malicious credential theft tool execution was detected on the same device with IP address `107.224.99.179`."
+  ],
+  "metadata": {
+    "start_alert": 151,
+    "end_alert": 161,
+    "start_entities": [
+      19,
+      23,
+      32,
+      33,
+      92,
+      111,
+      152,
+      153,
+      154
+    ],
+    "end_entities": [
+      20
+    ],
+    "shortest_alert_path": [
+      151,
+      20,
+      161
+    ]
+  }
+}

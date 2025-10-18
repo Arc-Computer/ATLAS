@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_322_test_q034",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "A user clicked on a link `https://dj01161621.bravesand-e1ccd718.eastus.azurecontainerapps.io/` in an email that was later quarantined by Microsoft Defender for Office 365's zero-hour auto purge (ZAP) on August 1, 2024, at 12:54:55 PM. As part of this incident, we observed suspicious Azure Resource Management (ARM) activities performed by a user account that signed in to a risky session, triggering a Microsoft Defender for Cloud alert related to ARM and Microsoft Entra ID Protection risk scores at 13:19:20 PM the same day.",
+  "question": "Can you identify the IP address from which the suspicious ARM activities were performed?",
+  "gold_answer": "253.1.244.215",
+  "solution_steps": [
+    "The email account `Hailey Johnson@vnevado.alpineskihouse.co` accessed a link in an email that was subsequently quarantined by ZAP.",
+    "Suspicious Azure Resource Management activities were detected from IP address `253.1.244.215` by a user account that signed in to a risky session."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 32,
+    "start_entities": [
+      24
+    ],
+    "end_entities": [
+      31
+    ],
+    "shortest_alert_path": [
+      23,
+      7,
+      32
+    ]
+  }
+}

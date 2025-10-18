@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_55_test_q006",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "An ongoing hands-on-keyboard attack via the Impacket toolkit was observed in our environment. The Impacket toolkit is often used in hands-on-keyboard attacks to explore network shares and execute commands, potentially allowing lateral movement across the network. A process related to the attack, `powershell.exe`, was executed as part of this suspicious activity.",
+  "question": "A known public tool, disguised with a different filename, was used during this attack. Can you identify the filename used in this attempt to hide the tool?",
+  "gold_answer": "iy2orr1e.rrg.exe",
+  "solution_steps": [
+    "A hands-on-keyboard attack using the Impacket toolkit was observed, involving the user account `gsmith`.",
+    "An attempt to hide the use of a dual-purpose tool with CommandLine `iy2orr1e.rrg.exe -windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=` started at `2024-07-02t09:48:23.9439954z`, with Process ID `3116`."
+  ],
+  "metadata": {
+    "start_alert": 16,
+    "end_alert": 32,
+    "start_entities": [
+      8,
+      17,
+      21,
+      22,
+      23,
+      24,
+      25
+    ],
+    "end_entities": [
+      28
+    ],
+    "shortest_alert_path": [
+      16,
+      18,
+      32
+    ]
+  }
+}

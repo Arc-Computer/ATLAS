@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_55_test_q054",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A security incident involved suspected AD FS DKM key read by the user `gsmith@niseko.alpineskihouse.co`. This raised concerns of potential reconnaissance activities in the organization. In another alarming activity, a suspicious LDAP query was executed, indicating potential reconnaissance by querying the domain controller for administrative users, groups, and interesting assets. This could allow an attacker to gain higher privileges and access important organizational assets.",
+  "question": "Can you identify the user account name associated with the suspicious LDAP query executed during this incident?",
+  "gold_answer": "pwilson",
+  "solution_steps": [
+    "Account `gsmith` read the DKM key of ADFS object id 4cac49d3-29d3-407e-8c9b-b7ebb21541b2.",
+    "A process named `powershell.exe` executed a suspicious sequence of exploration commands.",
+    "Account `pwilson` executed a suspicious LDAP query, indicating potential reconnaissance activity."
+  ],
+  "metadata": {
+    "start_alert": 106,
+    "end_alert": 64,
+    "start_entities": [
+      103
+    ],
+    "end_entities": [
+      9
+    ],
+    "shortest_alert_path": [
+      106,
+      18,
+      52,
+      8,
+      64
+    ]
+  }
+}

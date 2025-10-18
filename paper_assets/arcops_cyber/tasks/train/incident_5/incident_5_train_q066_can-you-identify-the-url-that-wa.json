@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_train_q066",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "As part of a security incident related to the Manatee Tempest activity group, an IP `198.43.121.209` and a host `vnevado-win11u` were flagged for suspicious activity. The `curl` command was used to access the URL `http://vectorsandarrows.com`.",
+  "question": "Can you identify the URL that was involved in the command and control behavior which was blocked?",
+  "gold_answer": "http://vectorsandarrows.com/",
+  "solution_steps": [
+    "The account with SID `S-1-5-21-1840191660-8534830288-125585561-1522` is observed to be targeted or used by Manatee Tempest activity group.",
+    "A command and control behavior from the URL `http://vectorsandarrows.com/` was blocked."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 149,
+    "start_entities": [
+      5,
+      6,
+      7,
+      8
+    ],
+    "end_entities": [
+      74
+    ],
+    "shortest_alert_path": [
+      0,
+      2,
+      149
+    ]
+  }
+}

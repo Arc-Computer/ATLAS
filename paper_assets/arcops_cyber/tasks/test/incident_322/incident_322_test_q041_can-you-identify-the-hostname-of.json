@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_322_test_q041",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "A security incident involving the clicking of a malicious URL `https://dj01161621.bravesand-e1ccd718.eastus.azurecontainerapps.io/` by the user Hailey Johnson (email: Hailey Johnson@vnevado.alpineskihouse.co) using Microsoft Edge (msedge.exe) was detected. The event was recorded with the Process ID 4256 at the time 2024-08-01T13:42:52.04. The device had the IP address 172.33.118.200.",
+  "question": "Can you identify the hostname of the device that was used to click the malicious URL?",
+  "gold_answer": "vnevado-win11h",
+  "solution_steps": [
+    "A malicious URL was clicked on the device with the hostname `vnevado-win11h`."
+  ],
+  "metadata": {
+    "start_alert": 33,
+    "end_alert": 33,
+    "start_entities": [
+      37,
+      24,
+      7,
+      6,
+      9,
+      36,
+      35,
+      34,
+      8
+    ],
+    "end_entities": [
+      13
+    ],
+    "shortest_alert_path": [
+      33
+    ]
+  }
+}

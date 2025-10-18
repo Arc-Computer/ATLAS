@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_134_test_q056",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "As part of a security incident involving email messages with malicious URLs, an email containing the URL `https://ms175052280.orangecliff-f53f26fd.eastus.azurecontainerapps.io/` was sent from `alyssat@vnevado.alpineskihouse.co` to `raphaelt@vnevado.alpineskihouse.co` and was later removed after delivery. This incident is indicative of a BEC (business email compromise) where suspicious emails were sent by possibly compromised user accounts.",
+  "question": "What is the IP address linked to the suspicious emails sent by the BEC-related user?",
+  "gold_answer": "237.7.81.122",
+  "solution_steps": [
+    "The email account `Nina Park` received an email with a malicious URL that was later removed.",
+    "Suspicious emails were sent from IP address `237.7.81.122` by a user possibly compromised in a BEC fraud attempt."
+  ],
+  "metadata": {
+    "start_alert": 13,
+    "end_alert": 18,
+    "start_entities": [
+      1,
+      2,
+      3,
+      4,
+      10
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      13,
+      6,
+      18
+    ]
+  }
+}

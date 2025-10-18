@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_train_q017",
+  "incident": "incident_134",
+  "split": "train",
+  "context": "A user account was signed in from an unusual location with IP address `170.54.121.63` during a password spray attack, which might indicate that the account was compromised. The login time was 2024-07-18 at 14:54:18. As the investigation continues, it is important to understand the connections to other suspicious activities.",
+  "question": "We have detected that suspicious emails were sent by a potentially compromised user related to a Business Email Compromise (BEC) attempt. Can you determine the sender IP address associated with these emails?",
+  "gold_answer": "237.7.81.122",
+  "solution_steps": [
+    "The user account with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1` was compromised following a password-spray attack.",
+    "Suspicious emails related to a business email compromise (BEC) fraud attempt were sent from IP address `237.7.81.122`."
+  ],
+  "metadata": {
+    "start_alert": 25,
+    "end_alert": 18,
+    "start_entities": [
+      12
+    ],
+    "end_entities": [
+      21
+    ],
+    "shortest_alert_path": [
+      25,
+      9,
+      18
+    ]
+  }
+}

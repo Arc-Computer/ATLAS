@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_34_test_q019",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "During a security incident involving suspicious PowerShell activity on a machine, it was observed that PowerShell was used, which may indicate malicious activities such as installation, exploration, or lateral movement. Attackers often use PowerShell to bypass security mechanisms by executing payloads in memory without touching the disk. A specific PowerShell command line involving `winword.exe` and `schtasks.exe` was detected.",
+  "question": "Can you identify the name of the account associated with the PowerShell activity which dropped and executed a suspicious file on the machine?",
+  "gold_answer": "samuelf",
+  "solution_steps": [
+    "Suspicious PowerShell activity was observed involving the user with AadUserId `16320fec-8d90-403b-b7fe-78f715d4728d`.",
+    "PowerShell dropped and executed a suspicious file on the machine under the account `samuelf`."
+  ],
+  "metadata": {
+    "start_alert": 10,
+    "end_alert": 25,
+    "start_entities": [
+      11,
+      12,
+      14,
+      15
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      10,
+      6,
+      25
+    ]
+  }
+}

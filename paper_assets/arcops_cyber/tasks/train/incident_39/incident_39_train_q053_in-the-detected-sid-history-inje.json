@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_39_train_q053",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A suspected identity theft (pass-the-ticket) incident occurred where an actor took Julian Burke (IT director)'s Kerberos ticket from VNEVADO-Win10B and used it on VNEVADO-Win10V to access 4 resources. The source IP involved in this activity was `35.202.74.47`, and the compromised hosts included `VNEVADO-DC`, `VNEVADO-Win10V`, and `VNEVADO-Win10B`.",
+  "question": "In the detected SID history injection, which account name was used for the injection?",
+  "gold_answer": "lucasb",
+  "solution_steps": [
+    "An actor took the Kerberos ticket of user `Julian Burke (IT director)` with AadUserId `7fcf9695-68fc-4258-864d-e1e5b166c66f` from device `VNEVADO-Win10B` and used it on `VNEVADO-Win10V` to access 4 resources.",
+    "A Security Identification (SID) history injection was detected on the device for user `lucasb`, indicating potential elevation of privileges."
+  ],
+  "metadata": {
+    "start_alert": 130,
+    "end_alert": 93,
+    "start_entities": [
+      43,
+      115,
+      116,
+      123,
+      124,
+      131,
+      132,
+      133
+    ],
+    "end_entities": [
+      13
+    ],
+    "shortest_alert_path": [
+      130,
+      15,
+      93
+    ]
+  }
+}

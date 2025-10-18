@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_55_train_q020",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "As part of a security incident, a suspicious system hardware discovery was detected on 2024-07-04. The file `svchost.exe` was observed running on host `mb-winclient` by user accounts including `bjenkins` and `pwilson`. This was followed by an internal phishing campaign where a user was observed to have sent phishing emails from this device to recipients inside the organization. This internal phishing activity was flagged by Microsoft Defender for Office 365.",
+  "question": "What is the primary email address of the mailbox to which emails containing malicious URL were delivered and later removed?",
+  "gold_answer": "santiago@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "A user with SID `S-1-5-21-561436748-3867387497-1732241745-3701` engaged in suspicious system hardware discovery.",
+    "The user with SID `S-1-5-11-7842151660-4834030208-105586563-1139` sent phishing emails internally within the organization, indicating a potential account compromise.",
+    "An email containing a malicious URL was sent to the mailbox with the primary address `santiago@vnevado.alpineskihouse.co`, and it was later removed."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 70,
+    "start_entities": [
+      4,
+      1,
+      6,
+      12,
+      5,
+      15,
+      9,
+      11,
+      14,
+      7
+    ],
+    "end_entities": [
+      71
+    ],
+    "shortest_alert_path": [
+      0,
+      2,
+      88,
+      77,
+      70
+    ]
+  }
+}

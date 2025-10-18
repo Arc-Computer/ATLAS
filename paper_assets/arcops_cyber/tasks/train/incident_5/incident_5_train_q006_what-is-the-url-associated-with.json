@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_5_train_q006",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "During the investigation of a potential ransomware activity on the device `vnevado-win11t`, several file system changes were discovered. The files included `get-userprttoken.ps1`, `characterical.zip`, and `characterical.zip.lockbit`. These changes, indicative of a ransomware attack, were linked back to activities of the Manatee Tempest group. This Russia-based cybercriminal group is known for deploying the Dridex banking trojan and collaborating with Mustard Tempest to gain network access. They use drive-by downloads, malvertising, and FakeUpdates to initiate attacks and then deploy Cobalt Strike for lateral movement and ransomware. More details can be found in the Actor Profile: Manatee Tempest Threat Analytics report.",
+  "question": "What is the URL associated with the Manatee Tempest group's activity in this incident?",
+  "gold_answer": "vectorsandarrows.com",
+  "solution_steps": [
+    "Suspicious file system changes indicating possible ransomware activity have been observed, with a known malicious extension being appended to files. These activities were detected on an account with SID `S-1-5-21-1840191660-8534830288-125585561-1522`.",
+    "The threat actor group Manatee Tempest, known for deploying ransomware and using techniques such as malvertising and FakeUpdates infections, was observed. For more information about Manatee Tempest, please refer to the threat analytics report at `https://security.microsoft.com/threatanalytics3/a22c3410-db8f-4c58-866e-ebb760e509d0/analystreport`."
+  ],
+  "metadata": {
+    "start_alert": 159,
+    "end_alert": 135,
+    "start_entities": [
+      42,
+      47,
+      48,
+      68,
+      69,
+      94,
+      95
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      159,
+      2,
+      135
+    ]
+  }
+}

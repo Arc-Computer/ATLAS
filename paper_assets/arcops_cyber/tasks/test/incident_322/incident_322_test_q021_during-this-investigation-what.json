@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_322_test_q021",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "A suspicious credential dump from NTDS.dit has been detected. Attackers might be trying to obtain user's credentials stored in the domain controller. During the same multi-stage incident, it was noted that a file named `ntdsutil.exe` was executed, along with another process `powershell.exe` with an encoded command. Further investigation led to a connection involving suspicious Azure Resource Manager operations originating from a proxy IP address.",
+  "question": "During this investigation, what is the name of the Azure resource group involved in the suspicious Azure Resource Manager operation?",
+  "gold_answer": "ctfcat",
+  "solution_steps": [
+    "There is a suspicious credential dump from NTDS.dit detected on the host `vnevado-dc`.",
+    "There is an Azure Resource Manager operation detected from a suspicious proxy IP address, and it's associated with the Resource Group `ctfcat`."
+  ],
+  "metadata": {
+    "start_alert": 16,
+    "end_alert": 25,
+    "start_entities": [
+      17,
+      18,
+      19,
+      20
+    ],
+    "end_entities": [
+      27
+    ],
+    "shortest_alert_path": [
+      16,
+      21,
+      25
+    ]
+  }
+}

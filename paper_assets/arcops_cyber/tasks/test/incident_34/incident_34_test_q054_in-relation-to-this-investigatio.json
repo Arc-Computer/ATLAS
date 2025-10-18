@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_test_q054",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A user with email u141@ash.alpineskihouse.co manually initiated an automated investigation on the host `vnevado-win10e`. The investigation, which identifies and reviews possible threat artifacts for remediation, was started on July 4, 2024.",
+  "question": "In relation to this investigation, an anomaly was detected in the ASEP registry, indicating that a suspicious process registered a command or file to be run after a reboot. Can you provide the security identifier (SID) of the account associated with this detected anomaly?",
+  "gold_answer": "S-1-5-21-1870156660-7534030218-135086563-1193",
+  "solution_steps": [
+    "A user with email `u141@ash.alpineskihouse.co` initiated an automated investigation on the host with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f`.",
+    "An anomaly was detected in the ASEP registry involving an account with SID `S-1-5-21-1870156660-7534030218-135086563-1193`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 17,
+    "start_entities": [
+      1,
+      2
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      0,
+      2,
+      17
+    ]
+  }
+}

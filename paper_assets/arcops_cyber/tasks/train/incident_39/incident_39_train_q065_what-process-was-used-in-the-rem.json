@@ -1,0 +1,37 @@
+{
+  "task_id": "incident_39_train_q065",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "An anomalous chain of attempts to look up user account information has been observed on 2024-07-04, during which various `net.exe` commands were used. This may indicate an attacker trying to gather information about potential targets. Subsequently, multiple known public tools, which might be used for malicious purposes, were dropped on the device. Furthermore, a suspicious file was registered as a service, possibly indicating persistence attempts by the attacker.",
+  "question": "What process was used in the remote session to drop and execute a file?",
+  "gold_answer": "psexesvc.exe",
+  "solution_steps": [
+    "Anomalous user account lookups were performed, and the account name involved is `tgs2z`.",
+    "Multiple dual-purpose tools, including `psexesvc.exe`, were dropped onto the device.",
+    "A suspicious file with IP address `141.216.110.153` has been registered as a service, possibly for persistence.",
+    "A file named `psexesvc.exe` was dropped and executed from a remote location during a session with process ID `5912` at `2024-06-27t14:32:53.2267179z`."
+  ],
+  "metadata": {
+    "start_alert": 94,
+    "end_alert": 58,
+    "start_entities": [
+      80,
+      81,
+      82,
+      83,
+      84
+    ],
+    "end_entities": [
+      59
+    ],
+    "shortest_alert_path": [
+      94,
+      27,
+      62,
+      24,
+      21,
+      25,
+      58
+    ]
+  }
+}

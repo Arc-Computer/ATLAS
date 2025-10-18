@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_166_train_q032",
+  "incident": "incident_166",
+  "split": "train",
+  "context": "A security incident involving business email compromise (BEC) was reported, where a user signed in to SAP in a suspicious manner. The incident was detected by Microsoft Defender XDR and highlighted an attacker gaining control of a user account to possibly modify or record sensitive financial information in SAP. This activity is suspected to be linked to a larger series of malicious actions aimed at financial fraud.",
+  "question": "Can you identify the Azure Active Directory (AAD) user ID of the account associated with the possible BEC financial fraud?",
+  "gold_answer": "89e933b9-5b2e-4bd6-bcdf-033db707ef82",
+  "solution_steps": [
+    "A user account named `Jordan P` signed in to SAP in a suspicious manner associated with a business email compromise-related alert.",
+    "A user with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82` was involved in possible BEC financial fraud."
+  ],
+  "metadata": {
+    "start_alert": 27,
+    "end_alert": 29,
+    "start_entities": [
+      24,
+      25
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      27,
+      6,
+      29
+    ]
+  }
+}

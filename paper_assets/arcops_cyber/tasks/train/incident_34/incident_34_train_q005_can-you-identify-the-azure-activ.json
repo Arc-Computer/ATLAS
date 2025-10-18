@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_34_train_q005",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "During a security incident, a process `winword.exe` was launched on host `vnevado-win10e` by the user `samuelf` (SID: S-1-5-21-1870156660-7534030218-135086563-1193). This activity was associated with a suspicious LDAP query executed, which indicates potential reconnaissance activity aimed at learning the organization's structure by querying the domain controller for administrative users, groups, and interesting assets.",
+  "question": "Can you identify the Azure Active Directory (AAD) User ID associated with the suspicious LDAP query?",
+  "gold_answer": "16320fec-8d90-403b-b7fe-78f715d4728d",
+  "solution_steps": [
+    "A suspicious LDAP query was executed by the user account with AadUserId `16320fec-8d90-403b-b7fe-78f715d4728d`."
+  ],
+  "metadata": {
+    "start_alert": 24,
+    "end_alert": 24,
+    "start_entities": [
+      11,
+      1,
+      4,
+      2,
+      5,
+      12
+    ],
+    "end_entities": [
+      6
+    ],
+    "shortest_alert_path": [
+      24
+    ]
+  }
+}

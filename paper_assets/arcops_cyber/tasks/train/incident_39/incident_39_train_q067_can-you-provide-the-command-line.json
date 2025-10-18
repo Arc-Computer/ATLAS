@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_39_train_q067",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "During a suspicious access to the LSASS service on 2024-07-04, it was suspected that attackers decrypted user passwords from the LSASS service's memory. These credentials might have been used to infiltrate other machines and servers in the network using lateral movement activities. One of the alerts connected to this incident indicated the execution of a known malicious credential theft tool.",
+  "question": "Can you provide the command line execution details of the known credential theft tool that was detected?",
+  "gold_answer": "4748__2024-06-27t14:33:38.0249949z__\"mimikatz.exe\" \"lsadump::dcsync /domain:vnevado.alpineskihouse.co /user:xfbzkp\" exit",
+  "solution_steps": [
+    "There was a suspicious access to the LSASS service on host `vnevado-win10v` detected on 2024-07-04 22:35:03.532131+00:00.",
+    "A malicious credential theft tool, specifically `mimikatz.exe`, was executed on 2024-06-27 at 14:33:38.0249949 UTC with the command line `mimikatz.exe lsadump::dcsync /domain:vnevado.alpineskihouse.co /user:xfbzkp` and Process ID `4748`."
+  ],
+  "metadata": {
+    "start_alert": 102,
+    "end_alert": 26,
+    "start_entities": [
+      17,
+      37,
+      38,
+      40,
+      45,
+      56,
+      67,
+      68,
+      103
+    ],
+    "end_entities": [
+      30
+    ],
+    "shortest_alert_path": [
+      102,
+      32,
+      26
+    ]
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": "incident_55_train_q035",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A suspicious email with a malicious URL `http://kn017721628.wittytree-b6f239d6.northeurope.azurecontainerapps.io/` was delivered to the mailbox `santiago@vnevado.alpineskihouse.co` and later removed. The sender of this email was `4qs6v9m@vnevado.alpineskihouse.co` using the IP address `106.214.87.198`. This incident triggered a series of alerts including an internal phishing campaign, suspicious access to LSASS service, and ultimately suspicious Task Scheduler activity which might be an attempt to launch malicious code automatically and establish persistence.",
+  "question": "What is the file name of the process involved in the suspicious Task Scheduler activity?",
+  "gold_answer": "iy2orr1e.rrg.exe",
+  "solution_steps": [
+    "The email account with AadUserId `28058d92-fc24-4869-9231-6546a34b00f2` received an email with a malicious URL, which was later removed.",
+    "The user with SID `S-1-5-21-561436748-3867387497-1732241745-3701` sent phishing emails from their account, indicating a possible account compromise.",
+    "A suspicious access to the LSASS service was detected, involving a process with the file name `powershell.exe`, which may indicate an attempt to extract clear-text passwords.",
+    "A suspicious task scheduler activity was detected, involving a process with the file name `iy2orr1e.rrg.exe`, which may indicate an attempt to launch malicious code automatically and establish persistence."
+  ],
+  "metadata": {
+    "start_alert": 70,
+    "end_alert": 33,
+    "start_entities": [
+      71,
+      72,
+      73,
+      74,
+      79
+    ],
+    "end_entities": [
+      29
+    ],
+    "shortest_alert_path": [
+      70,
+      78,
+      88,
+      2,
+      45,
+      8,
+      33
+    ]
+  }
+}

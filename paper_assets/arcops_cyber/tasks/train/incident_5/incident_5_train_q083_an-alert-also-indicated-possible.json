@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_5_train_q083",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "During an investigation of possible ransomware activity, several file system changes were detected on the device, including the files `get-userprttoken.ps1`, `characterical.zip`, and `characterical.zip.lockbit`. These changes suggest potential ransomware activity due to the known malicious extensions. The suspected ransomware attack was linked to account with Name `dp5hn` and associated IP address `99.83.111.100`.",
+  "question": "An alert also indicated possible lateral movement associated with this incident. Can you identify the IP address of the device where lateral movement was observed?",
+  "gold_answer": "83.162.58.168",
+  "solution_steps": [
+    "There is possible ransomware activity on the device with AadDeviceId `e5799261-6720-4297-961e-bd9ca4275033`.",
+    "Suspicious lateral movement was detected with a network event involving IP address `83.162.58.168`."
+  ],
+  "metadata": {
+    "start_alert": 159,
+    "end_alert": 103,
+    "start_entities": [
+      1,
+      2,
+      3,
+      42,
+      47,
+      48,
+      94,
+      95
+    ],
+    "end_entities": [
+      104
+    ],
+    "shortest_alert_path": [
+      159,
+      69,
+      103
+    ]
+  }
+}

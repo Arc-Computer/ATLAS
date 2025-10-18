@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_39_train_q002",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "An active 'Kekeo' malware was detected on the machine identified by hostname `vnevado-win10b`. This machine has the associated account `fk8mq`, and an AadUserId `97e6a954-b6bd-48a5-808c-bd8464cce677`. The malware is known for performing annoying, disruptive, or harmful actions and has persistence mechanisms, making it a high-severity threat. Additionally, activity indicating the use of the Rubeus tool, which can perform kerberoasting and pass-the-ticket techniques, was observed. This is often seen during attacks where attackers request Kerberos tickets to decrypt credentials or authenticate directly.",
+  "question": "What is the name of the malicious credential theft tool that was executed according to the end alert?",
+  "gold_answer": "get-krbticket.ps1",
+  "solution_steps": [
+    "An active 'Kekeo' malware was detected with the executable file named `rubeus.exe`.",
+    "Possible use of the Rubeus kerberoasting tool was observed, involving the account with SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "A malicious credential theft tool execution command line was detected, referring to the file named `get-krbticket.ps1`."
+  ],
+  "metadata": {
+    "start_alert": 106,
+    "end_alert": 44,
+    "start_entities": [
+      1,
+      2,
+      3,
+      9,
+      10,
+      11
+    ],
+    "end_entities": [
+      38
+    ],
+    "shortest_alert_path": [
+      106,
+      7,
+      107,
+      28,
+      44
+    ]
+  }
+}

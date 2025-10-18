@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_test_q002",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A security incident involving a Password Spray attack was detected on 23rd July 2024. The malicious activity originated from the IP address `95.202.65.202`. As a part of this investigation, it is suspected that an attacker may have attempted to gain unauthorized access to user accounts using common passwords.",
+  "question": "Can you identify the security identifier (SID) of the user whose inbox rules were suspiciously manipulated?",
+  "gold_answer": "S-1-5-21-1740051960-3534030288-108486866-1602",
+  "solution_steps": [
+    "A password spray attack has been detected on the account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "Suspicious inbox manipulation rules were found in the inbox of the user with SID `S-1-5-21-1740051960-3534030288-108486866-1602`."
+  ],
+  "metadata": {
+    "start_alert": 28,
+    "end_alert": 16,
+    "start_entities": [
+      2
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      28,
+      1,
+      16
+    ]
+  }
+}

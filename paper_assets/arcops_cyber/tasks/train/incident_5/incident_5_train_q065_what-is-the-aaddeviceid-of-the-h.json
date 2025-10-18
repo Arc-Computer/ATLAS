@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_5_train_q065",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "The security incident is related to activities performed by the Manatee Tempest activity group, a Russia-based cybercriminal group active since June 2014. The group is known for using tactics such as drive-by download and domain fronting to establish command-and-control channels. Recently, on host `vnevado-win11u` with AadDeviceId `bc00e484-d0e5-4da4-9472-95568cccc07e`, a process with Process ID 5572 executed a command to access `http://vectorsandarrows.com` using `curl`. This incident is connected with tampering of the system recovery settings on a device.",
+  "question": "What is the AadDeviceId of the host where the system recovery setting tampering was observed?",
+  "gold_answer": "f5b847aa-8712-4bf6-b4f7-ed6cd89e1505",
+  "solution_steps": [
+    "A user with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96` is associated with the Manatee Tempest activity group, a Russia-based cybercriminal group.",
+    "System recovery setting tampering has been observed on host `f5b847aa-8712-4bf6-b4f7-ed6cd89e1505`. Adversaries might be attempting to disable or delete recovery features to prevent system recovery."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 96,
+    "start_entities": [
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "end_entities": [
+      13
+    ],
+    "shortest_alert_path": [
+      0,
+      3,
+      96
+    ]
+  }
+}

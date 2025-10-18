@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_322_test_q023",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "During a recent multi-stage security incident, a malicious URL was clicked on a device identified as `vnevado-win11h` (IP `172.33.118.200`). The process involved was `msedge.exe` (Process ID `4256`).",
+  "question": "What was the email address of the user who accessed a link in an email that was later quarantined by ZAP?",
+  "gold_answer": "Hailey Johnson@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "The user with AadUserId `5e5dd0bd-f7ed-4583-8e9e-52f91e31a360` clicked on a malicious URL on their device.",
+    "The user with email `Hailey Johnson@vnevado.alpineskihouse.co` accessed a link in an email that was later quarantined by zero-hour auto purge (ZAP)."
+  ],
+  "metadata": {
+    "start_alert": 33,
+    "end_alert": 23,
+    "start_entities": [
+      13,
+      34,
+      35,
+      36,
+      37
+    ],
+    "end_entities": [
+      7
+    ],
+    "shortest_alert_path": [
+      33,
+      9,
+      23
+    ]
+  }
+}

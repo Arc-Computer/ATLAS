@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_39_test_q089",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "In a recent security incident, an active 'Kekeo' malware was detected on the host `vnevado-win10b`. This type of malware can perform annoying, disruptive, or harmful actions on affected machines and is considered active if it is found running on the machine or has persistence mechanisms in place. During the investigation, activity indicating the use of the Rubeus tool was also observed on this endpoint. The tool was used to execute kerberoasting, pass-the-ticket, and other attack techniques that take advantage of Kerberos authentication.",
+  "question": "As part of this incident, suspicious activity related to the use of the Rubeus kerberoasting tool was observed. Can you provide the command line used by the process with Process ID 7644 to execute Rubeus?",
+  "gold_answer": "\"cmd\" /c \"c:\\temp\\rubeus.exe dump /service:xfbzkp /user:lucasb > c:\\temp\\adminticket.txt\"",
+  "solution_steps": [
+    "An active 'Kekeo' malware was detected on the account with AadUserId `97e6a954-b6bd-48a5-808c-bd8464cce677`.",
+    "A process with Process ID `7644` was created at `2024-06-27t14:33:27.7473684z` using command line `cmd /c c:\temp\rubeus.exe dump /service:xfbzkp /user:lucasb > c:\temp\frmrdvw.txt`, indicating the possible use of the Rubeus kerberoasting tool."
+  ],
+  "metadata": {
+    "start_alert": 106,
+    "end_alert": 0,
+    "start_entities": [
+      1,
+      2,
+      3,
+      9,
+      10,
+      11
+    ],
+    "end_entities": [
+      6
+    ],
+    "shortest_alert_path": [
+      106,
+      3,
+      0
+    ]
+  }
+}

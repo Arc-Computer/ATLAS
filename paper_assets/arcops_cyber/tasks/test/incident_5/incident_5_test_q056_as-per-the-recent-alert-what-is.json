@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_test_q056",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident indicates that a possible compromised user account was observed delivering ransomware-related files like `ponceau.7z`, `ponceau.7z.lockbit`, `earlap.doc`, and `earlap.doc.lockbit` on several devices. An attacker may have used this compromised account to move laterally across the network and infect devices with ransomware. Automated remediation actions may be taken to disable the compromised account.",
+  "question": "As per the recent alert, what is the name of the file that shows the potentially compromised assets exhibiting ransomware-like behavior?",
+  "gold_answer": "unstreaming.xlsx",
+  "solution_steps": [
+    "A user account was observed dropping a ransomware-related file `syncretic.7z.lockbit` on several devices.",
+    "Potentially compromised assets are exhibiting ransomware-like behavior with a file named `unstreaming.xlsx`, impacting several devices."
+  ],
+  "metadata": {
+    "start_alert": 41,
+    "end_alert": 147,
+    "start_entities": [
+      49,
+      50,
+      51,
+      52
+    ],
+    "end_entities": [
+      53
+    ],
+    "shortest_alert_path": [
+      41,
+      46,
+      147
+    ]
+  }
+}

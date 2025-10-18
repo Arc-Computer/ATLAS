@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_55_test_q009",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A suspicious remote activity was observed on host `mb-adfs` involving users `gsmith` and `LocalSystem`. This activity included the execution of `powershell.exe`, initiated through `cmd.exe` with process ID 8896. Following this, suspicious system hardware discovery attempts were detected, hinting at reconnaissance activities.",
+  "question": "In the context of the unusual addition of credentials to an OAuth app, can you identify the email of the user who performed this suspicious activity?",
+  "gold_answer": "Luciano Herrera@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "Suspicious remote activity involving `powershell.exe` was observed on the machine.",
+    "Suspicious hardware discovery was detected involving the account with SID `S-1-5-21-551436448-9871687716-9837441745-1903`.",
+    "User `Luciano Herrera (pwilson@niseko.alpineskihouse.co)` performed an unusual addition of credentials to the OAuth app `SimulandApp`, potentially indicating a compromised application."
+  ],
+  "metadata": {
+    "start_alert": 37,
+    "end_alert": 80,
+    "start_entities": [
+      39,
+      22,
+      38,
+      20,
+      19,
+      26,
+      21,
+      40,
+      18,
+      17
+    ],
+    "end_entities": [
+      82
+    ],
+    "shortest_alert_path": [
+      37,
+      8,
+      0,
+      10,
+      80
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_test_q095",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A security incident involving multiple tools such as `rubeus.exe`, `psexec.exe`, and `get-krbticket.ps1` was detected. The incident indicates possible use of the Rubeus kerberoasting tool on host `vnevado-win10v`. Further enumeration activities were then observed, where an account executed an SMB session enumeration on VNEVADO-DC.",
+  "question": "Can you identify the account name that performed the SMB session enumeration on VNEVADO-DC?",
+  "gold_answer": "Ethan Brooks",
+  "solution_steps": [
+    "Possible use of the Rubeus kerberoasting tool was observed involving the account with SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "Ethan Brooks (Account Executive) performed SMB recon on VNEVADO-Win10V against VNEVADO-DC, retrieving recent IP addresses of 2 accounts."
+  ],
+  "metadata": {
+    "start_alert": 107,
+    "end_alert": 114,
+    "start_entities": [
+      8,
+      32,
+      27,
+      37,
+      36,
+      33,
+      70,
+      17,
+      97,
+      7
+    ],
+    "end_entities": [
+      117
+    ],
+    "shortest_alert_path": [
+      107,
+      28,
+      114
+    ]
+  }
+}

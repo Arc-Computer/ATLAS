@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_34_test_q022",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "As part of a recent security incident involving suspicious PowerShell commands, potentially used for invoking modules or downloading payloads, a malicious PowerShell script was executed on an unspecified host. An additional alert later flagged an anomaly in the ASEP registry which could indicate an attempt by an attacker to maintain persistence after a reboot.",
+  "question": "What is the IP address associated with the detected anomaly in the ASEP registry?",
+  "gold_answer": "72.5.72.208",
+  "solution_steps": [
+    "A suspicious PowerShell command line activity was observed on the `vnevado-win10e` host.",
+    "An anomaly was detected in the ASEP registry involving a process that registered a suspicious command or file associated with IP address `72.5.72.208`."
+  ],
+  "metadata": {
+    "start_alert": 10,
+    "end_alert": 17,
+    "start_entities": [
+      7,
+      8,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      10,
+      1,
+      17
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_5_train_q021",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A security incident involved a potential attempt to access a Primary Refresh Token (PRT) on the host `vnevado-win11u` with AadDeviceId `bc00e484-d0e5-4da4-9472-95568cccc07e`. This attempt could be indicative of lateral movement or credential theft, as attackers often seek to exploit PRTs to gain unauthorized access to multiple services and applications.",
+  "question": "In close proximity to this event, lateral movement was observed on another device. What is the IP address associated with this potential lateral movement?",
+  "gold_answer": "83.162.58.168",
+  "solution_steps": [
+    "There was a possible attempt to access the Primary Refresh Token by an account with SID `S-1-5-21-1840191660-8534830288-125585561-1522`.",
+    "Possible ransomware activity has been detected on host `vnevado-win11t` based on numerous file system changes and a known malicious extension.",
+    "Possible lateral movement was observed involving a suspicious network event from IP address `83.162.58.168`."
+  ],
+  "metadata": {
+    "start_alert": 118,
+    "end_alert": 103,
+    "start_entities": [
+      7,
+      8,
+      119
+    ],
+    "end_entities": [
+      104
+    ],
+    "shortest_alert_path": [
+      118,
+      2,
+      159,
+      68,
+      103
+    ]
+  }
+}

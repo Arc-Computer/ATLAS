@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_166_test_q039",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A security incident involving a suspicious inbox manipulation rule was detected on 2024-07-22 involving the user Jordan P (laylaw@vnevado.alpineskihouse.co). The user had set a MoveToFolder rule named ITCleanup to move messages to a folder named RSS Feeds, indicating that the account might be compromised and used for spreading phishing emails and gaining access to other accounts and devices. Various IP addresses such as `180.144.153.174` and `255.246.85.58`, and cloud applications such as Office 365 were involved.",
+  "question": "Following the suspicious inbox manipulation rule alert, there was a subsequent password spray attack alert. What is the Azure AD User ID associated with the password spray attack detected on 2024-07-23?",
+  "gold_answer": "89e933b9-5b2e-4bd6-bcdf-033db707ef82",
+  "solution_steps": [
+    "A suspicious inbox manipulation rule was set on the user account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`. The user, Jordan P (laylaw@vnevado.alpineskihouse.co), created a MoveToFolder rule named ITCleanup, to move messages to a folder named RSS Feeds.",
+    "A password spray attack was detected on the same user account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`."
+  ],
+  "metadata": {
+    "start_alert": 5,
+    "end_alert": 28,
+    "start_entities": [
+      14,
+      12,
+      11,
+      6,
+      15,
+      13,
+      7,
+      8,
+      4,
+      9
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      5,
+      1,
+      28
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_55_test_q073",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A security incident involving suspicious sequence of exploration activities followed by Task Scheduler activity was observed. These activities indicate an attempt to establish persistence by modifying or creating tasks through Task Scheduler.",
+  "question": "What is the name of the process used in the suspicious Task Scheduler activity?",
+  "gold_answer": "schtasks.exe",
+  "solution_steps": [
+    "The attacker executed a PowerShell command with the encoded command `qwa6afwauwbjahiaaqbwahqacwbcafiazqbuageabqejepaabwb3aguacgbzaggazqbsagwalgbwahmamqa=` on `2024-07-02t09:48:12.7628138z` with Process ID `6808`.",
+    "The attacker used `schtasks.exe` to create, modify, or delete a task, attempting to automatically launch malicious code and establish persistence."
+  ],
+  "metadata": {
+    "start_alert": 52,
+    "end_alert": 33,
+    "start_entities": [
+      18,
+      19,
+      20,
+      28,
+      44,
+      53,
+      54,
+      55,
+      56
+    ],
+    "end_entities": [
+      35
+    ],
+    "shortest_alert_path": [
+      52,
+      25,
+      33
+    ]
+  }
+}

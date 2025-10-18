@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_134_train_q007",
+  "incident": "incident_134",
+  "split": "train",
+  "context": "",
+  "question": "Can you identify the malicious URL that was included in the email messages which were later removed after delivery?",
+  "gold_answer": "https://ms175052280.orangecliff-f53f26fd.eastus.azurecontainerapps.io/",
+  "solution_steps": [
+    "The user account with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1` had their inbox rules manipulated suspiciously, suggesting possible unauthorized access.",
+    "An email containing the malicious URL `https://ms175052280.orangecliff-f53f26fd.eastus.azurecontainerapps.io/` was delivered and later removed."
+  ],
+  "metadata": {
+    "start_alert": 14,
+    "end_alert": 13,
+    "start_entities": [
+      15,
+      16
+    ],
+    "end_entities": [
+      10
+    ],
+    "shortest_alert_path": [
+      14,
+      9,
+      13
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_34_train_q015",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "A suspicious PowerShell activity was observed on the machine, indicating potential malicious behavior where PowerShell was used during installation, exploration, or lateral movement activities. Attackers often use PowerShell to bypass security protection mechanisms by executing their payload in memory without leaving traces on the disk.",
+  "question": "In relation to this incident, a suspicious LDAP query was executed for reconnaissance. Can you identify the Azure Active Directory (AAD) User ID associated with this LDAP query?",
+  "gold_answer": "16320fec-8d90-403b-b7fe-78f715d4728d",
+  "solution_steps": [
+    "A suspicious PowerShell activity was observed involving the process `winword.exe`.",
+    "A suspect LDAP query was executed by the user with AadUserId `16320fec-8d90-403b-b7fe-78f715d4728d`."
+  ],
+  "metadata": {
+    "start_alert": 10,
+    "end_alert": 24,
+    "start_entities": [
+      7,
+      8,
+      9,
+      13,
+      14,
+      15,
+      16
+    ],
+    "end_entities": [
+      6
+    ],
+    "shortest_alert_path": [
+      10,
+      12,
+      24
+    ]
+  }
+}

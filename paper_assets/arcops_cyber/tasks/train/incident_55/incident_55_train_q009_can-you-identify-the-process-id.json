@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_55_train_q009",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "During an ongoing hands-on-keyboard attack via the Impacket toolkit, suspicious activity with the `powershell.exe` and `lsass.exe` processes was observed. This indicates a potential attempt by attackers to move laterally across the network to execute commands on other hosts. Attackers often use tools like Impacket in hands-on-keyboard attacks to install ransomware or other malicious payloads onto target devices.",
+  "question": "Can you identify the process id, created time and command line of the attempted hidden execution of the dual-purpose tool?",
+  "gold_answer": "ProcessId: 5752, CreatedTime: 2024-07-06t00:00:01.7155092z, CommandLine: \"iy2orr1e.rrg.exe\" -windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=",
+  "solution_steps": [
+    "There was ongoing hands-on-keyboard attack via Impacket toolkit initiated by an account with SID `S-2-5-21-571436798-3864380397-1837441745-3206` on 2024-07-04 22:35:01.395957+00:00.",
+    "An attempt to hide use of a dual-purpose tool was detected on process with Process ID `5752`, created on 2024-07-06t00:00:01.7155092z, and command line `iy2orr1e.rrg.exe -windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=`."
+  ],
+  "metadata": {
+    "start_alert": 16,
+    "end_alert": 68,
+    "start_entities": [
+      8,
+      17,
+      21,
+      22,
+      23,
+      24,
+      25
+    ],
+    "end_entities": [
+      69
+    ],
+    "shortest_alert_path": [
+      16,
+      19,
+      68
+    ]
+  }
+}

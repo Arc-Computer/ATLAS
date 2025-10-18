@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q081",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A security incident involving an ADFS private key extraction attempt with a suspicious LDAP query launched from user account `gsmith` was reported. The incident occurred on host `mb-adfs` through a process with command line `iy2orr1e.rrg.exe`. Notably, attackers might be attempting to steal ADFS private keys or move laterally on the network. There were subsequent alerts suggesting ongoing hands-on-keyboard attacks and suspicious system hardware discovery activities which likely indicate further attempts of reconnaissance and lateral movement across the network.",
+  "question": "Can you identify the user involved in the suspicious system hardware discovery? What is the name of the account?",
+  "gold_answer": "pwilson",
+  "solution_steps": [
+    "A suspicious LDAP query was launched by the user with AAD User ID `ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5`, potentially attempting to steal ADFS private keys or move laterally on the network.",
+    "A hands-on-keyboard attack via the Impacket toolkit was detected, with `powershell.exe` being executed on the device to explore network shares and execute commands.",
+    "The user account `pwilson` was involved in suspicious system hardware discovery, which may be an attempt to gather information for future attacks."
+  ],
+  "metadata": {
+    "start_alert": 43,
+    "end_alert": 0,
+    "start_entities": [
+      18,
+      19,
+      20,
+      26,
+      28,
+      29,
+      44
+    ],
+    "end_entities": [
+      9
+    ],
+    "shortest_alert_path": [
+      43,
+      20,
+      16,
+      8,
+      0
+    ]
+  }
+}

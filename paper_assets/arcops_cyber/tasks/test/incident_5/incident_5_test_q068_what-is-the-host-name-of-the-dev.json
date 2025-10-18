@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_5_test_q068",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident involving the Manatee Tempest activity group was detected. This group is known for using drive-by downloads and other methods to gain initial access, followed by using malware tools for lateral movement. The incident started with a suspicious activity involving a URL `http://vectorsandarrows.com`, accessed from host `vnevado-win10r` with IP address `198.43.121.209` via a curl command. The ProcessId__CreatedTimeUtc__CommandLine is `1332__2024-06-20t09:10:52.7298237z__curl http://vectorsandarrows.com`.",
+  "question": "What is the host name of the device where 'CommandAndControl' malware was detected during lateral movement?",
+  "gold_answer": "vnevado-win10s",
+  "solution_steps": [
+    "Manatee Tempest, a Russia-based cybercriminal group, was involved in the use of access broker Mustard Tempest to facilitate infections and lateral movement using BLISTER loader and Cobalt Strike beacons on various networks. The group used domain fronting for command-and-control of Cobalt Strike.",
+    "A suspicious account with SID `S-1-5-21-1840191660-8534830288-125585561-1522` was identified in the context of the Manatee Tempest group activities.",
+    "The 'CommandAndControl' malware was detected on the host `vnevado-win10s`, indicating an attempt at lateral movement within the network."
+  ],
+  "metadata": {
+    "start_alert": 135,
+    "end_alert": 98,
+    "start_entities": [
+      4,
+      5,
+      61,
+      64,
+      65
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      135,
+      2,
+      98
+    ]
+  }
+}

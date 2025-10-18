@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_55_test_q031",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "During an investigation of unusual addition of credentials to an OAuth app by the user Luciano Herrera (pwilson@niseko.alpineskihouse.co), it was detected that a credential of type Password was added. This could indicate that an attacker has compromised the app for malicious activities.",
+  "question": "There was also a suspected DCSync attack involving Luciano Herrera. Can you identify the host name involved in this suspected DCSync attack?",
+  "gold_answer": "MB-DC1",
+  "solution_steps": [
+    "The user with SID `S-1-5-21-551436448-9871687716-9837441745-1903` (Luciano Herrera) performed an unusual addition of credentials to the application SimulandApp.",
+    "Luciano Herrera (CIO) on MB-WINCLIENT sent a replication request to host `MB-DC1`, which is indicative of a suspected DCSync attack."
+  ],
+  "metadata": {
+    "start_alert": 108,
+    "end_alert": 98,
+    "start_entities": [
+      83,
+      84,
+      85,
+      86,
+      109
+    ],
+    "end_entities": [
+      99
+    ],
+    "shortest_alert_path": [
+      108,
+      10,
+      98
+    ]
+  }
+}

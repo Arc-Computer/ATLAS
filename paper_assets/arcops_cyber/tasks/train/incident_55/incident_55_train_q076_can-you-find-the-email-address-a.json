@@ -1,0 +1,37 @@
+{
+  "task_id": "incident_55_train_q076",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "Recently, there was an incident reported where a user clicked on a potentially malicious URL via the email address `bjenkins@niseko.alpineskihouse.co`. Earlier, suspicious remote activity was observed on the machine which involved potentially malicious actions. Additionally, the machine was scanned or dumped memory from the Local Security Authority Subsystem Service (lsass.exe) allowing extraction of sensitive credentials.",
+  "question": "Can you find the email address associated with the account that created the suspicious service DDLOXJDSQSNGMUKKFUXQ on MB-ADFS?",
+  "gold_answer": "gsmith@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "The user with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0` clicked on a potentially malicious URL.",
+    "The process `powershell.exe` was used to scan or dump memory from the Local Security Authority Subsystem Service (lsass.exe) to extract sensitive credentials.",
+    "Suspicious remote activity was observed on the machine and initiated by the user with AadUserId `ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5`.",
+    "The user `gsmith` with email `gsmith@niseko.alpineskihouse.co` created a suspicious service DDLOXJDSQSNGMUKKFUXQ on MB-ADFS to potentially execute malicious commands."
+  ],
+  "metadata": {
+    "start_alert": 104,
+    "end_alert": 101,
+    "start_entities": [
+      89,
+      90,
+      91,
+      93,
+      94
+    ],
+    "end_entities": [
+      103
+    ],
+    "shortest_alert_path": [
+      104,
+      3,
+      67,
+      8,
+      37,
+      20,
+      101
+    ]
+  }
+}

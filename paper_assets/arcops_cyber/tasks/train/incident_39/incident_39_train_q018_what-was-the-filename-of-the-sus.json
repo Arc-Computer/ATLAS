@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_39_train_q018",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "During an investigation of a security incident involving Mimikatz credential theft tool detected on the device, it was found that the file `mimikatz.exe` was executed multiple times with various commands on host `vnevado-win10v`. Mimikatz is a credential theft tool that can harvest plaintext passwords, password hashes, smartcard PINs, and Kerberos tickets, potentially allowing attackers to harvest credentials to log into this or other devices on the network by impersonating a valid user. We also observed a suspicious service was launched on the device, which could be used by attackers to maintain persistence or elevate privileges.",
+  "question": "What was the filename of the suspicious process that was started as a service?",
+  "gold_answer": "services.exe",
+  "solution_steps": [
+    "The Mimikatz credential theft tool was detected using `powershell.exe`.",
+    "A suspicious service was launched on the host `vnevado-dc`.",
+    "Another suspicious service was launched using `services.exe` on the host `vnevado-dc`."
+  ],
+  "metadata": {
+    "start_alert": 108,
+    "end_alert": 86,
+    "start_entities": [
+      28,
+      33,
+      29,
+      68,
+      64,
+      30,
+      32,
+      31,
+      40,
+      37
+    ],
+    "end_entities": [
+      88
+    ],
+    "shortest_alert_path": [
+      108,
+      17,
+      12,
+      20,
+      86
+    ]
+  }
+}

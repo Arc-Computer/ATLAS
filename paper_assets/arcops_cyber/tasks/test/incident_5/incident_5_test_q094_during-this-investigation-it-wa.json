@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_5_test_q094",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "As part of a security incident involving the Manatee Tempest activity group, a URL `vectorsandarrows.com` was accessed from the host `vnevado-win11u` using the command `curl http://vectorsandarrows.com`, initiated by process ID 5572 associated with IP address `198.43.121.209`. The actor Manatee Tempest is known for utilizing various methods like drive-by downloads and domain fronting to establish command-and-control channels, and is linked with ransomware deployments facilitated by Mustard Tempest.",
+  "question": "During this investigation, it was also noted that a user account was dropping a ransomware-related file on several devices. Can you identify the name of the ransomware-related file?",
+  "gold_answer": "characterical.zip.lockbit",
+  "solution_steps": [
+    "The user account with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96` is associated with activity from the Manatee Tempest group, known for its cybercriminal activities and partnerships.",
+    "A possible compromised user account is observed dropping a ransomware-related file named `characterical.zip.lockbit` on several devices, indicating potential lateral movement and infection attempts across the network."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 93,
+    "start_entities": [
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "end_entities": [
+      95
+    ],
+    "shortest_alert_path": [
+      0,
+      3,
+      93
+    ]
+  }
+}

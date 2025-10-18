@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_34_test_q035",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "During the investigation of a recent security incident involving suspicious Task Scheduler activity, it was observed that a process `powershell.exe` was executed on the host `vnevado-win10e` by the user `samuelf` with user ID `16320fec-8d90-403b-b7fe-78f715d4728d`. This process was used to create a scheduled task to run a potentially malicious file `winatp-intro-backdoor.exe`, which may indicate an attempt to establish persistence.",
+  "question": "What was the name of the process involved in using Task Scheduler to create the task?",
+  "gold_answer": "schtasks.exe",
+  "solution_steps": [
+    "A process invoked by `schtasks.exe` was involved in earlier malicious activity and used Task Scheduler to create, modify, or delete a task. This might be an attempt to launch malicious code automatically and establish persistence."
+  ],
+  "metadata": {
+    "start_alert": 21,
+    "end_alert": 21,
+    "start_entities": [
+      13,
+      1,
+      2,
+      6,
+      4,
+      5,
+      8,
+      7,
+      9
+    ],
+    "end_entities": [
+      14
+    ],
+    "shortest_alert_path": [
+      21
+    ]
+  }
+}

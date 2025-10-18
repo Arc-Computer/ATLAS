@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_166_test_q068",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A suspicious SAP authentication was detected, where a user account with a risky sign-in alert in Microsoft Entra ID signed in to SAP. This could indicate that an attacker might have taken control of a user account to search for or modify sensitive financial information in SAP. As part of the connection, there was an entity with the IP address `107.253.5.27` linked to the user account: Name: Jordan P, Email: Jordan P@vnevado.alpineskihouse.co, and SID: S-1-5-21-1740051960-3534030288-108486866-1602. This might lead to later stages of the attack, such as phishing or social engineering.",
+  "question": "Can you identify the IP address from which an anonymous sign-in was attempted in connection with this suspicious SAP authentication?",
+  "gold_answer": "192.238.237.190",
+  "solution_steps": [
+    "A user account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82` signed in to SAP with a risky sign-in alert, potentially for malicious purposes.",
+    "There was a sign-in attempt from an anonymous IP address `192.238.237.190`."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 3,
+    "start_entities": [
+      6,
+      7,
+      8,
+      24,
+      25
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      23,
+      1,
+      3
+    ]
+  }
+}

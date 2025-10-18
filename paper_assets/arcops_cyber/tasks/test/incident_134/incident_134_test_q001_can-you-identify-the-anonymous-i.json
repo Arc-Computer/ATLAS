@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_134_test_q001",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A suspicious activity was detected where the inbox rules of user Nina Park, associated with the email `Nina Park@vnevado.alpineskihouse.co`, were manipulated. It's suspected that an attacker might have gained access to her inbox and is manipulating rules to delete or move messages or folders as part of data exfiltration attempts. The attack likely involves a sign-in attempt from an anonymous IP address.",
+  "question": "Can you identify the anonymous IP address involved in the sign-in attempt related to this alert?",
+  "gold_answer": "170.54.121.63",
+  "solution_steps": [
+    "A user's inbox rules were suspiciously manipulated. The account associated with the suspicious activity has AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1`.",
+    "There was a sign-in from an anonymous IP address `170.54.121.63`, which could be linked to the suspicious activity."
+  ],
+  "metadata": {
+    "start_alert": 14,
+    "end_alert": 11,
+    "start_entities": [
+      6,
+      7,
+      8,
+      15,
+      16
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      14,
+      9,
+      11
+    ]
+  }
+}

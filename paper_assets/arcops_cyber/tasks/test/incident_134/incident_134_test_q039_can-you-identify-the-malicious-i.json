@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_test_q039",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A password spray attack was detected on 2024-07-18 at 14:36:59, targeting a user with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1`. This is part of a broader incident involving suspicious activity.",
+  "question": "Can you identify the malicious IP address related to the password spray attack?",
+  "gold_answer": "170.54.121.63",
+  "solution_steps": [
+    "A password spray attack was detected from the IP address `170.54.121.63` at `2024-07-18 14:36:59.143748+00:00`.",
+    "There was a sign-in from a known malicious IP address `170.54.121.63` at `2024-07-18 13:48:02.042756+00:00`."
+  ],
+  "metadata": {
+    "start_alert": 24,
+    "end_alert": 23,
+    "start_entities": [
+      9
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      24,
+      12,
+      23
+    ]
+  }
+}

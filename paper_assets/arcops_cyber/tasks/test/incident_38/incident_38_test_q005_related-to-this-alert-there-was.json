@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_38_test_q005",
+  "incident": "incident_38",
+  "split": "test",
+  "context": "As part of a recent security incident on 2024-07-04, a suspicious application window discovery was detected at 22:35:00.593840+00:00. This incident involved a known tool or technique being used to gather information on a device. Specifically, a command line process `powershell.exe` was executed. This might be an indication of attackers attempting to gather information about the target device or network for later attacks.",
+  "question": "Related to this alert, there was also an observation of unexpected behavior by a process ran with no command line arguments the next second. Can you identify the IP address associated with this unexpected behavior?",
+  "gold_answer": "202.183.149.174",
+  "solution_steps": [
+    "A suspicious application window discovery was detected from IP address `72.5.72.208`.",
+    "Unexpected behavior was observed by a process ran with no command line arguments from IP address `202.183.149.174`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 15,
+    "start_entities": [
+      5,
+      6,
+      7
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      0,
+      4,
+      15
+    ]
+  }
+}

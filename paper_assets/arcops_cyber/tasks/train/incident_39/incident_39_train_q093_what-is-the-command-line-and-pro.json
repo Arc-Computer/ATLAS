@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_39_train_q093",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A recent security incident revealed that multiple dual-purpose tools, such as powershell.exe, psexec.exe, rubeus.exe, and domaindominance27.ps1, were dropped on the device. This indicates that attackers might have downloaded or copied these tools to the target device to perform various attack stages, including credential theft, privilege escalation, and lateral movement.",
+  "question": "What is the command line and process ID associated with the execution of the tool used to detect the malicious credential theft?",
+  "gold_answer": "ProcessId: 5196, CommandLine: \"mimikatz.exe\" privilege::debug sekurlsa::logonpasswords exit",
+  "solution_steps": [
+    "Multiple dual-purpose tools were dropped on the device with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`.",
+    "A malicious credential theft tool was executed with the command line `mimikatz.exe privilege::debug sekurlsa::logonpasswords exit` at `2024-06-27t14:32:35.4061023z`, with Process ID `5196`."
+  ],
+  "metadata": {
+    "start_alert": 76,
+    "end_alert": 89,
+    "start_entities": [
+      17,
+      49,
+      50,
+      63,
+      65,
+      66
+    ],
+    "end_entities": [
+      67
+    ],
+    "shortest_alert_path": [
+      76,
+      33,
+      89
+    ]
+  }
+}

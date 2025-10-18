@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_39_test_q022",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A potential human-operated malicious activity was detected on the device `vnevado-win10b`. This might lead to ransomware or other payloads installed on target devices. During this incident, two user accounts `fk8mq` and `kyleg` were involved as observed on the host. This activity might include multiple stages including dropping and launching of files from remote locations, leading to further malicious actions.",
+  "question": "What is the email address of the IT director who sent the replication request during the suspected DCSync attack?",
+  "gold_answer": "Julian Burke@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "There was potential human-operated malicious activity originating from IP address `141.216.110.153` on 2024-07-04.",
+    "A file was dropped and launched from a remote location involving the account with SID `S-1-5-21-1440151660-4837038288-105596163-1120` on 2024-07-04.",
+    "On 2024-07-10, a suspected DCSync attack was observed with Julian Burke (IT director) at email `Julian Burke@vnevado.alpineskihouse.co`, who sent a replication request from VNEVADO-Win10V to VNEVADO-DC."
+  ],
+  "metadata": {
+    "start_alert": 109,
+    "end_alert": 122,
+    "start_entities": [
+      1,
+      10,
+      11,
+      23,
+      42
+    ],
+    "end_entities": [
+      124
+    ],
+    "shortest_alert_path": [
+      109,
+      25,
+      60,
+      14,
+      122
+    ]
+  }
+}

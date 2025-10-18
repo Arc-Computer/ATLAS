@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_39_train_q077",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A sequence of alerts that might be indicative of human-operated malicious activity was observed on this device `vnevado-win10b` and might lead to ransomware or other payloads installed on the device. The suspicious activity involved an account with SID `S-1-5-21-1540151660-3530000288-105586595-1517` and IP address `141.216.110.153`.",
+  "question": "Can you identify the AadUserId for the account linked to the deceptive sign-in attempt in this security incident?",
+  "gold_answer": "1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1",
+  "solution_steps": [
+    "A potential human-operated malicious activity was detected on the account `kyleg`.",
+    "A sign-in attempt was detected using a deceptive user account with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1`. The attacker might be using this account to perform attack activities."
+  ],
+  "metadata": {
+    "start_alert": 109,
+    "end_alert": 41,
+    "start_entities": [
+      1,
+      2,
+      3,
+      10,
+      11,
+      23,
+      25
+    ],
+    "end_entities": [
+      29
+    ],
+    "shortest_alert_path": [
+      109,
+      42,
+      41
+    ]
+  }
+}

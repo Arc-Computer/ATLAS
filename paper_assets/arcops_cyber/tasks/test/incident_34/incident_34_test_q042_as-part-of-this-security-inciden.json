@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_test_q042",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A security incident was reported due to a process registering a suspicious command or file in ASEP registry key where it will be run after a reboot. The suspicious activity was detected from the IP address `72.5.72.208`, and the command line involved was `reg  add hkcu\\software\\microsoft\\windows\\currentversion\\runonce /f /v yrei /t reg_expand_sz /d %userprofile%\\desktop\\winatp-intro-backdoor.exe`, with the process ID `10208`. This could indicate an attacker's attempt to place malicious software in a location that could maintain persistence even after a reboot.",
+  "question": "As part of this security incident, there was also a suspicious task scheduler activity detected. Can you identify the process that was used in this task scheduler activity?",
+  "gold_answer": "schtasks.exe",
+  "solution_steps": [
+    "A process registered a suspicious command or file `winatp-intro-backdoor.exe` in the ASEP registry key, where it will be run after a reboot.",
+    "A process named `schtasks.exe` involved in earlier malicious activity used Task Scheduler to create, modify, or delete a task, possibly to launch malicious code automatically and establish persistence."
+  ],
+  "metadata": {
+    "start_alert": 17,
+    "end_alert": 21,
+    "start_entities": [
+      18,
+      19
+    ],
+    "end_entities": [
+      14
+    ],
+    "shortest_alert_path": [
+      17,
+      9,
+      21
+    ]
+  }
+}

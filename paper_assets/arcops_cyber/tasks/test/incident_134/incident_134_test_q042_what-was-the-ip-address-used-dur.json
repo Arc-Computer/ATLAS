@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_test_q042",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A security incident involving a business email compromise (BEC) financial fraud occurred on 2024-07-17. A suspicious inbox rule that hides incoming email messages was created in a risky Azure Active Directory session. The IP address involved in this incident was `237.7.81.122`. This attack might be an attempt to conduct financial fraud. Following the initial alert, it was found that a user account signed in from an unusual location and browser during a password spray attack on 2024-07-18. We recommend prompt investigation to mitigate potential security risks.",
+  "question": "What was the IP address used during the account compromise following the password-spray attack?",
+  "gold_answer": "170.54.121.63",
+  "solution_steps": [
+    "A suspicious inbox rule was created in a risky Azure Active Directory session by the user with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1`, indicating a potential BEC financial fraud attempt.",
+    "A user account may have been compromised following a password-spray attack, involving sign-in from the unusual IP address `170.54.121.63`."
+  ],
+  "metadata": {
+    "start_alert": 17,
+    "end_alert": 25,
+    "start_entities": [
+      16
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      17,
+      9,
+      25
+    ]
+  }
+}

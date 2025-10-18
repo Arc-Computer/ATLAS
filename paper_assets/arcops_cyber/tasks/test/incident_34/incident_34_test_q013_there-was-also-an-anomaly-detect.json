@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_34_test_q013",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A security incident was detected on July 4th, 2024, where an uncommon file `winatp-intro-backdoor.exe` was created on the machine `vnevado-win10e` and added to a Run Key for persistence. The process responsible was launched by the user `samuelf` and has the ProcessId__CreatedTimeUtc__CommandLine `10208__2024-06-26t13:17:18.8268389z__reg add hkcu\\software\\microsoft\\windows\\currentversion\\runonce /f /v yrei /t reg_expand_sz /d %userprofile%\\desktop\\winatp-intro-backdoor.exe`. This suggests that an attacker may be trying to ensure persistent access even if the machine is rebooted.",
+  "question": "There was also an anomaly detected in the ASEP registry associated with this incident. Can you identify the IP address involved in this anomaly?",
+  "gold_answer": "72.5.72.208",
+  "solution_steps": [
+    "An uncommon file was created and added to a Run Key on the host with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f`.",
+    "A process registered a suspicious command or file in ASEP registry key from the IP address `72.5.72.208`."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 17,
+    "start_entities": [
+      1,
+      2,
+      4,
+      5,
+      6,
+      9,
+      19
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      23,
+      2,
+      17
+    ]
+  }
+}

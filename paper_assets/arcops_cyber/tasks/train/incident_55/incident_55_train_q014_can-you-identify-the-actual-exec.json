@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_55_train_q014",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "During a security investigation, it was found that a suspicious activity involving a renamed system executable was detected. The executable file `iy2orr1e.rrg.exe` was launched with hidden window style and an encoded command, initiated by account Sid `S-2-2-78` on the host `mb-adfs`. The executable was executed with Process ID 3116 on July 2, 2024.",
+  "question": "Can you identify the actual executable file name used in the subsequent suspicious process activity following this incident?",
+  "gold_answer": "powershell.exe",
+  "solution_steps": [
+    "A Windows executable file named `powershell.exe` was renamed and launched. This action might be an attempt by attackers to avoid detection technologies by changing the path or file name of the system executable."
+  ],
+  "metadata": {
+    "start_alert": 27,
+    "end_alert": 27,
+    "start_entities": [
+      29,
+      31,
+      28,
+      26,
+      30
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      27
+    ]
+  }
+}

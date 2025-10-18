@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_train_q001",
+  "incident": "incident_166",
+  "split": "train",
+  "context": "As part of a recent security investigation involving an anonymous IP address, a sign-in attempt was detected from the IP address `95.202.65.202` which is often associated with anonymizers such as Tor or anonymizer VPNs. This might indicate an attacker attempting to disguise their origin.",
+  "question": "A subsequent suspicious SAP authentication was linked to the incident. Can you identify the IP address that was used during this suspicious SAP authentication?",
+  "gold_answer": "107.253.5.27",
+  "solution_steps": [
+    "There was a sign-in from an anonymous IP address using the account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "A user with a risky sign-in alerted on Microsoft Entra ID signed in to SAP from the IP address `107.253.5.27`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 26,
+    "start_entities": [
+      2
+    ],
+    "end_entities": [
+      25
+    ],
+    "shortest_alert_path": [
+      0,
+      1,
+      26
+    ]
+  }
+}

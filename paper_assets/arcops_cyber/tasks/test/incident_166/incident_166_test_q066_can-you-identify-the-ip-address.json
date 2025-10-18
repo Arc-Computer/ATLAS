@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_166_test_q066",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A security incident concerning potential BEC (business email compromise) fraud was detected. Suspicious emails were identified from the mailbox `tony@avoriaz.alpineskihouse.co`. These emails were sent by `laylaw@vnevado.alpineskihouse.co`, indicating a potentially compromised user account as part of the fraud attempt.",
+  "question": "Can you identify the IP address involved in the BEC financial fraud alert where a suspicious inbox rule was created?",
+  "gold_answer": "255.246.85.58",
+  "solution_steps": [
+    "A potentially compromised user with SID `S-1-5-21-1740051960-3534030288-108486866-1602` sent suspicious emails related to a BEC fraud attempt.",
+    "There was a suspicious inbox rule created from IP address `255.246.85.58` in a risky Azure Active Directory session likely indicating an attempt at BEC financial fraud."
+  ],
+  "metadata": {
+    "start_alert": 18,
+    "end_alert": 17,
+    "start_entities": [
+      19,
+      20,
+      22
+    ],
+    "end_entities": [
+      15
+    ],
+    "shortest_alert_path": [
+      18,
+      8,
+      17
+    ]
+  }
+}

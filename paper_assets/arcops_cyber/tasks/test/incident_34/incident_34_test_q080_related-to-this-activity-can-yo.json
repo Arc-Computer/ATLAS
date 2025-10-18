@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_34_test_q080",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A suspicious PowerShell activity was observed involving a command line that invoked PowerShell on a specific machine. This behavior usually indicates that PowerShell was used during installation, exploration, or lateral movement activities by attackers who aim to bypass security mechanisms by executing their payloads in memory without leaving any trace on the disk. Such activities involve downloading external payloads or running encoded commands.",
+  "question": "Related to this activity, can you find the account name associated with the suspicious PowerShell command that was executed?",
+  "gold_answer": "samuelf",
+  "solution_steps": [
+    "There was a suspicious PowerShell command line activity observed on the machine with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f`.",
+    "A process executed PowerShell to download a file or run an encoded command on an account with the name `samuelf`."
+  ],
+  "metadata": {
+    "start_alert": 10,
+    "end_alert": 22,
+    "start_entities": [
+      11,
+      12,
+      14,
+      15,
+      16
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      10,
+      2,
+      22
+    ]
+  }
+}

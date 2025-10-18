@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_5_test_q040",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A potential security incident involving a possible attempt to access a Primary Refresh Token (PRT) was detected. A file `browsercore.exe` was launched on the host `vnevado-win11t` by an account with the name `dp5hn` and SID `S-1-5-21-1840191660-8534830288-125585561-1522`. The process ID for this event was `7036`. This activity may have been an attempt by attackers to access the PRT to move laterally within the organization or perform credential theft. The Primary Refresh Token is a key artifact of Azure AD authentication on various platforms and is essential for single sign-on (SSO) across applications.",
+  "question": "Can you identify the AadDeviceId related to this alert?",
+  "gold_answer": "e5799261-6720-4297-961e-bd9ca4275033",
+  "solution_steps": [
+    "A possible attempt to access the Primary Refresh Token (PRT) was detected on the host with AadDeviceId `e5799261-6720-4297-961e-bd9ca4275033`."
+  ],
+  "metadata": {
+    "start_alert": 82,
+    "end_alert": 82,
+    "start_entities": [
+      1,
+      2,
+      40,
+      3,
+      68,
+      83
+    ],
+    "end_entities": [
+      69
+    ],
+    "shortest_alert_path": [
+      82
+    ]
+  }
+}

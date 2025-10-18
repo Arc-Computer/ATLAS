@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_test_q047",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A security incident indicated a sign-in from an anonymous IP address, potentially using Tor browser or anonymizer VPNs. The associated IP address with this alert was `192.238.237.190` and the incident was logged at 2024-07-22 09:11:31.290020+00:00.",
+  "question": "Can you identify the IP address that was associated with the earlier similar sign-in from an anonymous IP address?",
+  "gold_answer": "95.202.65.202",
+  "solution_steps": [
+    "There is a sign-in from an anonymous IP address `95.202.65.202`.",
+    "The sign-in was associated with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`."
+  ],
+  "metadata": {
+    "start_alert": 3,
+    "end_alert": 0,
+    "start_entities": [
+      4
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      3,
+      1,
+      0
+    ]
+  }
+}

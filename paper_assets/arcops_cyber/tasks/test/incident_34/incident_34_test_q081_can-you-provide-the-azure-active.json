@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_test_q081",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A security incident involving a suspicious PowerShell download or encoded command execution was reported. PowerShell is often used by attackers to bypass security protection mechanisms by executing their payload in memory without leaving a trace or touching the disk. As part of this incident, a process `winword.exe` was launched with the command line `winword.exe c:\\scripts\\rs4_winatp-intro-invoice.docm`, and it might be trying to download external payloads or execute commands on the device.",
+  "question": "Can you provide the Azure Active Directory (AAD) User ID for the suspicious PowerShell command execution?",
+  "gold_answer": "16320fec-8d90-403b-b7fe-78f715d4728d",
+  "solution_steps": [
+    "A suspicious PowerShell download or encoded command execution was detected on the host `vnevado-win10e`.",
+    "A suspicious process executed a PowerShell command by the user with AadUserId `16320fec-8d90-403b-b7fe-78f715d4728d`."
+  ],
+  "metadata": {
+    "start_alert": 26,
+    "end_alert": 3,
+    "start_entities": [
+      11,
+      12
+    ],
+    "end_entities": [
+      6
+    ],
+    "shortest_alert_path": [
+      26,
+      1,
+      3
+    ]
+  }
+}

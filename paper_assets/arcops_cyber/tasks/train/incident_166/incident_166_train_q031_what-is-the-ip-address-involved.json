@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_166_train_q031",
+  "incident": "incident_166",
+  "split": "train",
+  "context": "A security incident involving suspicious SAP authentication occurred where a user account with a risky sign-in alert in Microsoft Entra ID signed in to SAP from IP address `107.253.5.27`. An attacker might have taken control of the user account to search through SAP with the intention of recording or modifying sensitive financial information. This alert was triggered based on a Microsoft Entra ID alert.",
+  "question": "What is the IP address involved in the suspicious inbox manipulation rule part of this incident?",
+  "gold_answer": "255.246.85.58",
+  "solution_steps": [
+    "The account with email `Jordan P@vnevado.alpineskihouse.co` had a risky sign-in and suspicious authentication to SAP.",
+    "There was suspicious manipulation of inbox rules from IP address `255.246.85.58`."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 16,
+    "start_entities": [
+      24,
+      25
+    ],
+    "end_entities": [
+      15
+    ],
+    "shortest_alert_path": [
+      23,
+      7,
+      16
+    ]
+  }
+}

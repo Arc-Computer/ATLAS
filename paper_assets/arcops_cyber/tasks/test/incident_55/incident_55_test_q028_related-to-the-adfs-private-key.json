@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_55_test_q028",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "As part of a recent security incident, a suspicious LDAP query was launched indicating attackers might be attempting to steal Active Directory Federation Service (ADFS) private keys or move laterally on the network. An associated hostname was involved in this incident. The same encoded command was executed using the process `iy2orr1e.rrg.exe` under different process IDs `3116` and `8764`. This dual-purpose tool might have been used with similar process details.",
+  "question": "Related to the ADFS private key extraction attempt and the use of the dual-purpose tool, can you provide the command line details of the process detected later on 2024-07-06?",
+  "gold_answer": "5752__2024-07-06t00:00:01.7155092z__\"iy2orr1e.rrg.exe\" -windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=",
+  "solution_steps": [
+    "A suspicious LDAP query was launched on the host `mb-adfs`, indicating a potential attempt to steal ADFS private keys or facilitate lateral movement on the network.",
+    "A public tool was observed running under the unexpected filename `iy2orr1e.rrg.exe` with the command `iy2orr1e.rrg.exe -windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=` at `2024-07-06t00:00:01.7155092z` with Process ID `5752`. This might be an attempt to hide the tool's usage for malicious purposes."
+  ],
+  "metadata": {
+    "start_alert": 43,
+    "end_alert": 68,
+    "start_entities": [
+      28,
+      44
+    ],
+    "end_entities": [
+      69
+    ],
+    "shortest_alert_path": [
+      43,
+      26,
+      68
+    ]
+  }
+}

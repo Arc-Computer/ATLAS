@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_34_test_q016",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A process named `winatp-intro-backdoor.exe` on account `samuelf` was flagged for registering a suspicious command in the ASEP registry, indicative of potential persistence mechanisms employed by an attacker.",
+  "question": "What is the hostname of the device where an automated investigation was manually initiated by user u141(u141@ash.alpineskihouse.co)?",
+  "gold_answer": "vnevado-win10e",
+  "solution_steps": [
+    "A suspicious command or file was registered in the ASEP registry on the host with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f`.",
+    "An automated investigation was manually initiated by u141 (u141@ash.alpineskihouse.co) on the host `vnevado-win10e`."
+  ],
+  "metadata": {
+    "start_alert": 17,
+    "end_alert": 0,
+    "start_entities": [
+      4,
+      5,
+      6,
+      9,
+      18,
+      19
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      17,
+      2,
+      0
+    ]
+  }
+}

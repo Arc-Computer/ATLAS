@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_train_q021",
+  "incident": "incident_134",
+  "split": "train",
+  "context": "A security incident was detected involving a sign-in from an anonymous IP address `170.54.121.63` at 2024-07-17 11:01:27. Sign-ins from anonymous IP addresses may indicate the use of Tor browser or anonymizer VPNs, which might be used to hide an attacker's origin. This was part of a larger incident involving suspicious activities.",
+  "question": "What is the SID of the account involved in the suspicious inbox manipulation rule?",
+  "gold_answer": "S-1-5-21-1874151667-3554330288-105586563-1715",
+  "solution_steps": [
+    "There was a sign-in from an anonymous IP address to the account with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1`.",
+    "A suspicious inbox manipulation rule detected for the user account with SID `S-1-5-21-1874151667-3554330288-105586563-1715`."
+  ],
+  "metadata": {
+    "start_alert": 11,
+    "end_alert": 14,
+    "start_entities": [
+      12
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      11,
+      9,
+      14
+    ]
+  }
+}

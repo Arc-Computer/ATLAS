@@ -1,0 +1,38 @@
+{
+  "task_id": "incident_39_test_q060",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A security incident involved the possible use of the Rubeus kerberoasting tool. This tool was detected on host `vnevado-win10b` and might have been used to request and potentially decrypt Kerberos tickets for an account's service principal name (SPN). Observed processes related to this incident include `psexesvc.exe` and `rubeus.exe`. Additionally, a command line was executed using `cmd` to dump data to `c:\\temp\\adminticket.txt`. This indicates a possible kerberoasting attempt, where attackers seek plaintext credentials or use pass-the-ticket techniques for authentication.",
+  "question": "A user later accessed a link in an email that was quarantined by zero-hour auto purge (ZAP). Can you provide the URL that was accessed?",
+  "gold_answer": "https://ac27145722.livelygrass-8d4c4013.eastus2.azurecontainerapps.io/",
+  "solution_steps": [
+    "The process `rubeus.exe` was identified as being used, indicating a possible Rubeus kerberoasting attack.",
+    "The attack was associated with an account having SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "A user accessed a malicious link `https://ac27145722.livelygrass-8d4c4013.eastus2.azurecontainerapps.io/` in a ZAP-quarantined email."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 141,
+    "start_entities": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      9,
+      10,
+      11
+    ],
+    "end_entities": [
+      137
+    ],
+    "shortest_alert_path": [
+      0,
+      7,
+      107,
+      28,
+      141
+    ]
+  }
+}

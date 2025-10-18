@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_134_test_q029",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A potentially malicious URL click was detected in our organization. The URL `http://ms175052280.orangecliff-f53f26fd.eastus.azurecontainerapps.io/` was clicked by a user from the email `raphaelt@vnevado.alpineskihouse.co`, with the sender's email being `alyssat@vnevado.alpineskihouse.co` and the sender IP address as `254.241.243.229`. This might be an indicator of a user being targeted in a phishing attempt.",
+  "question": "Can you identify the IP address involved in the end alert 'BEC financial fraud' that indicates a financial fraud attempt via a suspicious inbox rule?",
+  "gold_answer": "237.7.81.122",
+  "solution_steps": [
+    "A user with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1` clicked on a potentially malicious URL.",
+    "A suspicious inbox rule that hides incoming emails was created from IP address `237.7.81.122`, indicating a potential business email compromise (BEC) attempt."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 17,
+    "start_entities": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      10
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      0,
+      9,
+      17
+    ]
+  }
+}

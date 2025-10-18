@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_39_train_q037",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "As part of investigating this incident, a file `mimikatz.exe` was detected being executed with this command line indicating intent to dump credentials. The Process ID was 5196. This might be an indicator of an attacker stealing credentials using this tool.",
+  "question": "Related to this alert, another process was executed with potential malicious intent. Can you provide the command line used during the later execution of the tool `mimikatz.exe`?",
+  "gold_answer": "\"mimikatz.exe\" \"lsadump::dcsync /domain:vnevado.alpineskihouse.co /user:xfbzkp\" exit",
+  "solution_steps": [
+    "A known credential theft tool `mimikatz.exe` was executed.",
+    "The attacker launched mimikatz with the command line `mimikatz.exe lsadump::dcsync /domain:vnevado.alpineskihouse.co /user:xfbzkp exit` at `2024-06-27t14:33:38.0249949z`, with Process ID `4748`."
+  ],
+  "metadata": {
+    "start_alert": 89,
+    "end_alert": 26,
+    "start_entities": [
+      67
+    ],
+    "end_entities": [
+      30
+    ],
+    "shortest_alert_path": [
+      89,
+      31,
+      26
+    ]
+  }
+}

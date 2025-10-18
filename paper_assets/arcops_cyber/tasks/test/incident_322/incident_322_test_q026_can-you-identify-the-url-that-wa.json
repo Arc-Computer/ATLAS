@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_322_test_q026",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "During the investigation of a security incident involving a user who accessed a link in an email subsequently quarantined by zero-hour auto purge (ZAP), it was noted that the user, Hailey Johnson, clicked on a malicious URL `https://dj01161621.bravesand-e1ccd718.eastus.azurecontainerapps.io/` on 2024-08-01 12:54:55.663380+00:00.",
+  "question": "Can you identify the URL that was detected in the proxy logs related to this incident?",
+  "gold_answer": "login.micro.demo.antoinetest.ovh",
+  "solution_steps": [
+    "User `Hailey Johnson@vnevado.alpineskihouse.co` accessed a link in an email that was later quarantined by zero-hour auto purge (ZAP).",
+    "A malicious URL was clicked on the device with hostname `vnevado-win11h`.",
+    "The malicious URL `login.micro.demo.antoinetest.ovh` was detected in proxy logs from IP address `231.60.52.209` to the device `vnevado-win11h.vnevado.alpineskihouse.co`."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 11,
+    "start_entities": [
+      6,
+      7,
+      8,
+      9,
+      24
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      23,
+      7,
+      33,
+      13,
+      11
+    ]
+  }
+}

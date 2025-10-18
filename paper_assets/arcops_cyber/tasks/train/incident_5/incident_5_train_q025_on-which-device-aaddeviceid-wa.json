@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_train_q025",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A possible lateral movement incident was observed on 2024-07-04, starting with a suspicious network event on IP address `83.162.58.168`. This indicated that an attacker could be attempting to move laterally across devices to gather data or elevate privileges. Later, suspicious remote activity was detected which might involve initiating interactive sessions, modifying files, or creating scheduled tasks from a remote machine.",
+  "question": "On which device (AadDeviceId) was the 'CommandAndControl' malware detected during the lateral movement?",
+  "gold_answer": "bc00e484-d0e5-4da4-9472-95568cccc07e",
+  "solution_steps": [
+    "Lateral movement was observed on device with AadDeviceId `e5799261-6720-4297-961e-bd9ca4275033`.",
+    "Suspicious remote activity was initiated by the user with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "\u2018CommandAndControl\u2019 malware was detected during lateral movement on device with AadDeviceId `bc00e484-d0e5-4da4-9472-95568cccc07e`."
+  ],
+  "metadata": {
+    "start_alert": 103,
+    "end_alert": 128,
+    "start_entities": [
+      104
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      103,
+      69,
+      107,
+      3,
+      128
+    ]
+  }
+}

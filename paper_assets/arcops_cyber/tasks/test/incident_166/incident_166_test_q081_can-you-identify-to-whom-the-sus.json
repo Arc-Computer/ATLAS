@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_166_test_q081",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A suspicious SAP authentication activity was detected where a user account with a risky sign-in alert in Microsoft Entra ID signed in to SAP from IP address `107.253.5.27`, possibly to search through sensitive financial information. This might be part of a larger multi-stage attack involving BEC (business email compromise) fraud attempts.",
+  "question": "Can you identify to whom the suspicious emails were sent related to the BEC fraud attempt?",
+  "gold_answer": "tony@avoriaz.alpineskihouse.co",
+  "solution_steps": [
+    "A user with SID `S-1-5-21-1740051960-3534030288-108486866-1602` signed in to SAP with a risky sign-in alert in Microsoft Entra ID, indicating potential account compromise.",
+    "Suspicious emails were sent to `tony@avoriaz.alpineskihouse.co` by a possibly compromised user account related to BEC fraud."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 18,
+    "start_entities": [
+      24,
+      25
+    ],
+    "end_entities": [
+      20
+    ],
+    "shortest_alert_path": [
+      23,
+      8,
+      18
+    ]
+  }
+}

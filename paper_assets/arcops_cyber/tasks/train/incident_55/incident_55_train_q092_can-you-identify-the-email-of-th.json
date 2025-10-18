@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_55_train_q092",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A recent security incident involved a suspicious LDAP query attempt which could indicate an attacker attempting to steal Active Directory Federation Service (ADFS) private keys or move laterally in the network. This attempt was observed on the host `mb-adfs`, where the file `iy2orr1e.rrg.exe` was executed with certain command lines.",
+  "question": "Can you identify the email of the user who read the DKM key of the ADFS object id 4cac49d3-29d3-407e-8c9b-b7ebb21541b2?",
+  "gold_answer": "gsmith@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "The account `gsmith` attempted to extract the ADFS private key via a suspicious LDAP query on `2024-07-04 22:35:02.751926+00:00`.",
+    "The account `gsmith` with email `gsmith@niseko.alpineskihouse.co` read the DKM key of the ADFS object with ID `4cac49d3-29d3-407e-8c9b-b7ebb21541b2` on `2024-07-10 11:24:45.601805+00:00`."
+  ],
+  "metadata": {
+    "start_alert": 43,
+    "end_alert": 106,
+    "start_entities": [
+      26,
+      28,
+      29,
+      44
+    ],
+    "end_entities": [
+      103
+    ],
+    "shortest_alert_path": [
+      43,
+      18,
+      106
+    ]
+  }
+}

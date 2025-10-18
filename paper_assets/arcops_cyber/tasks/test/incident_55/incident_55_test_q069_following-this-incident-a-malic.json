@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q069",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A suspicious system hardware discovery incident was reported, indicating that attackers may have been trying to gather information about the target device or network. The incident involved `powershell.exe` running `contosoadfsblatempcreds.ps1` and the user `bjenkins`.",
+  "question": "Following this incident, a malicious URL was clicked on the same device. Can you specify the URL that was clicked?",
+  "gold_answer": "https://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/",
+  "solution_steps": [
+    "There was a suspicious system hardware discovery on the device with AadDeviceId `7661dfd4-218f-4016-8a87-66d68a7f098e`.",
+    "A malicious URL `https://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/` was clicked on the same device."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 107,
+    "start_entities": [
+      13,
+      4,
+      10,
+      12,
+      7,
+      6,
+      1,
+      8,
+      3,
+      9
+    ],
+    "end_entities": [
+      97
+    ],
+    "shortest_alert_path": [
+      0,
+      15,
+      107
+    ]
+  }
+}

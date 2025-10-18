@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_39_train_q066",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A known credential theft tool was executed on host `vnevado-win10v` under the account `tgs2z`, indicating an intent to dump credentials. Additionally, a process suspiciously stopped services on this host, likely to avoid detection and facilitate data encryption or destruction. This sequence of malicious activities culminated in an attack that involved a replication request sent from VNEVADO-Win10V to VNEVADO-DC.",
+  "question": "Which individual was responsible for sending the replication request from VNEVADO-Win10V to VNEVADO-DC?",
+  "gold_answer": "Julian Burke",
+  "solution_steps": [
+    "A credential theft tool was executed using `powershell.exe` command line.",
+    "A suspicious process was detected, involving the account with AadUserId `7fcf9695-68fc-4258-864d-e1e5b166c66f`, that stopped services on the device.",
+    "A suspected DCSync attack was performed by Julian Burke (IT director) from VNEVADO-Win10V, as he sent 1 replication request to VNEVADO-DC."
+  ],
+  "metadata": {
+    "start_alert": 104,
+    "end_alert": 122,
+    "start_entities": [
+      27,
+      31,
+      32,
+      33,
+      68
+    ],
+    "end_entities": [
+      123
+    ],
+    "shortest_alert_path": [
+      104,
+      17,
+      46,
+      15,
+      122
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_5_test_q063",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "During a potential ransomware incident, several suspicious file modifications were detected on a device. These modifications involved appending a known malicious extension, indicative of mass file encryption. The related files include `kiters.7z.lockbit`, `ponceau.7z.lockbit`, `unstreaming.xlsx.lockbit`, `earlap.doc.lockbit`, among others. Additionally, an IP address `99.83.111.100` and a host with an AadDeviceId `bc00e484-d0e5-4da4-9472-95568cccc07e` are associated with this alert.",
+  "question": "In connection to the potential ransomware activity, it was found that all file backups were deleted. Can you determine the name of the process that executed this deletion?",
+  "gold_answer": "vssblatemp.exe",
+  "solution_steps": [
+    "Possible ransomware activity has been detected involving the mass encryption of files indicated by a known malicious extension, associated with the account with SID `S-1-5-21-1840191660-8534830288-125585561-1522`.",
+    "File backups, such as file snapshots and shadow copies, were deleted via WMI or VSSAdmin using the process `vssblatemp.exe`, which is common during ransomware infections."
+  ],
+  "metadata": {
+    "start_alert": 146,
+    "end_alert": 9,
+    "start_entities": [
+      44,
+      50,
+      45,
+      48,
+      49,
+      42,
+      51,
+      8,
+      54,
+      52
+    ],
+    "end_entities": [
+      11
+    ],
+    "shortest_alert_path": [
+      146,
+      2,
+      9
+    ]
+  }
+}

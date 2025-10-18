@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_39_test_q059",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A sign-in attempt was detected using a deceptive user account on host `vnevado-win10v`. The associated user accounts were `tgs2z` and `kyleg`, and the IP address was `35.202.74.47`. This connects to another alert where a user accessed a suspicious URL in an email quarantined by zero-hour auto purge.",
+  "question": "What is the URL that the user accessed in the ZAP-quarantined email?",
+  "gold_answer": "https://ac27145722.livelygrass-8d4c4013.eastus2.azurecontainerapps.io/",
+  "solution_steps": [
+    "A deceptive sign-in attempt was detected using a user account with SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "A user accessed a link in a ZAP-quarantined email. The malicious URL is `https://ac27145722.livelygrass-8d4c4013.eastus2.azurecontainerapps.io/`."
+  ],
+  "metadata": {
+    "start_alert": 41,
+    "end_alert": 141,
+    "start_entities": [
+      27,
+      32,
+      33,
+      42,
+      43
+    ],
+    "end_entities": [
+      137
+    ],
+    "shortest_alert_path": [
+      41,
+      28,
+      141
+    ]
+  }
+}

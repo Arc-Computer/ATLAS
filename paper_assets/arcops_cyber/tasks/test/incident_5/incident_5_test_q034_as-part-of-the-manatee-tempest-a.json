@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_5_test_q034",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "During an investigation of a security incident, it was observed that 'CommandAndControl' malware was detected on the host `vnevado-win10r`, which might be an indication of an attacker attempting to move laterally from another network device. The process was initiated via the command `curl http://vectorsandarrows.com` with Process ID 1332. The incident is part of a larger campaign by the Manatee Tempest activity group, which is known for various cyber-attacks including the use of Cobalt Strike beacons for lateral movement and ransomware deployment.",
+  "question": "As part of the Manatee Tempest activity group, what is the IP address associated with their activity in this incident?",
+  "gold_answer": "198.43.121.209",
+  "solution_steps": [
+    "The 'CommandAndControl' malware was detected on a device. An attacker might be attempting to move laterally to this device from another device on the network. The associated user account has the SID `S-1-5-21-1840191660-8534830288-125585561-1522`.",
+    "Manatee Tempest, a Russia-based cybercriminal group active since June 2014, was identified. This group was responsible for the Dridex banking trojan and various other malvertising and infection methods. They have been observed partnering with Mustard Tempest to facilitate initial access. They use the IP address `198.43.121.209` for their activities."
+  ],
+  "metadata": {
+    "start_alert": 158,
+    "end_alert": 0,
+    "start_entities": [
+      61,
+      64,
+      65
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      158,
+      2,
+      0
+    ]
+  }
+}

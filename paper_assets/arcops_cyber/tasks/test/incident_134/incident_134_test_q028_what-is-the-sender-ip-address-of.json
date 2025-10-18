@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_test_q028",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A user's inbox rules were manipulated in a suspicious manner, indicating that an attacker might have gained access to the user's inbox through the cloud application with AppId `20893`. This manipulation could be part of a larger effort to exfiltrate data from your organization.",
+  "question": "What is the sender IP address of the suspicious emails sent by a possibly compromised user account?",
+  "gold_answer": "237.7.81.122",
+  "solution_steps": [
+    "A user's inbox rules were manipulated in a suspicious manner for the email account `Nina Park@vnevado.alpineskihouse.co`.",
+    "Suspicious emails were sent by a possibly compromised user account with the sender IP `237.7.81.122`."
+  ],
+  "metadata": {
+    "start_alert": 14,
+    "end_alert": 18,
+    "start_entities": [
+      15
+    ],
+    "end_entities": [
+      21
+    ],
+    "shortest_alert_path": [
+      14,
+      7,
+      18
+    ]
+  }
+}

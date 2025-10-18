@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_166_test_q011",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A security incident involving suspicious activity has been detected, where a user's inbox rules were manipulated in a suspicious manner. It is suspected that an attacker might have gained access to a user's inbox and is manipulating rules to delete or move messages or folders to exfiltrate data from your organization. The activity was first observed coming from a cloud application with AppId `20893` and IP address `255.246.85.58`.",
+  "question": "During the investigation of this incident, it was found that a BEC-related user signed in to SAP. Can you provide the IP address from which the user signed in to SAP?",
+  "gold_answer": "107.253.5.27",
+  "solution_steps": [
+    "An attacker might have gained access to the user's inbox and manipulated rules to delete or move messages or folders for exfiltration. The affected user has AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "The same user involved in the business email compromise also signed in to SAP in a suspicious manner from the IP address `107.253.5.27`."
+  ],
+  "metadata": {
+    "start_alert": 16,
+    "end_alert": 27,
+    "start_entities": [
+      11,
+      15
+    ],
+    "end_entities": [
+      25
+    ],
+    "shortest_alert_path": [
+      16,
+      1,
+      27
+    ]
+  }
+}

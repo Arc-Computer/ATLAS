@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_134_test_q046",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A user's account was compromised following a password-spray attack. The account belonged to Nina Park, whose email is Nina Park@vnevado.alpineskihouse.co, and the security incident occurred on 2024-07-18 14:54:18.741032+00:00. The attacker possibly gained unauthorized access to the network by signing in from an unusual location and browser.",
+  "question": "Can you identify the AadUserId associated with the account that signed in from an anonymous IP address on 2024-07-17 11:01:27.633644+00:00?",
+  "gold_answer": "e036dee7-fa23-42ef-a019-468c8d3401f1",
+  "solution_steps": [
+    "The user account with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1` signed in from an anonymous IP address.",
+    "The same user account with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1` was compromised following a password-spray attack."
+  ],
+  "metadata": {
+    "start_alert": 25,
+    "end_alert": 11,
+    "start_entities": [
+      6,
+      7,
+      8
+    ],
+    "end_entities": [
+      9
+    ],
+    "shortest_alert_path": [
+      25,
+      9,
+      11
+    ]
+  }
+}

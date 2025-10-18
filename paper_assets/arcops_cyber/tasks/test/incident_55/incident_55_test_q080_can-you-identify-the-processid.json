@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_55_test_q080",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A malicious URL `https://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/` was clicked on a device at 11:24 AM on 2024-07-10, indicating potential malicious activity. Following this event, a suspicious LDAP query was executed on 2024-07-04, which might indicate reconnaissance by an attacker trying to learn the organization's structure. Later, a series of exploration activities were noted, suggesting that the attacker was identifying valuable assets and planning lateral movement after compromising a machine. The final observed activity was an attempt to use a dual-purpose tool under an unexpected filename, likely as an effort to conceal malicious intentions.",
+  "question": "Can you identify the ProcessId, the exact time the process was created, and the command line used for the process that attempted to hide the use of a dual-purpose tool?",
+  "gold_answer": "ProcessId: 5752, Created Time: 2024-07-06T00:00:01.7155092Z, Command Line: \"iy2orr1e.rrg.exe\" -windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=",
+  "solution_steps": [
+    "A malicious URL was clicked on the device with AadDeviceId `7661dfd4-218f-4016-8a87-66d68a7f098e` on 2024-07-10 at 11:24:45.667104+00:00.",
+    "A suspicious LDAP query was executed by `powershell.exe` on 2024-07-04 at 22:35:03.848291+00:00, indicating potential reconnaissance activity.",
+    "A suspicious sequence of exploration activities was conducted by the account `gsmith` on 2024-07-04 at 22:35:03.106654+00:00.",
+    "An attempt to hide the use of a dual-purpose tool was observed on 2024-07-06 at 00:09:58.973357+00:00. The tool was run with the command line `iy2orr1e.rrg.exe -windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=`, created at `2024-07-06t00:00:01.7155092z`, with Process ID `5752`."
+  ],
+  "metadata": {
+    "start_alert": 107,
+    "end_alert": 68,
+    "start_entities": [
+      97
+    ],
+    "end_entities": [
+      69
+    ],
+    "shortest_alert_path": [
+      107,
+      15,
+      64,
+      8,
+      52,
+      18,
+      68
+    ]
+  }
+}

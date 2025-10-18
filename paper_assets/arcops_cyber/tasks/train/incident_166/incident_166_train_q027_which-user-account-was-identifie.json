@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_train_q027",
+  "incident": "incident_166",
+  "split": "train",
+  "context": "An anonymous sign-in was detected from the IP address `95.202.65.202` at 2024-07-22 08:45:32.664841+00:00. This could have been done using tools like the Tor browser or anonymizer VPNs. There is an ongoing investigation related to BEC (business email compromise) fraud attempts.",
+  "question": "Which user account was identified as suspicious and sending BEC-related emails?",
+  "gold_answer": "Jordan P",
+  "solution_steps": [
+    "The user with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82` signed in from an anonymous IP address.",
+    "Suspicious emails were sent by the account `Jordan P`, likely as part of a business email compromise (BEC) fraud attempt."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 18,
+    "start_entities": [
+      2
+    ],
+    "end_entities": [
+      6
+    ],
+    "shortest_alert_path": [
+      0,
+      1,
+      18
+    ]
+  }
+}

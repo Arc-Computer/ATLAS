@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_134_train_q001",
+  "incident": "incident_134",
+  "split": "train",
+  "context": "A security report indicates that emails containing a malicious URL were delivered to raphaelt@vnevado.alpineskihouse.co from alyssat@vnevado.alpineskihouse.co, connected to Nina Park, and were subsequently removed after delivery; the malicious URL was https://ms175052280.orangecliff-f53f26fd.eastus.azurecontainerapps.io.",
+  "question": "Can you identify the URL that was detected as potentially malicious according to the recent alert?",
+  "gold_answer": "http://ms175052280.orangecliff-f53f26fd.eastus.azurecontainerapps.io/",
+  "solution_steps": [
+    "The email account `Nina Park@vnevado.alpineskihouse.co` received an email with a malicious URL.",
+    "A user clicked on the malicious URL `http://ms175052280.orangecliff-f53f26fd.eastus.azurecontainerapps.io/`."
+  ],
+  "metadata": {
+    "start_alert": 13,
+    "end_alert": 0,
+    "start_entities": [
+      1,
+      2,
+      3,
+      4,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      13,
+      7,
+      0
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_5_test_q089",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A suspicious 'GenRansom' behavior was detected on host `vnevado-win11u` which is identified by its AadDeviceId `bc00e484-d0e5-4da4-9472-95568cccc07e`. This kind of malware can perform annoying, disruptive, or harmful actions on affected machines, and it may replicate and spread to other machines. The malware was active and requires immediate attention to prevent further infection.",
+  "question": "Can you identify the SID of the account that was possibly compromised and observed delivering ransomware-related files?",
+  "gold_answer": "S-1-5-21-1840191660-8534830288-125585561-1522",
+  "solution_steps": [
+    "Suspicious 'GenRansom' behavior was detected on host `vnevado-win11u`.",
+    "A possible compromised user account with SID `S-1-5-21-1840191660-8534830288-125585561-1522` was observed delivering ransomware-related files."
+  ],
+  "metadata": {
+    "start_alert": 14,
+    "end_alert": 41,
+    "start_entities": [
+      7,
+      8
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      14,
+      7,
+      41
+    ]
+  }
+}

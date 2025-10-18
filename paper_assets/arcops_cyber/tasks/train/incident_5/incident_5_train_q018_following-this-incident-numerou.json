@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_train_q018",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A security incident was reported where all file snapshots and shadow copies were deleted via WMI or VSSAdmin, which is a common indicator of ransomware infection. The file `vssblatemp.exe` was launched on the host `vnevado-win11t` with the command line `vssblatemp.exe delete shadows /all`. The Process ID was 1900.",
+  "question": "Following this incident, numerous file system changes were detected indicating possible ransomware activity. One of the files observed in this context is a PowerShell script. What is the name of this PowerShell script?",
+  "gold_answer": "get-userprttoken.ps1",
+  "solution_steps": [
+    "All file snapshots and shadow copies were deleted via WMI or VSSAdmin by an account with SID `S-1-5-21-1840191660-8534830288-125585561-1522`, which is common during a ransomware infection.",
+    "A possible ransomware activity was detected involving numerous file system changes and appending a known malicious file extension, including the file `get-userprttoken.ps1`."
+  ],
+  "metadata": {
+    "start_alert": 116,
+    "end_alert": 146,
+    "start_entities": [
+      11,
+      68,
+      69,
+      80
+    ],
+    "end_entities": [
+      48
+    ],
+    "shortest_alert_path": [
+      116,
+      2,
+      146
+    ]
+  }
+}

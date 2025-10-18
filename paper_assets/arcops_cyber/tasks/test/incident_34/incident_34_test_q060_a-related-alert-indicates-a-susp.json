@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_34_test_q060",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A security incident was detected where an uncommon file `winatp-intro-backdoor.exe` was created and added to a Run Key on the machine with IP address `72.5.72.208`. The command executed had the ProcessId__CreatedTimeUtc__CommandLine: `10208__2024-06-26t13:17:18.8268389z__reg add hkcu\\software\\microsoft\\windows\\currentversion\\runonce /f /v yrei /t reg_expand_sz /d %userprofile%\\desktop\\winatp-intro-backdoor.exe`, indicating that it would run on the next startup, potentially as part of a persistence mechanism by an attacker.",
+  "question": "A related alert indicates a suspicious LDAP query was executed. Can you identify the file name of the process responsible for executing the LDAP query?",
+  "gold_answer": "winword.exe",
+  "solution_steps": [
+    "An uncommon file was created and added to a Run Key on host `vnevado-win10e`.",
+    "A suspicious LDAP query was executed by the process `winword.exe`."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 24,
+    "start_entities": [
+      9,
+      18,
+      19
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      23,
+      1,
+      24
+    ]
+  }
+}

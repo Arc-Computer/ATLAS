@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_5_train_q001",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A suspicious and anomalous user behavior was detected on the device `vnevado-win11t` indicating potential compromise. This could be a part of a possible human-operated attack. This suspicious behavior caused several alerts related to the user, including a change in the frequency and usage pattern of tools or applications.",
+  "question": "What is the URL associated with the Manatee Tempest activity group observed in this incident?",
+  "gold_answer": "vectorsandarrows.com",
+  "solution_steps": [
+    "The user with SID `S-1-5-21-1840191660-8534830288-125585561-1522` exhibited suspicious and anomalous behavior, which may indicate a possible human-operated attack.",
+    "The Manatee Tempest activity group has been identified, which is known for cybercriminal activity and has compromised the URL `vectorsandarrows.com`."
+  ],
+  "metadata": {
+    "start_alert": 66,
+    "end_alert": 135,
+    "start_entities": [
+      68,
+      69
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      66,
+      2,
+      135
+    ]
+  }
+}

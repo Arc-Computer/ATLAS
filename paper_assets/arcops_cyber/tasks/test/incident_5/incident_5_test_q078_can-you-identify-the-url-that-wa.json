@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_5_test_q078",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "The Mimikatz credential theft tool was detected on this device, indicating a potential attempt to harvest credentials. Following this, we observed potential lateral movements and ransomware delivery. The incident concluded with a command and control behavior being blocked by our security measures. This signifies an active malware that attempted to establish communication with a remote attacker.",
+  "question": "Can you identify the URL that was associated with the command and control behavior which was blocked?",
+  "gold_answer": "http://vectorsandarrows.com/",
+  "solution_steps": [
+    "The Mimikatz credential theft tool was detected on host `vnevado-win10v` at `2024-07-04 22:35:00.846286+00:00`.",
+    "Lateral movement detected using PSExec to IP address `99.83.111.100` at `2024-07-10 11:24:45.260113+00:00`.",
+    "A possible compromised user account `dp5hn` was observed delivering ransomware-related files at `2024-07-04 22:35:01.491898+00:00`.",
+    "Command and Control behavior blocked; malware communicating with URL `http://vectorsandarrows.com/` at `2024-07-04 22:35:03.652724+00:00`."
+  ],
+  "metadata": {
+    "start_alert": 55,
+    "end_alert": 149,
+    "start_entities": [
+      56
+    ],
+    "end_entities": [
+      74
+    ],
+    "shortest_alert_path": [
+      55,
+      34,
+      174,
+      42,
+      93,
+      1,
+      149
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_55_train_q015",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "As part of a recent security incident, a malicious URL `https://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/` was accessed, followed by a malicious PowerShell Cmdlet invocation on the device. Both events are related to suspicious activities, including network reconnaissance, code injection, and potentially credential theft. An alert of suspicious Task Scheduler activity reported a process potentially used for launching malicious code automatically and establishing persistence.",
+  "question": "Can you identify the Process ID and Command Line of the process related to the suspicious Task Scheduler activity?",
+  "gold_answer": "Process Id: 6808, Command Line: powershell.exe  -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcafiazqbuageabqblafaabwb3aguacgbzaggazqbsagwalgbwahmamqa=",
+  "solution_steps": [
+    "The device with hostname `mb-winclient` had a malicious URL clicked on.",
+    "A malicious PowerShell Cmdlet, `powershell.exe`, was invoked on the same device.",
+    "Suspicious Task Scheduler activity involved the process `powershell.exe` with Process ID `6808` and command line `powershell.exe  -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcafiazqbuageabqblafaabwb3aguacgbzaggazqbsagwalgbwahmamqa=` was observed."
+  ],
+  "metadata": {
+    "start_alert": 107,
+    "end_alert": 33,
+    "start_entities": [
+      97
+    ],
+    "end_entities": [
+      25
+    ],
+    "shortest_alert_path": [
+      107,
+      14,
+      51,
+      8,
+      33
+    ]
+  }
+}

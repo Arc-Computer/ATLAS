@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_55_train_q033",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A potential malicious URL click was detected and reported for the mailbox `bjenkins@niseko.alpineskihouse.co` on 2024-07-10. This incident suggests that an attacker might have leveraged this click to compromise the user's account and send phishing emails internally. Following this, it was observed that a user was sending phishing emails from a device on 2024-07-07, which indicates a possible lateral movement by the attacker within the organization. This alert was a result of a Microsoft Defender for Office 365 alert.",
+  "question": "Which mailbox received the email containing the malicious URL that was later removed in the security incident?",
+  "gold_answer": "santiago@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "The user with SID `S-1-5-21-561436748-3867387497-1732241745-3701` clicked on a potentially malicious URL.",
+    "A phishing campaign was launched from the device associated with the user account having AadUserId `28058d92-fc24-4869-9231-6546a34b00f2`.",
+    "An email containing a malicious URL was delivered to the mailbox `santiago@vnevado.alpineskihouse.co` and later removed."
+  ],
+  "metadata": {
+    "start_alert": 104,
+    "end_alert": 70,
+    "start_entities": [
+      93,
+      94
+    ],
+    "end_entities": [
+      71
+    ],
+    "shortest_alert_path": [
+      104,
+      2,
+      88,
+      78,
+      70
+    ]
+  }
+}

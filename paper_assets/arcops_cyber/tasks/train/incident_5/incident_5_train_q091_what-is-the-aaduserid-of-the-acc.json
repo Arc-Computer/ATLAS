@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_5_train_q091",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A security incident involving malicious credential theft tool execution was detected on 2024-07-04. The credential theft tool 'mimikatz.exe' with a command line indicating an intent to dump users' credentials, keys, and plain-text passwords was executed from both Process IDs 3932 and 1044. This was observed at the IP address `107.224.99.179`. Following this, a potential lateral movement event was identified involving PSExec to the server named Vnevado-jump on 2024-07-10. Further investigation revealed a suspicious remote activity detected on 2024-07-04, which flagged potentially malicious activities originating from a remote machine.",
+  "question": "What is the AadUserId of the account associated with the suspicious remote activity on 2024-07-04?",
+  "gold_answer": "731adb71-b11c-4bbf-850b-57989b350e96",
+  "solution_steps": [
+    "There was a detected execution of a known credential theft tool on the host with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`.",
+    "Lateral movement using PSExec to the jump server with IP address `99.83.111.100` was observed.",
+    "Suspicious remote activity was initiated by the user with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`."
+  ],
+  "metadata": {
+    "start_alert": 91,
+    "end_alert": 57,
+    "start_entities": [
+      20,
+      23,
+      24,
+      92
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      91,
+      35,
+      174,
+      42,
+      57
+    ]
+  }
+}

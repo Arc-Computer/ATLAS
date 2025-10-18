@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_34_test_q055",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "An anomalous scheduled task was created on the device with hostname `vnevado-win10e`. This may be used by an attacker to obtain persistence on the device. The command line used to create the task was executed using `powershell.exe`. The report link for further details is: https://security.microsoft.com/threatanalytics3/c9709a39-ac8d-493d-9a63-71da3ca1e745/analystreport",
+  "question": "What is the command line that was used to create the anomalous scheduled task, and what is the Process ID associated with this task?",
+  "gold_answer": "ProcessId: 1348, CommandLine: \"schtasks.exe\" /create /sc once /tn yrei /tr \"c:\\users\\samuelf\\onedrive - (new) alpineskihouse\\desktop\\winatp-intro-backdoor.exe\" /st 11:58 /f",
+  "solution_steps": [
+    "The attacker created an anomalous scheduled task using schtasks.exe with the command line `/create /sc once /tn yrei /tr \"c:\\users\\samuelf\\onedrive - (new) alpineskihouse\\desktop\\winatp-intro-backdoor.exe\" /st 11:58 /f` at `2024-06-26t12:00:40.0878355z`, with Process ID `1348`."
+  ],
+  "metadata": {
+    "start_alert": 20,
+    "end_alert": 20,
+    "start_entities": [
+      6,
+      7,
+      8,
+      9,
+      2,
+      14,
+      1,
+      5
+    ],
+    "end_entities": [
+      13
+    ],
+    "shortest_alert_path": [
+      20
+    ]
+  }
+}

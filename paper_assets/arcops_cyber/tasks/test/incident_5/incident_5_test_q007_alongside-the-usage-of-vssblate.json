@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_5_test_q007",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A recent security incident involved the tampering of system recovery settings on the device `vnevado-win10r`. The process `vssblatemp.exe` was executed with the command `vssblatemp.exe delete shadows /all`, indicating an attempt to delete or remove built-in operating system data and turn off recovery services to prevent recovering a corrupted system. This may include deleting all volume shadow copies to impede system restoration.",
+  "question": "Alongside the usage of `vssblatemp.exe`, another process was used to disable recovery features. What was the command and process ID of the other process involved?",
+  "gold_answer": "Command: bcdedit /set recoveryenabled no, Process ID: 4312",
+  "solution_steps": [
+    "System recovery setting tampering has been detected on this device.",
+    "The adversary used the command `bcdedit /set recoveryenabled no` with Process ID `4312` on `2024-06-20t09:10:48.0676225z` to disable automatic Windows recovery features."
+  ],
+  "metadata": {
+    "start_alert": 120,
+    "end_alert": 120,
+    "start_entities": [
+      60,
+      1,
+      2,
+      65,
+      11,
+      3,
+      64
+    ],
+    "end_entities": [
+      63
+    ],
+    "shortest_alert_path": [
+      120
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_322_test_q008",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "During an ongoing investigation of a security incident where an attacker executed a process `powershell.exe` with a suspiciously encoded command, and another process `ntdsutil.exe` which might have been used to dump NTDS.dit in order to obtain user's credentials from the domain controller, there was an alert for suspicious credential dump. Following this, Microsoft Defender for Resource Manager detected a suspicious resource management operation from a proxy IP address, which is often seen in malicious activities.",
+  "question": "What is the email of the user who signed in to a risky session and performed suspicious Azure Resource Management activities?",
+  "gold_answer": "Hailey Johnson@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "There is a suspicious credential dump from NTDS.dit on host `vnevado-dc`.",
+    "A resource management operation was detected from a suspicious proxy IP address by an account with AadUserId `5e5dd0bd-f7ed-4583-8e9e-52f91e31a360`.",
+    "Suspicious Azure Resource Management activities were performed by a risky user with the email `Hailey Johnson@vnevado.alpineskihouse.co`."
+  ],
+  "metadata": {
+    "start_alert": 16,
+    "end_alert": 32,
+    "start_entities": [
+      17,
+      18,
+      19,
+      20
+    ],
+    "end_entities": [
+      7
+    ],
+    "shortest_alert_path": [
+      16,
+      21,
+      25,
+      9,
+      32
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_55_test_q068",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A security incident involving multiple alerts has been observed, including an ADFS private key extraction attempt on the host `mb-adfs` and suspicious processes such as `iy2orr1e.rrg.exe` being executed. There was also a suspicious LDAP query and renaming of a system executable to perform malicious activities. Additionally, memory from the Local Security Authority Subsystem Service (lsass.exe) was accessed to potentially extract credentials. The security incident progressed over several days.",
+  "question": "What is the name of the user account involved in sending phishing emails internally within the organization as observed in the last alert?",
+  "gold_answer": "Lucas Grey",
+  "solution_steps": [
+    "There was an attempt to extract ADFS private key from host `mb-adfs`.",
+    "A renamed system executable `powershell.exe` was launched.",
+    "An account with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0` performed a sensitive credential memory read.",
+    "The user account `Lucas Grey` was observed sending phishing emails internally, indicating a potential account compromise."
+  ],
+  "metadata": {
+    "start_alert": 43,
+    "end_alert": 88,
+    "start_entities": [
+      18,
+      19,
+      20,
+      26,
+      28,
+      29,
+      44
+    ],
+    "end_entities": [
+      89
+    ],
+    "shortest_alert_path": [
+      43,
+      26,
+      27,
+      8,
+      67,
+      3,
+      88
+    ]
+  }
+}

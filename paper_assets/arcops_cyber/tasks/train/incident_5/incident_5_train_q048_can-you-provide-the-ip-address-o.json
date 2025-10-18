@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_5_train_q048",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A security incident involving potentially compromised assets exhibiting ransomware-like behavior was detected, impacting several devices. The incident involved various files such as `get-userprttoken.ps1`, `characterical.zip`, and `characterical.zip.lockbit`, and utilized an IP address `99.83.111.100`. An attacker may be using the user account `dp5hn` with SID `S-1-5-21-1840191660-8534830288-125585561-1522` and might attempt lateral movements across the network to infect more devices with ransomware.",
+  "question": "Can you provide the IP address observed in relation to the possible lateral movement that followed this suspicious network event?",
+  "gold_answer": "83.162.58.168",
+  "solution_steps": [
+    "There is ransomware-like behavior detected on the host `vnevado-win11t`.",
+    "There is potential lateral movement from an attacker using IP address `83.162.58.168` to exhibit ransomware-like behavior."
+  ],
+  "metadata": {
+    "start_alert": 138,
+    "end_alert": 103,
+    "start_entities": [
+      1,
+      2,
+      3,
+      42,
+      47,
+      48,
+      94,
+      95
+    ],
+    "end_entities": [
+      104
+    ],
+    "shortest_alert_path": [
+      138,
+      68,
+      103
+    ]
+  }
+}

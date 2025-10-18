@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_38_test_q004",
+  "incident": "incident_38",
+  "split": "test",
+  "context": "A security incident involving suspicious activities was reported on 2024-07-04. During this incident, two Powershell processes were identified on the device, potentially indicating an attacker gathering information about the target device or network for later attacks. The activity was flagged as Suspicious Application Window Discovery. In addition, there were abnormal process injection activities observed, which could lead to unexpected code running within a trusted process.",
+  "question": "In relation to the suspicious process injection observed on 2024-07-04, can you provide the URL associated with this suspicious activity?",
+  "gold_answer": "https://wcdstaticfilesprdeus.blob.core.windows.net/wcdstaticfiles/winatp-intro-fileless.txt",
+  "solution_steps": [
+    "Suspicious activity was observed from the IP address `72.5.72.208`, which may indicate an attacker gathering information about the device or network.",
+    "There was a suspicious process injection event where code was abnormally injected into a process, as evidenced by the URL `https://wcdstaticfilesprdeus.blob.core.windows.net/wcdstaticfiles/winatp-intro-fileless.txt`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 10,
+    "start_entities": [
+      5,
+      6,
+      7
+    ],
+    "end_entities": [
+      13
+    ],
+    "shortest_alert_path": [
+      0,
+      4,
+      10
+    ]
+  }
+}

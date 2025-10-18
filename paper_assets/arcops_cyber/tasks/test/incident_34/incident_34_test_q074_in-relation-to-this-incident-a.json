@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_34_test_q074",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "There was a suspicious LDAP query executed from the host `vnevado-win10e`, which belonged to account `samuelf` with SID `S-1-5-21-1870156660-7534030218-135086563-1193`. This is indicative of potential reconnaissance activity. Attackers often use LDAP queries to learn an organization's structure, including administrative users and groups, and important assets. This information can then be used to gain higher privileges.",
+  "question": "In relation to this incident, a suspicious PowerShell command line was also observed. Can you identify the potentially malicious file associated with this PowerShell activity?",
+  "gold_answer": "winatp-intro-backdoor.exe",
+  "solution_steps": [
+    "A suspicious PowerShell command line was executed involving the file `winatp-intro-backdoor.exe`.",
+    "A suspect LDAP query was executed by the account with SID `S-1-5-21-1870156660-7534030218-135086563-1193` which might indicate potential reconnaissance activity."
+  ],
+  "metadata": {
+    "start_alert": 24,
+    "end_alert": 10,
+    "start_entities": [
+      1,
+      2,
+      4,
+      5,
+      6,
+      11,
+      12
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      24,
+      5,
+      10
+    ]
+  }
+}

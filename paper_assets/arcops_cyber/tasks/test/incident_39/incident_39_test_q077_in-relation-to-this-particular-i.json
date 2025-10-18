@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_test_q077",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A security incident involving a suspicious sequence of exploration activities was identified, where a set of Windows commands were executed that attackers can use to identify valuable assets and coordinate lateral movement after compromising a machine. The observed processes included `whoami.exe` and various `net.exe` commands. Subsequently, there were indications of the use of the Rubeus kerberoasting tool, which exploits Kerberos authentication protocols.",
+  "question": "In relation to this particular incident of potential human-operated malicious activity, can you identify the account name involved?",
+  "gold_answer": "fk8mq",
+  "solution_steps": [
+    "There was a set of suspicious Windows commands executed on host `vnevado-win10v`.",
+    "The use of the Rubeus tool was detected, resulting in an extracted file `adminticket.txt`.",
+    "A potential human-operated malicious activity was observed involving the account `fk8mq`."
+  ],
+  "metadata": {
+    "start_alert": 77,
+    "end_alert": 105,
+    "start_entities": [
+      51,
+      78,
+      79,
+      80,
+      81,
+      82,
+      83
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      77,
+      32,
+      107,
+      8,
+      105
+    ]
+  }
+}

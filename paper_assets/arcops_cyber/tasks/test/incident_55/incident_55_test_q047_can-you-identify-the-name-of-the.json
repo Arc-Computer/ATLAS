@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q047",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "As part of investigating a suspicious access to the LSASS service, which may indicate an attacker attempting to obtain clear-text passwords from the LSASS service's memory, it was noted that the file `lsass.exe` was involved in this activity on the host `mb-winclient`. The attacker may use these credentials for lateral movement activities. Further investigation reveals that a suspicious Task Scheduler activity occurred around the same time where a process was used to create, modify, or delete a task, indicating a possible attempt to launch malicious code automatically and establish persistence.",
+  "question": "Can you identify the name of the process used in the suspicious Task Scheduler activity?",
+  "gold_answer": "iy2orr1e.rrg.exe",
+  "solution_steps": [
+    "A powershell.exe process accessed the LSASS service to potentially decrypt user's clear-text passwords.",
+    "A process `iy2orr1e.rrg.exe` was involved in suspicious Task Scheduler activity, which could be an attempt to launch malicious code automatically and establish persistence."
+  ],
+  "metadata": {
+    "start_alert": 45,
+    "end_alert": 33,
+    "start_entities": [
+      47,
+      2,
+      4,
+      3,
+      48,
+      1,
+      46,
+      15,
+      24,
+      14
+    ],
+    "end_entities": [
+      29
+    ],
+    "shortest_alert_path": [
+      45,
+      8,
+      33
+    ]
+  }
+}

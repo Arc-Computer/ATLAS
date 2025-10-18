@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q085",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A suspicious sequence of exploration activities was detected on 2024-07-04. The alerts mentioned a process executing a set of windows commands, which can be used by attackers to identify assets of value and coordinate lateral movement after compromising a machine. The process involved included a suspicious filename `iy2orr1e.rrg.exe` and commands like `whoami.exe` and `powershell.exe`.",
+  "question": "What is the SID of the account involved in the suspicious sequence of exploration activities noted in the alert?",
+  "gold_answer": "S-1-5-21-561436748-3867387497-1732241745-3701",
+  "solution_steps": [
+    "A process `whoami.exe` was run, which can be used by attackers to identify assets of value.",
+    "The account with SID `S-1-5-21-561436748-3867387497-1732241745-3701` executed these suspicious commands."
+  ],
+  "metadata": {
+    "start_alert": 52,
+    "end_alert": 57,
+    "start_entities": [
+      20,
+      44,
+      28,
+      29,
+      55,
+      18,
+      25,
+      56,
+      53,
+      19
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      52,
+      54,
+      57
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_55_test_q064",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "Context about the alert given in the question and background information about reading the DKM key and possible relationship to the use of Impacket toolkit.",
+  "question": "What is the name of the file associated with the command executed via the Impacket toolkit?",
+  "gold_answer": "%comspec%",
+  "solution_steps": [
+    "The account with SID `S-2-5-21-571436798-3864380397-1837441745-3206` read the DKM key of ADFS object id 4cac49d3-29d3-407e-8c9b-b7ebb21541b2.",
+    "A suspicious execution of a command via the Impacket toolkit was observed on the device using the file `%comspec%`."
+  ],
+  "metadata": {
+    "start_alert": 106,
+    "end_alert": 16,
+    "start_entities": [
+      103
+    ],
+    "end_entities": [
+      22
+    ],
+    "shortest_alert_path": [
+      106,
+      19,
+      16
+    ]
+  }
+}

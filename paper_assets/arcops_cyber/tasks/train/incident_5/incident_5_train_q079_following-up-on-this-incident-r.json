@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_train_q079",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A recent command and control behavior was blocked on the host `vnevado-win10s`. The host made a suspicious request using `curl http://vectorsandarrows.com`, and this suspicious activity could be associated with malware capable of receiving commands from remote attackers. Additionally, because the malware was active, higher severity ratings were assigned, and precautionary measures were recommended to prevent further infection.",
+  "question": "Following up on this incident, ransomware-like behavior was observed. Could you identify the file name that was associated with this ransomware attempt?",
+  "gold_answer": "syncretic.7z.lockbit",
+  "solution_steps": [
+    "Malware with command and control behavior was detected and blocked on the account `dp5hn`.",
+    "A potentially compromised asset exhibited ransomware-like behavior with the file `syncretic.7z.lockbit`."
+  ],
+  "metadata": {
+    "start_alert": 106,
+    "end_alert": 147,
+    "start_entities": [
+      12,
+      13,
+      74,
+      99
+    ],
+    "end_entities": [
+      46
+    ],
+    "shortest_alert_path": [
+      106,
+      1,
+      147
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_train_q027",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A security incident involving a malicious PowerShell Cmdlet being invoked on the machine `mb-winclient` occurred. The relevant file is `contosoadfsblatempcreds.ps1`, executed by user `bjenkins` using `powershell.exe`. This event was followed up with an unusual addition of credentials to an OAuth app called SimulandApp by the user Luciano Herrera (pwilson@niseko.alpineskihouse.co). This behavior may indicate that an attacker has compromised the app, potentially using it to spread phishing, exfiltrate data, or gain access to other accounts and devices. The user added a credential type Password.",
+  "question": "Can you provide the App ID for the OAuth application SimulandApp where the unusual addition of credentials took place?",
+  "gold_answer": "11161",
+  "solution_steps": [
+    "A malicious PowerShell Cmdlet was invoked on the machine by the user with SID `S-1-5-21-551436448-9871687716-9837441745-1903`.",
+    "The user Luciano Herrera (pwilson@niseko.alpineskihouse.co) performed an unusual addition of credentials to the application SimulandApp with AppId `11161`."
+  ],
+  "metadata": {
+    "start_alert": 51,
+    "end_alert": 80,
+    "start_entities": [
+      3,
+      9,
+      2,
+      14,
+      1,
+      15,
+      4,
+      13,
+      7,
+      42
+    ],
+    "end_entities": [
+      84
+    ],
+    "shortest_alert_path": [
+      51,
+      10,
+      80
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_322_test_q029",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "A security incident was detected involving a suspicious Azure Resource Manager operation from an IP address associated with proxy services, such as TOR. This activity may indicate a threat actor attempting to hide their source IP. The operation in question was performed on the host `vnevado-dc` with Subscription ID `7e838342-601f-4552-9baf-0dfb300cf555`, Resource Group `ctfcat`, and several Resource IDs related to the virtual machine and network interfaces. The proxy IP address in question is `253.1.244.215`.",
+  "question": "As part of the same incident, a user clicked on a malicious URL. Can you provide the malicious URL?",
+  "gold_answer": "https://dj01161621.bravesand-e1ccd718.eastus.azurecontainerapps.io/",
+  "solution_steps": [
+    "There was an Azure Resource Manager operation detected from a suspicious proxy IP address associated with the email account `Hailey Johnson@vnevado.alpineskihouse.co`.",
+    "A malicious URL `https://dj01161621.bravesand-e1ccd718.eastus.azurecontainerapps.io/` was clicked on a device."
+  ],
+  "metadata": {
+    "start_alert": 25,
+    "end_alert": 33,
+    "start_entities": [
+      21,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ],
+    "end_entities": [
+      24
+    ],
+    "shortest_alert_path": [
+      25,
+      7,
+      33
+    ]
+  }
+}

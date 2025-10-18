@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_134_test_q014",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "During a recent security incident, a user's inbox rules were found to be manipulated suspiciously. The user identified was Nina Park (email: Nina Park@vnevado.alpineskihouse.co), and the involved IP address was 237.7.81.122. This has raised concerns about possible unauthorized access and data exfiltration attempts.",
+  "question": "Related to this incident, a malicious IP address was detected around the time of sign-in. Can you identify the IP address known to be malicious?",
+  "gold_answer": "170.54.121.63",
+  "solution_steps": [
+    "There has been suspicious inbox manipulation involving the user with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1`.",
+    "A sign-in occurred from a known malicious IP address `170.54.121.63`."
+  ],
+  "metadata": {
+    "start_alert": 14,
+    "end_alert": 23,
+    "start_entities": [
+      6,
+      7,
+      8,
+      15,
+      16
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      14,
+      9,
+      23
+    ]
+  }
+}

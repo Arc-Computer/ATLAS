@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_34_train_q034",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "In a recent security incident, a suspicious PowerShell command execution was observed. This involves the host `vnevado-win10e` and user account `samuelf` (SID: `S-1-5-21-1870156660-7534030218-135086563-1193`). PowerShell is often used by attackers to execute payloads in memory without touching the disk.",
+  "question": "Can you identify the Azure Active Directory (AAD) User ID associated with the account that executed the suspicious PowerShell command to download a file or run an encoded command?",
+  "gold_answer": "16320fec-8d90-403b-b7fe-78f715d4728d",
+  "solution_steps": [
+    "A suspicious process executed a PowerShell command on a device with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f`.",
+    "A PowerShell command was used to download a file or execute an encoded command by an account with AadUserId `16320fec-8d90-403b-b7fe-78f715d4728d`."
+  ],
+  "metadata": {
+    "start_alert": 3,
+    "end_alert": 22,
+    "start_entities": [
+      1,
+      2,
+      4,
+      5,
+      7,
+      8,
+      9
+    ],
+    "end_entities": [
+      6
+    ],
+    "shortest_alert_path": [
+      3,
+      2,
+      22
+    ]
+  }
+}

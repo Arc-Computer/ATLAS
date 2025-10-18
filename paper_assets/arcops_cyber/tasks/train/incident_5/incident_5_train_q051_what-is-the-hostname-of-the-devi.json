@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_5_train_q051",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A suspicious remote activity was observed on the machine with hostname `vnevado-win11u`. This alert indicated potential attempts to initiate interactive sessions, modify files, pass WMI commands, create scheduled tasks, or other potentially malicious activities from a remote machine. In connection with this incident, a ransomware payload was remotely launched on a device shortly after, likely attempting to encrypt content and render the device unusable.",
+  "question": "What is the hostname of the device on which the ransomware payload was remotely launched?",
+  "gold_answer": "vnevado-win11t",
+  "solution_steps": [
+    "Suspicious activity initiated remotely was observed from IP `99.83.111.100`.",
+    "A ransomware payload was remotely launched on the device with HostName `vnevado-win11t`."
+  ],
+  "metadata": {
+    "start_alert": 88,
+    "end_alert": 134,
+    "start_entities": [
+      89,
+      59,
+      6,
+      78,
+      77,
+      7,
+      8,
+      47,
+      11,
+      90
+    ],
+    "end_entities": [
+      68
+    ],
+    "shortest_alert_path": [
+      88,
+      42,
+      134
+    ]
+  }
+}

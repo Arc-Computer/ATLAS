@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_134_test_q040",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A security incident involving BEC financial fraud was identified, where a suspicious inbox rule that hides incoming email messages was created in a risky Azure Active Directory session. The attack might be an attempt to conduct business email compromise, a form of financial fraud. During the investigation, it was found that the user account `Nina Park` with email `Nina Park@vnevado.alpineskihouse.co` and SID `S-1-5-21-1874151667-3554330288-105586563-1715` was involved, using the IP address `237.7.81.122`.",
+  "question": "Related to this incident, there was a sign-in from an IP address known to be malicious. Can you identify the malicious IP address involved in the sign-in?",
+  "gold_answer": "170.54.121.63",
+  "solution_steps": [
+    "A suspicious inbox rule that hides incoming email messages was created in a risky Azure Active Directory session by the account with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1`.",
+    "A sign-in from a malicious IP address `170.54.121.63` was detected during or around the time of the session."
+  ],
+  "metadata": {
+    "start_alert": 17,
+    "end_alert": 23,
+    "start_entities": [
+      6,
+      7,
+      8,
+      16
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      17,
+      9,
+      23
+    ]
+  }
+}

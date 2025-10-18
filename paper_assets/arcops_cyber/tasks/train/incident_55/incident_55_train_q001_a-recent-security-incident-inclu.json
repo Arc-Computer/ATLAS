@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_55_train_q001",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "We have detected that one of your users has recently clicked on a link that was found to be malicious: `http://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/`. This is part of a broader security incident involving suspicious exploration activities including the use of multiple Windows commands which can be used by attackers to identify assets of value and coordinate lateral movement after compromising a machine.",
+  "question": "A recent security incident included another instance of potentially malicious URL click on the same device. Can you identify the URL?",
+  "gold_answer": "https://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io",
+  "solution_steps": [
+    "A potentially malicious URL was clicked by a user with SID `S-1-5-21-561436748-3867387497-1732241745-3701`.",
+    "There was a suspicious sequence of exploration activities on host `mb-winclient`.",
+    "The malicious URL clicked was `https://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/`."
+  ],
+  "metadata": {
+    "start_alert": 104,
+    "end_alert": 107,
+    "start_entities": [
+      91
+    ],
+    "end_entities": [
+      97
+    ],
+    "shortest_alert_path": [
+      104,
+      2,
+      57,
+      14,
+      107
+    ]
+  }
+}

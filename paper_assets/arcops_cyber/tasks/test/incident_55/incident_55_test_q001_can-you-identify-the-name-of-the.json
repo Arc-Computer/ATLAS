@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_55_test_q001",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "There was a security incident where a malicious URL `https://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/` was clicked on a device. This incident happened on 2024-07-10. A related malicious activity includes a PowerShell Cmdlet being invoked on a machine on 2024-07-04 which could potentially be associated with credential theft, exploitation, network reconnaissance, or code injection.",
+  "question": "Can you identify the name of the file associated with the malicious PowerShell Cmdlet invocation on the machine from the related alert?",
+  "gold_answer": "contosoadfsblatempcreds.ps1",
+  "solution_steps": [
+    "A malicious URL was clicked on the device with hostname `mb-winclient`.",
+    "A malicious PowerShell Cmdlet named `contosoadfsblatempcreds.ps1` was invoked on the machine."
+  ],
+  "metadata": {
+    "start_alert": 107,
+    "end_alert": 51,
+    "start_entities": [
+      97
+    ],
+    "end_entities": [
+      42
+    ],
+    "shortest_alert_path": [
+      107,
+      14,
+      51
+    ]
+  }
+}

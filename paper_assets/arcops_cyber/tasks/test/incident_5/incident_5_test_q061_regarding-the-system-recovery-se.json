@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_5_test_q061",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A possible ransomware activity based on a known malicious extension has been observed on a device where numerous file system changes involved appending a suspicious file extension. Files involved include `get-userprttoken.ps1`, `characterical.zip`, and `characterical.zip.lockbit`. The IP address associated with this activity is `99.83.111.100`, and the account SID is `S-0-6-5`. The activity is indicative of mass encryption of files by ransomware.",
+  "question": "Regarding the system recovery setting tampering, which process was used to delete all volume shadow copies on the system?",
+  "gold_answer": "vssblatemp.exe",
+  "solution_steps": [
+    "There is a possible ransomware activity on the host `vnevado-win11t` that involves mass encryption of files.",
+    "System recovery setting tampering by running the command `vssblatemp.exe delete shadows /all` was observed on the device at `2024-06-20t09:29:40.8785892z` with Process ID `1900`."
+  ],
+  "metadata": {
+    "start_alert": 159,
+    "end_alert": 79,
+    "start_entities": [
+      42,
+      47,
+      48,
+      94,
+      95
+    ],
+    "end_entities": [
+      80
+    ],
+    "shortest_alert_path": [
+      159,
+      68,
+      79
+    ]
+  }
+}

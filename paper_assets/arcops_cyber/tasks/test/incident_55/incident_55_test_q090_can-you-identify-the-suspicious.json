@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q090",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A security incident was reported when the user Luciano Herrera (pwilson@niseko.alpineskihouse.co) performed an unusual addition of credentials to the application SimulandApp, suggesting a potential compromise. This user added a credential of type Password, which is alarming. Additionally, a suspicious LDAP query action was performed which might indicate reconnaissance activity. Attackers often use LDAP queries to gather information about the organization's structure.",
+  "question": "Can you identify the suspicious file related to the access of the LSASS service which could be indicative of credential extraction activity?",
+  "gold_answer": "winscard.dll",
+  "solution_steps": [
+    "The user Luciano Herrera (pwilson@niseko.alpineskihouse.co) added a credential of type Password to the application SimulandApp, which is unusual and suggests a potential compromise of the app. The user's AadUserId is `2de70991-2799-4a95-b734-8e3df3a50118`.",
+    "A suspicious LDAP query was executed on the host `mb-winclient`, which may indicate reconnaissance activity aimed at learning the organization's structure.",
+    "There was suspicious access to the LSASS service with the file `winscard.dll`, which could be an attempt to obtain clear-text passwords for lateral movement activities."
+  ],
+  "metadata": {
+    "start_alert": 80,
+    "end_alert": 45,
+    "start_entities": [
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87
+    ],
+    "end_entities": [
+      48
+    ],
+    "shortest_alert_path": [
+      80,
+      11,
+      64,
+      14,
+      45
+    ]
+  }
+}

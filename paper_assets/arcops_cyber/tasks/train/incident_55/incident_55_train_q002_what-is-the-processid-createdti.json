@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_55_train_q002",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "As part of a recent security incident, a user named gsmith was observed hiding a known public tool under an unusual filename. Concurrently, there was suspicious Task Scheduler activity, which might indicate an attempt to launch malicious code automatically and establish persistence. The earlier process related to this incident had the ProcessId__CreatedTimeUtc__CommandLine `5752__2024-07-06t00:00:01.7155092z__iy2orr1e.rrg.exe -windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=`.",
+  "question": "What is the ProcessId__CreatedTimeUtc__CommandLine value related to the suspicious Task Scheduler activity?",
+  "gold_answer": "6808__2024-07-02t09:48:12.7628138z__powershell.exe  -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcafiazqbuageabqblafaabwb3aguacgbzaggazqbsagwalgbwahmamqa=",
+  "solution_steps": [
+    "The hostname `mb-adfs` was involved in an incident where a known dual-purpose tool was observed under an unexpected filename on 2024-07-06.",
+    "A suspicious Task Scheduler activity was detected where the process with Process ID `6808`, running `powershell.exe -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcafiazqbu....` was created on 2024-07-02 at 09:48:12.7628138Z. This may be an attempt to launch malicious code automatically and establish persistence."
+  ],
+  "metadata": {
+    "start_alert": 68,
+    "end_alert": 33,
+    "start_entities": [
+      18,
+      19,
+      20,
+      69
+    ],
+    "end_entities": [
+      25
+    ],
+    "shortest_alert_path": [
+      68,
+      26,
+      33
+    ]
+  }
+}

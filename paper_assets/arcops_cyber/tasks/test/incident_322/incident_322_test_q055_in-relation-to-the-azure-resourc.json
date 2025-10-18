@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_322_test_q055",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "A security incident involving multiple suspicious activities was noted, starting with a malicious URL being clicked on a device with hostname `vnevado-win11h`. This led to further investigation where a suspicious Azure Resource Manager operation from a proxy IP was detected suggesting possible malicious behavior.",
+  "question": "In relation to the Azure Resource Manager operation from the suspicious proxy IP address, what is the file name of the process that might be used to gather information for persistence or lateral movement in a network?",
+  "gold_answer": "ntdsutil.exe",
+  "solution_steps": [
+    "The attacker launched ntdsutil with the extracted file name `ntdsutil.exe` to gather information from Active Directory.",
+    "A suspicious Azure Resource Manager operation was detected from the host `vnevado-dc`, which is associated with a proxy IP.",
+    "A malicious URL was clicked by the Azure AD user with AadUserId `5e5dd0bd-f7ed-4583-8e9e-52f91e31a360`."
+  ],
+  "metadata": {
+    "start_alert": 33,
+    "end_alert": 22,
+    "start_entities": [
+      13,
+      24,
+      34,
+      35,
+      36,
+      37
+    ],
+    "end_entities": [
+      20
+    ],
+    "shortest_alert_path": [
+      33,
+      9,
+      25,
+      21,
+      22
+    ]
+  }
+}

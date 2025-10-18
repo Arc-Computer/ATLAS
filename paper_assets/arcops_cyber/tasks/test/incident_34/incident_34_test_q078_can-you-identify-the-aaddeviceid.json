@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_34_test_q078",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "As part of investigating a Powershell-based security incident on July 4th, 2024, a suspicious file `winatp-intro-backdoor.exe` was dropped and executed on the machine by the user `samuelf`. The attacker used a base64 encoded command to create and execute the backdoor file using Powershell. The process ID related to this incident was `8604`, and the file `winatp-intro-backdoor.exe` was involved. Subsequently, an automated investigation was initiated manually by `u141(u141@ash.alpineskihouse.co)`, which started on the host device identified by its AKADeviceId. Can you identify the AKADeviceId for the host involved in this automated investigation?",
+  "question": "Can you identify the AadDeviceId of the host where the Automated investigation was manually started?",
+  "gold_answer": "02b8f519-1123-4228-b32a-ccb78af3449f",
+  "solution_steps": [
+    "Powershell dropped a suspicious file on the machine with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f`.",
+    "An automated investigation was manually started on the machine with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f` by the user `u141@ash.alpineskihouse.co`."
+  ],
+  "metadata": {
+    "start_alert": 25,
+    "end_alert": 0,
+    "start_entities": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      16
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      25,
+      2,
+      0
+    ]
+  }
+}

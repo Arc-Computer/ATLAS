@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_34_train_q017",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "A process executed PowerShell on the host `vnevado-win10e`. The account associated with this activity is `samuelf` with SID `S-1-5-21-1870156660-7534030218-135086563-1193` and AadUserId `16320fec-8d90-403b-b7fe-78f715d4728d`. This incident involves potentially harmful activity leveraging PowerShell to execute payloads that bypass security mechanisms.",
+  "question": "What was the executable file involved in the suspicious PowerShell activity observed on the host?",
+  "gold_answer": "winatp-intro-backdoor.exe",
+  "solution_steps": [
+    "There was a suspicious PowerShell download or encoded command execution on `2024-06-26t12:00:39.2886108z` with Process ID `8604`.",
+    "The command executed was `powershell.exe -w movedn -exec bypass -command cd /; $filebase64prefix = ''; $filebase64prefix= $filebase64prefix + 'tvq'; ... $filebase64prefix= $filebase64prefix + 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=='; $filebase64= $filebase64prefix + $filebase64suffix; $file= [convert]::frombase64string([string]$filebase64); $filename= 'winatp-intro-backdoor.exe'; $desktop=[environment]::getfolderpath('desktop'); $fullpath = join-path $desktop $filename; [io.file]::writeallbytes($fullpath,$file); copy $fullpath $desktop; schtasks /create /sc once /tn yrei /tr $fullpath /st (get-date).addminutes(-2).tostring('hh:mm') /f; $settings = new-scheduledtasksettingsset -allowstartifonbatteries -dontstopifgoingonbatteries; set-scheduledtask -taskname 'yrei' -settings $settings; schtasks /run /tn yrei`.",
+    "A suspicious file `winatp-intro-backdoor.exe` was created by the PowerShell command."
+  ],
+  "metadata": {
+    "start_alert": 22,
+    "end_alert": 10,
+    "start_entities": [
+      1,
+      2,
+      4,
+      5,
+      6,
+      8,
+      9
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      22,
+      7,
+      10
+    ]
+  }
+}

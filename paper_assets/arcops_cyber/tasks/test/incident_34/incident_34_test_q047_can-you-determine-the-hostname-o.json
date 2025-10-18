@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_34_test_q047",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "In the context of a suspicious process executed PowerShell command on `2024-07-04`, an incident has been investigated involving the user `samuelf` with AAD user ID: `16320fec-8d90-403b-b7fe-78f715d4728d`. The process `winatp-intro-backdoor.exe` was executed using PowerShell with process ID: 8604. This PowerShell command is critical as it may allow an attacker to bypass security protection mechanisms by executing their payloads in memory, avoiding disk touches and thus leaving fewer traces.",
+  "question": "Can you determine the hostname of the endpoint where the PowerShell script was executed as `winatp-intro-backdoor.exe`?",
+  "gold_answer": "vnevado-win10e",
+  "solution_steps": [
+    "A suspicious process executed a PowerShell command on the host `vnevado-win10e`."
+  ],
+  "metadata": {
+    "start_alert": 3,
+    "end_alert": 3,
+    "start_entities": [
+      6,
+      4,
+      9,
+      8,
+      5,
+      7,
+      2
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      3
+    ]
+  }
+}

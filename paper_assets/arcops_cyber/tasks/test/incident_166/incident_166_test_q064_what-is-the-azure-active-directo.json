@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_166_test_q064",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "During a multi-stage security incident, an alert was triggered related to a suspicious inbox manipulation rule set on the inbox of the user Jordan P (laylaw@vnevado.alpineskihouse.co). The rule named ITCleanup moved messages to a folder named RSS Feeds, which may indicate account compromise and potential use for spreading phishing emails or gaining access to other accounts and devices.",
+  "question": "What is the Azure Active Directory User ID (AadUserId) of the account involved in the financial fraud attempt detected through a suspicious inbox rule in a risky session?",
+  "gold_answer": "89e933b9-5b2e-4bd6-bcdf-033db707ef82",
+  "solution_steps": [
+    "A suspicious inbox rule named ITCleanup was set by the account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`, which belongs to user `Jordan P (laylaw@vnevado.alpineskihouse.co)`, to move messages to a folder named RSS Feeds.",
+    "A suspicious inbox rule that hides incoming email messages was also created by the same account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`, which may indicate an attempted business email compromise (BEC) financial fraud."
+  ],
+  "metadata": {
+    "start_alert": 5,
+    "end_alert": 17,
+    "start_entities": [
+      2,
+      4,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      5,
+      1,
+      17
+    ]
+  }
+}

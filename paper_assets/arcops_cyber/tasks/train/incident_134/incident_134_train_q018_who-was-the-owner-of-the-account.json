@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_train_q018",
+  "incident": "incident_134",
+  "split": "train",
+  "context": "On July 17, 2024, there were two security alerts. The first alert, occurring at 11:01:27, was related to a sign-in from an anonymous IP address 170.54.121.63. The second alert, triggered at 11:04:19, involved the removal of email messages containing a malicious URL that had been delivered.",
+  "question": "Who was the owner of the account involved in the second alert where email messages containing malicious URLs were removed after delivery?",
+  "gold_answer": "Nina Park",
+  "solution_steps": [
+    "The user with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1` signed in from an anonymous IP address.",
+    "The email account `Nina Park` received an email with a malicious URL that was later removed."
+  ],
+  "metadata": {
+    "start_alert": 11,
+    "end_alert": 13,
+    "start_entities": [
+      12
+    ],
+    "end_entities": [
+      6
+    ],
+    "shortest_alert_path": [
+      11,
+      9,
+      13
+    ]
+  }
+}

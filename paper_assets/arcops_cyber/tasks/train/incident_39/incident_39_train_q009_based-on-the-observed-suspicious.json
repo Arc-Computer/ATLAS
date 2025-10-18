@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_39_train_q009",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A suspicious behavior indicating the possible use of the Rubeus kerberoasting tool was detected on host `vnevado-win10b`. This involved several processes including `psexesvc.exe` and `rubeus.exe`, which might be an indication of an attacker attempting to request Kerberos tickets for an account's SPN or performing pass-the-ticket techniques.",
+  "question": "Based on the observed suspicious activities and connected entities, which user account was involved in using PsExec to launch a command on a remote device?",
+  "gold_answer": "tgs2z",
+  "solution_steps": [
+    "Activity indicating the use of the Rubeus tool was observed, which might include kerberoasting, pass-the-ticket, and other attack techniques. The tool extracted a file named `adminticket.txt`.",
+    "PsExec was used to launch a command on a remote device. The account name involved in this activity is `tgs2z`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 95,
+    "start_entities": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      9,
+      10,
+      11
+    ],
+    "end_entities": [
+      27
+    ],
+    "shortest_alert_path": [
+      0,
+      8,
+      95
+    ]
+  }
+}

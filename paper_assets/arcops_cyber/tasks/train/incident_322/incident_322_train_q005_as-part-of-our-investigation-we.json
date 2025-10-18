@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_322_train_q005",
+  "incident": "incident_322",
+  "split": "train",
+  "context": "During a recent security investigation, we identified multiple suspicious activities involving various endpoints and alerts. Initially, a connection from IP `231.60.52.209` - `vnevado-win11h.vnevado.alpineskihouse.co` to a malicious URL `login.micro.demo.antoinetest.ovh` was detected in proxy logs. This raised concerns about potential unauthorized access or malicious activities on the affected system.",
+  "question": "As part of our investigation, we also discovered that attackers might be using a certain process to gather information for persistence or lateral movement in the network. Can you identify the file name of the process that was used in this activity?",
+  "gold_answer": "ntdsutil.exe",
+  "solution_steps": [
+    "A malicious URL was detected in proxy logs from the host `vnevado-win11h` with the IP address `231.60.52.209` connecting to `login.micro.demo.antoinetest.ovh`.",
+    "A malicious URL was clicked by the user account `Hailey Johnson`.",
+    "There was an Azure Resource Manager operation from a suspicious proxy IP address linked to the host `vnevado-dc`.",
+    "The attacker used `ntdsutil.exe` to gather Active Directory information."
+  ],
+  "metadata": {
+    "start_alert": 11,
+    "end_alert": 22,
+    "start_entities": [
+      12,
+      14,
+      15
+    ],
+    "end_entities": [
+      20
+    ],
+    "shortest_alert_path": [
+      11,
+      13,
+      33,
+      6,
+      25,
+      21,
+      22
+    ]
+  }
+}

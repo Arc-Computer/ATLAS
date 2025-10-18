@@ -1,0 +1,38 @@
+{
+  "task_id": "incident_55_test_q030",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A security incident started with an alert indicating that a known public tool, which could be used maliciously, was observed under an unexpected filename. The file `iy2orr1e.rrg.exe` was executed on the host `mb-adfs` by the account `gsmith`. Subsequent alerts indicated ongoing hands-on-keyboard attacks via the Impacket toolkit, followed by a process injecting potentially malicious code. A suspicious activity was then recorded where the user Luciano Herrera (pwilson@niseko.alpineskihouse.co) performed an unusual addition of credentials to the application SimulandApp. This could indicate that the app has been compromised for phishing or data exfiltration.",
+  "question": "Can you provide the OAuth application ID for the app to which Luciano Herrera added the credential?",
+  "gold_answer": "4d9476b8-6ae6-459b-a273-5837c15b5981",
+  "solution_steps": [
+    "The account `gsmith` was involved with an attempt to hide the use of a suspicious dual-purpose tool.",
+    "A command was executed via Impacket using the process `powershell.exe`, which indicates a potential hands-on-keyboard attack.",
+    "The account with SID `S-1-5-21-551436448-9871687716-9837441745-1903` was associated with a process injection event, suggesting malicious code was injected into another process.",
+    "Luciano Herrera (email: pwilson@niseko.alpineskihouse.co) performed an unusual addition of Password credentials to the OAuth application `SimulandApp` (OAuthAppId `4d9476b8-6ae6-459b-a273-5837c15b5981`), indicating a possible application compromise."
+  ],
+  "metadata": {
+    "start_alert": 32,
+    "end_alert": 80,
+    "start_entities": [
+      18,
+      19,
+      20,
+      26,
+      28,
+      29
+    ],
+    "end_entities": [
+      85
+    ],
+    "shortest_alert_path": [
+      32,
+      18,
+      16,
+      8,
+      41,
+      10,
+      80
+    ]
+  }
+}

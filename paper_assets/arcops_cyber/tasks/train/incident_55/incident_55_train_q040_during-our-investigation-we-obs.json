@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_55_train_q040",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "In our investigation of a suspicious system hardware discovery incident which involved activities likely aimed at gathering information about the target device or network, we noted the presence of several significant processes executed on the host `mb-winclient`. For example, the process `svchost.exe` with command line `2880__2024-07-02t07:28:40.7133644z__svchost.exe -k netsvcs -p -s winmgmt` and another process involving a PowerShell script `contosoadfsblatempcreds.ps1` were identified.",
+  "question": "During our investigation, we observed an attempt to hide the use of a dual-purpose tool under an unexpected filename. This was associated with an account. Can you identify the name of the account related to this suspicious attempt?",
+  "gold_answer": "gsmith",
+  "solution_steps": [
+    "There is a suspicious system hardware discovery performed using `powershell.exe`.",
+    "A suspicious sequence of exploration activities was performed with Process ID `3116` at `2024-07-02T09:48:23.9439954Z` using the command line `iy2orr1e.rrg.exe` -windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=.",
+    "An attempt to hide the use of a dual-purpose tool was detected under an account named `gsmith`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 32,
+    "start_entities": [
+      3,
+      14,
+      5,
+      11,
+      12,
+      4,
+      13,
+      7,
+      15,
+      9
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      0,
+      8,
+      52,
+      28,
+      32
+    ]
+  }
+}

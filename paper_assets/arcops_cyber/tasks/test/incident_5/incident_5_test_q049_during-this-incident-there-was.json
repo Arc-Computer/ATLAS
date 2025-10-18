@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_5_test_q049",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A recent security incident involved potentially compromised assets exhibiting ransomware-like behavior impacting multiple devices. The attacker might have been using various user accounts, IP addresses, or devices to spread ransomware across the network, and automated remediation actions may have been activated to address the affected entities. One of the devices involved in this incident is identified with the hostname `vnevado-win11u`.",
+  "question": "During this incident, there was also a detected attempt to access the Primary Refresh Token (PRT). What is the AadDeviceId of the host involved in this attempt?",
+  "gold_answer": "9d4887ba-0b69-47d6-89bc-9b32787f379e",
+  "solution_steps": [
+    "The user account with SID `S-1-5-21-1840191660-8534830288-125585561-1522` is potentially compromised and exhibiting ransomware-like behavior, affecting multiple devices.",
+    "There was a possible attempt to access a Primary Refresh Token (PRT) from the device with AadDeviceId `9d4887ba-0b69-47d6-89bc-9b32787f379e`."
+  ],
+  "metadata": {
+    "start_alert": 100,
+    "end_alert": 71,
+    "start_entities": [
+      42,
+      49,
+      8,
+      44,
+      47,
+      48,
+      52,
+      51,
+      45,
+      7
+    ],
+    "end_entities": [
+      65
+    ],
+    "shortest_alert_path": [
+      100,
+      2,
+      71
+    ]
+  }
+}

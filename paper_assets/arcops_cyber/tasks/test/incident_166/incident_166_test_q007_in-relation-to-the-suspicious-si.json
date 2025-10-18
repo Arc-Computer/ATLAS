@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_166_test_q007",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A business email compromise-related alert indicated that a user account 'Jordan P' with the email `Jordan P@vnevado.alpineskihouse.co` signed in to SAP in a suspicious manner. This action suggests that an attacker might have taken control of the user account to search through SAP to record or modify sensitive financial information. The signed-in activity was flagged by Microsoft Defender XDR and might be used for later stages in the attack, such as phishing or social engineering.",
+  "question": "In relation to the suspicious sign-in to SAP, there was a Password Spray attack detected the following day. Can you provide the IP address associated with this password spray attack?",
+  "gold_answer": "95.202.65.202",
+  "solution_steps": [
+    "A user with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82` signed in to SAP in a suspicious manner, potentially involved in business email compromise.",
+    "A password spray attack was detected from the IP address `95.202.65.202`."
+  ],
+  "metadata": {
+    "start_alert": 27,
+    "end_alert": 28,
+    "start_entities": [
+      6,
+      7,
+      8,
+      24,
+      25
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      27,
+      1,
+      28
+    ]
+  }
+}

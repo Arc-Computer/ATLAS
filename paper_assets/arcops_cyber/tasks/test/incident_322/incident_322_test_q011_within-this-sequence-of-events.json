@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_322_test_q011",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "A suspicious multi-stage security incident was detected involving multiple alerts. Initially, a potentially malicious URL click was detected on August 1, 2024. The click was performed by a user `alyssat@vnevado.alpineskihouse.co`. This was followed by an alert indicating that email messages containing malicious URLs were removed after delivery. Subsequently, there was an alert from Azure Resource Manager noting a suspicious operation from a proxy IP address. These activities can be indicative of malicious behavior attempting to obfuscate their source.",
+  "question": "Within this sequence of events, there was a suspicious credential dump from NTDS.dit. Can you identify the file name of the process that was used during this credential dump?",
+  "gold_answer": "powershell.exe",
+  "solution_steps": [
+    "The email recipient `alyssat@vnevado.alpineskihouse.co` clicked on a potentially malicious URL.",
+    "The email associated with the user having AadUserId `5e5dd0bd-f7ed-4583-8e9e-52f91e31a360` contained a malicious URL and was removed after delivery.",
+    "There is a suspicious Azure Resource Manager operation from a proxy IP address originating from the host `vnevado-dc`.",
+    "The process `powershell.exe` was used in a suspicious credential dump from the NTDS.dit to obtain user's credentials."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 16,
+    "start_entities": [
+      1
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      0,
+      1,
+      2,
+      9,
+      25,
+      21,
+      16
+    ]
+  }
+}

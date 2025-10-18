@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_39_test_q001",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A security incident was detected where an attempt to disable the Microsoft Defender Antivirus service was reported. This is potentially an effort to evade detection. The tampering was detected at 2024-07-04 22:35:00.798303+00:00.",
+  "question": "As part of this incident, a malicious credential theft tool execution was also detected. Can you identify the name of the credential theft tool that was executed?",
+  "gold_answer": "mimikatz.exe",
+  "solution_steps": [
+    "An attempt to disable the Microsoft Defender Antivirus service was detected from the account with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1`",
+    "The execution of a known malicious credential theft tool, `mimikatz.exe`, was detected."
+  ],
+  "metadata": {
+    "start_alert": 35,
+    "end_alert": 85,
+    "start_entities": [
+      17,
+      36,
+      37,
+      38
+    ],
+    "end_entities": [
+      31
+    ],
+    "shortest_alert_path": [
+      35,
+      29,
+      85
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_34_test_q028",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "Suspicious Task Scheduler activity was detected immediately after the PowerShell command execution. This process utilized Task Scheduler to create or modify a task, potentially to launch malicious code automatically and establish persistence. The threat analytics report contains further insights on this activity.",
+  "question": "What is the name of the process involved in the suspicious Task Scheduler activity following the executed PowerShell command?",
+  "gold_answer": "schtasks.exe",
+  "solution_steps": [
+    "A suspicious process `winatp-intro-backdoor.exe` executed a PowerShell command.",
+    "A process with Process ID `1348` at `2024-06-26t12:00:40.0878355z` used Task Scheduler to create a task to launch `winatp-intro-backdoor.exe` automatically with the command line `schtasks.exe /create /sc once /tn yrei /tr \"c:\\users\\samuelf\\onedrive - (new) alpineskihouse\\desktop\\winatp-intro-backdoor.exe\" /st 11:58 /f`."
+  ],
+  "metadata": {
+    "start_alert": 3,
+    "end_alert": 21,
+    "start_entities": [
+      1,
+      2,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "end_entities": [
+      13
+    ],
+    "shortest_alert_path": [
+      3,
+      9,
+      21
+    ]
+  }
+}

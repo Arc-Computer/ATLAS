@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_train_q028",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A recent security incident involving suspicious system hardware discovery was detected where attackers might be gathering information about the target device or network for later attacks. During the investigation, it was identified that a script `powershell.exe` was executed on the host `mb-winclient`. Additionally, a process `svchost.exe` with Process ID `2880` was executed with command line options indicative of gathering system information. The account entity of interest has an AAD User ID: 2de70991-2799-4a95-b734-8e3df3a50118.",
+  "question": "Related to this alert, there was a detection of a potentially malicious URL click. Can you get the email of the user who clicked on the malicious URL?",
+  "gold_answer": "Lucas Grey@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "There was a suspicious system hardware discovery attempt by a user with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0`.",
+    "A user with the email `Lucas Grey@niseko.alpineskihouse.co` clicked on a potentially malicious URL."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 104,
+    "start_entities": [
+      8,
+      15,
+      4,
+      14,
+      13,
+      6,
+      5,
+      9,
+      11,
+      12
+    ],
+    "end_entities": [
+      90
+    ],
+    "shortest_alert_path": [
+      0,
+      3,
+      104
+    ]
+  }
+}

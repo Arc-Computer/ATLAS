@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_34_test_q046",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "During a recent investigation of a suspicious PowerShell execution on a host named `vnevado-win10e`, an attacker leveraged PowerShell to run encoded commands. This particular process was attempting to download external payloads or execute commands on the device. The device had the following identifier: `02b8f519-1123-4228-b32a-ccb78af3449f`.",
+  "question": "Can you identify the Security Identifier (SID) of the user account associated with the suspicious PowerShell execution?",
+  "gold_answer": "S-1-5-21-1870156660-7534030218-135086563-1193",
+  "solution_steps": [
+    "A PowerShell command that may be used to download a file or run an encoded command was executed by an account with SID `S-1-5-21-1870156660-7534030218-135086563-1193`."
+  ],
+  "metadata": {
+    "start_alert": 26,
+    "end_alert": 26,
+    "start_entities": [
+      7,
+      2,
+      1,
+      9,
+      6,
+      8,
+      12,
+      11,
+      4
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      26
+    ]
+  }
+}

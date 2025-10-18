@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_55_test_q091",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "On 2024-07-10, during a suspected unauthorized activity, the account `gsmith@niseko.alpineskihouse.co` read the DKM key of ADFS object id 4cac49d3-29d3-407e-8c9b-b7ebb21541b2. Additionally, a suspicious LDAP query was detected that might indicate an attempt to steal ADFS private keys.",
+  "question": "During the same time frame, there was an attempt where a Windows executable file was renamed and launched. Can you identify the system account that was used to perform these actions?",
+  "gold_answer": "SYSTEM",
+  "solution_steps": [
+    "The account `gsmith` read the DKM key of ADFS with object id `4cac49d3-29d3-407e-8c9b-b7ebb21541b2`.",
+    "A suspicious LDAP query was launched, potentially attempting to steal ADFS private keys, with the process `iy2orr1e.rrg.exe`.",
+    "A Windows executable file, renamed as `iy2orr1e.rrg.exe`, was launched by the `SYSTEM` account to perform potentially malicious activities."
+  ],
+  "metadata": {
+    "start_alert": 106,
+    "end_alert": 27,
+    "start_entities": [
+      103
+    ],
+    "end_entities": [
+      30
+    ],
+    "shortest_alert_path": [
+      106,
+      18,
+      43,
+      29,
+      27
+    ]
+  }
+}

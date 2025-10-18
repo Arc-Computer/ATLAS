@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_322_test_q010",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "A security incident was reported where a user named 'alyssat@vnevado.alpineskihouse.co' clicked a potentially malicious URL. Following this, an email containing the malicious URL was removed after being delivered. Suspicious Azure Resource Management (ARM) activities were later detected, performed by a user account in a risky session, based on Microsoft Defender for Cloud alert and Microsoft Entra ID Protection risk scores.",
+  "question": "What is the IP address associated with the suspicious Azure Resource Management activities by the risky user?",
+  "gold_answer": "253.1.244.215",
+  "solution_steps": [
+    "The email recipient `alyssat@vnevado.alpineskihouse.co` clicked on a link that was found to be malicious.",
+    "An email with a malicious URL was delivered to and later removed from the email account `Hailey Johnson@vnevado.alpineskihouse.co`.",
+    "Suspicious Azure Resource Management activities were performed by a user from a risky session associated with the IP address `253.1.244.215`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 32,
+    "start_entities": [
+      1
+    ],
+    "end_entities": [
+      31
+    ],
+    "shortest_alert_path": [
+      0,
+      1,
+      2,
+      7,
+      32
+    ]
+  }
+}

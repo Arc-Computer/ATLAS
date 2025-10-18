@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_train_q032",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "As part of a recent security investigation regarding an uncommon file creation and persistence attempt via a registry key, an alert also indicated that an anomalous scheduled task was created. This might point to an attacker\u2019s effort to maintain persistence. For further information on this threat, refer to the specified threat analytics report.",
+  "question": "In relation to this incident, a scheduled task was anomalously created which might be used for persistence. Can you provide the details of the command line used to create this scheduled task?",
+  "gold_answer": "1348__2024-06-26t12:00:40.0878355z__\"schtasks.exe\" /create /sc once /tn yrei /tr \"c:\\users\\samuelf\\onedrive - (new) alpineskihouse\\desktop\\winatp-intro-backdoor.exe\" /st 11:58 /f",
+  "solution_steps": [
+    "An uncommon file was created on host with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f` and was added to a Run Key where it will execute after a reboot.",
+    "An anomalous scheduled task was created using the command `schtasks.exe /create /sc once /tn yrei /tr c:\\users\\samuelf\\onedrive - (new) alpineskihouse\\desktop\\winatp-intro-backdoor.exe /st 11:58 /f` at `2024-06-26t12:00:40.0878355z`, with Process ID `1348`."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 20,
+    "start_entities": [
+      18,
+      19
+    ],
+    "end_entities": [
+      13
+    ],
+    "shortest_alert_path": [
+      23,
+      2,
+      20
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_5_train_q029",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "During a security incident concerning potentially compromised assets exhibiting ransomware-like behavior affecting multiple devices, several files including `syncretic.7z` and `ponceau.7z` with extensions `.lockbit`, and an IP `99.83.111.100` were flagged. The attack may involve an attacker moving laterally across the network using the account with SID `S-0-6-5`.",
+  "question": "A suspicious WMI process creation has been observed related to this incident. Can you identify the command line used by the suspicious WMI process?",
+  "gold_answer": "curl http://vectorsandarrows.com",
+  "solution_steps": [
+    "The user account `dp5hn` is exhibiting ransomware-like behavior, potentially impacting several devices.",
+    "A suspicious WMI process creation was observed with Process ID `5572` at `2024-06-20t09:32:04.8002759z`. The command line used was `curl http://vectorsandarrows.com`."
+  ],
+  "metadata": {
+    "start_alert": 100,
+    "end_alert": 117,
+    "start_entities": [
+      45,
+      49,
+      46,
+      50,
+      47,
+      53,
+      48,
+      51,
+      52,
+      42
+    ],
+    "end_entities": [
+      6
+    ],
+    "shortest_alert_path": [
+      100,
+      1,
+      117
+    ]
+  }
+}

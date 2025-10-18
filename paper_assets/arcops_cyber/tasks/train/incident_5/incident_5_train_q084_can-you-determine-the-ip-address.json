@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_5_train_q084",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "In a recent attempt to move laterally within our network, a user account associated with Grace Chen (email: Grace Chen@vnevado.alpineskihouse.co) had its attempts to modify files over server message block (SMB) protocol blocked by an automated attack disruption. This incident is part of a broader security concern involving possible attempts to access the Primary Refresh Token (PRT), which is a crucial artifact for Azure AD authentication on various devices.",
+  "question": "Can you determine the IP address from which the possible attempt to access the Primary Refresh Token (PRT) was made?",
+  "gold_answer": "107.224.99.179",
+  "solution_steps": [
+    "An attempt to create, delete, or modify files over the SMB protocol was blocked on the device with AadDeviceId `e5799261-6720-4297-961e-bd9ca4275033`.",
+    "A possible attempt to access the Primary Refresh Token (PRT) using the process `browsercore.exe` was detected.",
+    "A possible attempt to access the Primary Refresh Token (PRT) was detected from IP address `107.224.99.179`."
+  ],
+  "metadata": {
+    "start_alert": 171,
+    "end_alert": 36,
+    "start_entities": [
+      172,
+      173
+    ],
+    "end_entities": [
+      20
+    ],
+    "shortest_alert_path": [
+      171,
+      69,
+      82,
+      40,
+      36
+    ]
+  }
+}

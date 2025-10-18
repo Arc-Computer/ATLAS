@@ -1,0 +1,38 @@
+{
+  "task_id": "incident_39_train_q060",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident involving a successful logon using overpass-the-hash with potentially stolen credentials occurred on host `vnevado-win10b` using the account of SID S-1-5-21-1540151660-3530000288-105586595-1517. As part of following the activity, suspicious access to the LSASS service was detected, an indication that attackers might have been trying to decrypt user passwords from memory. Later, a known credential theft tool execution was detected indicating an attempt to dump user credentials.",
+  "question": "Can you identify the process ID and command line of the malicious credential theft tool that was executed?",
+  "gold_answer": "Process ID: 4748, Command Line: \"mimikatz.exe\" \"lsadump::dcsync /domain:vnevado.alpineskihouse.co /user:xfbzkp\" exit",
+  "solution_steps": [
+    "An attacker used the process `lsass.exe` to perform an overpass-the-hash attack.",
+    "A suspicious access was detected to the LSASS service with SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "A malicious credential theft tool `mimikatz.exe` was executed with Process ID `4748` at `2024-06-27t14:33:38.0249949z` with the command line `mimikatz.exe lsadump::dcsync /domain:vnevado.alpineskihouse.co /user:xfbzkp exit`."
+  ],
+  "metadata": {
+    "start_alert": 52,
+    "end_alert": 26,
+    "start_entities": [
+      1,
+      2,
+      3,
+      10,
+      11,
+      25,
+      53,
+      54,
+      55
+    ],
+    "end_entities": [
+      30
+    ],
+    "shortest_alert_path": [
+      52,
+      56,
+      102,
+      28,
+      26
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_55_test_q076",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "During a recent security incident, a known public tool disguised under the filename 'iy2orr1e.rrg.exe' was flagged as potentially malicious due to its unexpected filename and hidden window style. Further investigation revealed a related suspicious sequence of exploration activities on the same machine involving a set of commands used to identify assets of value and coordinate lateral movement.",
+  "question": "Related to this incident, there was also a suspicious sequence of exploration activities observed on 2024-07-04. What is the Security identifier (SID) of the account involved in the suspicious sequence of exploration activities?",
+  "gold_answer": "S-1-5-21-561436748-3867387497-1732241745-3701",
+  "solution_steps": [
+    "A known public tool, which could also be used for malicious reasons, was observed under an unexpected filename by the user with AadUserId `ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5`.",
+    "A process `powershell.exe` called a set of windows commands which might be used for identifying assets and coordinating lateral movement.",
+    "The suspicious sequence of exploration activities was executed by a user account with SID `S-1-5-21-561436748-3867387497-1732241745-3701`."
+  ],
+  "metadata": {
+    "start_alert": 68,
+    "end_alert": 57,
+    "start_entities": [
+      69
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      68,
+      20,
+      52,
+      8,
+      57
+    ]
+  }
+}

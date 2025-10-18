@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_55_test_q020",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "During a security incident on 2024-07-02, various suspicious activities were recorded on host `mb-adfs`. Specifically, multiple processes including `powershell.exe` and `iy2orr1e.rrg.exe` were launched with encoded commands indicating potential malicious intent. Additionally, there was a process injection alert, suggesting that malicious code had been injected into another process.",
+  "question": "As part of this incident, there was a security alert indicating that a malicious URL was clicked on the device. Can you find the URL that was clicked?",
+  "gold_answer": "https://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/",
+  "solution_steps": [
+    "A renamed system executable `powershell.exe` was launched, likely indicating an attempt to avoid detection.",
+    "A process on the host with AadDeviceId `7661dfd4-218f-4016-8a87-66d68a7f098e` was injected with potentially malicious code.",
+    "A malicious URL (`https://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/`) was clicked on the same device."
+  ],
+  "metadata": {
+    "start_alert": 27,
+    "end_alert": 107,
+    "start_entities": [
+      25,
+      26,
+      28,
+      29,
+      30,
+      31
+    ],
+    "end_entities": [
+      97
+    ],
+    "shortest_alert_path": [
+      27,
+      8,
+      41,
+      15,
+      107
+    ]
+  }
+}

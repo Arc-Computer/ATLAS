@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_5_test_q066",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident was reported involving suspicious remote activity on a device named `vnevado-win11u` at IP address `99.83.111.100`. This incident includes multiple flagged processes, one of which involved running a script using PowerShell (`get-userprttoken.ps1`). One of the commands executed was `bcdedit /set recoveryenabled no`, which is commonly used to tamper with system recovery settings and disable automatic recovery features.",
+  "question": "Regarding the system recovery setting tampering observed on this device, what command line was executed by the process using `vssblatemp.exe` and what was the corresponding Process Id and creation time?",
+  "gold_answer": "Process Id: 7236, creation time: 2024-06-20t09:10:51.2193152, command line: vssblatemp.exe delete shadows /all",
+  "solution_steps": [
+    "Suspicious remote activity was detected associated with the executable `vssblatemp.exe`.",
+    "System recovery setting tampering was performed using `vssblatemp.exe` with command line `vssblatemp.exe delete shadows /all` at `2024-06-20t09:10:51.2193152z`, with Process ID `7236`."
+  ],
+  "metadata": {
+    "start_alert": 88,
+    "end_alert": 120,
+    "start_entities": [
+      42,
+      8,
+      47,
+      89,
+      59,
+      90,
+      77,
+      6,
+      78,
+      7
+    ],
+    "end_entities": [
+      60
+    ],
+    "shortest_alert_path": [
+      88,
+      11,
+      120
+    ]
+  }
+}

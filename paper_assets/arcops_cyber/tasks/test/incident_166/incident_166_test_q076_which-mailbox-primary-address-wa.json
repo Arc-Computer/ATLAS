@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_166_test_q076",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A multi-stage security incident involving BEC (business email compromise) and financial fraud occurred in our organization. The incident began when a suspicious inbox rule that hides incoming email messages was created in a risky Azure Active Directory session by the user account of Jordan P with email `Jordan P@vnevado.alpineskihouse.co` and IP address `255.246.85.58`. This indicates an attempt to conduct a BEC attack.",
+  "question": "Which mailbox primary address was involved in sending suspicious emails related to the ongoing BEC fraud attempt?",
+  "gold_answer": "tony@avoriaz.alpineskihouse.co",
+  "solution_steps": [
+    "An attacker created a suspicious inbox rule that hides incoming email messages in a session associated with the user account with SID `S-1-5-21-1740051960-3534030288-108486866-1602`.",
+    "Suspicious emails related to a BEC (business email compromise) fraud attempt were sent from the mailbox with the primary address `tony@avoriaz.alpineskihouse.co`."
+  ],
+  "metadata": {
+    "start_alert": 17,
+    "end_alert": 18,
+    "start_entities": [
+      1,
+      6,
+      7,
+      8,
+      15
+    ],
+    "end_entities": [
+      19
+    ],
+    "shortest_alert_path": [
+      17,
+      8,
+      18
+    ]
+  }
+}

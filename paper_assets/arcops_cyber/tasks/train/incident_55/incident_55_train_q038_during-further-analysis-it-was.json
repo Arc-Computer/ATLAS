@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_55_train_q038",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A suspicious Task Scheduler activity was observed, where a process used Task Scheduler to create and run a task with the intention of launching malicious code automatically and establishing persistence. The process `schtasks.exe` was involved. Further analysis can be found in the threat analytics report. The activity involved creating a task to run a command with `schtasks.exe` using Windows accounts for scheduled tasks.",
+  "question": "During further analysis, it was found that a renamed Windows executable file was launched. Can you identify the account name that was used to launch this executable?",
+  "gold_answer": "SYSTEM",
+  "solution_steps": [
+    "A task was created, modified, or deleted using Task Scheduler on host `mb-adfs`, potentially to launch malicious code automatically and establish persistence.",
+    "The `SYSTEM` account launched a renamed Windows executable, suggesting attackers might be using it to perform malicious activities."
+  ],
+  "metadata": {
+    "start_alert": 33,
+    "end_alert": 27,
+    "start_entities": [
+      34,
+      35,
+      36
+    ],
+    "end_entities": [
+      30
+    ],
+    "shortest_alert_path": [
+      33,
+      26,
+      27
+    ]
+  }
+}

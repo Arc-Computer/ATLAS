@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_39_train_q014",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident related to malicious credential theft tool execution was detected. The process `mimikatz.exe` with the command line indicating a credential dump was executed on the device with IP address `65.233.23.156`. Furthermore, activity indicating the use of the Rubeus kerberoasting tool was also observed, which can be used for various attacks, including kerberoasting and pass-the-ticket.",
+  "question": "During the incident, some malware named 'Kekeo' was also detected. Can you find the Security Identifier (SID) of the account that was associated with the 'Kekeo' malware detection?",
+  "gold_answer": "S-1-5-21-1540151660-3530000288-105586595-1517",
+  "solution_steps": [
+    "A known credential theft tool execution was detected on the host with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`.",
+    "The Rubeus kerberoasting tool (`rubeus.exe`) was possibly used, indicating Kerberos ticket attacks on the endpoint.",
+    "'Kekeo' malware was detected and was active in the environment, with potential risks associated to the account with Sid `S-1-5-21-1540151660-3530000288-105586595-1517`."
+  ],
+  "metadata": {
+    "start_alert": 111,
+    "end_alert": 100,
+    "start_entities": [
+      30,
+      112,
+      113
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      111,
+      33,
+      107,
+      7,
+      100
+    ]
+  }
+}

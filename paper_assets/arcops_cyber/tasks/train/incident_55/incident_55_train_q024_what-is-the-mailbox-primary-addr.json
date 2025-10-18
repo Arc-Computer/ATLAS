@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_55_train_q024",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "An incident started with a suspicious sequence of exploration activities where certain windows commands were executed by a process. This process likely belongs to an attacker trying to identify valuable assets and coordinate lateral movement. Later, a process was injected with potentially malicious code, indicating malicious activity. The investigation progressed to email messages containing malicious URLs being removed after delivery.",
+  "question": "What is the mailbox primary address associated with the email messages containing the malicious URL that were removed after delivery?",
+  "gold_answer": "bjenkins@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "A suspicious sequence of exploration activities was observed executed by the process `powershell.exe`.",
+    "A user with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0` had a process injected with potentially malicious code.",
+    "Email messages containing a malicious URL were removed from the mailbox `bjenkins@niseko.alpineskihouse.co` after delivery."
+  ],
+  "metadata": {
+    "start_alert": 52,
+    "end_alert": 92,
+    "start_entities": [
+      55,
+      56,
+      28,
+      25,
+      18,
+      26,
+      53,
+      20,
+      44,
+      29
+    ],
+    "end_entities": [
+      93
+    ],
+    "shortest_alert_path": [
+      52,
+      8,
+      41,
+      3,
+      92
+    ]
+  }
+}

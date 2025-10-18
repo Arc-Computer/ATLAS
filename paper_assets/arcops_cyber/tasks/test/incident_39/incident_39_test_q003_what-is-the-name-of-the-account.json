@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_39_test_q003",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "On 2024-07-10, it was detected that emails containing a malicious URL were delivered and later removed. The emails had a specific sender IP and sender address and were associated with a person named Ethan Brooks, including his email and mailbox primary address details.",
+  "question": "What is the name of the account associated with the detection of a malicious credential theft tool execution on July 4th, 2024?",
+  "gold_answer": "tgs2z",
+  "solution_steps": [
+    "The email account with SID `S-5-7-21-1843151660-3234030288-105586167-1422` received an email with a malicious URL, which was later removed.",
+    "The account with the name `tgs2z` executed a known credential theft tool."
+  ],
+  "metadata": {
+    "start_alert": 138,
+    "end_alert": 104,
+    "start_entities": [
+      117,
+      118,
+      136,
+      137,
+      139,
+      140
+    ],
+    "end_entities": [
+      27
+    ],
+    "shortest_alert_path": [
+      138,
+      28,
+      104
+    ]
+  }
+}

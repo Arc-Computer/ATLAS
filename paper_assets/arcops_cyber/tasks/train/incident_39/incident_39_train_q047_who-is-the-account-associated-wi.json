@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_39_train_q047",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident involving malware detection and lateral movement attempt was reported. An active 'Kekeo' malware was detected running on the host `vnevado-win10b`, which was identified with the file `rubeus.exe` linked to the account `fk8mq` (SID: S-1-5-21-1540151660-3530000288-105586595-1517, AadUserId: 97e6a954-b6bd-48a5-808c-bd8464cce677). This was followed by an alert indicating that a file was dropped and launched from a remote location, potentially by an attacker or malware attempting to move laterally or propagate.",
+  "question": "Who is the account associated with the file that was dropped and launched from a remote location in this incident?",
+  "gold_answer": "lucasb",
+  "solution_steps": [
+    "An active 'Kekeo' malware was detected on the host with AadDeviceId `fafdcd65-46c6-45a6-aa85-ec9b77ca0bcb`.",
+    "A file named `psexesvc.exe` was dropped and launched during a remote session.",
+    "The file was dropped and launched from an account with the name `lucasb`."
+  ],
+  "metadata": {
+    "start_alert": 106,
+    "end_alert": 60,
+    "start_entities": [
+      1,
+      2,
+      3,
+      7,
+      10,
+      11
+    ],
+    "end_entities": [
+      13
+    ],
+    "shortest_alert_path": [
+      106,
+      11,
+      58,
+      5,
+      60
+    ]
+  }
+}

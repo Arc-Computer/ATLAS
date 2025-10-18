@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_322_train_q016",
+  "incident": "incident_322",
+  "split": "train",
+  "context": "During a recent security incident involving suspicious Azure Resource Management (ARM) activities by a risky user, an alert was triggered based on a Microsoft Defender for Cloud alert related to ARM and Microsoft Entra ID Protection risk scores. The incident involved an IP address `253.1.244.215` associated with the user's risky session.",
+  "question": "What is the SenderIP of the emails containing the malicious URL that were removed after delivery related to this incident?",
+  "gold_answer": "202.205.215.225",
+  "solution_steps": [
+    "There are suspicious Azure Resource Management activities by a user with SID `S-1-5-21-1840151686-3534835288-156286563-1127`.",
+    "An email with a malicious URL was sent from IP address `202.205.215.225` and later removed after delivery."
+  ],
+  "metadata": {
+    "start_alert": 32,
+    "end_alert": 2,
+    "start_entities": [
+      31
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      32,
+      8,
+      2
+    ]
+  }
+}

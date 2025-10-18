@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_166_test_q071",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A business email compromise (BEC)-related user, under the name `Jordan P`, signed in to SAP in a suspicious manner. This incident was flagged by Microsoft Defender XDR. The user account also had the following details: SID `S-1-5-21-1740051960-3534030288-108486866-1602`, IP address `107.253.5.27`, and associated email `Jordan P@vnevado.alpineskihouse.co`. The attacker might have taken control of the account to search through SAP with the intention of recording or modifying sensitive financial information, which could be used in future phishing or social engineering attacks.",
+  "question": "Can you identify the Azure Active Directory (AAD) User ID associated with the compromised account that signed in to SAP?",
+  "gold_answer": "89e933b9-5b2e-4bd6-bcdf-033db707ef82",
+  "solution_steps": [
+    "A user with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82` involved in a business email compromise-related alert signed in to SAP in a suspicious manner. This account may have been controlled by an attacker to search through SAP with the intention of recording or modifying sensitive financial information."
+  ],
+  "metadata": {
+    "start_alert": 27,
+    "end_alert": 27,
+    "start_entities": [
+      8,
+      6,
+      24,
+      25,
+      7
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      27
+    ]
+  }
+}

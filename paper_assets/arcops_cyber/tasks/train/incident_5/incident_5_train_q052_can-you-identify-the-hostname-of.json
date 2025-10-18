@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_5_train_q052",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A suspicious ransomware behavior was detected on the file system of the host `vnevado-win11u`, which might indicate mass encryption of files by ransomware. This potential ransomware activity could be indicative of ransomware activity. Following this, a suspicious WMI process creation was observed on the same machine at around the same time. Malware frequently uses WMI to spawn new processes, breaking process trees and further infecting a machine.",
+  "question": "Can you identify the hostname of the machine where the suspicious WMI process creation was last observed?",
+  "gold_answer": "vnevado-win11t",
+  "solution_steps": [
+    "Suspicious file system changes indicating potential ransomware activity were detected on the host `vnevado-win11u`.",
+    "A suspicious WMI process creation was observed on the machine associated with the account with SID `S-1-5-21-1840191660-8534830288-125585561-1522`.",
+    "A suspicious WMI process creation was observed on the host `vnevado-win11t`."
+  ],
+  "metadata": {
+    "start_alert": 160,
+    "end_alert": 145,
+    "start_entities": [
+      7,
+      8
+    ],
+    "end_entities": [
+      68
+    ],
+    "shortest_alert_path": [
+      160,
+      7,
+      117,
+      2,
+      145
+    ]
+  }
+}

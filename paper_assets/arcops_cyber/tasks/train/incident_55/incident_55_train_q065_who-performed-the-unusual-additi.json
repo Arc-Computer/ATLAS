@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_train_q065",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A Suspicious sequence of exploration activities was identified on July 4, 2024, indicating potential asset identification and lateral movement by an attacker. Several processes were executed including `whoami.exe` and `powershell.exe`. The commands were executed by the user with SID `S-1-5-21-561436748-3867387497-1732241745-3701` from the host `mb-winclient`, which has the AadDeviceId `7661dfd4-218f-4016-8a87-66d68a7f098e`.",
+  "question": "Who performed the unusual addition of credentials to the OAuth app SimulandApp?",
+  "gold_answer": "Luciano Herrera",
+  "solution_steps": [
+    "Suspicious sequence of exploration activities was detected, initiated by a user with AadUserId `2de70991-2799-4a95-b734-8e3df3a50118`.",
+    "Luciano Herrera (pwilson@niseko.alpineskihouse.co) performed an unusual addition of credentials, specifically a password, to the application SimulandApp."
+  ],
+  "metadata": {
+    "start_alert": 57,
+    "end_alert": 80,
+    "start_entities": [
+      58,
+      2,
+      12,
+      5,
+      1,
+      15,
+      8,
+      14,
+      54,
+      4
+    ],
+    "end_entities": [
+      81
+    ],
+    "shortest_alert_path": [
+      57,
+      11,
+      80
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_test_q021",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A user clicked on a malicious link, and this event is possibly linked to a prior sign-in attempt from a malicious IP address (170.54.121.63). The initial sign-in occurred on 2024-07-18, and the URL click was detected on 2024-07-17.",
+  "question": "What is the potentially harmful URL that was clicked by the user subsequent to the sign-in attempt from the malicious IP address?",
+  "gold_answer": "http://ms175052280.orangecliff-f53f26fd.eastus.azurecontainerapps.io/",
+  "solution_steps": [
+    "The user with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1` signed in from a known malicious IP address.",
+    "A potentially malicious URL `http://ms175052280.orangecliff-f53f26fd.eastus.azurecontainerapps.io/` was clicked by one of the users."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 0,
+    "start_entities": [
+      12
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      23,
+      9,
+      0
+    ]
+  }
+}

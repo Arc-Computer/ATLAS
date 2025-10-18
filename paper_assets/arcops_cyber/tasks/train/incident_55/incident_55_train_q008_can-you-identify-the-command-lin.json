@@ -1,0 +1,37 @@
+{
+  "task_id": "incident_55_train_q008",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A security incident report indicates that a process scanned or dumped memory from the Local Security Authority Subsystem Service (lsass.exe) on the host `mb-winclient`, used by account `bjenkins`. This action can enable an attacker to extract sensitive credentials. The involved process was `powershell.exe`. Additionally, there was a suspicious registration of a system program as a service.",
+  "question": "Can you identify the command line and process ID of the registered suspicious service?",
+  "gold_answer": "764__2024-06-20t08:30:13.7925191z__services.exe",
+  "solution_steps": [
+    "A process named `powershell.exe` scanned or dumped memory from lsass.exe to extract sensitive credentials on `2024-07-04 22:35:04.120690+00:00`.",
+    "A system executable renamed and launched on host `mb-adfs` on `2024-07-04 22:35:01.543723+00:00`.",
+    "A system program `services.exe` was registered as a service with Process ID `764`, Created Time `2024-06-20t08:30:13.7925191z`, on `2024-07-04 22:35:03.448593+00:00`."
+  ],
+  "metadata": {
+    "start_alert": 67,
+    "end_alert": 61,
+    "start_entities": [
+      1,
+      2,
+      3,
+      4,
+      7,
+      14,
+      15,
+      50
+    ],
+    "end_entities": [
+      62
+    ],
+    "shortest_alert_path": [
+      67,
+      8,
+      27,
+      26,
+      61
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_55_test_q074",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A suspected DCSync attack was attempted by Luciano Herrera (CIO) on host `MB-WINCLIENT`, targeting the domain controller `MB-DC1`. This activity raised security concerns about directory services replication. Further investigation showed a pattern of malicious activities, including code injection into processes, which might indicate that malicious code is being run within a trusted process. An executable file was renamed and launched, potentially as an attempt to hide malicious activities.",
+  "question": "What is the account name associated with the system executable that was renamed and launched?",
+  "gold_answer": "SYSTEM",
+  "solution_steps": [
+    "The account with Sid `S-1-5-21-551436448-9871687716-9837441745-1903` (belonging to Luciano Herrera, CIO) sent a replication request to MB-DC1, indicating a suspected DCSync attack.",
+    "The process `powershell.exe` was injected with potentially malicious code.",
+    "A system executable file, renamed and launched by the account `SYSTEM`, might be used to perform malicious activities, such as running malicious code or connecting to an attacker-controlled network address."
+  ],
+  "metadata": {
+    "start_alert": 98,
+    "end_alert": 27,
+    "start_entities": [
+      81,
+      82,
+      99,
+      100
+    ],
+    "end_entities": [
+      30
+    ],
+    "shortest_alert_path": [
+      98,
+      10,
+      41,
+      8,
+      27
+    ]
+  }
+}

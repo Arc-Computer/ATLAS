@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_39_test_q012",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "As part of this incident, a suspicious file `rubeus.exe` was used by an account with the name 'fk8mq'. The machine used was 'vnevado-win10b' which had an AAD device ID 'fafdcd65-46c6-45a6-aa85-ec9b77ca0bcb'. The purpose of this incident was to demonstrate the chain of alerts and investigate the indicators of compromise.",
+  "question": "What command line was used to execute the Mimikatz tool on the affected device, and what was the process ID?",
+  "gold_answer": "Process Id: 4748, Command Line: mimikatz.exe lsadump::dcsync /domain:vnevado.alpineskihouse.co /user:xfbzkp exit",
+  "solution_steps": [
+    "The 'Kekeo' malware was detected and active with the file name `rubeus.exe`.",
+    "Multiple dual-purpose tools were dropped by the account with SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "The Mimikatz credential theft tool was detected and executed with the command line `mimikatz.exe lsadump::dcsync /domain:vnevado.alpineskihouse.co /user:xfbzkp` at `2024-06-27t14:33:38.0249949z` with Process ID `4748`."
+  ],
+  "metadata": {
+    "start_alert": 100,
+    "end_alert": 108,
+    "start_entities": [
+      1,
+      2,
+      3,
+      9,
+      10,
+      11
+    ],
+    "end_entities": [
+      30
+    ],
+    "shortest_alert_path": [
+      100,
+      65,
+      62,
+      28,
+      108
+    ]
+  }
+}

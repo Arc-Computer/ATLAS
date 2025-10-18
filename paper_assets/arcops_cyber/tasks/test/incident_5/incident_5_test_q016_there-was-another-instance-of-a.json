@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_5_test_q016",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident involving the Manatee Tempest activity group was flagged, where the actor Manatee Tempest, known for its early malware campaigns like the Dridex banking trojan, has been active since June 2014. The group utilizes tactics such as drive-by downloads and FakeUpdates infections, facilitated by Mustard Tempest to gain initial access. Later, they use the BLISTER loader to deliver Cobalt Strike beacons for lateral movement and ransomware deployment. One of the events related to this incident involved a process running on the host `vnevado-win11t` using the command `curl http://vectorsandarrows.com`. The Process ID was 88.",
+  "question": "There was another instance of a similar process being run on the same host in this incident. Can you identify the Process ID and the command line of this process?",
+  "gold_answer": "Process Id: 1332, Command Line: `curl http://vectorsandarrows.com`",
+  "solution_steps": [
+    "A user with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96` was associated with suspicious activity linked to the Manatee Tempest cybercriminal group.",
+    "A process with Process ID `1332` used the command line `curl http://vectorsandarrows.com` on `2024-06-20t09:10:52.7298237z`, indicating possible interaction with a malicious domain associated with Manatee Tempest."
+  ],
+  "metadata": {
+    "start_alert": 75,
+    "end_alert": 135,
+    "start_entities": [
+      67,
+      68,
+      69
+    ],
+    "end_entities": [
+      61
+    ],
+    "shortest_alert_path": [
+      75,
+      3,
+      135
+    ]
+  }
+}

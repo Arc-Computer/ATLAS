@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_38_train_q002",
+  "incident": "incident_38",
+  "split": "train",
+  "context": "An unexpected behavior was observed for the process `notepad.exe` with the Process ID `8932` and IP address `202.183.149.174`. This process ran with no command line arguments on the 4th of July, 2024. The legitimate process by this name does not normally exhibit this behavior when ran with no command line arguments and may contain injected extraneous code or be a malicious executable masquerading as legitimate. It is part of a broader security incident which also includes suspicious application window discovery where attackers might be gathering information about a target device or network.",
+  "question": "What is the Process ID and created time of the suspicious powershell.exe process used in the application window discovery alert?",
+  "gold_answer": "Process ID: 7472, Created Time: 2024-06-26t15:49:15.7860486z",
+  "solution_steps": [
+    "Unexpected behavior was observed on the host `vnevado-win11a`, indicating potential code injection or a malicious executable masquerading as a legitimate one.",
+    "A suspicious application window discovery was performed using the process `powershell.exe` with Process ID `7472`, created at `2024-06-26t15:49:15.7860486z`."
+  ],
+  "metadata": {
+    "start_alert": 15,
+    "end_alert": 0,
+    "start_entities": [
+      11,
+      12,
+      16
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      15,
+      8,
+      0
+    ]
+  }
+}

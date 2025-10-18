@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_34_test_q041",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "As part of a recent multi-stage security incident, a task scheduler was used to create, modify or delete a task which is suspected of being used to launch malicious code and establish persistence.",
+  "question": "What was the process ID, command-line and file name associated with the suspicious LDAP query executed?",
+  "gold_answer": "Process Id: 9780, Command-line: winword.exe c:\\scripts\\rs4_winatp-intro-invoice.docm",
+  "solution_steps": [
+    "There was a suspicious Task Scheduler activity detected on the host with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f`.",
+    "A suspicious LDAP query was executed by a process with Process ID `9780` at `2024-06-26t11:57:20.2959493z` using the command line `winword.exe c:\\scripts\\rs4_winatp-intro-invoice.docm`."
+  ],
+  "metadata": {
+    "start_alert": 21,
+    "end_alert": 24,
+    "start_entities": [
+      7,
+      8,
+      9,
+      13,
+      14,
+      15
+    ],
+    "end_entities": [
+      11
+    ],
+    "shortest_alert_path": [
+      21,
+      2,
+      24
+    ]
+  }
+}

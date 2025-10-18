@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_5_train_q008",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A suspicious WMI process creation was observed on the machine `vnevado-win11u`, which is frequently used by malware to spawn new processes and further infect a system. This incident is connected with various malicious activities executed by processes such as `vssblatemp.exe` and `get-userprttoken.ps1` on the same host. The initial indicator of compromise included a command executed by `curl` to access an external URL. This incident aligns with known tactics of cybercriminal groups, particularly the Manatee Tempest activity group, which is a Russia-based group active since 2014 and notorious for spreading malware like the Dridex banking trojan among others.",
+  "question": "Can you identify the IP address associated with an activity linked to the Manatee Tempest group?",
+  "gold_answer": "198.43.121.209",
+  "solution_steps": [
+    "A suspicious WMI process creation was detected on the machine associated with the user having AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "The IP address `198.43.121.209` is linked to the cybercriminal group Manatee Tempest, which engages in a variety of malicious activities including drive-by downloads, malvertising, FakeUpdates (SocGholish) infections, BLISTER loader deployment, and usage of Cobalt Strike beacons for lateral movement and ransomware deployment."
+  ],
+  "metadata": {
+    "start_alert": 117,
+    "end_alert": 75,
+    "start_entities": [
+      6,
+      7,
+      8,
+      11,
+      59,
+      77,
+      78,
+      89,
+      90
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      117,
+      3,
+      75
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_39_test_q050",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A recent security incident involved suspicions of processes stopping services on a device, which is often an attacker strategy to avoid detection or to disrupt operations. One of the suspicious processes involved was `net.exe` with ProcessId `6428`, and it was executed on host `vnevado-dc` by an account with the name `lucasb`. This incident was part of a larger pattern of malicious activities that included stopping services running on the device and manipulating user privileges in the network. The process `powershell.exe` was also executed in this context with ProcessId `3780`.",
+  "question": "Who was the IT director suspected of performing the DCSync attack on VNEVADO-Win10V?",
+  "gold_answer": "Julian Burke",
+  "solution_steps": [
+    "A process on the device was suspiciously stopped by a user with AadUserId `7fcf9695-68fc-4258-864d-e1e5b166c66f`.",
+    "Julian Burke (IT director) on VNEVADO-Win10V sent 1 replication request to VNEVADO-DC, which is suspected to be part of a DCSync attack."
+  ],
+  "metadata": {
+    "start_alert": 46,
+    "end_alert": 122,
+    "start_entities": [
+      13,
+      16,
+      17,
+      18,
+      20,
+      47
+    ],
+    "end_entities": [
+      123
+    ],
+    "shortest_alert_path": [
+      46,
+      15,
+      122
+    ]
+  }
+}

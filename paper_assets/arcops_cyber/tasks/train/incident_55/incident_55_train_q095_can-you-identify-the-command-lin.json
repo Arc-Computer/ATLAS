@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_55_train_q095",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "Can you identify the command line used for the dual-purpose tool attempt to hide its usage?",
+  "question": "Can you identify the command line used for the dual-purpose tool attempt to hide its usage?",
+  "gold_answer": "5752__2024-07-06t00:00:01.7155092z__\"iy2orr1e.rrg.exe\" -windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=",
+  "solution_steps": [
+    "A process named `powershell.exe` was used to read the memory of the Local Security Authority Subsystem Service (lsass.exe), which could potentially be used to extract authentication secrets.",
+    "Suspicious remote activity was conducted by the user account `gsmith`, involving actions like initiating interactive sessions, modifying files, or other malicious activities.",
+    "The process with ID `5752` and command line `",
+    "iy2orr1e.rrg.exe -windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=",
+    "` was observed trying to hide its usage of a dual-purpose tool by using an unexpected filename at `2024-07-06t00:00:01.7155092z`."
+  ],
+  "metadata": {
+    "start_alert": 67,
+    "end_alert": 68,
+    "start_entities": [
+      1,
+      2,
+      3,
+      4,
+      7,
+      14,
+      15,
+      50
+    ],
+    "end_entities": [
+      69
+    ],
+    "shortest_alert_path": [
+      67,
+      8,
+      37,
+      18,
+      68
+    ]
+  }
+}

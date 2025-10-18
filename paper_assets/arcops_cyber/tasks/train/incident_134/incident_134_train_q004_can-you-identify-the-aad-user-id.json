@@ -1,0 +1,24 @@
+{
+  "task_id": "incident_134_train_q004",
+  "incident": "incident_134",
+  "split": "train",
+  "context": "An alert was triggered for a sign-in from an anonymous IP address (e.g. Tor browser, anonymizer VPNs) with IP address `170.54.121.63`. This may indicate a potential security risk or unauthorized access attempt.",
+  "question": "Can you identify the AAD user ID associated with the suspicious sign-in from the anonymous IP address `170.54.121.63`?",
+  "gold_answer": "e036dee7-fa23-42ef-a019-468c8d3401f1",
+  "solution_steps": [
+    "There was a sign-in from an anonymous IP address by the user with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1`."
+  ],
+  "metadata": {
+    "start_alert": 11,
+    "end_alert": 11,
+    "start_entities": [
+      12
+    ],
+    "end_entities": [
+      9
+    ],
+    "shortest_alert_path": [
+      11
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_39_test_q085",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "As part of investigating a recent multi-stage security incident, we observed a Security IDentification (SID) history injection on the device `vnevado-dc`. A PowerShell command run by account `lucasb` was detected performing suspicious actions indicative of an attacker attempting to gain elevated privileges through SID history injection. This incident is likely to precede further malicious activities.",
+  "question": "Following the SID history injection, a credential theft tool was detected. Can you identify the name of the tool used?",
+  "gold_answer": "mimikatz.exe",
+  "solution_steps": [
+    "A SID history injection was detected involving the process `powershell.exe`.",
+    "The Mimikatz credential theft tool (`mimikatz.exe`) was detected, indicating an attempt to harvest credentials."
+  ],
+  "metadata": {
+    "start_alert": 93,
+    "end_alert": 108,
+    "start_entities": [
+      13,
+      14,
+      15,
+      16,
+      18,
+      20
+    ],
+    "end_entities": [
+      64
+    ],
+    "shortest_alert_path": [
+      93,
+      17,
+      108
+    ]
+  }
+}

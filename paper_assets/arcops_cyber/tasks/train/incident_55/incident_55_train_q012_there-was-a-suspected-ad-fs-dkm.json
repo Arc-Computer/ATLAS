@@ -1,0 +1,42 @@
+{
+  "task_id": "incident_55_train_q012",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "There has been an ongoing hands-on-keyboard attack via the Impacket toolkit. Suspicious execution of a command was observed on a device. This tool connects to other hosts to explore network shares and execute commands, often used in hands-on-keyboard attacks where ransomware and other payloads are installed on target devices. During this incident, a malicious PowerShell Cmdlet was invoked on the machine, likely associated with credential theft, exploitation, network reconnaissance, or code injection. Following this, Luciano Herrera (CIO) on `MB-WINCLIENT` sent one replication request to another host on the network.",
+  "question": "There was a suspected AD FS DKM key read in the final alert, which host was involved in reading the DKM key?",
+  "gold_answer": "MB-DC1",
+  "solution_steps": [
+    "Suspicious execution of a command via Impacket toolkit observed on process `powershell.exe`.",
+    "A malicious PowerShell Cmdlet invoked by the account with AadUserId `2de70991-2799-4a95-b734-8e3df3a50118`.",
+    "Luciano Herrera (CIO) on MB-WINCLIENT sent 1 replication request to host `MB-DC1`, indicating a suspected DCSync attack.",
+    "Host `MB-DC1` read the DKM key of ADFS object id `4cac49d3-29d3-407e-8c9b-b7ebb21541b2`, signalling a suspected AD FS DKM key read."
+  ],
+  "metadata": {
+    "start_alert": 16,
+    "end_alert": 105,
+    "start_entities": [
+      21,
+      22,
+      19,
+      20,
+      17,
+      25,
+      23,
+      18,
+      26,
+      24
+    ],
+    "end_entities": [
+      99
+    ],
+    "shortest_alert_path": [
+      16,
+      8,
+      51,
+      11,
+      98,
+      99,
+      105
+    ]
+  }
+}

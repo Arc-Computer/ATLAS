@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_5_train_q063",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "The actor group relies on tactics such as using domain fronting for command-and-control channels. One command observed was to use `curl` to access vectorsandarrows.com from a specific host.",
+  "question": "Based on the observed Manatee Tempest activity, can you provide the hostname of another endpoint involved in this incident?",
+  "gold_answer": "vnevado-win10s",
+  "solution_steps": [
+    "The account with SID `S-1-5-21-1840191660-8534830288-125585561-1522` is associated with Manatee Tempest cybercriminal group activity.",
+    "The host `vnevado-win10s` is also linked to activities performed by the Manatee Tempest cybercriminal group."
+  ],
+  "metadata": {
+    "start_alert": 135,
+    "end_alert": 136,
+    "start_entities": [
+      61,
+      64,
+      65
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      135,
+      2,
+      136
+    ]
+  }
+}

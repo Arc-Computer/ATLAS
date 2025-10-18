@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_38_test_q001",
+  "incident": "incident_38",
+  "split": "test",
+  "context": "A security incident involving a suspicious process injection was observed on host `vnevado-win11a`. A file `notepad.exe` was executed with process ID 8932 on this host. It was reported that a process injected code into another process, which might be an attempt to hide malicious code execution within a trusted process.",
+  "question": "Can you identify the name of the account associated with this suspicious activity?",
+  "gold_answer": "nathans",
+  "solution_steps": [
+    "The user account `nathans` was involved in an incident where suspicious process injection was observed."
+  ],
+  "metadata": {
+    "start_alert": 10,
+    "end_alert": 10,
+    "start_entities": [
+      4,
+      8,
+      9,
+      13,
+      3,
+      12,
+      2,
+      11
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      10
+    ]
+  }
+}

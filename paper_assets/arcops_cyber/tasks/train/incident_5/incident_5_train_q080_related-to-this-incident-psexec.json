@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_5_train_q080",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "In a recent security incident, a known credential theft tool `mimikatz.exe` was executed. The execution command line indicated an attempt to dump users' credentials, keys, and plain-text passwords. The process had a Process ID of 3008 and was created at 2024-06-20T09:03:30.2086323Z.",
+  "question": "Related to this incident, PsExec was used to launch a command on a remote device likely for lateral movement. Can you provide the Process ID and creation time of the `cmd.exe` process that was launched by PsExec?",
+  "gold_answer": "Process ID: 8656, Creation time: 2024-06-20T09:07:09.5458894Z",
+  "solution_steps": [
+    "A known credential theft tool was executed by the account `tgs2z`.",
+    "PsExec was used to launch `cmd.exe` on a remote device with Process ID `8656` at `2024-06-20t09:07:09.5458894z`."
+  ],
+  "metadata": {
+    "start_alert": 161,
+    "end_alert": 84,
+    "start_entities": [
+      24,
+      29
+    ],
+    "end_entities": [
+      85
+    ],
+    "shortest_alert_path": [
+      161,
+      16,
+      84
+    ]
+  }
+}

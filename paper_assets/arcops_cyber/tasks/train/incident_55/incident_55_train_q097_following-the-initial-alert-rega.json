@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_train_q097",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A security incident was detected where a process was injected with potentially malicious code on July 4th, 2024, at 22:35:02 UTC. The process injection may indicate suspicious code being run in the target process memory, which could lead to abnormal behaviors such as opening a listening port or connecting to a command and control server.",
+  "question": "Following the initial alert regarding process injection, an internal phishing campaign was detected. Can you identify the Azure Active Directory (AAD) User ID associated with the compromised account that sent phishing emails internally on July 7th, 2024?",
+  "gold_answer": "28058d92-fc24-4869-9231-6546a34b00f2",
+  "solution_steps": [
+    "A process was injected with potentially malicious code by the user with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0`.",
+    "An internal phishing campaign was observed, where a user with AadUserId `28058d92-fc24-4869-9231-6546a34b00f2` sent phishing emails inside the organization."
+  ],
+  "metadata": {
+    "start_alert": 41,
+    "end_alert": 88,
+    "start_entities": [
+      1,
+      12,
+      14,
+      7,
+      8,
+      11,
+      42,
+      15,
+      13,
+      4
+    ],
+    "end_entities": [
+      78
+    ],
+    "shortest_alert_path": [
+      41,
+      3,
+      88
+    ]
+  }
+}

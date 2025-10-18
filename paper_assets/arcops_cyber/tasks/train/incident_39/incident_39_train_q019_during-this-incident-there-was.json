@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_39_train_q019",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "As part of a security incident on 2024-07-04, the Mimikatz credential theft tool was detected on a device. Mimikatz is known for harvesting plaintext passwords, password hashes, smartcard PINs, and Kerberos tickets. This detection shows an attempt to use `mimikatz.exe` for credential theft. The following command lines were observed: `4748__2024-06-27t14:33:38.0249949z__mimikatz.exe lsadump::dcsync /domain:vnevado.alpineskihouse.co /user:xfbzkp exit` and `5176__2024-06-27t14:33:32.4282796z__mimikatz.exe privilege::debug kerberos::ptt c:\\m365dattack\\admin-tickets exit`. The aim of this attack could be to harvest credentials to log into this or other devices within the network.",
+  "question": "During this incident, there was also suspicious access to the LSASS service. Can you identify the name of the file used for this access?",
+  "gold_answer": "get-krbticket.ps1",
+  "solution_steps": [
+    "The Mimikatz hacktool was detected executing with Process ID `6880` at `2024-06-27t14:32:37.7041174z`, using the command line `mimikatz.exe privilege::debug sekurlsa::pth /user:fk8mq /ntlm:96def1a633fc6790124d5f8fe21cc72b /domain:vnevado.alpineskihouse.co /run:\"powershell.exe dir \\vnevado-win10b\rideshare\"`.",
+    "There was suspicious access to the LSASS service involving the file `get-krbticket.ps1`."
+  ],
+  "metadata": {
+    "start_alert": 108,
+    "end_alert": 102,
+    "start_entities": [
+      30,
+      64,
+      71
+    ],
+    "end_entities": [
+      38
+    ],
+    "shortest_alert_path": [
+      108,
+      68,
+      102
+    ]
+  }
+}

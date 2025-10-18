@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_train_q074",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A security incident involved the user Luciano Herrera and the addition of credentials to an OAuth application named SimulandApp. This suspicious activity may indicate a potential compromise. Additionally, an unknown tool or technique was used to gather information about a device, suggesting the attackers might be trying to gather information about the target device or network for later attacks.",
+  "question": "What is the email associated with the user who added credentials to the OAuth application SimulandApp?",
+  "gold_answer": "Luciano Herrera@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "The user Luciano Herrera (AadUserId: `2de70991-2799-4a95-b734-8e3df3a50118`) performed an unusual addition of credentials (type Password) to the application SimulandApp.",
+    "There was a suspicious system hardware discovery on the host `mb-winclient`.",
+    "A malicious URL `https://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/` was clicked on the device."
+  ],
+  "metadata": {
+    "start_alert": 80,
+    "end_alert": 107,
+    "start_entities": [
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87
+    ],
+    "end_entities": [
+      97
+    ],
+    "shortest_alert_path": [
+      80,
+      11,
+      0,
+      14,
+      107
+    ]
+  }
+}

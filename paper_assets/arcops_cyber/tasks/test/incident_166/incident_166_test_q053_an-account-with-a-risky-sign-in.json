@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_166_test_q053",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A security incident occurred involving suspicious inbox rule manipulation and risky SAP authentication. Initially, a user's inbox rules were manipulated in a suspicious manner. This might indicate that the attacker gained access to a user's inbox to delete or move messages or folders and exfiltrate data. The incident involved a cloud application with AppId: `20893` and IP address: `255.246.85.58`.",
+  "question": "An account with a risky sign-in alert was later detected signing in to SAP. Can you provide the IP address used during the suspicious SAP authentication?",
+  "gold_answer": "107.253.5.27",
+  "solution_steps": [
+    "There was a suspicious manipulation of inbox rules for the user with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "A risky sign-in alert was detected for a user signing into SAP from IP address `107.253.5.27`."
+  ],
+  "metadata": {
+    "start_alert": 16,
+    "end_alert": 23,
+    "start_entities": [
+      11,
+      15
+    ],
+    "end_entities": [
+      25
+    ],
+    "shortest_alert_path": [
+      16,
+      1,
+      23
+    ]
+  }
+}

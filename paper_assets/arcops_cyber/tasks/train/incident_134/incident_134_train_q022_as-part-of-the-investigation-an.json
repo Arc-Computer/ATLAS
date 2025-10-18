@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_train_q022",
+  "incident": "incident_134",
+  "split": "train",
+  "context": "A user account was signed in from an unusual location and browser following a password-spray attack, with the IP address `170.54.121.63`, indicating a potential compromise. We recommend prompt investigation to mitigate potential security risks.",
+  "question": "As part of the investigation, an alert was raised about email messages containing malicious URLs that were removed after delivery. Can you identify the primary email address associated with the compromised mailbox?",
+  "gold_answer": "raphaelt@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "The user account with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1` was compromised following a password-spray attack.",
+    "The mailbox with primary address `raphaelt@vnevado.alpineskihouse.co` received an email containing a malicious URL that was later removed."
+  ],
+  "metadata": {
+    "start_alert": 25,
+    "end_alert": 13,
+    "start_entities": [
+      12
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      25,
+      9,
+      13
+    ]
+  }
+}

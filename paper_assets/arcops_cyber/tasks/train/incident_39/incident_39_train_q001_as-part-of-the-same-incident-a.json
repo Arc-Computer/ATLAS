@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_39_train_q001",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A potentially malicious URL click was detected involving user Ethan Brooks who clicked on the URL `https://ac27145722.livelygrass-8d4c4013.eastus2.azurecontainerapps.io/`. The email associated with Ethan Brooks is `Ethan Brooks@vnevado.alpineskihouse.co`, and the mail was sent to `tgs2z@vnevado.alpineskihouse.co`. This incident is part of a broader security incident.",
+  "question": "As part of the same incident, a known credential theft tool execution was detected. What was the IP address involved in this credential theft tool execution?",
+  "gold_answer": "65.233.23.156",
+  "solution_steps": [
+    "A user with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1` clicked on a malicious URL.",
+    "A known credential theft tool execution was detected from IP address `65.233.23.156`."
+  ],
+  "metadata": {
+    "start_alert": 134,
+    "end_alert": 111,
+    "start_entities": [
+      117,
+      118,
+      135,
+      136,
+      137
+    ],
+    "end_entities": [
+      113
+    ],
+    "shortest_alert_path": [
+      134,
+      29,
+      111
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_34_test_q026",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "An anomaly was detected in the ASEP registry on host `vnevado-win10e`, which indicated that a process registered a suspicious command or file to run after a reboot. The account associated with this activity has the username `samuelf`, and the IP address involved in this alert is `72.5.72.208`. This might be part of an attacker's strategy to maintain persistence on the machine.",
+  "question": "Can you identify the filename of the process that was registered in the ASEP registry as part of this anomaly?",
+  "gold_answer": "winatp-intro-backdoor.exe",
+  "solution_steps": [
+    "A process registered a suspicious command or file `winatp-intro-backdoor.exe` in the ASEP registry key."
+  ],
+  "metadata": {
+    "start_alert": 17,
+    "end_alert": 17,
+    "start_entities": [
+      6,
+      2,
+      5,
+      18,
+      4,
+      1
+    ],
+    "end_entities": [
+      9
+    ],
+    "shortest_alert_path": [
+      17
+    ]
+  }
+}

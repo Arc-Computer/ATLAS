@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_55_train_q021",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A security incident included an alert where a Windows executable file that had been renamed was launched. This indicates attackers might attempt to use the executable for malicious activities, such as running harmful code or connecting to an attacker-controlled network address. The account involved was `SYSTEM` with SID `S-2-2-78`. Shortly after, suspicious remote activities were observed on the same machine, potentially indicating attempts to modify files, initiate interactive sessions, or other malicious activities from a remote machine. Later, further investigation revealed suspicious service creation under the account gsmith on the machine MB-ADFS.",
+  "question": "What is the email address of the account that created the suspicious service DDLOXJDSQSNGMUKKFUXQ?",
+  "gold_answer": "gsmith@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "A Windows executable `powershell.exe` was renamed and launched, potentially indicating an attempt to bypass detection.",
+    "Suspicious remote activity was initiated by an account with AadUserId `ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5`, indicating possible remote malicious actions.",
+    "An account with email `gsmith@niseko.alpineskihouse.co` created a suspicious service `DDLOXJDSQSNGMUKKFUXQ` on machine `MB-ADFS` to potentially execute malicious commands."
+  ],
+  "metadata": {
+    "start_alert": 27,
+    "end_alert": 101,
+    "start_entities": [
+      30,
+      31
+    ],
+    "end_entities": [
+      103
+    ],
+    "shortest_alert_path": [
+      27,
+      8,
+      37,
+      20,
+      101
+    ]
+  }
+}

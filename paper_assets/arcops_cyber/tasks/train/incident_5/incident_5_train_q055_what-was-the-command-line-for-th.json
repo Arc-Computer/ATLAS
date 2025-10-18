@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_5_train_q055",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A security incident involving command and control behavior was blocked. The incident revealed a corresponding URL `http://vectorsandarrows.com/` being associated with the alert. Additional investigations led to the detection of attempts to access Primary Refresh Token (PRT). The final alert in this sequence detected the execution of a known credential theft tool.",
+  "question": "What was the command line for the detected credential theft tool?",
+  "gold_answer": "4464__2024-06-20t09:03:04.6442161z__\"mimikatz.exe\" privilege::debug \"sekurlsa::pth /user:fk8mq /ntlm: /domain:vnevado.alpineskihouse.co /run:..\\notepad.exe //vnevado-jumpv cmd.exe\"",
+  "solution_steps": [
+    "A Command and Control behavior was blocked on the account with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "There was a possible attempt to access Primary Refresh Token (PRT) via the process `browsercore.exe`.",
+    "Another attempt to access Primary Refresh Token (PRT) was detected, involving the account with SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "A known credential theft tool `mimikatz.exe` was executed with command line `mimikatz.exe privilege::debug sekurlsa::pth /user:fk8mq /ntlm: /domain:vnevado.alpineskihouse.co /run:..\\notepad.exe //vnevado-jumpv cmd.exe` at `2024-06-20t09:03:04.6442161z` with Process ID `4464`."
+  ],
+  "metadata": {
+    "start_alert": 149,
+    "end_alert": 156,
+    "start_entities": [
+      74
+    ],
+    "end_entities": [
+      111
+    ],
+    "shortest_alert_path": [
+      149,
+      3,
+      118,
+      40,
+      36,
+      17,
+      156
+    ]
+  }
+}

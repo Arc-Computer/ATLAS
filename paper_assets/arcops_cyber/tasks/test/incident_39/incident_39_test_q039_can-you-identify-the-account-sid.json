@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_39_test_q039",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A recent incident on 2024-07-04 at 22:35:04.075398+00:00 involved potential human-operated malicious activity. This activity might potentially lead to ransomware or other payloads installed on target devices. The suspicious activity was linked to an account with SID `S-0-6-5` and the username `kyleg`.",
+  "question": "Can you identify the account SID involved in the successful logon using overpass-the-hash attack that might have used stolen credentials?",
+  "gold_answer": "S-2-2-78",
+  "solution_steps": [
+    "A sequence of alerts indicative of potential human-operated malicious activity was observed on the host `vnevado-win10b`.",
+    "There was a successful logon on this device using overpass-the-hash attack with the credentials of the user with SID `S-2-2-78`."
+  ],
+  "metadata": {
+    "start_alert": 109,
+    "end_alert": 52,
+    "start_entities": [
+      23,
+      42
+    ],
+    "end_entities": [
+      53
+    ],
+    "shortest_alert_path": [
+      109,
+      10,
+      52
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_train_q077",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A suspicious execution of a command via Impacket was observed on a device with hostname `mb-adfs`. This tool connects to other hosts to explore network shares and execute commands, indicating that attackers might be attempting lateral movement across the network. This activity is often linked to hands-on-keyboard attacks where ransomware and other payloads are installed. During the investigation, multiple files including `powershell.exe` were identified as part of the ongoing attack.",
+  "question": "What was the name of the file associated with the suspicious remote activity observed shortly after the impacket execution?",
+  "gold_answer": "cmd.exe",
+  "solution_steps": [
+    "Suspicious execution of a command via the Impacket toolkit was observed with the `%comspec%` file.",
+    "Suspicious remote activity was observed involving the `cmd.exe` file which can include attempts to initiate interactive sessions, modify files, pass WMI commands, create scheduled tasks, and other potentially malicious activities."
+  ],
+  "metadata": {
+    "start_alert": 16,
+    "end_alert": 37,
+    "start_entities": [
+      17,
+      26,
+      21,
+      8,
+      18,
+      20,
+      22,
+      19,
+      25,
+      23
+    ],
+    "end_entities": [
+      38
+    ],
+    "shortest_alert_path": [
+      16,
+      22,
+      37
+    ]
+  }
+}

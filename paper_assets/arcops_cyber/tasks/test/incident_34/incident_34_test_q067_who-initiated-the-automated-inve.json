@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_34_test_q067",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A recent security incident indicated that a suspicious PowerShell command, potentially used by attackers to download a file or run an encoded command, was executed. This command could bypass security mechanisms and execute payloads in memory without leaving traces. During this same incident, an Automated investigation was manually initiated on a device.",
+  "question": "Who initiated the Automated investigation?",
+  "gold_answer": "u141@ash.alpineskihouse.co",
+  "solution_steps": [
+    "A process on the host with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f` executed PowerShell to download a file or run an encoded command.",
+    "An automated investigation was initiated by u141 (u141@ash.alpineskihouse.co) on the host `vnevado-win10e.vnevado.alpineskihouse.co`."
+  ],
+  "metadata": {
+    "start_alert": 26,
+    "end_alert": 0,
+    "start_entities": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      26,
+      2,
+      0
+    ]
+  }
+}

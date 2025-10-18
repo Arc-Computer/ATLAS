@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_39_test_q062",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "In a recent security incident, the Mimikatz credential theft tool was detected on a device. Mimikatz is known for its ability to harvest plaintext passwords, password hashes, smartcard PINs, and Kerberos tickets. This indicates that an attacker might be trying to steal credentials to impersonate a valid user and gain unauthorized access. The Process ID and command lines associated with Mimikatz include multiple uses, such as: `4748__2024-06-27t14:33:38.0249949z__\"mimikatz.exe\" \"lsadump::dcsync /domain:vnevado.alpineskihouse.co /user:xfbzkp\" exit` and `4112__2024-06-27t14:32:36.6706405z__\"mimikatz.exe\" privilege::debug \"sekurlsa::pth /user:kyleg /ntlm:96def1a633fc6790124d5f8fe31cc72b /domain:vnevado.alpineskihouse.co /run:\\\"powershell.exe dir \\\\vnevado-win10b\\c$\\\"\" exit`. Meanwhile, there was also an attempt to disable the Microsoft Defender Antivirus service on the same device, which may be an attempt to evade detection.",
+  "question": "What was the name of the script file that was likely used during the attempt to tamper with Microsoft Defender Antivirus service?",
+  "gold_answer": "get-krbticket.ps1",
+  "solution_steps": [
+    "The Mimikatz credential theft tool was detected on a device, and it might have been used to harvest credentials. The user account potentially involved has the SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "An attempted tampering of the Microsoft Defender Antivirus service was detected, potentially to evade detection. The related file is `get-krbticket.ps1`."
+  ],
+  "metadata": {
+    "start_alert": 108,
+    "end_alert": 35,
+    "start_entities": [
+      30,
+      31,
+      40,
+      64,
+      67,
+      68,
+      71
+    ],
+    "end_entities": [
+      38
+    ],
+    "shortest_alert_path": [
+      108,
+      28,
+      35
+    ]
+  }
+}

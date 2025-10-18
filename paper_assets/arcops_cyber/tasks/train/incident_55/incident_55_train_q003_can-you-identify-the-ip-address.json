@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_55_train_q003",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "As part of a recent security incident, a suspicious DCSync attack was detected involving Luciano Herrera (CIO) on the host MB-WINCLIENT. Luciano sent a replication request to MB-DC1. There was also a related alert involving suspicious system hardware discovery, which indicates that attackers might be trying to gather information about the target device or network for later attacks.",
+  "question": "Can you identify the IP address associated with the suspicious system hardware discovery alert?",
+  "gold_answer": "72.5.72.208",
+  "solution_steps": [
+    "A DCSync attack was detected, where the account with AadUserId `2de70991-2799-4a95-b734-8e3df3a50118` sent a replication request from MB-WINCLIENT to MB-DC1.",
+    "Suspicious system hardware discovery was attempted from the IP address `72.5.72.208`."
+  ],
+  "metadata": {
+    "start_alert": 98,
+    "end_alert": 0,
+    "start_entities": [
+      81,
+      82,
+      99,
+      100
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      98,
+      11,
+      0
+    ]
+  }
+}

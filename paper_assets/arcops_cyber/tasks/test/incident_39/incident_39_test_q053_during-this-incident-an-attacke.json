@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_39_test_q053",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "In a recent incident, there was a suspicious process stopping services on a device. The processes involved were `powershell.exe` and `net.exe`, indicating that an attacker might be attempting to avoid detection or prepare for further malicious activities. This activity aligns with data encryption or destruction tactics, aiming to render the device unusable.",
+  "question": "During this incident, an attacker executed a file from a remote location. Can you identify the IP address from which the file was dropped and launched?",
+  "gold_answer": "141.216.110.153",
+  "solution_steps": [
+    "A suspicious process stopped services on the device, associated with the account with SID `S-1-5-21-1440151660-4837038288-105596163-1120`.",
+    "A file was dropped and executed from a remote location with IP address `141.216.110.153`."
+  ],
+  "metadata": {
+    "start_alert": 46,
+    "end_alert": 60,
+    "start_entities": [
+      16,
+      17,
+      18,
+      47
+    ],
+    "end_entities": [
+      25
+    ],
+    "shortest_alert_path": [
+      46,
+      14,
+      60
+    ]
+  }
+}

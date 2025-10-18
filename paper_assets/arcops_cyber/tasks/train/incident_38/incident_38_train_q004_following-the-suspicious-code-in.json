@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_38_train_q004",
+  "incident": "incident_38",
+  "split": "train",
+  "context": "A security incident involving a suspicious process injection was detected on 2024-07-04, where a URL `https://wcdstaticfilesprdeus.blob.core.windows.net/wcdstaticfiles/winatp-intro-fileless.txt` was accessed. This incident could result in abnormal behaviors like opening a listening port or connecting to a command and control server.",
+  "question": "Following the suspicious code injection, an unexpected behavior was observed in a process without command line arguments. Identify the IP address connected by this process.",
+  "gold_answer": "202.183.149.174",
+  "solution_steps": [
+    "There was a suspicious process injection observed on host `vnevado-win11a`.",
+    "An unexpected behavior was observed from a process without command line arguments, exhibiting unusual communication with the IP address `202.183.149.174`."
+  ],
+  "metadata": {
+    "start_alert": 10,
+    "end_alert": 15,
+    "start_entities": [
+      13
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      10,
+      8,
+      15
+    ]
+  }
+}

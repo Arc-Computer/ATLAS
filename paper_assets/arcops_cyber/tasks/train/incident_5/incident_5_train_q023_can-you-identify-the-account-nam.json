@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_5_train_q023",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "In relation to a security incident involving lateral movement attempts using SMB remote file access, a previous alert on 2024-07-04 highlighted that Command and Control behavior was blocked due to active malware. The involved account name needs to be identified.",
+  "question": "Can you identify the account name involved in the Command and Control behavior from this security incident?",
+  "gold_answer": "dp5hn",
+  "solution_steps": [
+    "A contained user tried to create, delete, or modify files over SMB protocol on host `vnevado-win11t`, but these actions were blocked as they could be lateral movement attempts.",
+    "Command and Control behavior of active malware was blocked on the user account named `dp5hn`."
+  ],
+  "metadata": {
+    "start_alert": 171,
+    "end_alert": 149,
+    "start_entities": [
+      42,
+      172,
+      173
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      171,
+      68,
+      149
+    ]
+  }
+}

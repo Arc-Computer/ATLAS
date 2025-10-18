@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_166_test_q074",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "There was a suspicious incident where a user's inbox rules were manipulated. This typically indicates that an attacker may have gained access to the user's inbox and is manipulating the rules to exfiltrate data from the organization. The suspicious activity was observed from the account `Jordan P` with associated email `Jordan P@vnevado.alpineskihouse.co` and IP address `255.246.85.58`. It has been discovered that this is possibly linked to an anonymous sign-in activity.",
+  "question": "During this investigation, it was found that a sign-in occurred from an anonymous IP address. Can you identify the anonymous IP address involved in this suspicious sign-in activity?",
+  "gold_answer": "95.202.65.202",
+  "solution_steps": [
+    "A user's inbox rules were manipulated suspiciously, and this was linked to the account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "There was a sign-in from an anonymous IP address `95.202.65.202`."
+  ],
+  "metadata": {
+    "start_alert": 16,
+    "end_alert": 0,
+    "start_entities": [
+      6,
+      7,
+      8,
+      11,
+      15
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      16,
+      1,
+      0
+    ]
+  }
+}

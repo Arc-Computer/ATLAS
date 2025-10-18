@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_166_test_q065",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "There was a suspicious inbox manipulation rule detected where a user's inbox rules were manipulated in a suspicious manner. This incident involved the cloud application with AppId `20893` and the IP address `255.246.85.58`. An attacker might have gained access to a user's inbox and is manipulating rules to delete or move messages or folders to exfiltrate data from your organization.",
+  "question": "Following the inbox manipulation rule, a possible BEC financial fraud event was observed. Can you identify the email address of the user account involved in the suspicious BEC financial fraud?",
+  "gold_answer": "Jordan P@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "A suspicious inbox manipulation rule was observed for the user with SID `S-1-5-21-1740051960-3534030288-108486866-1602`.",
+    "Suspicious events indicative of business email compromise (BEC) were observed, potentially targeting the email account `Jordan P@vnevado.alpineskihouse.co`."
+  ],
+  "metadata": {
+    "start_alert": 16,
+    "end_alert": 29,
+    "start_entities": [
+      11,
+      15
+    ],
+    "end_entities": [
+      7
+    ],
+    "shortest_alert_path": [
+      16,
+      8,
+      29
+    ]
+  }
+}

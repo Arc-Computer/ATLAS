@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_5_train_q005",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A security incident was flagged indicating potentially compromised assets exhibiting ransomware-like behavior. This incident impacts several devices, and an attacker might be using a specified user account, IP, or device to move laterally across the network and spread ransomware. A file named `unstreaming.xlsx.lockbit` was identified on the host `vnevado-win11u`, associated with the user account `dp5hn`. Automated remediation actions might be taken to disable the compromised account or device used by the attacker.",
+  "question": "During the investigation, it was found that lateral movement using SMB remote file access was blocked on multiple devices. Can you identify the email of the user whose attempt to create, delete, or modify files over SMB was blocked?",
+  "gold_answer": "Grace Chen@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "The user account with SID `S-1-5-21-1840191660-8534830288-125585561-1522` is potentially compromised and exhibiting ransomware-like behavior.",
+    "The email account `Grace Chen@vnevado.alpineskihouse.co` attempted lateral movement using SMB remote file access and was blocked by attack disruption."
+  ],
+  "metadata": {
+    "start_alert": 147,
+    "end_alert": 171,
+    "start_entities": [
+      53,
+      1,
+      7,
+      8,
+      54,
+      48,
+      44,
+      47,
+      45,
+      43
+    ],
+    "end_entities": [
+      173
+    ],
+    "shortest_alert_path": [
+      147,
+      2,
+      171
+    ]
+  }
+}

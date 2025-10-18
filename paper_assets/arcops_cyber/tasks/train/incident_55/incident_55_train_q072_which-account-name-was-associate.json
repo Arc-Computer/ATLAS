@@ -1,0 +1,37 @@
+{
+  "task_id": "incident_55_train_q072",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A recent security incident started with a malicious email delivered to `santiago@vnevado.alpineskihouse.co` and led to a series of events, including an internal phishing campaign, suspicious system hardware discovery, and eventually a renamed Windows executable being launched by a certain account.",
+  "question": "Which account name was associated with the renamed and launched Windows executable?",
+  "gold_answer": "SYSTEM",
+  "solution_steps": [
+    "The email account `Nina Sullivan@vnevado.alpineskihouse.co` received an email with a malicious URL, which was later removed.",
+    "A user account with SID `S-1-5-21-561436748-3867387497-1732241745-3701` sent phishing emails to recipients within the organization.",
+    "A suspicious system hardware discovery action was performed using `powershell.exe`.",
+    "A system executable was renamed and launched by the `SYSTEM` account."
+  ],
+  "metadata": {
+    "start_alert": 70,
+    "end_alert": 27,
+    "start_entities": [
+      71,
+      72,
+      73,
+      74,
+      79
+    ],
+    "end_entities": [
+      30
+    ],
+    "shortest_alert_path": [
+      70,
+      76,
+      88,
+      2,
+      0,
+      8,
+      27
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_134_test_q054",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A security incident was detected involving suspicious manipulation of a user's inbox rules on a cloud application (`AppId: 20893`). The attacker's IP address (`237.7.81.122`) suggests potential unauthorized access aimed at data exfiltration. This attack might be linked to an account compromised following a password-spray attack, where a user signed in from an unusual location and browser.",
+  "question": "During the incident investigation, from which IP address did the user sign in when their account was compromised following the password-spray attack?",
+  "gold_answer": "170.54.121.63",
+  "solution_steps": [
+    "A user's inbox rules with SID `S-1-5-21-1874151667-3554330288-105586563-1715` were manipulated in a suspicious manner.",
+    "The user account from IP address `170.54.121.63` was compromised following a password-spray attack."
+  ],
+  "metadata": {
+    "start_alert": 14,
+    "end_alert": 25,
+    "start_entities": [
+      15,
+      16
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      14,
+      8,
+      25
+    ]
+  }
+}

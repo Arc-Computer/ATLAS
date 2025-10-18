@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_5_test_q027",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "The Manatee Tempest activity tracked by Microsoft is a notorious Russia-based cybercriminal group that has been active since June 2014, and involved in various malicious activities such as drive-by downloads and ransomware deployment. A recent incident associated with this group involved a suspicious HTTP request to `vectorsandarrows.com` from the IP address `198.43.121.209` using the command line: `curl http://vectorsandarrows.com`, with process ID 6460. Additionally, system recovery setting tampering with the command `bcdedit /set recoveryenabled no` was observed, likely to hinder recovery options in case of system corruption.",
+  "question": "What is the process ID and the exact time when the `bcdedit /set recoveryenabled no` command was executed as part of the system recovery setting tampering?",
+  "gold_answer": "8136__2024-06-20t09:10:48.0438707z",
+  "solution_steps": [
+    "The account `dp5hn` is associated with activity from the Manatee Tempest cybercriminal group known for using tactics such as drive-by downloads, malvertising, and FakeUpdates to gain initial access.",
+    "A system recovery setting tampering attempt was detected with the command `bcdedit /set recoveryenabled no` executed by process ID `8136` on `2024-06-20t09:10:48.0438707z`, which might indicate an attempt to disable system recovery features on the device."
+  ],
+  "metadata": {
+    "start_alert": 136,
+    "end_alert": 96,
+    "start_entities": [
+      4,
+      5,
+      99
+    ],
+    "end_entities": [
+      97
+    ],
+    "shortest_alert_path": [
+      136,
+      1,
+      96
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_39_test_q023",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "'Kekeo' malware was detected on a device during an ongoing lateral movement attack attempt. The attacker appears to be moving from one device to another on the network. A file named `rubeus.exe` was observed in this context, originating from the IP address `141.216.110.153`. This malware is associated with an account whose AAD UserID is `97e6a954-b6bd-48a5-808c-bd8464cce677`.",
+  "question": "Can you provide details of the suspicious service that was launched, including the process ID and command line used?",
+  "gold_answer": "ProcessId: 684, CommandLine: services.exe",
+  "solution_steps": [
+    "The malware 'Kekeo' was detected on the device, indicating a lateral movement attempt which involved running the process `psexesvc.exe` (Process ID `5512`) at `2024-06-27T14:33:27.3525354Z`.",
+    "A suspicious service `services.exe` was launched on the device, potentially for persistence or privilege elevation purposes (Process ID `684`) at `2024-06-26T17:11:52.8075185Z`."
+  ],
+  "metadata": {
+    "start_alert": 110,
+    "end_alert": 90,
+    "start_entities": [
+      1,
+      2,
+      3,
+      23,
+      25,
+      65
+    ],
+    "end_entities": [
+      91
+    ],
+    "shortest_alert_path": [
+      110,
+      4,
+      90
+    ]
+  }
+}

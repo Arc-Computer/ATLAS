@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_322_test_q040",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "This alert involves an email security incident where a message containing a malicious URL was delivered to `alyssat@vnevado.alpineskihouse.co` and later removed. The email originated from IP address `202.205.215.225` and was sent by `Hailey Johnson@vnevado.alpineskihouse.co`.",
+  "question": "Who is the email sender related to this security incident?",
+  "gold_answer": "raphaelt@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "The email sender `raphaelt@vnevado.alpineskihouse.co` sent an email containing a malicious URL that was delivered and later removed."
+  ],
+  "metadata": {
+    "start_alert": 2,
+    "end_alert": 2,
+    "start_entities": [
+      7,
+      9,
+      1,
+      3,
+      10,
+      6,
+      4,
+      8
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      2
+    ]
+  }
+}

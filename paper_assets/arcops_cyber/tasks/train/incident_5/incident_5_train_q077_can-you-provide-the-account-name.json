@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_5_train_q077",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A security incident was identified involving possible lateral movement across devices on the network. The incident involves a suspicious IP address `83.162.58.168` and a triggered Microsoft Defender for Endpoint alert suggesting an attacker might be trying to move laterally to gather data or elevate privileges.",
+  "question": "Can you provide the account name used in the 'CommandAndControl' malware detected during lateral movement?",
+  "gold_answer": "dp5hn",
+  "solution_steps": [
+    "Lateral movement was observed on the host `vnevado-win11t`.",
+    "An attacker might be attempting to move laterally to the device from another device on the network.",
+    "'CommandAndControl' malware was detected during lateral movement involving the account `dp5hn`."
+  ],
+  "metadata": {
+    "start_alert": 103,
+    "end_alert": 127,
+    "start_entities": [
+      104
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      103,
+      68,
+      127
+    ]
+  }
+}

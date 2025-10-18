@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_39_train_q090",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "An alert reported a user on VNEVADO-Win10V performing reconnaissance activities, specifically enumerating SMB sessions on VNEVADO-DC and retrieving IP addresses associated with accounts.",
+  "question": "Which user was reported to perform SMB session enumeration on VNEVADO-DC to retrieve account-related IP addresses?",
+  "gold_answer": "Ethan Brooks",
+  "solution_steps": [
+    "The malware 'Kekeo' was detected on the machine with the file name `rubeus.exe`.",
+    "Multiple dual-purpose tools were dropped by the account with SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "The user `Ethan Brooks` performed IP address reconnaissance (SMB) on the device `VNEVADO-Win10V` and enumerated SMB sessions on `VNEVADO-DC`, retrieving recent IP addresses of 2 accounts."
+  ],
+  "metadata": {
+    "start_alert": 100,
+    "end_alert": 114,
+    "start_entities": [
+      1,
+      9,
+      10,
+      11
+    ],
+    "end_entities": [
+      117
+    ],
+    "shortest_alert_path": [
+      100,
+      65,
+      76,
+      28,
+      114
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_55_train_q005",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "Suspicious activity has been detected involving a process trying to read sensitive credential data by accessing the memory of a crucial security system process. Such actions allow an attacker to extract authentication hashes or passwords, which might be written to the file system for exfiltration.",
+  "question": "Which specific process was identified attempting to access and potentially extract sensitive information from the security system?",
+  "gold_answer": "lsass.exe",
+  "solution_steps": [
+    "A suspicious system hardware discovery was performed by an account with SID `S-1-5-21-561436748-3867387497-1732241745-3701`.",
+    "A process with Process ID `760` and Command Line `lsass.exe` created on `2024-07-02t07:28:35.8580921z` scanned or dumped memory from the Local Security Authority Subsystem Service (lsass.exe), potentially extracting sensitive credentials."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 67,
+    "start_entities": [
+      5,
+      6,
+      9,
+      10,
+      11,
+      12,
+      13
+    ],
+    "end_entities": [
+      50
+    ],
+    "shortest_alert_path": [
+      0,
+      2,
+      67
+    ]
+  }
+}

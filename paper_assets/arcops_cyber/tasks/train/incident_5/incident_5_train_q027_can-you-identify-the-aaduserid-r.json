@@ -1,0 +1,42 @@
+{
+  "task_id": "incident_5_train_q027",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A security incident involving suspicious access to the LSASS service was recorded, where multiple public tools or custom ones could be used by attackers to obtain clear-text passwords from LSASS service's memory. This was followed by lateral movement activities involving PSExec to jump server and ransomware payload remotely launched on a device. The attackers might be attempting to encrypt content on the device, making it unusable to users. The next alert triggered was due to a suspicious WMI process creation, potentially used by malware to spawn new processes and further infect the machine.",
+  "question": "Can you identify the AadUserId related to the suspicious WMI process creation event?",
+  "gold_answer": "731adb71-b11c-4bbf-850b-57989b350e96",
+  "solution_steps": [
+    "There was a suspicious access to the LSASS service by the user with SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "A ransomware payload was remotely launched by the user with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "Suspicious WMI process creation was observed on the machine and was linked to the user with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "Lateral movement to the jump server was performed using PSExec by an IP address `99.83.111.100`."
+  ],
+  "metadata": {
+    "start_alert": 15,
+    "end_alert": 117,
+    "start_entities": [
+      33,
+      26,
+      19,
+      31,
+      28,
+      25,
+      32,
+      21,
+      27,
+      22
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      15,
+      17,
+      174,
+      42,
+      112,
+      3,
+      117
+    ]
+  }
+}

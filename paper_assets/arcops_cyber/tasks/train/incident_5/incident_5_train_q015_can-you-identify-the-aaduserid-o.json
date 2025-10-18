@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_5_train_q015",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "We detected potentially compromised assets exhibiting ransomware-like behavior, impacting several devices. This includes various files such as `kiters.7z`, `get-userprttoken.ps1`, and `syncretic.7z.lockbit`. Host involved is identified as `vnevado-win11u` with AadDeviceId `bc00e484-d0e5-4da4-9472-95568cccc07e`. An IP address `99.83.111.100` and the user account with SID `S-0-6-5` and name `dp5hn` were associated with this suspicious activity. Automated remediation actions may disable the involved account or device to prevent further lateral movement and infection.",
+  "question": "Can you identify the AadUserId of the potentially compromised user account involved in this ransomware-like behavior?",
+  "gold_answer": "731adb71-b11c-4bbf-850b-57989b350e96",
+  "solution_steps": [
+    "There is a potentially compromised account with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96` exhibiting ransomware-like behavior on the network, which may impact several devices."
+  ],
+  "metadata": {
+    "start_alert": 147,
+    "end_alert": 147,
+    "start_entities": [
+      43,
+      48,
+      7,
+      44,
+      42,
+      47,
+      46,
+      8,
+      45,
+      1
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      147
+    ]
+  }
+}

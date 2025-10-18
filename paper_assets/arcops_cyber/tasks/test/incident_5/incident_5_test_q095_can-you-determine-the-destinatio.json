@@ -1,0 +1,37 @@
+{
+  "task_id": "incident_5_test_q095",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "On 2024-07-10, at 11:24:45.260113+00:00, a security incident was detected involving lateral movement to the jump server `vnevado-jump` from host `vnevado-win10v` with associated account `tgs2z` (email: `tgs2z@vnevado.alpineskihouse.co`). The source IP address involved in this activity was `141.216.110.153`. During this incident, there have been numerous file system changes indicating possible ransomware activity.",
+  "question": "Can you determine the destination IP address where potential lateral movement was observed following the suspicious network event?",
+  "gold_answer": "83.162.58.168",
+  "solution_steps": [
+    "Lateral movement to the jump server `Vnevado-jump` was observed from IP address `99.83.111.100`.",
+    "A possible ransomware activity involving a known malicious extension was detected on host `vnevado-win11t`.",
+    "Possible lateral movement from IP address `83.162.58.168` was detected in close time proximity to a suspicious network event on the device."
+  ],
+  "metadata": {
+    "start_alert": 174,
+    "end_alert": 103,
+    "start_entities": [
+      16,
+      17,
+      18,
+      34,
+      35,
+      175,
+      176,
+      177
+    ],
+    "end_entities": [
+      104
+    ],
+    "shortest_alert_path": [
+      174,
+      42,
+      159,
+      68,
+      103
+    ]
+  }
+}

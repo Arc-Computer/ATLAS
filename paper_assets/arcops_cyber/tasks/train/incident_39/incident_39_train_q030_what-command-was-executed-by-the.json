@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_39_train_q030",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "In a recent security incident, multiple known public tools that could also be used for malicious reasons were dropped on a device. These tools could be leveraged for various attack stages including, credential theft, privilege escalation, and lateral movement. During this incident, several files such as `psexesvc.exe`, `mimikatz.exe`, `domaindominance27.ps1`, and `rubeus.exe` were observed.",
+  "question": "What command was executed by the PsExec tool on the remote device during this incident?",
+  "gold_answer": "\"psexec.exe\" \\vnevado-win10b -accepteula cmd /c \"c:\\temp\\rubeus.exe dump /service:xfbzkp /user:lucasb > c:\\temp\\adminticket.txt\"",
+  "solution_steps": [
+    "The tool `psexec.exe` was dropped on the device.",
+    "PsExec was used to launch a command on a remote device with Process ID `5924` at `2024-06-27t14:33:14.4981439z`, with the command line `psexec.exe \\vnevado-win10b -accepteula cmd /c \"c:\\temp\\rubeus.exe dump /service:xfbzkp /user:lucasb > c:\\temp\\adminticket.txt\"`."
+  ],
+  "metadata": {
+    "start_alert": 62,
+    "end_alert": 95,
+    "start_entities": [
+      67,
+      24,
+      40,
+      45,
+      71,
+      64,
+      68,
+      66,
+      65
+    ],
+    "end_entities": [
+      97
+    ],
+    "shortest_alert_path": [
+      62,
+      70,
+      95
+    ]
+  }
+}

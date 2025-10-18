@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_34_test_q020",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "During the analysis of a recent security incident involving suspicious Task Scheduler activity, `schtasks.exe` was used to create or run a task aimed at automatically launching malicious code. The command lines involved include: `schtasks.exe /create /sc once /tn yrei /tr \"c:\\users\\samuelf\\onedrive - (new) alpineskihouse\\desktop\\winatp-intro-backdoor.exe\" /st 11:58 /f` and `schtasks.exe /run /tn yrei`. There is also a related alert indicating the execution of a PowerShell command by a suspicious process.",
+  "question": "What is the Security Identifier (SID) of the account that executed the suspicious PowerShell command?",
+  "gold_answer": "S-1-5-21-1870156660-7534030218-135086563-1193",
+  "solution_steps": [
+    "A process associated with the account having SID `S-1-5-21-1870156660-7534030218-135086563-1193` was involved in suspicious Task Scheduler activity, which might be an attempt to launch malicious code automatically and establish persistence.",
+    "The same account (SID `S-1-5-21-1870156660-7534030218-135086563-1193`) executed a PowerShell command through a suspicious process, indicating potential attacker activity bypassing security mechanisms."
+  ],
+  "metadata": {
+    "start_alert": 21,
+    "end_alert": 3,
+    "start_entities": [
+      13,
+      14,
+      15
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      21,
+      5,
+      3
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_322_test_q012",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "A malicious URL `https://dj01161621.bravesand-e1ccd718.eastus.azurecontainerapps.io/` was clicked on host `vnevado-win11h`, which triggered a process `msedge.exe`. This is part of a broader security incident where multiple alerts, including a suspicious Azure Resource Manager operation from a proxy IP address, were reported. Microsoft Defender for Resource Manager detected a resource management operation from an IP address that is associated with proxy services, such as TOR. Often, such operations can indicate malicious activities.",
+  "question": "There is also a suspicious credential dump from NTDS.dit related to this incident. Can you identify the file name of the process used to dump the NTDS.dit?",
+  "gold_answer": "ntdsutil.exe",
+  "solution_steps": [
+    "The user with SID `S-1-5-21-1840151686-3534835288-156286563-1127` clicked on a malicious URL.",
+    "There is a suspicious Azure Resource Manager operation from the host `vnevado-dc` using a proxy IP address.",
+    "The process `ntdsutil.exe` was used in a suspicious credential dump from NTDS.dit."
+  ],
+  "metadata": {
+    "start_alert": 33,
+    "end_alert": 16,
+    "start_entities": [
+      13,
+      24,
+      34,
+      35,
+      36,
+      37
+    ],
+    "end_entities": [
+      20
+    ],
+    "shortest_alert_path": [
+      33,
+      8,
+      25,
+      21,
+      16
+    ]
+  }
+}

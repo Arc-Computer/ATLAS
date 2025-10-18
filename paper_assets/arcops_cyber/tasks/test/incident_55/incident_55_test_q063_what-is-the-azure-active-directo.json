@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_55_test_q063",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "During a recent investigation of a suspected DCSync attack, it was found that the user account belonging to Luciano Herrera (CIO) from the host `MB-WINCLIENT` sent a replication request to the domain controller `MB-DC1`. This attack aims to replicate directory services and is often used by attackers to extract critical data.",
+  "question": "What is the Azure Active Directory User ID (AadUserId) associated with the suspicious sequence of exploration activities?",
+  "gold_answer": "a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0",
+  "solution_steps": [
+    "A suspected DCSync attack was initiated by the account with SID `S-1-5-21-551436448-9871687716-9837441745-1903` (Luciano Herrera, CIO) from MB-WINCLIENT to MB-DC1.",
+    "A suspicious sequence of exploration activities was performed by the account with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0`."
+  ],
+  "metadata": {
+    "start_alert": 98,
+    "end_alert": 57,
+    "start_entities": [
+      81,
+      82,
+      99,
+      100
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      98,
+      10,
+      57
+    ]
+  }
+}

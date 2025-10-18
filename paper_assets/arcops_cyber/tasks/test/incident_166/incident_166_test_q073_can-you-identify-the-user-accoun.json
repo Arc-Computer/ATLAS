@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_test_q073",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "There was a security incident where a sign-in was detected from an anonymous IP address `192.238.237.190`, potentially indicating the use of Tor browser or anonymizer VPNs. This incident is connected to another alert where a user account with a risky sign-in alert in Microsoft Entra ID signed in to SAP, the enterprise application software. The intention might be to record or modify sensitive financial information, which could be used for later stages in an attack.",
+  "question": "Can you identify the user account name associated with the suspicious SAP authentication?",
+  "gold_answer": "Jordan P",
+  "solution_steps": [
+    "There was a sign-in attempt from an anonymous IP address using the account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "A risky user account `Jordan P` with a previous anonymous sign-in attempt signed in to SAP, potentially for malicious purposes."
+  ],
+  "metadata": {
+    "start_alert": 3,
+    "end_alert": 23,
+    "start_entities": [
+      4
+    ],
+    "end_entities": [
+      6
+    ],
+    "shortest_alert_path": [
+      3,
+      1,
+      23
+    ]
+  }
+}

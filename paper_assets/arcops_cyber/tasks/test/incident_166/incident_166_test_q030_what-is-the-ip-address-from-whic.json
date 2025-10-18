@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_166_test_q030",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "In a recent incident, a suspicious SAP authentication alert was triggered. A risky sign-in using the account `Jordan P` (email: `Jordan P@vnevado.alpineskihouse.co`) was detected, indicating a potential compromise to search or modify sensitive financial information in SAP software. The sign-in originated from the IP address `107.253.5.27`.",
+  "question": "What is the IP address from which the anonymous sign-in was detected related to this alert?",
+  "gold_answer": "95.202.65.202",
+  "solution_steps": [
+    "A user account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82` signed into SAP with a risky sign-in alert.",
+    "The sign-in was made from an anonymous IP address `95.202.65.202`."
+  ],
+  "metadata": {
+    "start_alert": 26,
+    "end_alert": 0,
+    "start_entities": [
+      6,
+      7,
+      8,
+      24,
+      25
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      26,
+      1,
+      0
+    ]
+  }
+}

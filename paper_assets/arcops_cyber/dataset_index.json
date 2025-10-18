@@ -1,0 +1,114 @@
+[
+  {
+    "incident": "incident_5",
+    "split": "train",
+    "num_questions": 100,
+    "source_url": "https://huggingface.co/datasets/anandmudgerikar/excytin-bench/resolve/main/questions/train/incident_5_qa_incident_o1-ga_c42.json",
+    "local_path": "raw/train/incident_5_qa_incident_o1-ga_c42.json"
+  },
+  {
+    "incident": "incident_34",
+    "split": "train",
+    "num_questions": 34,
+    "source_url": "https://huggingface.co/datasets/anandmudgerikar/excytin-bench/resolve/main/questions/train/incident_34_qa_incident_o1-ga_c42.json",
+    "local_path": "raw/train/incident_34_qa_incident_o1-ga_c42.json"
+  },
+  {
+    "incident": "incident_38",
+    "split": "train",
+    "num_questions": 4,
+    "source_url": "https://huggingface.co/datasets/anandmudgerikar/excytin-bench/resolve/main/questions/train/incident_38_qa_incident_o1-ga_c42.json",
+    "local_path": "raw/train/incident_38_qa_incident_o1-ga_c42.json"
+  },
+  {
+    "incident": "incident_39",
+    "split": "train",
+    "num_questions": 100,
+    "source_url": "https://huggingface.co/datasets/anandmudgerikar/excytin-bench/resolve/main/questions/train/incident_39_qa_incident_o1-ga_c42.json",
+    "local_path": "raw/train/incident_39_qa_incident_o1-ga_c42.json"
+  },
+  {
+    "incident": "incident_55",
+    "split": "train",
+    "num_questions": 100,
+    "source_url": "https://huggingface.co/datasets/anandmudgerikar/excytin-bench/resolve/main/questions/train/incident_55_qa_incident_o1-ga_c42.json",
+    "local_path": "raw/train/incident_55_qa_incident_o1-ga_c42.json"
+  },
+  {
+    "incident": "incident_134",
+    "split": "train",
+    "num_questions": 23,
+    "source_url": "https://huggingface.co/datasets/anandmudgerikar/excytin-bench/resolve/main/questions/train/incident_134_qa_incident_o1-ga_c42.json",
+    "local_path": "raw/train/incident_134_qa_incident_o1-ga_c42.json"
+  },
+  {
+    "incident": "incident_166",
+    "split": "train",
+    "num_questions": 34,
+    "source_url": "https://huggingface.co/datasets/anandmudgerikar/excytin-bench/resolve/main/questions/train/incident_166_qa_incident_o1-ga_c42.json",
+    "local_path": "raw/train/incident_166_qa_incident_o1-ga_c42.json"
+  },
+  {
+    "incident": "incident_322",
+    "split": "train",
+    "num_questions": 23,
+    "source_url": "https://huggingface.co/datasets/anandmudgerikar/excytin-bench/resolve/main/questions/train/incident_322_qa_incident_o1-ga_c42.json",
+    "local_path": "raw/train/incident_322_qa_incident_o1-ga_c42.json"
+  },
+  {
+    "incident": "incident_5",
+    "split": "test",
+    "num_questions": 98,
+    "source_url": "https://huggingface.co/datasets/anandmudgerikar/excytin-bench/resolve/main/questions/test/incident_5_qa_incident_o1-ga_c42.json",
+    "local_path": "raw/test/incident_5_qa_incident_o1-ga_c42.json"
+  },
+  {
+    "incident": "incident_34",
+    "split": "test",
+    "num_questions": 82,
+    "source_url": "https://huggingface.co/datasets/anandmudgerikar/excytin-bench/resolve/main/questions/test/incident_34_qa_incident_o1-ga_c42.json",
+    "local_path": "raw/test/incident_34_qa_incident_o1-ga_c42.json"
+  },
+  {
+    "incident": "incident_38",
+    "split": "test",
+    "num_questions": 11,
+    "source_url": "https://huggingface.co/datasets/anandmudgerikar/excytin-bench/resolve/main/questions/test/incident_38_qa_incident_o1-ga_c42.json",
+    "local_path": "raw/test/incident_38_qa_incident_o1-ga_c42.json"
+  },
+  {
+    "incident": "incident_39",
+    "split": "test",
+    "num_questions": 98,
+    "source_url": "https://huggingface.co/datasets/anandmudgerikar/excytin-bench/resolve/main/questions/test/incident_39_qa_incident_o1-ga_c42.json",
+    "local_path": "raw/test/incident_39_qa_incident_o1-ga_c42.json"
+  },
+  {
+    "incident": "incident_55",
+    "split": "test",
+    "num_questions": 100,
+    "source_url": "https://huggingface.co/datasets/anandmudgerikar/excytin-bench/resolve/main/questions/test/incident_55_qa_incident_o1-ga_c42.json",
+    "local_path": "raw/test/incident_55_qa_incident_o1-ga_c42.json"
+  },
+  {
+    "incident": "incident_134",
+    "split": "test",
+    "num_questions": 57,
+    "source_url": "https://huggingface.co/datasets/anandmudgerikar/excytin-bench/resolve/main/questions/test/incident_134_qa_incident_o1-ga_c42.json",
+    "local_path": "raw/test/incident_134_qa_incident_o1-ga_c42.json"
+  },
+  {
+    "incident": "incident_166",
+    "split": "test",
+    "num_questions": 87,
+    "source_url": "https://huggingface.co/datasets/anandmudgerikar/excytin-bench/resolve/main/questions/test/incident_166_qa_incident_o1-ga_c42.json",
+    "local_path": "raw/test/incident_166_qa_incident_o1-ga_c42.json"
+  },
+  {
+    "incident": "incident_322",
+    "split": "test",
+    "num_questions": 56,
+    "source_url": "https://huggingface.co/datasets/anandmudgerikar/excytin-bench/resolve/main/questions/test/incident_322_qa_incident_o1-ga_c42.json",
+    "local_path": "raw/test/incident_322_qa_incident_o1-ga_c42.json"
+  }
+]

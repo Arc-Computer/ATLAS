@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_test_q058",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "The vulnerability reported included the initial sign-in from an anonymous IP address and later transitioned into a more severe threat involving Business Email Compromise (BEC) with suspicious inbox rule creation in an Azure Active Directory session.",
+  "question": "Who is the user linked to the BEC financial fraud?",
+  "gold_answer": "Jordan P",
+  "solution_steps": [
+    "There was a sign-in from an anonymous IP address for the account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "A suspicious inbox rule was created for the account `Jordan P` in a risky Azure Active Directory session, potentially indicating a BEC (Business Email Compromise) attempt."
+  ],
+  "metadata": {
+    "start_alert": 3,
+    "end_alert": 17,
+    "start_entities": [
+      4
+    ],
+    "end_entities": [
+      6
+    ],
+    "shortest_alert_path": [
+      3,
+      1,
+      17
+    ]
+  }
+}

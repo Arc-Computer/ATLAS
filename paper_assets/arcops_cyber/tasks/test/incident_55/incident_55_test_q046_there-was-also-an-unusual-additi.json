@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q046",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A security incident involving an internal phishing campaign was observed where a user sent phishing emails from their device to recipients inside the organization. It was detected by a Microsoft Defender for Office 365 alert. During the investigation, it was found that possibly compromised user accounts might be involved in lateral movement attempts by an attacker. Additionally, there was an alert about suspicious code injection into a process, which could indicate malicious activity such as opening a listening port or connecting to a command and control server.",
+  "question": "There was also an unusual addition of credentials to an OAuth app. Can you identify the OAuthAppId associated with this suspicious activity?",
+  "gold_answer": "4d9476b8-6ae6-459b-a273-5837c15b5981",
+  "solution_steps": [
+    "An internal phishing campaign was initiated from an account with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0`. This could indicate a compromised user account.",
+    "Potentially malicious code was injected into a process on a different account with AadUserId `2de70991-2799-4a95-b734-8e3df3a50118`. This may suggest lateral movement attempts.",
+    "Luciano Herrera (pwilson@niseko.alpineskihouse.co) added unusual credentials to the OAuth application SimulandApp with OAuthAppId `4d9476b8-6ae6-459b-a273-5837c15b5981`, which could imply the app has been compromised."
+  ],
+  "metadata": {
+    "start_alert": 88,
+    "end_alert": 80,
+    "start_entities": [
+      75,
+      76,
+      77,
+      78,
+      89,
+      90,
+      91
+    ],
+    "end_entities": [
+      85
+    ],
+    "shortest_alert_path": [
+      88,
+      3,
+      41,
+      11,
+      80
+    ]
+  }
+}

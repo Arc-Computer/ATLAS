@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_39_test_q038",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "In a recent security incident, a malicious credential theft tool 'mimikatz.exe' was executed with a command line intended to dump users' credentials. Attached to this process, a PowerShell script 'get-krbticket.ps1' was also executed. This incident was first detected on 2024-07-04. Subsequently, a sign-in attempt was detected using a deceptive user account on the same day. The incident concluded on 2024-07-10 with a suspected identity theft (pass-the-ticket) involving Julian Burke (IT director)'s Kerberos ticket, which was utilized across two different machines (VNEVADO-Win10B and VNEVADO-Win10V) to access multiple resources.",
+  "question": "Can you provide the SID of the account involved in the suspected identity theft (pass-the-ticket) attack?",
+  "gold_answer": "S-1-0-25-1848151668-3534030238-185306563-542",
+  "solution_steps": [
+    "A known credential theft tool execution was detected on the device with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`.",
+    "A sign-in attempt with a deceptive user account was detected from IP address `35.202.74.47`.",
+    "There was suspected identity theft (pass-the-ticket) involving the Kerberos ticket of Julian Burke (IT director) with SID `S-1-0-25-1848151668-3534030238-185306563-542` from device VNEVADO-Win10B to access resources on device VNEVADO-Win10V."
+  ],
+  "metadata": {
+    "start_alert": 44,
+    "end_alert": 130,
+    "start_entities": [
+      31,
+      37,
+      38,
+      45
+    ],
+    "end_entities": [
+      133
+    ],
+    "shortest_alert_path": [
+      44,
+      33,
+      41,
+      43,
+      130
+    ]
+  }
+}

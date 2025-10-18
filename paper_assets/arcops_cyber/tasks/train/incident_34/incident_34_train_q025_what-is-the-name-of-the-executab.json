@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_34_train_q025",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "A security incident was detected involving suspicious Task Scheduler activity, with the process `schtasks.exe` being used to create a task scheduled to run a potentially harmful executable on the host `vnevado-win10e`. The account associated with this activity is identified as `samuelf`.",
+  "question": "What is the name of the executable associated with the suspicious PowerShell command line activity?",
+  "gold_answer": "winatp-intro-backdoor.exe",
+  "solution_steps": [
+    "A process with Process ID `8604` launched `powershell.exe` on `2024-06-26t12:00:39.2886108z` with a command to create a scheduled task that might be used for malicious purposes.",
+    "A suspicious PowerShell command was executed which created a file named `winatp-intro-backdoor.exe`."
+  ],
+  "metadata": {
+    "start_alert": 21,
+    "end_alert": 10,
+    "start_entities": [
+      2,
+      1,
+      5,
+      15,
+      14,
+      6,
+      13,
+      8,
+      4
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      21,
+      7,
+      10
+    ]
+  }
+}

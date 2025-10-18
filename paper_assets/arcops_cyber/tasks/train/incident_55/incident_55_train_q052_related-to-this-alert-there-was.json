@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_train_q052",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A security incident involving suspicious exploration activities was detected. A process on host `mb-winclient` invoked a series of Windows commands using `powershell.exe`. This host relates to several accounts, including 'pwilson'. Some of the commands and processes identified include `powershell.exe c:\\script\\contosoadfsblatempcreds.ps1` and `whoami.exe /user`. The suspicious activity indicates that attackers may be attempting to identify valuable assets and coordinate lateral movement across the network.",
+  "question": "Related to this alert, there was a Windows executable file that was renamed and launched. Can you identify the account name associated with the system executable that was renamed and launched?",
+  "gold_answer": "SYSTEM",
+  "solution_steps": [
+    "A process `powershell.exe` was used to execute a suspicious sequence of exploration activities on 2024-07-04 22:35:03.197761+00:00.",
+    "A system executable file was renamed and launched, potentially by a `SYSTEM` account, on 2024-07-04 22:35:01.543723+00:00."
+  ],
+  "metadata": {
+    "start_alert": 57,
+    "end_alert": 27,
+    "start_entities": [
+      14,
+      3,
+      2,
+      11,
+      12,
+      9,
+      6,
+      4,
+      7,
+      59
+    ],
+    "end_entities": [
+      30
+    ],
+    "shortest_alert_path": [
+      57,
+      8,
+      27
+    ]
+  }
+}

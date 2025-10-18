@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q034",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "In a recent security incident, a suspicious access to the LSASS service was detected on the host `mb-winclient`. The process `powershell.exe` with ProcessId `12412` was involved in accessing the LSASS service. The file `vaultcli.dll` was also found on the system. Further investigation revealed the user account `bjenkins` might be involved.",
+  "question": "During this incident, there was an internal phishing campaign connected to a suspicious access to the LSASS service. Can you identify the AadUserId of the user who was sending phishing emails?",
+  "gold_answer": "28058d92-fc24-4869-9231-6546a34b00f2",
+  "solution_steps": [
+    "An attacker potentially accessed the LSASS service to obtain clear-text passwords, affecting the user with SID `S-1-5-21-561436748-3867387497-1732241745-3701`.",
+    "A user with AadUserId `28058d92-fc24-4869-9231-6546a34b00f2` was observed sending phishing emails internally, indicating a potential compromise of the account."
+  ],
+  "metadata": {
+    "start_alert": 45,
+    "end_alert": 88,
+    "start_entities": [
+      7,
+      49,
+      14,
+      15,
+      8,
+      48,
+      1,
+      46,
+      50,
+      47
+    ],
+    "end_entities": [
+      78
+    ],
+    "shortest_alert_path": [
+      45,
+      2,
+      88
+    ]
+  }
+}

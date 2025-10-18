@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_5_test_q035",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "An active unknown malware was detected, which assigned higher severity ratings due to its active state and potential persistence mechanisms. This malware was running on an unspecified host and included processes involving mimikatz.exe and cmd.exe, indicating credential theft activities. Following this malware detection, a possible attempt to access Primary Refresh Token (PRT) was identified, signifying that attackers could be trying to acquire this Azure AD authentication artifact to perform lateral movements or credential theft.",
+  "question": "Can you identify the AadUserId associated with the possible attempt to access the Primary Refresh Token (PRT)?",
+  "gold_answer": "731adb71-b11c-4bbf-850b-57989b350e96",
+  "solution_steps": [
+    "Active malware was detected on the host `vnevado-win10v`.",
+    "There was a possible attempt to access a Primary Refresh Token (PRT) using the process `browsercore.exe`.",
+    "The account with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96` was associated with a possible attempt to access a Primary Refresh Token (PRT)."
+  ],
+  "metadata": {
+    "start_alert": 150,
+    "end_alert": 82,
+    "start_entities": [
+      23,
+      111,
+      24,
+      31,
+      29,
+      92,
+      19,
+      32,
+      30,
+      33
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      150,
+      34,
+      36,
+      40,
+      82
+    ]
+  }
+}

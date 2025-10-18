@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_38_test_q009",
+  "incident": "incident_38",
+  "split": "test",
+  "context": "In a recent security incident on 2024-07-04, involving suspicious process injection, a process `powershell.exe` with Process ID 4656 and specific encoded command was identified. The incident saw abnormal code injection into another process, potentially leading to unexpected behaviors such as opening a listening port or connecting to a command and control server.",
+  "question": "As part of this investigation involving suspicious process injection, can you identify the SID of the account associated with this suspicious activity?",
+  "gold_answer": "S-1-5-21-1240151660-3534038288-105586567-4122",
+  "solution_steps": [
+    "There is a process injection observed which involved accessing the URL `https://wcdstaticfilesprdeus.blob.core.windows.net/wcdstaticfiles/winatp-intro-fileless.txt`.",
+    "There was another suspicious process injection observed involving the user account with SID `S-1-5-21-1240151660-3534038288-105586567-4122`."
+  ],
+  "metadata": {
+    "start_alert": 14,
+    "end_alert": 10,
+    "start_entities": [
+      6,
+      7
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      14,
+      13,
+      10
+    ]
+  }
+}

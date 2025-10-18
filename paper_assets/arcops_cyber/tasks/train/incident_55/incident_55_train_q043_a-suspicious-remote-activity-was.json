@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_train_q043",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A security incident indicated by unusual addition of credentials to an OAuth app was observed. The user Luciano Herrera from the organization niseko.alpineskihouse.co performed this addition of credentials. The user added a password to the app SimulandApp, potentially indicating that the app might be compromised for malicious purposes such as phishing, data exfiltration, or gaining access to other accounts and devices. Additionally, there was a report of a malicious PowerShell Cmdlet being invoked on a machine.",
+  "question": "A suspicious remote activity was observed related to this machine. Can you provide the account name associated with this remote activity?",
+  "gold_answer": "LocalSystem",
+  "solution_steps": [
+    "The user `Luciano Herrera` (pwilson@niseko.alpineskihouse.co) performed an unusual addition of credentials to the application `SimulandApp`, using a credential of type `Password`. This was observed on the account with SID `S-1-5-21-551436448-9871687716-9837441745-1903`.",
+    "A malicious PowerShell Cmdlet was invoked, with the process `powershell.exe` on the machine.",
+    "Suspicious remote activity was observed, initiated by the account `LocalSystem`."
+  ],
+  "metadata": {
+    "start_alert": 108,
+    "end_alert": 37,
+    "start_entities": [
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      109
+    ],
+    "end_entities": [
+      17
+    ],
+    "shortest_alert_path": [
+      108,
+      10,
+      51,
+      8,
+      37
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_39_train_q039",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A sequence of alerts indicating potential human-operated malicious activity were observed on the device `vnevado-win10v`. Initially, a known credential theft tool `mimikatz.exe` was executed, followed by the possible use of the Rubeus kerberoasting tool. Lastly, a remote session dropped and launched a file, which might suggest an attacker or malware attempting lateral movement or propagation.",
+  "question": "What was the process and its details that were dropped and launched from a remote session as observed in the final alert?",
+  "gold_answer": "Process ID and Command Line: `7668__2024-06-27t14:34:10.0201983z__psexesvc.exe`",
+  "solution_steps": [
+    "A known credential theft tool was executed by the account named `tgs2z`.",
+    "The tool `rubeus.exe`, which can perform kerberoasting and pass-the-ticket attacks, was detected.",
+    "There was potential human-operated malicious activity originating from IP address `141.216.110.153`.",
+    "A remote session dropped and executed the process `psexesvc.exe` with Process ID `7668` at `2024-06-27t14:34:10.0201983z`."
+  ],
+  "metadata": {
+    "start_alert": 89,
+    "end_alert": 60,
+    "start_entities": [
+      27,
+      28,
+      29,
+      31,
+      32,
+      33,
+      67
+    ],
+    "end_entities": [
+      61
+    ],
+    "shortest_alert_path": [
+      89,
+      27,
+      107,
+      7,
+      105,
+      25,
+      60
+    ]
+  }
+}

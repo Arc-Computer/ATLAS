@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_55_train_q087",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "During a recent security incident, an alert was triggered when the user Luciano Herrera (pwilson@niseko.alpineskihouse.co) performed an unusual addition of credentials to the application SimulandApp. This suspect activity may indicate a potential compromise aimed at spreading phishing, data exfiltration, or unauthorized access. Following this, Luciano Herrera (CIO) initiated a suspicious directory services replication request from one machine to another.",
+  "question": "While investigating further into this incident, can you identify the hostname associated with the activity where the DKM key of an ADFS object was accessed?",
+  "gold_answer": "MB-DC1",
+  "solution_steps": [
+    "There was an unusual addition of credentials to an OAuth app by the account with SID `S-1-5-21-551436448-9871687716-9837441745-1903` (`Luciano Herrera`).",
+    "A suspected DCSync attack was performed by Luciano Herrera (CIO) from `MB-WINCLIENT` to the host `MB-DC1`.",
+    "The host `MB-DC1` read the DKM key of ADFS object id `4cac49d3-29d3-407e-8c9b-b7ebb21541b2`."
+  ],
+  "metadata": {
+    "start_alert": 108,
+    "end_alert": 105,
+    "start_entities": [
+      83,
+      84,
+      85,
+      86,
+      109
+    ],
+    "end_entities": [
+      99
+    ],
+    "shortest_alert_path": [
+      108,
+      10,
+      98,
+      99,
+      105
+    ]
+  }
+}

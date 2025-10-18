@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_39_test_q094",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A security incident involving anomalous account lookups was reported. During this incident, an anomalous chain of attempts to look up user account information was detected, hinting at a potential attacker gathering information about potential targets. During this investigation, we observed that an attacker might have used the malicious script file named `domaindominance27.ps1` and several 'net' commands were executed to manipulate user and group accounts. Additionally, a SID history injection was detected on this device, suggesting that an attacker may have elevated domain user privileges to access sensitive files and system settings.",
+  "question": "Can you identify the name of the account involved in the suspected identity theft (pass-the-ticket) attack?",
+  "gold_answer": "xfbzkp",
+  "solution_steps": [
+    "An anomalous chain of attempts to look up user account information using the process `net.exe` was observed.",
+    "A Security Identification (SID) history injection was detected involving the AAD user with ID `7fcf9695-68fc-4258-864d-e1e5b166c66f`.",
+    "A suspected identity theft (pass-the-ticket) incident occurred where Julian Burke's Kerberos ticket was used by the account `xfbzkp` from VNEVADO-Win10B on VNEVADO-Win10V to access 4 resources."
+  ],
+  "metadata": {
+    "start_alert": 94,
+    "end_alert": 130,
+    "start_entities": [
+      66,
+      80,
+      81,
+      82,
+      83,
+      84
+    ],
+    "end_entities": [
+      132
+    ],
+    "shortest_alert_path": [
+      94,
+      18,
+      72,
+      15,
+      130
+    ]
+  }
+}

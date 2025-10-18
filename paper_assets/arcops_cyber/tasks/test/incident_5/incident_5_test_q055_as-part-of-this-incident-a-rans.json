@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_test_q055",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A recent malware incident was detected and blocked which exhibited Command and Control behavior. The malware ran a `curl` command to fetch content from a URL `http://vectorsandarrows.com/` on the host `vnevado-win10r`. This malware is considered active, thus precautionary measures should be taken to check for any signs of infection.",
+  "question": "As part of this incident, a ransomware payload was also remotely launched. Can you identify the IP address involved in the ransomware activity?",
+  "gold_answer": "99.83.111.100",
+  "solution_steps": [
+    "A command and control behavior associated with malware was blocked on the account with SID `S-1-5-21-1840191660-8534830288-125585561-1522`.",
+    "A ransomware payload was remotely launched from IP address `99.83.111.100`, potentially attempting to encrypt content on the device."
+  ],
+  "metadata": {
+    "start_alert": 137,
+    "end_alert": 139,
+    "start_entities": [
+      61,
+      64,
+      65,
+      74
+    ],
+    "end_entities": [
+      42
+    ],
+    "shortest_alert_path": [
+      137,
+      2,
+      139
+    ]
+  }
+}

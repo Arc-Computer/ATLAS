@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_166_test_q043",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "Start Alert: Suspicious activity in SAP linked to business email compromise, traced to IP address 107.253.5.27. End Alert: Detected financial fraud attempt through business email compromise, involving a suspicious inbox rule created in an Azure Active Directory session.",
+  "question": "Identify the IP address associated with the financial fraud attempt described in the alert.",
+  "gold_answer": "255.246.85.58",
+  "solution_steps": [
+    "The account `Jordan P` signed in to SAP in a suspicious manner, potentially as part of a business email compromise-related attack.",
+    "A suspicious inbox rule was created from IP address `255.246.85.58`, indicating an attempt at BEC financial fraud."
+  ],
+  "metadata": {
+    "start_alert": 27,
+    "end_alert": 17,
+    "start_entities": [
+      24,
+      25
+    ],
+    "end_entities": [
+      15
+    ],
+    "shortest_alert_path": [
+      27,
+      6,
+      17
+    ]
+  }
+}

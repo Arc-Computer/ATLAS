@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_5_test_q041",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "During a recent security investigation, it was found that a malicious credential theft tool `mimikatz.exe` was executed with the process ID 4464 on 2024-06-20 at 09:03:04.6442161, originating from IP address `107.224.99.179`. The command line included attempts to leverage credentials from the domain `vnevado.alpineskihouse.co`. This execution was flagged on 2024-07-04 at 22:35:03.869406+00:00 for its intent to dump user credentials. Subsequently, there was a lateral movement attempt to the jump server `Vnevado-jump` on 2024-07-10 at 11:24:45.260113+00:00.",
+  "question": "During this investigation, a potentially compromised user account was identified. Can you provide the SID of the user account that may be operating with ransomware-like behavior?",
+  "gold_answer": "S-1-5-21-1840191660-8534830288-125585561-1522",
+  "solution_steps": [
+    "A known credential theft tool execution command was detected on the account with the name `tgs2z`.",
+    "Lateral movement to the jump server `Vnevado-jump` was performed from the IP address `99.83.111.100`.",
+    "The account with SID `S-1-5-21-1840191660-8534830288-125585561-1522` was exhibiting ransomware-like behavior, impacting several devices."
+  ],
+  "metadata": {
+    "start_alert": 156,
+    "end_alert": 138,
+    "start_entities": [
+      20,
+      24,
+      30,
+      31,
+      111
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      156,
+      16,
+      174,
+      42,
+      138
+    ]
+  }
+}

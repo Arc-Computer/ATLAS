@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_166_train_q019",
+  "incident": "incident_166",
+  "split": "train",
+  "context": "A security incident involving business email compromise (BEC) financial fraud was identified where a suspicious inbox rule that hides incoming email messages was created in a risky Azure Active Directory session. The involved account is Jordan P, with the email address Jordan P@vnevado.alpineskihouse.co and IP address 255.246.85.58.",
+  "question": "What was the anonymous IP address that was flagged in connection with this security incident?",
+  "gold_answer": "95.202.65.202",
+  "solution_steps": [
+    "An attacker might be attempting to conduct business email compromise (BEC) by creating a suspicious inbox rule to hide incoming emails in an Azure Active Directory session associated with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "There was a sign-in from an anonymous IP address `95.202.65.202`, indicating potential suspicious activity."
+  ],
+  "metadata": {
+    "start_alert": 17,
+    "end_alert": 0,
+    "start_entities": [
+      6,
+      7,
+      8,
+      15
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      17,
+      1,
+      0
+    ]
+  }
+}

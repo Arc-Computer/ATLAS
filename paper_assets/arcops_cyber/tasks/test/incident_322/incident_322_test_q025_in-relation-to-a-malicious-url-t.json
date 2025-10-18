@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_322_test_q025",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "On 2024-08-01, a security incident was observed that involved suspicious Azure Resource Management (ARM) activities performed by a user who signed in to a risky session. This alert was also linked to a reported IP address `253.1.244.215`.",
+  "question": "In relation to a malicious URL that was clicked later on the same device, can you identify the other IP address that was recorded in the incident?",
+  "gold_answer": "172.33.118.200",
+  "solution_steps": [
+    "There are suspicious Azure Resource Management activities by a risky user with SID `S-1-5-21-1840151686-3534835288-156286563-1127`.",
+    "A malicious URL was clicked on a device with IP address `172.33.118.200`."
+  ],
+  "metadata": {
+    "start_alert": 32,
+    "end_alert": 33,
+    "start_entities": [
+      31
+    ],
+    "end_entities": [
+      35
+    ],
+    "shortest_alert_path": [
+      32,
+      8,
+      33
+    ]
+  }
+}

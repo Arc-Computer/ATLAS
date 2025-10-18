@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_train_q033",
+  "incident": "incident_166",
+  "split": "train",
+  "context": "A suspicious inbox manipulation rule was detected on cloud application with AppId `20893`, indicating that an attacker's access to a user's inbox might have been used to manipulate rules possibly to exfiltrate data from the organization.",
+  "question": "What is the primary email address of the mailbox that was used to send suspicious emails related to a BEC (business email compromise) fraud attempt?",
+  "gold_answer": "tony@avoriaz.alpineskihouse.co",
+  "solution_steps": [
+    "The user's inbox rules, associated with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`, were manipulated suspiciously.",
+    "Suspicious emails were sent from the mailbox with the primary address `tony@avoriaz.alpineskihouse.co` by a possibly compromised user account."
+  ],
+  "metadata": {
+    "start_alert": 16,
+    "end_alert": 18,
+    "start_entities": [
+      11
+    ],
+    "end_entities": [
+      19
+    ],
+    "shortest_alert_path": [
+      16,
+      1,
+      18
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_5_train_q097",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A potential security incident involving a possible attempt to access the Primary Refresh Token (PRT) was detected, wherein an attacker might be trying to gain access to Azure AD authentication tokens on host `vnevado-win11t`. The process involved had the ProcessId__CreatedTimeUtc__CommandLine `7036__2024-06-20t09:29:49.304018z__'browsercore.exe'`. This incident might be related to malicious activities associated with accessing critical resources for lateral movement or credential theft.",
+  "question": "During this incident, it was found that malware was detected and active. Can you identify the file name of the malware that was found to be active?",
+  "gold_answer": "mimilib.dll",
+  "solution_steps": [
+    "There was a possible attempt to access Primary Refresh Token (PRT) using the file `browsercore.exe`.",
+    "The attempt to access Primary Refresh Token (PRT) was detected from the IP address `107.224.99.179`.",
+    "An unknown malware with the file name `mimilib.dll` was detected and was active."
+  ],
+  "metadata": {
+    "start_alert": 82,
+    "end_alert": 110,
+    "start_entities": [
+      1,
+      2,
+      3,
+      68,
+      69,
+      83
+    ],
+    "end_entities": [
+      56
+    ],
+    "shortest_alert_path": [
+      82,
+      40,
+      36,
+      20,
+      110
+    ]
+  }
+}

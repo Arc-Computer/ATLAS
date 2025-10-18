@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_39_train_q071",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A known credential theft tool `mimikatz.exe` was executed from the device with URL `vnevado-dc.vnevado.alpineskihouse.co` and IP address `65.233.23.156` to dump users' credentials. This incident triggered a malicious credential theft tool execution alert on 2024-07-04. Shortly after, there was a sign-in attempt with a deceptive user account detected, indicating that a potential attacker might be using a fake or decoy account to perform various attack activities including lateral movement and accessing sensitive data.",
+  "question": "Can you identify the security identifier (SID) of the deceptive user account involved in the sign-in attempt?",
+  "gold_answer": "S-0-6-5",
+  "solution_steps": [
+    "A known credential theft tool was executed using the account `tgs2z`.",
+    "There was a sign-in attempt using a deceptive user account with the name `kyleg`.",
+    "Another sign-in attempt was detected using a deceptive user account with the SID `S-0-6-5`."
+  ],
+  "metadata": {
+    "start_alert": 111,
+    "end_alert": 75,
+    "start_entities": [
+      30,
+      31,
+      112,
+      113
+    ],
+    "end_entities": [
+      23
+    ],
+    "shortest_alert_path": [
+      111,
+      27,
+      41,
+      42,
+      75
+    ]
+  }
+}

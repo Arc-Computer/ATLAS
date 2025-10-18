@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_train_q014",
+  "incident": "incident_166",
+  "split": "train",
+  "context": "A sign-in from an anonymous IP address `95.202.65.202` was observed which could indicate the use of Tor browser or anonymizer VPNs. This sign-in was flagged as a potential security incident. In connection with this incident, further investigation led to a suspicious sign-in to SAP by a user involved in a business email compromise (BEC) alert. The attacker might have taken control of this user account to browse through SAP, possibly with intentions to record or alter sensitive financial information, for use in later stages of attack such as phishing or social engineering.",
+  "question": "Can you identify the application ID of the cloud application used during the suspicious SAP sign-in?",
+  "gold_answer": "100",
+  "solution_steps": [
+    "There was a sign-in from an anonymous IP address for the account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "The account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`, involved in a business email compromise-related alert, also signed in to the cloud application SAP (AppId `100`) in a suspicious manner."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 27,
+    "start_entities": [
+      2
+    ],
+    "end_entities": [
+      24
+    ],
+    "shortest_alert_path": [
+      0,
+      1,
+      27
+    ]
+  }
+}

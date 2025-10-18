@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_5_train_q057",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "On July 4, 2024, an alert reported the detection of unknown malware which was active on a machine. This type of malware can perform annoying, disruptive, or harmful actions, and may spread from one machine to another or receive commands from remote attackers to perform malicious activities. Although Windows Defender might have stopped the malware from delivering its payload, it is still necessary to check the machine for signs of infection. During this incident, mimikatz.exe and mimilib.dll files were linked to several process executions, indicating potential credential theft activities.",
+  "question": "In the subsequent alert, indicating the execution of a malicious credential theft tool, what is the Security Identifier (Sid) of the user account involved?",
+  "gold_answer": "S-5-7-21-1843151660-3234030288-105586167-1422",
+  "solution_steps": [
+    "An unknown malware was detected being active in the account with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1`.",
+    "A malicious credential theft tool execution was detected on the account with SID `S-5-7-21-1843151660-3234030288-105586167-1422`."
+  ],
+  "metadata": {
+    "start_alert": 110,
+    "end_alert": 161,
+    "start_entities": [
+      19,
+      23,
+      32,
+      33,
+      56,
+      92,
+      111
+    ],
+    "end_entities": [
+      17
+    ],
+    "shortest_alert_path": [
+      110,
+      18,
+      161
+    ]
+  }
+}

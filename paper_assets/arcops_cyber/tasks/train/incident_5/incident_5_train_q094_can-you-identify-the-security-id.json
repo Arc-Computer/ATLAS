@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_5_train_q094",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "In a recent security incident, the LSASS process memory was modified on different occasions. It appears attackers might be modifying LSASS memory to bypass security mechanisms or circumvent legitimate checks. Additionally, lateral movement to the jump server `Vnevado-jump` was observed via PSExec. One of the potentially compromised assets has exhibited ransomware-like behavior, impacting multiple devices during the occurrence.",
+  "question": "Can you identify the security identifier (SID) of the account involved in the ransomware-like behavior?",
+  "gold_answer": "S-1-5-21-1840191660-8534830288-125585561-1522",
+  "solution_steps": [
+    "The account `tgs2z` was involved in modifying the LSASS process memory.",
+    "There was a lateral movement activity using PSExec to the jump server with IP address `99.83.111.100`.",
+    "The user with SID `S-1-5-21-1840191660-8534830288-125585561-1522` is associated with assets exhibiting ransomware-like behavior."
+  ],
+  "metadata": {
+    "start_alert": 115,
+    "end_alert": 138,
+    "start_entities": [
+      20,
+      24,
+      29,
+      30,
+      31,
+      32
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      115,
+      16,
+      174,
+      42,
+      138
+    ]
+  }
+}

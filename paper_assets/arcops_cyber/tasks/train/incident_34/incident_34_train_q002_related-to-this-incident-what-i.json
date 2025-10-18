@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_train_q002",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "During a security incident on 2024-07-04, a suspicious LDAP query was executed, indicating potential reconnaissance activity. This query usually involves attackers attempting to learn the organization's structure by querying the domain controller for administrative users, groups, and interesting assets. Additionally, the process `winword.exe` was observed executing a file named `rs4_winatp-intro-invoice.docm`.",
+  "question": "Related to this incident, what is the name of the suspicious process that executed a PowerShell command?",
+  "gold_answer": "winatp-intro-backdoor.exe",
+  "solution_steps": [
+    "There was a suspicious LDAP query executed on host `vnevado-win10e`.",
+    "A suspicious process with filename `winatp-intro-backdoor.exe` executed a PowerShell command."
+  ],
+  "metadata": {
+    "start_alert": 24,
+    "end_alert": 3,
+    "start_entities": [
+      11,
+      12
+    ],
+    "end_entities": [
+      9
+    ],
+    "shortest_alert_path": [
+      24,
+      1,
+      3
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_166_test_q044",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A suspicious SAP authentication incident was reported where a user account with a risky sign-in alert in Microsoft Entra ID signed in to SAP, potentially allowing an attacker to record or modify sensitive financial information. The cloud application has AppId `100` and a related IP address `107.253.5.27`. This incident might be connected to another alert involving financial fraud through business email compromise (BEC), where a suspicious inbox rule that hides incoming emails was created in a risky Azure Active Directory session.",
+  "question": "What is the IP address associated with the business email compromise (BEC) financial fraud incident?",
+  "gold_answer": "255.246.85.58",
+  "solution_steps": [
+    "A user account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82` had a risky sign-in alert and accessed SAP, potentially to gather or modify sensitive financial information.",
+    "A suspicious inbox rule that hides incoming email messages was created from the IP address `255.246.85.58`, indicating an attempt at business email compromise (BEC) financial fraud."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 17,
+    "start_entities": [
+      24,
+      25
+    ],
+    "end_entities": [
+      15
+    ],
+    "shortest_alert_path": [
+      23,
+      1,
+      17
+    ]
+  }
+}

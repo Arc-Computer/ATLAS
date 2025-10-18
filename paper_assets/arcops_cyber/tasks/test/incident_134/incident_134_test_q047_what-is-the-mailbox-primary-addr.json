@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_134_test_q047",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "On 2024-07-17, email messages containing a malicious URL (`https://ms175052280.orangecliff-f53f26fd.eastus.azurecontainerapps.io/`) were delivered and later removed. The email was sent by `alyssat@vnevado.alpineskihouse.co` to Nina Park (`Nina Park@vnevado.alpineskihouse.co`). The sender's IP address was `254.241.243.229`.",
+  "question": "What is the mailbox primary address related to this incident?",
+  "gold_answer": "raphaelt@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "The email mailbox with primary address `raphaelt@vnevado.alpineskihouse.co` received emails containing malicious URLs which were subsequently removed."
+  ],
+  "metadata": {
+    "start_alert": 13,
+    "end_alert": 13,
+    "start_entities": [
+      10,
+      6,
+      2,
+      3,
+      7,
+      8,
+      9
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      13
+    ]
+  }
+}

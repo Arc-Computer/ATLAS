@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_39_train_q074",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "During an investigation of a security incident involving potentially stolen credentials used in an overpass-the-hash attack, an attack was observed on a resource with the account Sid `S-2-2-78` and the `lsass.exe` process which had the ProcessId `692` was involved, the incident continued with potential human-operated malicious activities. Additionally, a command was launched using PsExec on a remote device, which is a known tool for lateral movement.",
+  "question": "When was the `powershell.exe` command `c:\\m365dattack\\get-krbticket.ps1` launched remotely using PsExec, and what was the process ID?",
+  "gold_answer": "Time: 2024-06-27t14:32:46.5860644, Process Id: 6636",
+  "solution_steps": [
+    "An attacker accessed a resource on host `fafdcd65-46c6-45a6-aa85-ec9b77ca0bcb` using credentials obtained through an overpass-the-hash attack at `2024-07-04 22:35:01.696210+00:00`.",
+    "A suspicious sequence of alerts indicative of human-operated malicious activity, potentially leading to ransomware, was observed involving the file `adminticket.txt` at `2024-07-04 22:35:03.712134+00:00`.",
+    "PsExec was used to launch a command on a remote device using the command line `powershell.exe c:\\m365dattack\\get-krbticket.ps1` at `2024-06-27t14:32:46.5860644z`, with Process ID `6636`. The attacker might be leveraging this tool to move laterally."
+  ],
+  "metadata": {
+    "start_alert": 52,
+    "end_alert": 95,
+    "start_entities": [
+      53,
+      54,
+      55
+    ],
+    "end_entities": [
+      36
+    ],
+    "shortest_alert_path": [
+      52,
+      11,
+      105,
+      8,
+      95
+    ]
+  }
+}

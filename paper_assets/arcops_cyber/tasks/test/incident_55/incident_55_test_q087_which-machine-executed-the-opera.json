@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_55_test_q087",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A security incident has been detected involving a malicious PowerShell Cmdlet that was executed on a machine, potentially associated with activities such as credential theft or network reconnaissance. Days later, an unusual DCSync attack was observed where a replication request was sent from a certain machine to another. Following this, the recipient machine performed a key read operation on an ADFS object.",
+  "question": "Which machine executed the operation to read the DKM key of the ADFS object?",
+  "gold_answer": "MB-DC1",
+  "solution_steps": [
+    "A malicious PowerShell Cmdlet was invoked on the machine by the account with SID `S-1-5-21-551436448-9871687716-9837441745-1903`.",
+    "There was a suspected DCSync attack where Luciano Herrera (CIO) on MB-WINCLIENT sent a replication request to host `MB-DC1`.",
+    "There was a suspected AD FS DKM key read on host `MB-DC1`, specifically for the ADFS object id `4cac49d3-29d3-407e-8c9b-b7ebb21541b2`."
+  ],
+  "metadata": {
+    "start_alert": 51,
+    "end_alert": 105,
+    "start_entities": [
+      1,
+      3,
+      4,
+      12,
+      8,
+      7,
+      42,
+      15,
+      9,
+      2
+    ],
+    "end_entities": [
+      99
+    ],
+    "shortest_alert_path": [
+      51,
+      10,
+      98,
+      99,
+      105
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_test_q001",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A command and control behavior was blocked on host `vnevado-win10r`, which indicated an active infection by malware that could replicate and receive commands from remote attackers. This malware was active, and precautionary measures should be taken to check for residual signs of infection. The process involved had the ID 1332 and ran the command `curl http://vectorsandarrows.com`.",
+  "question": "What is the IP address associated with the Manatee Tempest activity group detected in this security incident?",
+  "gold_answer": "198.43.121.209",
+  "solution_steps": [
+    "The account with SID `S-1-5-21-1840191660-8534830288-125585561-1522` was involved in a Command and Control behavior that was blocked.",
+    "The cybercriminal group known as Manatee Tempest, which is associated with the IP address `198.43.121.209`, was active during the incident."
+  ],
+  "metadata": {
+    "start_alert": 137,
+    "end_alert": 136,
+    "start_entities": [
+      61,
+      64,
+      65,
+      74
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      137,
+      2,
+      136
+    ]
+  }
+}

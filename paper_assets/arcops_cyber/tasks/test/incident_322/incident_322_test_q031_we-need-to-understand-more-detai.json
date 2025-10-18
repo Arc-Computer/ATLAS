@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_322_test_q031",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "During a recent security incident on 2024-08-01, a malicious URL `https://dj01161621.bravesand-e1ccd718.eastus.azurecontainerapps.io/` was clicked on a device securely identified with the ID `76707c40-3343-490e-9205-88fdb51aefe0` from the user account Hailey Johnson (Email: Hailey Johnson@vnevado.alpineskihouse.co) using the `msedge.exe` process. This incident is being investigated as it relates to a series of malicious activities.",
+  "question": "We need to understand more details about the connected activities. Can you identify the IP address involved in the connection to `login.micro.demo.antoinetest.ovh` observed in the proxy logs?",
+  "gold_answer": "231.60.52.209",
+  "solution_steps": [
+    "A malicious URL was clicked on the device with hostname `vnevado-win11h`.",
+    "A connection from IP address `231.60.52.209` associated with `vnevado-win11h.vnevado.alpineskihouse.co` to `login.micro.demo.antoinetest.ovh` was detected in proxy logs."
+  ],
+  "metadata": {
+    "start_alert": 33,
+    "end_alert": 11,
+    "start_entities": [
+      6,
+      7,
+      8,
+      9,
+      24,
+      34,
+      35,
+      36,
+      37
+    ],
+    "end_entities": [
+      14
+    ],
+    "shortest_alert_path": [
+      33,
+      13,
+      11
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_134_test_q026",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "There was a suspicious manipulation of inbox rules for the account 'Nina Park' (Email: Nina Park@vnevado.alpineskihouse.co) with IP address 237.7.81.122. An attacker might have gained access to Nina's inbox and is manipulating rules to delete or move messages or folders to exfiltrate data from the organization.",
+  "question": "Can you identify which cloud application (AppId) was involved in this incident?",
+  "gold_answer": "20893",
+  "solution_steps": [
+    "There is a suspicious manipulation of inbox rules detected in the cloud application with AppId `20893`."
+  ],
+  "metadata": {
+    "start_alert": 14,
+    "end_alert": 14,
+    "start_entities": [
+      9,
+      7,
+      16,
+      8,
+      6
+    ],
+    "end_entities": [
+      15
+    ],
+    "shortest_alert_path": [
+      14
+    ]
+  }
+}

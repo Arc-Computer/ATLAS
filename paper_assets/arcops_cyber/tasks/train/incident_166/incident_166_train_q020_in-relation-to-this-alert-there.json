@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_166_train_q020",
+  "incident": "incident_166",
+  "split": "train",
+  "context": "A security incident involving possible BEC financial fraud was detected, where suspicious events indicated an attacker might be attempting fraud against the organization. The account involved in the start alert has the details \u2013 Name: Jordan P, Email: Jordan P@vnevado.alpineskihouse.co, SID: S-1-5-21-1740051960-3534030288-108486866-1602.",
+  "question": "In relation to this alert, there is also an alert about a suspicious inbox manipulation rule set up in the email account of Jordan P. Can you identify the IP address related to this suspicious activity?",
+  "gold_answer": "95.202.65.202",
+  "solution_steps": [
+    "The AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82` was observed in suspicious events with business email compromise (BEC) characteristics, indicating a potential attempt to conduct financial fraud against the organization.",
+    "There was a suspicious inbox manipulation rule created by the user Jordan P (laylaw@vnevado.alpineskihouse.co). The rule, named ITCleanup, moves messages to a folder named RSS Feeds, and the activity was linked to the IP address `95.202.65.202`."
+  ],
+  "metadata": {
+    "start_alert": 29,
+    "end_alert": 5,
+    "start_entities": [
+      1,
+      6,
+      7,
+      8
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      29,
+      1,
+      5
+    ]
+  }
+}

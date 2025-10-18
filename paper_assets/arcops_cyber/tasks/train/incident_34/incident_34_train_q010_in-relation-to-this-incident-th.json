@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_34_train_q010",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "A security incident involving suspicious Task Scheduler activity was identified on July 4, 2024. A process involved in earlier malicious activity used Task Scheduler to create, modify, or delete a task, which might be an attempt to launch malicious code automatically and establish persistence. Further information on this threat can be found in the threat analytics report linked in the investigation.",
+  "question": "In relation to this incident, there is also an anomaly detected in the ASEP registry. Can you find the IP address associated with this activity?",
+  "gold_answer": "72.5.72.208",
+  "solution_steps": [
+    "The account with the name `samuelf` used the Task Scheduler to create, modify, or delete a task, which is suspicious.",
+    "There was an anomaly detected in the ASEP registry from the IP address `72.5.72.208`, indicating a potential attempt to register a malicious command or file that will run after a reboot."
+  ],
+  "metadata": {
+    "start_alert": 21,
+    "end_alert": 17,
+    "start_entities": [
+      7,
+      8,
+      13,
+      14,
+      15
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      21,
+      4,
+      17
+    ]
+  }
+}

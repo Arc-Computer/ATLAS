@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_train_q084",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A security incident was reported where emails containing a malicious URL `https://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/` were delivered to and later removed from the mailbox of `bjenkins@niseko.alpineskihouse.co`. The email was sent from `santiago@vnevado.alpineskihouse.co` with the sender IP `119.36.50.193`. This incident involves the user account `Lucas Grey` with email `Lucas Grey@niseko.alpineskihouse.co`.",
+  "question": "During the investigation of the incident, a suspicious sequence of exploration activities was detected. Can you provide the Security Identifier (Sid) of the account involved in these suspicious activities?",
+  "gold_answer": "S-2-5-21-571436798-3864380397-1837441745-3206",
+  "solution_steps": [
+    "The email account with SID `S-1-5-21-561436748-3867387497-1732241745-3701` received an email with a malicious URL that was delivered and later removed.",
+    "A process `powershell.exe` scanned or dumped memory from the Local Security Authority Subsystem Service (lsass.exe), potentially allowing the attacker to extract authentication hashes or passwords.",
+    "The account with SID `S-2-5-21-571436798-3864380397-1837441745-3206` executed a suspicious sequence of windows commands to identify assets of value and coordinate lateral movement after compromising a machine."
+  ],
+  "metadata": {
+    "start_alert": 92,
+    "end_alert": 52,
+    "start_entities": [
+      89,
+      90,
+      93,
+      94,
+      95,
+      96,
+      97
+    ],
+    "end_entities": [
+      19
+    ],
+    "shortest_alert_path": [
+      92,
+      2,
+      67,
+      8,
+      52
+    ]
+  }
+}

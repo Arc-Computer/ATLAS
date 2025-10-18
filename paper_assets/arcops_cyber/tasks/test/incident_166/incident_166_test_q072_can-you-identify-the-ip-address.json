@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_166_test_q072",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "As part of an investigation into a recent security incident, it was found that a user account under the name `Jordan P` with the email `Jordan P@vnevado.alpineskihouse.co` was flagged for a risky sign-in to SAP via Microsoft Entra ID. This security threat indicates that an attacker might have hijacked this user's account to sift through sensitive financial data in SAP for potential misuse. The alert was triggered by a risky sign-in detected in Microsoft Entra ID, which could be indicative of compromised credentials or an unauthorized access attempt.",
+  "question": "Can you identify the IP address from which the suspicious sign-in to SAP was made?",
+  "gold_answer": "107.253.5.27",
+  "solution_steps": [
+    "A suspicious SAP authentication was detected from IP address `107.253.5.27`. This indicates that a user account with a risky sign-in alert in Microsoft Entra ID accessed SAP, potentially to record or modify sensitive financial information."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 23,
+    "start_entities": [
+      1,
+      8,
+      24,
+      6,
+      7
+    ],
+    "end_entities": [
+      25
+    ],
+    "shortest_alert_path": [
+      23
+    ]
+  }
+}

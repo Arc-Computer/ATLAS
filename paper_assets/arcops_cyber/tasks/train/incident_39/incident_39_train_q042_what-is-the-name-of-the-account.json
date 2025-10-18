@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_39_train_q042",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident has been identified where a suspicious service was started on a device on 2024-07-04. The suspicious process `services.exe` with Process ID 684 and `psexesvc.exe` with Process ID 5912 were involved. This service could be used by attackers to launch malicious commands or programs. Subsequently, 'Kekeo' malware was detected on the same device, indicating possible lateral movement by the attacker. Also, multiple dual-purpose tools, which could be used for credential theft, privilege escalation, and lateral movement, were dropped. Finally, a known credential theft tool submission was detected, suggesting an attempt to steal credentials.",
+  "question": "What is the name of the account associated with the malicious credential theft tool execution detected?",
+  "gold_answer": "tgs2z",
+  "solution_steps": [
+    "A suspicious service was launched with command line `psexesvc.exe` at `2024-06-27t14:33:27.3525354z`, with Process ID `5512`.",
+    "The 'Kekeo' malware was detected with the filename `rubeus.exe` during lateral movement.",
+    "Multiple dual-purpose tools were dropped on the device by the AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1`.",
+    "A malicious credential theft tool execution was detected, executed by the account with Name `tgs2z`."
+  ],
+  "metadata": {
+    "start_alert": 90,
+    "end_alert": 104,
+    "start_entities": [
+      59,
+      91
+    ],
+    "end_entities": [
+      27
+    ],
+    "shortest_alert_path": [
+      90,
+      4,
+      110,
+      65,
+      76,
+      29,
+      104
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_5_test_q069",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "An incident occurred involving the potential compromise of devices showing ransomware-like behavior. An IP address associated with this is `99.83.111.100`, and files such as `get-userprttoken.ps1`, `characterical.zip`, and `characterical.zip.lockbit` were detected. Additionally, there was an incident of system recovery setting tampering. The tampering might involve adversaries deleting or removing system data and turning off recovery features to prevent system restoration.",
+  "question": "Can you identify the process command used that might have tampered with the system recovery settings?",
+  "gold_answer": "vssblatemp.exe delete shadows /all",
+  "solution_steps": [
+    "The device with AadDeviceId `e5799261-6720-4297-961e-bd9ca4275033` is potentially compromised and exhibiting ransomware-like behavior.",
+    "On 2024-06-20 at 09:29:40.8785892 UTC, the process vssblatemp.exe with Process ID `1900` was executed with the command line `vssblatemp.exe delete shadows /all` to tamper with system recovery settings by deleting volume shadow copies."
+  ],
+  "metadata": {
+    "start_alert": 157,
+    "end_alert": 79,
+    "start_entities": [
+      42,
+      47,
+      48,
+      94,
+      95
+    ],
+    "end_entities": [
+      80
+    ],
+    "shortest_alert_path": [
+      157,
+      69,
+      79
+    ]
+  }
+}

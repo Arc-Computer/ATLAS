@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_55_test_q045",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "In examining a security incident, we've detected a possible malicious URL click on `http://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/`. This activity was noted on 2024-07-10 at 11:24:45.507742+00:00. Additionally, there was another related incident where email messages containing this malicious URL were sent and subsequently removed after delivery.",
+  "question": "Can you identify the sender of the email with the malicious URL?",
+  "gold_answer": "santiago@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "An email with a malicious URL was sent by `santiago@vnevado.alpineskihouse.co`.",
+    "The user with SID `S-1-5-21-561436748-3867387497-1732241745-3701` clicked on the malicious URL."
+  ],
+  "metadata": {
+    "start_alert": 104,
+    "end_alert": 92,
+    "start_entities": [
+      91
+    ],
+    "end_entities": [
+      96
+    ],
+    "shortest_alert_path": [
+      104,
+      2,
+      92
+    ]
+  }
+}

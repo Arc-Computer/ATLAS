@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_5_train_q033",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A malicious credential theft tool execution was detected, involving the execution of `mimikatz.exe`, `notepad.exe`, and `cmd.exe` to potentially dump users' credentials and other sensitive information. This activity was observed on 2024-07-04 and has been tracked throughout multiple suspicious movements including the use of PSExec to a jump server and suspicious remote activities. Microsoft has linked this activity to the Manatee Tempest activity group, a Russia-based cybercriminal organization known for various attacks including the Dridex banking trojan and ransomware deployments.",
+  "question": "Can you provide the URL associated with the Manatee Tempest activity group mentioned in the latest alert?",
+  "gold_answer": "vectorsandarrows.com",
+  "solution_steps": [
+    "A known credential theft tool was executed by an account with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1`.",
+    "There was lateral movement using PSExec to the jump server from IP address `99.83.111.100`.",
+    "Suspicious remote activity was initiated by an account with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "The activity group Manatee Tempest, tracked by Microsoft, utilizes tactics such as malvertising and FakeUpdates to gain initial access, followed by BLISTER loader to deliver Cobalt Strike beacons. This group is associated with the URL `vectorsandarrows.com`."
+  ],
+  "metadata": {
+    "start_alert": 130,
+    "end_alert": 136,
+    "start_entities": [
+      24,
+      30,
+      31,
+      32
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      130,
+      18,
+      174,
+      42,
+      88,
+      3,
+      136
+    ]
+  }
+}

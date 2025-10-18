@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_39_train_q083",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident was identified where a file `psexesvc.exe` was dropped and executed remotely, which might indicate an attacker or a malware attempting to move laterally or propagate. The process ID associated with `psexesvc.exe` was 7668, and it was launched on host `vnevado-dc` by the user account `lucasb`. The IP address involved in this activity was `141.216.110.153`.",
+  "question": "In a related alert about suspected identity theft (pass-the-ticket), which user had their Kerberos ticket stolen and used on another machine?",
+  "gold_answer": "Julian Burke@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "An attacker or malware used a remote session to drop a file and execute it, involving the user with AadUserId `7fcf9695-68fc-4258-864d-e1e5b166c66f`.",
+    "There was suspected identity theft involving Julian Burke (IT director), where an actor took his Kerberos ticket from VNEVADO-Win10B and used it on VNEVADO-Win10V to access 4 resources. His email is `Julian Burke@vnevado.alpineskihouse.co`."
+  ],
+  "metadata": {
+    "start_alert": 60,
+    "end_alert": 130,
+    "start_entities": [
+      5,
+      13,
+      20,
+      25,
+      61
+    ],
+    "end_entities": [
+      124
+    ],
+    "shortest_alert_path": [
+      60,
+      15,
+      130
+    ]
+  }
+}

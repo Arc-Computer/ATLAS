@@ -1,0 +1,24 @@
+{
+  "task_id": "incident_134_test_q023",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A sign-in from an IP address known to be malicious was detected during or around the time of sign-in. The account involved had the AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1`.",
+  "question": "What is the IP address that is known to be malicious related to this sign-in incident?",
+  "gold_answer": "170.54.121.63",
+  "solution_steps": [
+    "There was a sign-in from a malicious IP address `170.54.121.63` during or around the reported time."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 23,
+    "start_entities": [
+      9
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      23
+    ]
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "task_id": "incident_5_train_q017",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "During a security incident, we detected active unknown malware running on the machine. This was followed by a possible attempt to access the Primary Refresh Token (PRT); PRT is a key artifact of Azure AD authentication and can enable lateral movement or credential theft. Further investigation revealed activities consistent with the Manatee Tempest group, a Russia-based cybercriminal group involved in various sophisticated cyber attacks such as drive-by downloads, malvertising, FakeUpdates infections, and the use of BLISTER loader to deliver Cobalt Strike beacons for lateral movement and ransomware deployment.",
+  "question": "Which URL associated with the Manatee Tempest activity group was involved in this incident?",
+  "gold_answer": "vectorsandarrows.com",
+  "solution_steps": [
+    "Active unknown malware was detected on the IP address `107.224.99.179`.",
+    "There was a possible attempt to access Primary Refresh Token (PRT) involving the process with the file name `browsercore.exe`.",
+    "There was a possible attempt to access Primary Refresh Token (PRT) by an account with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "Activities from the Manatee Tempest cybercriminal group were detected involving the URL `vectorsandarrows.com`."
+  ],
+  "metadata": {
+    "start_alert": 150,
+    "end_alert": 0,
+    "start_entities": [
+      23,
+      29,
+      19,
+      30,
+      33,
+      32,
+      31,
+      92,
+      24,
+      111
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      150,
+      20,
+      36,
+      40,
+      113,
+      3,
+      0
+    ]
+  }
+}

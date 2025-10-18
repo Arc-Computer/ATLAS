@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_train_q036",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "An active malware infection on the host `vnevado-win11u` involved a process with Process ID 5572 executing the command `curl http://vectorsandarrows.com`. This command and control behavior was blocked as part of the incident. The malware was active, indicating it was running or had persistence mechanisms in place, which necessitates precautionary measures and checking for signs of infection.",
+  "question": "In relation to this incident, there was also a possible attempt to access the Primary Refresh Token (PRT). Can you identify the file name of the process involved in this attempt?",
+  "gold_answer": "browsercore.exe",
+  "solution_steps": [
+    "There was a Command and Control behavior from a malware detected and blocked associated with the account having SID `S-1-5-21-1840191660-8534830288-125585561-1522`.",
+    "A possible attempt to access the Primary Refresh Token (PRT) was detected involving the process with the extracted file name `browsercore.exe`."
+  ],
+  "metadata": {
+    "start_alert": 73,
+    "end_alert": 71,
+    "start_entities": [
+      6,
+      7,
+      8,
+      74
+    ],
+    "end_entities": [
+      40
+    ],
+    "shortest_alert_path": [
+      73,
+      2,
+      71
+    ]
+  }
+}

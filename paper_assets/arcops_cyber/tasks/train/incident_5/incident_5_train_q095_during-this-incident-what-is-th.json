@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_5_train_q095",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A recent incident involved the detection of the Mimikatz credential theft tool, specifically with the file `mimilib.dll`. This suggests that an attacker might be attempting to collect credentials on the network. Additionally, there was an alert about the LSASS process memory being modified, which might indicate an attempt to bypass security mechanisms or checks.",
+  "question": "During this incident, what is the account name associated with modifying the LSASS process memory?",
+  "gold_answer": "tgs2z",
+  "solution_steps": [
+    "The Mimikatz tool was detected on the host `vnevado-win10v`. This tool is often used for credential theft.",
+    "The LSASS process memory was modified by the user account `tgs2z`, potentially to bypass security mechanisms."
+  ],
+  "metadata": {
+    "start_alert": 55,
+    "end_alert": 115,
+    "start_entities": [
+      56
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      55,
+      34,
+      115
+    ]
+  }
+}

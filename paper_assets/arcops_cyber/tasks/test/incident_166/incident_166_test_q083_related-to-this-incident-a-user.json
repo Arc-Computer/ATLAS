@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_166_test_q083",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "As part of a security incident involving a business email compromise (BEC), a sign-in attempt to SAP was flagged. This attempt occurred with IP address `107.253.5.27` and was linked to cloud application ID `100`. The attacker might have taken control of a user account to search through SAP with the intention of recording or modifying sensitive financial information, which could be used for later stages in the attack such as phishing or social engineering.",
+  "question": "Related to this incident, a user's inbox rules were manipulated in a suspicious manner. Can you identify the cloud application ID involved in this inbox manipulation?",
+  "gold_answer": "20893",
+  "solution_steps": [
+    "The email account `Jordan P@vnevado.alpineskihouse.co` signed in to SAP in a suspicious manner, possibly as part of a business email compromise attack.",
+    "There was a suspicious manipulation of inbox rules for the cloud application with AppId `20893`, indicating potential unauthorized access and data exfiltration."
+  ],
+  "metadata": {
+    "start_alert": 27,
+    "end_alert": 16,
+    "start_entities": [
+      24,
+      25
+    ],
+    "end_entities": [
+      11
+    ],
+    "shortest_alert_path": [
+      27,
+      7,
+      16
+    ]
+  }
+}

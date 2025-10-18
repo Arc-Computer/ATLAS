@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_39_test_q024",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A suspicious account creation was detected as part of a broader incident, where tools such as `powershell.exe` and `net.exe` were used to execute scripts and commands. Specifically, commands like `powershell.exe -executionpolicy bypass -file c:\\users\\tgs2z\\downloads\\domaindominance27\\domaindominance27.ps1` and `net.exe user /add bdadmin password1! /domain` were observed, followed by a sign-in attempt with a deceptive user account. This might indicate an attacker trying to maintain access or perform lateral movement and access sensitive data.",
+  "question": "As part of this investigation, can you identify the AadUserId of the account associated with potential human-operated malicious activity on this device?",
+  "gold_answer": "97e6a954-b6bd-48a5-808c-bd8464cce677",
+  "solution_steps": [
+    "A new user account was created on the device with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`. This may indicate an attempt to maintain access to the device or the organization.",
+    "There was a sign-in attempt using a deceptive user account named `kyleg`. This could be an attacker trying to use a fake or decoy account for lateral movement and accessing sensitive data.",
+    "Potential human-operated malicious activity was detected involving the user with AadUserId `97e6a954-b6bd-48a5-808c-bd8464cce677`, which might lead to ransomware or other malicious payloads installed on target devices."
+  ],
+  "metadata": {
+    "start_alert": 48,
+    "end_alert": 109,
+    "start_entities": [
+      17,
+      18,
+      49,
+      50,
+      51
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      48,
+      33,
+      41,
+      42,
+      109
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_322_train_q009",
+  "incident": "incident_322",
+  "split": "train",
+  "context": "A suspicious Azure Resource Manager operation was detected on 2024-08-01 from the host 'vnevado-dc'. The resource management operation originated from an IP address associated with proxy services (IP: 253.1.244.215). The resource involved was part of the 'ctfcat' resource group under the subscription id '7e838342-601f-4552-9baf-0dfb300cf555'. This operation is potentially malicious as attackers often use proxy services to conceal their source IP.",
+  "question": "Can you find the email of the user who was associated with the suspicious Azure Resource Manager operation?",
+  "gold_answer": "Hailey Johnson@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "There is a suspicious Azure Resource Manager operation from a proxy IP address associated with the email account `Hailey Johnson@vnevado.alpineskihouse.co`."
+  ],
+  "metadata": {
+    "start_alert": 25,
+    "end_alert": 25,
+    "start_entities": [
+      27,
+      8,
+      9,
+      26,
+      21,
+      30,
+      31,
+      28,
+      29
+    ],
+    "end_entities": [
+      7
+    ],
+    "shortest_alert_path": [
+      25
+    ]
+  }
+}

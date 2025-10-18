@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_55_train_q082",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "During the investigation of a suspicious access to the LSASS service, which might indicate an attempt to decrypt user passwords, several suspicious files (`hid.dll`, `winscard.dll`, `cryptdll.dll`, `vaultcli.dll`) were observed being utilized. In addition, a PowerShell command was observed being executed remotely with the following command line: `powershell.exe -noexit -command set-location -literalpath 'c:\\users\\bjenkins\\downloads\\midnight14'`. Suspicious remote activities were noted on the machine associated with multiple system and network alterations.",
+  "question": "During the investigation, it was determined that an account accessed the DKM key of an ADFS object. What is the email address of the account that performed this action?",
+  "gold_answer": "gsmith@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "There was a suspicious access to the LSASS service using the process `lsass.exe`.",
+    "Suspicious remote activity was detected involving an account with SID `S-2-5-21-571436798-3864380397-1837441745-3206`.",
+    "An account with the email `gsmith@niseko.alpineskihouse.co` read the DKM key of ADFS object with ID `4cac49d3-29d3-407e-8c9b-b7ebb21541b2`."
+  ],
+  "metadata": {
+    "start_alert": 45,
+    "end_alert": 106,
+    "start_entities": [
+      50,
+      15,
+      47,
+      48,
+      2,
+      46,
+      4,
+      49,
+      3,
+      7
+    ],
+    "end_entities": [
+      103
+    ],
+    "shortest_alert_path": [
+      45,
+      24,
+      37,
+      19,
+      106
+    ]
+  }
+}

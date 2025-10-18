@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q093",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "During a security investigation, a suspicious system hardware discovery was identified, showing that a known tool or technique was used to gather information on the device. An attacker might be attempting to gather information about the target device or network for subsequent attacks. The device in question is `mb-winclient`, and there was evidence of potentially malicious processes such as `powershell.exe` and `svchost.exe` being executed.",
+  "question": "Given this context, a related alert was triggered due to suspicious remote activity. Can you identify the name of the file that was involved in this suspicious remote activity?",
+  "gold_answer": "cmd.exe",
+  "solution_steps": [
+    "There was a suspicious system hardware discovery using `powershell.exe`.",
+    "Suspicious remote activity involved the execution of `cmd.exe` on this machine."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 37,
+    "start_entities": [
+      1,
+      12,
+      6,
+      13,
+      5,
+      10,
+      15,
+      9,
+      3,
+      14
+    ],
+    "end_entities": [
+      38
+    ],
+    "shortest_alert_path": [
+      0,
+      8,
+      37
+    ]
+  }
+}

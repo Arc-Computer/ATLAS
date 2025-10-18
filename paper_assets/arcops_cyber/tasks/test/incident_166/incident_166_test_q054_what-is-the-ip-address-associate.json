@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_test_q054",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A sign-in from an anonymous IP address, `95.202.65.202`, was detected on 2024-07-22 08:45:32.664841+00:00. Anonymous IP addresses are typically used via Tor or VPNs to mask the actual source of the connection. This activity was flagged as suspicious.",
+  "question": "What is the IP address associated with the end alert in the incident?",
+  "gold_answer": "192.238.237.190",
+  "solution_steps": [
+    "There was a sign-in from an anonymous IP address by a user with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "The anonymous IP address used for the sign-in was `192.238.237.190`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 3,
+    "start_entities": [
+      2
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      0,
+      1,
+      3
+    ]
+  }
+}

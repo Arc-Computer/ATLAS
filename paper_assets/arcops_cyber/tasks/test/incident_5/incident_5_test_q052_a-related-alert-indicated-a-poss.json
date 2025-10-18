@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_5_test_q052",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A Mimikatz credential theft tool was detected on a device. Mimikatz is a credential theft tool that can harvest plaintext passwords, password hashes, smartcard PINs, and Kerberos tickets. Attackers may use this tool to harvest credentials to log into this or other devices on the network by impersonating a valid user. The detection of Mimikatz is part of a broader security investigation. Additionally, there was later evidence of lateral movement to the jump server `Vnevado-jump` using PSExec.",
+  "question": "A related alert indicated a possible compromised user account dropping ransomware-related files. Can you identify the name of the specific file associated with the ransomware activity?",
+  "gold_answer": "get-userprttoken.ps1",
+  "solution_steps": [
+    "The Mimikatz credential theft tool was detected on the device with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`.",
+    "Lateral movement to the jump server occurred using PSExec to IP address `99.83.111.100`.",
+    "A compromised user account was observed dropping a ransomware-related file named `get-userprttoken.ps1` on several devices."
+  ],
+  "metadata": {
+    "start_alert": 151,
+    "end_alert": 93,
+    "start_entities": [
+      153,
+      23,
+      32,
+      19,
+      154,
+      111,
+      24,
+      29,
+      20,
+      30
+    ],
+    "end_entities": [
+      48
+    ],
+    "shortest_alert_path": [
+      151,
+      35,
+      174,
+      42,
+      93
+    ]
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": "incident_39_test_q017",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A sequence of alerts that might indicate human-operated malicious activity was observed on the device `vnevado-win10b`, potentially leading to ransomware or other payloads. The account involved has the following details: Name `fk8mq` and `kyleg`, Sid `S-1-5-21-1540151660-3530000288-105586595-1517` and `S-0-6-5`, and Azure AD User ID `97e6a954-b6bd-48a5-808c-bd8464cce677`. Additionally, the related IP address is `141.216.110.153`. During this incident, it was observed that the Rubeus tool was potentially used for kerberoasting attacks, which can exploit Kerberos authentication. Furthermore, there was a suspicious service launched on this device.",
+  "question": "What is the Process ID and the command line of the process associated with the suspicious service launch?",
+  "gold_answer": "Process ID: 652, Command Line: 2024-06-19t12:56:00.7201251z services.exe",
+  "solution_steps": [
+    "There is an indication of potential human-operated malicious activity on device with AadDeviceId `fafdcd65-46c6-45a6-aa85-ec9b77ca0bcb`.",
+    "There is a possible use of the Rubeus kerberoasting tool with extracted file name `psexesvc.exe`.",
+    "A suspicious service was launched using `services.exe` with Process ID `652` at `2024-06-19t12:56:00.7201251z`."
+  ],
+  "metadata": {
+    "start_alert": 109,
+    "end_alert": 86,
+    "start_entities": [
+      1,
+      2,
+      3,
+      10,
+      11,
+      23,
+      25,
+      42
+    ],
+    "end_entities": [
+      87
+    ],
+    "shortest_alert_path": [
+      109,
+      11,
+      0,
+      5,
+      86
+    ]
+  }
+}

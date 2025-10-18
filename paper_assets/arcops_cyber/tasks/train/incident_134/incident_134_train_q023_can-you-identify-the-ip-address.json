@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_train_q023",
+  "incident": "incident_134",
+  "split": "train",
+  "context": "A security incident involved an anonymous IP address sign-in, indicating the use of tools like the Tor browser or anonymizer VPNs, with the AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1` on 2024-07-17 at 11:01:27.633644+00:00. Shortly after, there was another concerning activity where a sign-in was detected from a known malicious IP address.",
+  "question": "Can you identify the IP address that was flagged as malicious during or around the time of the suspicious sign-in?",
+  "gold_answer": "170.54.121.63",
+  "solution_steps": [
+    "There was a sign-in from an anonymous IP address for the account with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1`.",
+    "There was a sign-in from a malicious IP address `170.54.121.63`."
+  ],
+  "metadata": {
+    "start_alert": 11,
+    "end_alert": 23,
+    "start_entities": [
+      9
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      11,
+      9,
+      23
+    ]
+  }
+}

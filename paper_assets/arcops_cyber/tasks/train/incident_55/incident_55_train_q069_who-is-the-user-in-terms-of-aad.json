@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_55_train_q069",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A security incident was reported where a malicious URL `https://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/` was clicked on a device at 2024-07-10 11:24:45.667104+00:00. Subsequently, suspicious access to the LSASS service occurred on 2024-07-04 22:35:02.783154+00:00. Finally, there was suspicious execution of a command via Impacket observed on a device, indicating an ongoing hands-on-keyboard attack. This execution was aimed at moving laterally across the network, and using tools like Impacket for exploring network shares and executing commands. This usage of Impacket has often been observed in hands-on-keyboard attacks, where ransomware and other payloads are installed on target devices.",
+  "question": "Who is the user (in terms of AadUserId) involved in the suspicious command execution via Impacket in this incident?",
+  "gold_answer": "ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5",
+  "solution_steps": [
+    "A malicious URL was clicked on the device with AadDeviceId `7661dfd4-218f-4016-8a87-66d68a7f098e`.",
+    "Suspicious access to LSASS service was made via `powershell.exe` to potentially obtain clear-text passwords.",
+    "There is an ongoing hands-on-keyboard attack using the Impacket toolkit by the user with AadUserId `ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5`."
+  ],
+  "metadata": {
+    "start_alert": 107,
+    "end_alert": 16,
+    "start_entities": [
+      97
+    ],
+    "end_entities": [
+      20
+    ],
+    "shortest_alert_path": [
+      107,
+      15,
+      45,
+      8,
+      16
+    ]
+  }
+}

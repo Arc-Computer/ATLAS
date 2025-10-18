@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_train_q015",
+  "incident": "incident_134",
+  "split": "train",
+  "context": "A password spray attack was detected, originating from the IP address `170.54.121.63`. This attack attempts to gain unauthorized access to user accounts by trying many passwords against a few user accounts. It's part of a larger incident that involves suspicious activities, including inbox rule manipulations that could indicate an attacker gaining access to a user's inbox and potentially exfiltrating data from your organization.",
+  "question": "Can you identify the IP address involved in the suspicious inbox manipulation rule activity?",
+  "gold_answer": "237.7.81.122",
+  "solution_steps": [
+    "A password spray attack was detected on the account with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1`.",
+    "A suspicious inbox manipulation rule was detected, potentially indicating that an attacker gained access from IP address `237.7.81.122`."
+  ],
+  "metadata": {
+    "start_alert": 24,
+    "end_alert": 14,
+    "start_entities": [
+      12
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      24,
+      9,
+      14
+    ]
+  }
+}

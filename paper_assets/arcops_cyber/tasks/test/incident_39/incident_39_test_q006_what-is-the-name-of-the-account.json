@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_39_test_q006",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A malicious credential theft tool executed a command line indicating an intent to dump users' credentials. This was followed by the detection of multiple dual-purpose tools dropped on the device. These tools can be used for various malicious actions including credential theft, privilege escalation, and lateral movement.",
+  "question": "What is the name of the account observed to initiate suspicious remote activity on this machine?",
+  "gold_answer": "LocalSystem",
+  "solution_steps": [
+    "A known credential theft tool execution command line was detected for the account with SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "Multiple dual-purpose tools, including `psexesvc.exe`, were dropped on the device for potential malicious reasons.",
+    "Suspicious remote activity was detected on the machine through the `LocalSystem` account."
+  ],
+  "metadata": {
+    "start_alert": 44,
+    "end_alert": 101,
+    "start_entities": [
+      17,
+      38,
+      32,
+      27,
+      37,
+      28,
+      45,
+      33,
+      31,
+      29
+    ],
+    "end_entities": [
+      22
+    ],
+    "shortest_alert_path": [
+      44,
+      28,
+      62,
+      24,
+      101
+    ]
+  }
+}

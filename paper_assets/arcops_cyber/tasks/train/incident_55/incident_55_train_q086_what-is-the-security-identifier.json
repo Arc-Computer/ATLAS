@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_55_train_q086",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A suspected DCSync attack was reported involving account Luciano Herrera (CIO) who, on host MB-WINCLIENT, sent a replication request to MB-DC1 on 2024-07-10. As part of this incident, an injected process indicates the presence of potentially malicious code.",
+  "question": "What is the Security Identifier (SID) associated with the injected process reported in the alert regarding potential malicious code?",
+  "gold_answer": "S-1-5-21-561436748-3867387497-1732241745-3701",
+  "solution_steps": [
+    "The account with SID `S-1-5-21-551436448-9871687716-9837441745-1903` was involved in a suspected DCSync attack, sending a replication request to MB-DC1.",
+    "The account with SID `S-1-5-21-561436748-3867387497-1732241745-3701` was involved in a process being injected with potentially malicious code."
+  ],
+  "metadata": {
+    "start_alert": 98,
+    "end_alert": 41,
+    "start_entities": [
+      81,
+      82,
+      99,
+      100
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      98,
+      10,
+      41
+    ]
+  }
+}

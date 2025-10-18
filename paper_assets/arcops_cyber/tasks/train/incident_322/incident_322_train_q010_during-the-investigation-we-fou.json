@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_322_train_q010",
+  "incident": "incident_322",
+  "split": "train",
+  "context": "",
+  "question": "During the investigation, we found that attackers might be using Ntdsutil to gather information for persistence or lateral movement. What was the name of the extracted file used in this process?",
+  "gold_answer": "powershell.exe",
+  "solution_steps": [
+    "The email account `Hailey Johnson@vnevado.alpineskihouse.co` received and then had an email with a malicious URL removed.",
+    "There was a suspicious Azure Resource Manager operation detected from a host with the name `vnevado-dc`, originating from a proxy IP address.",
+    "The attacker used `ntdsutil` to collect Active Directory information through the process `powershell.exe`."
+  ],
+  "metadata": {
+    "start_alert": 2,
+    "end_alert": 22,
+    "start_entities": [
+      1,
+      3,
+      4,
+      5,
+      10
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      2,
+      7,
+      25,
+      21,
+      22
+    ]
+  }
+}

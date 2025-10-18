@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_55_train_q055",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A known public tool, which could also be used for malicious reasons, was observed under an unexpected filename on 2024-07-06. The tool might be attempting to hide its usage for malicious purposes. Following this, on 2024-07-04, a process involved in earlier malicious activity used Task Scheduler to create, modify, or delete a task, potentially to automatically launch malicious code and establish persistence. For further information on this threat, you can read the following threat analytics report: https://security.microsoft.com/threatanalytics3/c9709a39-ac8d-493d-9a63-71da3ca1e745/analystreport. Ultimately, a process has injected code into another process, indicating that suspicious code is running in the target process memory. Injection is often used to hide malicious code execution within a trusted process, leading to possible abnormal behaviors such as opening a listening port or connecting to a command and control server.",
+  "question": "Can you identify the name of the account associated with the process that was injected with potentially malicious code?",
+  "gold_answer": "bjenkins",
+  "solution_steps": [
+    "A process with the filename `iy2orr1e.rrg.exe` was detected, which might be attempting to hide the usage of a dual-purpose tool for malicious purposes.",
+    "A process `powershell.exe` involved in earlier suspicious activity used Task Scheduler to potentially create, modify, or delete tasks, indicating an attempt to launch malicious code automatically and establish persistence.",
+    "A process was injected with potentially malicious code, and the associated account is `bjenkins`."
+  ],
+  "metadata": {
+    "start_alert": 68,
+    "end_alert": 41,
+    "start_entities": [
+      69
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      68,
+      29,
+      33,
+      8,
+      41
+    ]
+  }
+}

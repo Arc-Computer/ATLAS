@@ -1,0 +1,37 @@
+{
+  "task_id": "incident_39_test_q090",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A security incident involving the execution of a credential theft tool was detected. The malicious tool identified as `mimikatz.exe` was executed using this command line: `mimikatz.exe privilege::debug sekurlsa::pth /user:fk8mq /ntlm:96def1a633fc6790124d5f8fe21cc72b /domain:vnevado.alpineskihouse.co /run:\"powershell.exe dir \\vnevado-win10b\\$\" exit`. This tool was executed on the host `vnevado-win10v` and might have been used to dump users' credentials, keys, plain-text passwords, and more. Additionally, it was noted that multiple dual-purpose tools were dropped on a device, which could also be leveraged for malicious activities such as credential theft, privilege escalation, and lateral movement.",
+  "question": "The suspicious file \\",
+  "gold_answer": "LocalSystem",
+  "solution_steps": [
+    "A malicious credential theft tool was executed on host `vnevado-win10v`.",
+    "Multiple public tools, including `psexesvc.exe`, were dropped on the host `vnevado-win10v`.",
+    "A file was registered as a service under the account `LocalSystem`."
+  ],
+  "metadata": {
+    "start_alert": 104,
+    "end_alert": 21,
+    "start_entities": [
+      17,
+      27,
+      28,
+      29,
+      31,
+      32,
+      33,
+      68
+    ],
+    "end_entities": [
+      22
+    ],
+    "shortest_alert_path": [
+      104,
+      32,
+      62,
+      24,
+      21
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_38_test_q007",
+  "incident": "incident_38",
+  "split": "test",
+  "context": "A security incident involving Suspicious Application Window Discovery was observed. Attackers might be attempting to gather information about the target device or network for subsequent attacks. Several entities are involved, including the process `powershell.exe` with various commands and attributes, and the host device `vnevado-win11a`, which is associated with the user account `nathans`.",
+  "question": "Can you identify the Security Identifier (SID) associated with the user account involved in this suspicious activity?",
+  "gold_answer": "S-1-5-21-1240151660-3534038288-105586567-4122",
+  "solution_steps": [
+    "A known tool or technique was used to gather information on a device by an account with SID `S-1-5-21-1240151660-3534038288-105586567-4122`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 0,
+    "start_entities": [
+      4,
+      7,
+      5,
+      3,
+      8,
+      9,
+      1,
+      6
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      0
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_test_q010",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A user account was compromised following a password-spray attack, where a user was signed in from an unusual location and browser. The attack's source IP address was `170.54.121.63`, implying that the user's account might have been unauthorizedly accessed. It's crucial to promptly investigate to avoid possible security risks.",
+  "question": "An endpoint linked to this attack later reported suspicious inbox manipulation. Can you identify the IP address associated with this suspicious activity?",
+  "gold_answer": "237.7.81.122",
+  "solution_steps": [
+    "The account `Nina Park` was compromised following a password-spray attack.",
+    "There was a suspicious manipulation of inbox rules from the IP address `237.7.81.122`."
+  ],
+  "metadata": {
+    "start_alert": 25,
+    "end_alert": 14,
+    "start_entities": [
+      12
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      25,
+      6,
+      14
+    ]
+  }
+}

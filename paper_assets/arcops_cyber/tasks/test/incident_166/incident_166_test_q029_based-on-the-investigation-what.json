@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_test_q029",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A password spray attack was detected on 2024-07-23 from the IP address `95.202.65.202`. This type of attack is a common technique where attackers attempt to access multiple accounts by trying many passwords. The investigation about this attack uncovered a potential business email compromise (BEC) incident. Specifically, on 2024-07-22, a suspicious inbox rule that hides incoming email messages was created during a risky Azure Active Directory session.",
+  "question": "Based on the investigation, what is the Security Identifier (Sid) of the account involved in the BEC financial fraud incident?",
+  "gold_answer": "S-1-5-21-1740051960-3534030288-108486866-1602",
+  "solution_steps": [
+    "A password spray attack was detected on an account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "A suspicious inbox rule was created in an account with SID `S-1-5-21-1740051960-3534030288-108486866-1602`, indicating a potential business email compromise (BEC) attempt."
+  ],
+  "metadata": {
+    "start_alert": 28,
+    "end_alert": 17,
+    "start_entities": [
+      2
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      28,
+      1,
+      17
+    ]
+  }
+}

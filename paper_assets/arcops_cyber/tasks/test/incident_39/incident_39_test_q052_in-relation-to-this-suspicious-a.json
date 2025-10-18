@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_39_test_q052",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A suspicious remote activity was observed on a machine involving the file `psexesvc.exe` under the `LocalSystem` account (SID: S-0-6-5). This can indicate potential malicious attempts to initiate interactive sessions, modify files, pass WMI commands, create scheduled tasks, or other activities from a remote machine.",
+  "question": "In relation to this suspicious activity, there was a successful logon using overpass-the-hash with potentially stolen credentials. Can you identify the SID of the account used for this successful logon?",
+  "gold_answer": "S-2-2-78",
+  "solution_steps": [
+    "Suspicious remote activity observed from IP address `141.216.110.153`.",
+    "Successful logon using overpass-the-hash method with potentially stolen credentials for account with SID `S-2-2-78`."
+  ],
+  "metadata": {
+    "start_alert": 101,
+    "end_alert": 52,
+    "start_entities": [
+      4,
+      5,
+      22,
+      23,
+      24
+    ],
+    "end_entities": [
+      53
+    ],
+    "shortest_alert_path": [
+      101,
+      25,
+      52
+    ]
+  }
+}

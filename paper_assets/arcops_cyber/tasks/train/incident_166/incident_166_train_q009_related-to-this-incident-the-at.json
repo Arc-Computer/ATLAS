@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_train_q009",
+  "incident": "incident_166",
+  "split": "train",
+  "context": "A user's inbox rules were manipulated in a suspicious manner, indicating that an attacker might be trying to exfiltrate data by deleting or moving messages. This incident involved a cloud application with the AppId `20893`.",
+  "question": "Related to this incident, the attacker might be attempting a business email compromise (BEC) financial fraud. Can you provide the email of the user whose inbox rules were suspiciously manipulated in a risky Azure Active Directory session?",
+  "gold_answer": "Jordan P@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "The email account `Jordan P` had their inbox rules manipulated in a suspicious manner.",
+    "A suspicious inbox rule that hides incoming email messages was created in a risky Azure Active Directory session for the email `Jordan P@vnevado.alpineskihouse.co`."
+  ],
+  "metadata": {
+    "start_alert": 16,
+    "end_alert": 17,
+    "start_entities": [
+      11
+    ],
+    "end_entities": [
+      7
+    ],
+    "shortest_alert_path": [
+      16,
+      6,
+      17
+    ]
+  }
+}

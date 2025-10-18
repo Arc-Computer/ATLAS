@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_166_test_q084",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "There was a suspicious sign-in to SAP from a user account involved in a business email compromise (BEC) incident. The user account named Jordan P with email Jordan P@vnevado.alpineskihouse.co might have been taken control of by an attacker to potentially search through SAP to record or modify sensitive financial information. The sign-in came from the IP address 107.253.5.27.",
+  "question": "What is the anonymous IP address associated with the suspicious sign-in on 2024-07-22?",
+  "gold_answer": "95.202.65.202",
+  "solution_steps": [
+    "A user with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82` involved in a business email compromise-related alert signed in to SAP in a suspicious manner.",
+    "There was a sign-in from an anonymous IP address `95.202.65.202`."
+  ],
+  "metadata": {
+    "start_alert": 27,
+    "end_alert": 0,
+    "start_entities": [
+      6,
+      7,
+      8,
+      24,
+      25
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      27,
+      1,
+      0
+    ]
+  }
+}

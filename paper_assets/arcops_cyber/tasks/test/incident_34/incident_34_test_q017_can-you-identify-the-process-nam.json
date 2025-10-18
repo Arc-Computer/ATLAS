@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_34_test_q017",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "In a security incident involving the execution of encoded commands via PowerShell, we observed on 2024-07-04 at 22:35:01 a suspicious activity on the host `vnevado-win10e`. The user `samuelf` was identified to run a PowerShell command with the process ID 8604. This execution might be an attempt to download external payloads or run encoded commands to bypass security protection mechanisms.",
+  "question": "Can you identify the process name that attempted to download a file or run an encoded command via PowerShell shortly after `samuelf` executed the PowerShell command?",
+  "gold_answer": "winword.exe",
+  "solution_steps": [
+    "A suspicious PowerShell download or encoded command execution was initiated by the user with AadUserId `16320fec-8d90-403b-b7fe-78f715d4728d`.",
+    "The process `winword.exe` was used to execute the suspicious PowerShell command."
+  ],
+  "metadata": {
+    "start_alert": 22,
+    "end_alert": 26,
+    "start_entities": [
+      1,
+      2,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      22,
+      6,
+      26
+    ]
+  }
+}

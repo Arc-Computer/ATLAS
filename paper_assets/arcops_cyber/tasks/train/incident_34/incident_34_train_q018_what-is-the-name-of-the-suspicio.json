@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_train_q018",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "A suspicious Task Scheduler activity was detected, in which the `schtasks.exe` process executed a task with the process ID 1616 on 2024-06-26 at 12:00:40.6793914 UTC. This kind of activity might be an attempt to launch malicious code automatically and establish persistence. For more details, refer to the relevant threat analytics report here: https://security.microsoft.com/threatanalytics3/c9709a39-ac8d-493d-9a63-71da3ca1e745/analystreport.",
+  "question": "What is the name of the suspicious file that was dropped and executed on the machine by Powershell?",
+  "gold_answer": "winatp-intro-backdoor.exe",
+  "solution_steps": [
+    "There is a suspicious Task Scheduler activity observed on the host with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f`.",
+    "Powershell executed a suspicious file named `winatp-intro-backdoor.exe` on the same host."
+  ],
+  "metadata": {
+    "start_alert": 21,
+    "end_alert": 25,
+    "start_entities": [
+      14,
+      15
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      21,
+      2,
+      25
+    ]
+  }
+}

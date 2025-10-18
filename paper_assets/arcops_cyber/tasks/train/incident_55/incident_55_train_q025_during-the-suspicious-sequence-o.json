@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_train_q025",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "As part of a security incident involving suspicious system hardware discovery on 2024-07-04, a file `svchost.exe` was executed with the command line `svchost.exe -k netsvcs -p -s winmgmt` and had a Process ID of 2880. Furthermore, a PowerShell script named `contosoadfsblatempcreds.ps1` was executed from `c:\\script\\`, associated with user ID `2de70991-2799-4a95-b734-8e3df3a50118` and was part of a user `pwilson` session. Attackers might be trying to gather information about the target device or network for later attacks.",
+  "question": "During the suspicious sequence of exploration activities, which executable file was used to run the windows commands, and when was it executed?",
+  "gold_answer": "Executable file: whoami.exe, Execution time: 2024-07-02t09:47:29.6970346",
+  "solution_steps": [
+    "A suspicious system hardware discovery was made using the process `powershell.exe`.",
+    "A suspicious sequence of exploration activities was performed using the process `whoami.exe` with Process ID `13812`, created on `2024-07-02t09:47:29.6970346z`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 57,
+    "start_entities": [
+      5,
+      6,
+      12,
+      11,
+      7,
+      10,
+      13,
+      15,
+      9,
+      8
+    ],
+    "end_entities": [
+      58
+    ],
+    "shortest_alert_path": [
+      0,
+      8,
+      57
+    ]
+  }
+}

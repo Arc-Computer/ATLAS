@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_39_train_q092",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A known credential theft tool `mimikatz.exe` was detected being executed with the intent to dump users' credentials, keys, and plain-text passwords and more. Additionally, it was observed that PsExec was used to launch a command on a remote device, which could be an attempt for lateral movement in the organization. Following these events, there was an indication of the use of the Rubeus tool on an endpoint, which performs kerberoasting and other techniques to exploit Kerberos authentication.",
+  "question": "What is the name of the account involved in the potential use of the Rubeus kerberoasting tool?",
+  "gold_answer": "fk8mq",
+  "solution_steps": [
+    "The account `tgs2z` was detected executing a known credential theft tool.",
+    "The process with the file name `adminticket.txt` was launched on a remote device using PsExec.",
+    "The account `fk8mq` was observed performing actions with the Rubeus tool, indicating potential kerberoasting or other Kerberos authentication attacks."
+  ],
+  "metadata": {
+    "start_alert": 104,
+    "end_alert": 0,
+    "start_entities": [
+      31
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      104,
+      27,
+      95,
+      8,
+      0
+    ]
+  }
+}

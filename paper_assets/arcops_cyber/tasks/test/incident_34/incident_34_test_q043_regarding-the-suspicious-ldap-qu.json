@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_34_test_q043",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A security incident involving an anomalous scheduled task being created took place on 2024-07-04. This event might be used by an attacker to gain persistence on the device. As part of the incident, the file `winatp-intro-backdoor.exe` was created and launched via a scheduled task using `schtasks.exe`. These activities were performed by the process with Process ID 8604, linked to the Windows PowerShell executing a suspicious base64 encoded command. We are also investigating related suspicious LDAP queries executed in the environment.",
+  "question": "Regarding the suspicious LDAP query linked to the incident, can you identify the command line of the process that executed the LDAP query?",
+  "gold_answer": "`9780__2024-06-26t11:57:20.2959493z__\"winword.exe\" c:\\scripts\\rs4_winatp-intro-invoice.docm `",
+  "solution_steps": [
+    "An anomalous scheduled task was created by the account `samuelf`.",
+    "A suspicious LDAP query was executed using the command line `winword.exe c:\\scripts\\rs4_winatp-intro-invoice.docm` with Process ID `9780` at `2024-06-26t11:57:20.2959493z`."
+  ],
+  "metadata": {
+    "start_alert": 20,
+    "end_alert": 24,
+    "start_entities": [
+      7,
+      8,
+      9,
+      13,
+      14
+    ],
+    "end_entities": [
+      11
+    ],
+    "shortest_alert_path": [
+      20,
+      4,
+      24
+    ]
+  }
+}

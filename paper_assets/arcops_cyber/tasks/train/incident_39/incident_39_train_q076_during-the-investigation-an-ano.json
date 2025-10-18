@@ -1,0 +1,37 @@
+{
+  "task_id": "incident_39_train_q076",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident involving a remote session dropping and executing a file named `rubeus.exe` on host `vnevado-win10b` with IP address `141.216.110.153` was detected. This activity is related to the use of the Rubeus kerberoasting tool, designed to exploit Kerberos authentication. The process was executed with command line: `rubeus.exe dump /service:xfbzkp /user:lucasb`, and the incident was traced back to the suspicious account `fk8mq` with Azure AD user ID `97e6a954-b6bd-48a5-808c-bd8464cce677`.",
+  "question": "During the investigation, an anomalous chain of attempts to look up user account information was observed. Can you identify the name of the suspicious file associated with this alert?",
+  "gold_answer": "domaindominance27.ps1",
+  "solution_steps": [
+    "A file named `rubeus.exe` was dropped and launched from a remote location.",
+    "Activity indicating the use of the Rubeus tool, which can perform kerberoasting and other Kerberos authentication attacks, was observed. The suspect account has AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1`.",
+    "An anomalous account lookup was performed using the file `domaindominance27.ps1`."
+  ],
+  "metadata": {
+    "start_alert": 34,
+    "end_alert": 94,
+    "start_entities": [
+      1,
+      2,
+      3,
+      9,
+      10,
+      11,
+      23,
+      25
+    ],
+    "end_entities": [
+      66
+    ],
+    "shortest_alert_path": [
+      34,
+      7,
+      107,
+      29,
+      94
+    ]
+  }
+}

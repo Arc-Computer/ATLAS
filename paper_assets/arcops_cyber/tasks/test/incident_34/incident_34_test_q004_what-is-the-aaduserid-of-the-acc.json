@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_34_test_q004",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A security incident was detected where a process executed PowerShell to download a file or run an encoded command. The process, identified as `powershell.exe`, executed a command that could potentially download external payloads or execute commands on the device. This activity might be an indication of an attacker attempting to bypass security mechanisms.",
+  "question": "What is the AadUserId of the account associated with the suspicious LDAP query activity that was discovered?",
+  "gold_answer": "16320fec-8d90-403b-b7fe-78f715d4728d",
+  "solution_steps": [
+    "An attacker with AadUserId `16320fec-8d90-403b-b7fe-78f715d4728d` executed a suspicious LDAP query, which could be aimed at gathering information about the organization's structure for potential privilege escalation.",
+    "The same attacker with AadUserId `16320fec-8d90-403b-b7fe-78f715d4728d` also executed PowerShell to download a file or run an encoded command, indicating a potential attempt to bypass security mechanisms by running their payload in memory."
+  ],
+  "metadata": {
+    "start_alert": 26,
+    "end_alert": 24,
+    "start_entities": [
+      7,
+      8,
+      9
+    ],
+    "end_entities": [
+      6
+    ],
+    "shortest_alert_path": [
+      26,
+      6,
+      24
+    ]
+  }
+}

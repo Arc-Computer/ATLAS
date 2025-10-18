@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_test_q062",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident has been observed involving System recovery setting tampering on the device `vnevado-win11u` along with actions aimed at deleting built-in operating system data and disabling recovery services using `vssblatemp.exe` and `bcdedit.exe` commands. The incident indicates an attempt to prevent recovering a corrupted system, potentially associated with Data Destruction and Ransomware infection patterns.",
+  "question": "In the context of this security incident, can you provide the command line that was used to delete all file snapshots and shadow copies?",
+  "gold_answer": "5512__2024-06-20t09:10:50.2899021z__vssblatemp.exe delete shadows /all",
+  "solution_steps": [
+    "The account named `dp5hn` was involved in tampering with system recovery settings, potentially disabling or deleting system recovery features to prevent system recovery.",
+    "The process with ID `5512` was detected executing the command `vssblatemp.exe delete shadows /all` at `2024-06-20t09:10:50.2899021z`, indicating that all file snapshots and shadow copies were deleted, which is common during ransomware infection."
+  ],
+  "metadata": {
+    "start_alert": 76,
+    "end_alert": 9,
+    "start_entities": [
+      7,
+      8,
+      77,
+      78
+    ],
+    "end_entities": [
+      10
+    ],
+    "shortest_alert_path": [
+      76,
+      1,
+      9
+    ]
+  }
+}

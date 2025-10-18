@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_39_train_q097",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident occurred on 2024-07-04 involving the Mimikatz credential theft tool on a device. Mimikatz is known for harvesting plaintext passwords, password hashes, smartcard PINs, and Kerberos tickets. An attacker might be trying to harvest credentials to log into this or other devices on the network by impersonating a valid user. The detected Mimikatz command lines indicate activities such as dumping logon passwords and Kerberos tickets. Multiple processes involving Mimikatz were identified during this time.",
+  "question": "What is the user account name associated with the malicious credential theft tool execution detected at this time of the incident?",
+  "gold_answer": "tgs2z",
+  "solution_steps": [
+    "The Mimikatz credential theft tool was detected being used on a device, potentially by the user with SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "A malicious credential theft tool execution was detected, involving the account named `tgs2z`."
+  ],
+  "metadata": {
+    "start_alert": 108,
+    "end_alert": 39,
+    "start_entities": [
+      30,
+      37,
+      45,
+      64,
+      67,
+      68,
+      71
+    ],
+    "end_entities": [
+      27
+    ],
+    "shortest_alert_path": [
+      108,
+      28,
+      39
+    ]
+  }
+}

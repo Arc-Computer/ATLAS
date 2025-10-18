@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_34_train_q029",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "A security incident occurred on host `vnevado-win10e` involving an anomalous scheduled task creation. This suspicious task creation is often used by attackers to obtain persistence on the device. Further investigation into this incident revealed the execution of `powershell.exe` which may indicate the use of PowerShell for malicious activities such as installation, exploration, or lateral movement.",
+  "question": "What is the name of the file that the attackers potentially used with the suspicious PowerShell command on the machine `vnevado-win10e`?",
+  "gold_answer": "winatp-intro-backdoor.exe",
+  "solution_steps": [
+    "An anomalous scheduled task was created using `schtasks.exe` on 2024-07-04 22:35:01.260626+00:00.",
+    "A suspicious PowerShell command line led to the usage of file `winatp-intro-backdoor.exe` on 2024-07-04 22:35:01.005559+00:00."
+  ],
+  "metadata": {
+    "start_alert": 20,
+    "end_alert": 10,
+    "start_entities": [
+      4,
+      7,
+      1,
+      8,
+      13,
+      14,
+      6,
+      2,
+      5
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      20,
+      14,
+      10
+    ]
+  }
+}

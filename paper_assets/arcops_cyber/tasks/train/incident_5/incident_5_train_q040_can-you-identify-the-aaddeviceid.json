@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_5_train_q040",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A security incident was reported in which potentially compromised assets are exhibiting ransomware-like behavior, impacting several devices. An attacker may be operating using the specified user account, IP, or device to move laterally across the network and infect as many devices as possible with ransomware. The device involved in this alert is 'vnevado-win11t' with AadDeviceId 'e5799261-6720-4297-961e-bd9ca4275033'. Additionally, a file named 'characterical.zip.lockbit' was identified. A connected alert also indicated a possible attempt to access the Primary Refresh Token (PRT) used to enable single sign-on (SSO) across applications on different devices.",
+  "question": "Can you identify the AadDeviceId of the host in which suspicious file system changes, indicative of ransomware activity, were detected?",
+  "gold_answer": "bc00e484-d0e5-4da4-9472-95568cccc07e",
+  "solution_steps": [
+    "The user account `dp5hn` is potentially compromised and is exhibiting ransomware-like behavior.",
+    "There was a possible attempt to access the Primary Refresh Token (PRT) on the host with HostName `vnevado-win11u`.",
+    "Ransomware behavior was detected on the host with AadDeviceId `bc00e484-d0e5-4da4-9472-95568cccc07e`."
+  ],
+  "metadata": {
+    "start_alert": 138,
+    "end_alert": 160,
+    "start_entities": [
+      68,
+      69,
+      94,
+      95
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      138,
+      1,
+      118,
+      7,
+      160
+    ]
+  }
+}

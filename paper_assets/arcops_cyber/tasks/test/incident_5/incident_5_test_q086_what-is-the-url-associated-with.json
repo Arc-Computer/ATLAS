@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_5_test_q086",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A suspicious and anomalous behavior was observed involving a user on device `vnevado-win11t`. This behavior suggested a potential compromise and a series of unusual activities might indicate that this device is involved in a possible human-operated attack by an advanced threat actor. During this investigation, an alert indicating activity from a Russia-based cybercriminal group, Manatee Tempest, was raised. Manatee Tempest is known for their partnership with Mustard Tempest, and they use techniques like drive-by download, malvertising, and FakeUpdates to gain initial access. They proceed with BLISTER loader to deliver Cobalt Strike for lateral movement and ransomware deployment, often using domain fronting for command-and-control.",
+  "question": "What is the URL associated with the activity from Manatee Tempest?",
+  "gold_answer": "vectorsandarrows.com",
+  "solution_steps": [
+    "The user account `dp5hn` has exhibited suspicious and anomalous behavior on their device.",
+    "The URL `vectorsandarrows.com` is associated with the cybercriminal group Manatee Tempest, which uses drive-by downloads and other methods to gain access to target networks."
+  ],
+  "metadata": {
+    "start_alert": 66,
+    "end_alert": 75,
+    "start_entities": [
+      1,
+      2,
+      3,
+      68,
+      69
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      66,
+      1,
+      75
+    ]
+  }
+}

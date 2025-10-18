@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_test_q038",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "In this investigation, there is a possible attempt to access Primary Refresh Token (PRT) that was detected as part of this incident. This is related to Azure AD authentication security threats.",
+  "question": "What is the Azure Active Directory (AAD) device ID of the host where the possible attempt to access the Primary Refresh Token (PRT) was detected?",
+  "gold_answer": "bc00e484-d0e5-4da4-9472-95568cccc07e",
+  "solution_steps": [
+    "All file snapshots and shadow copies have been deleted via WMI or VSSAdmin using the account with SID `S-1-5-21-1840191660-8534830288-125585561-1522`, which is a common tactic during Ransomware infection.",
+    "A possible attempt to access Primary Refresh Token (PRT) has been detected on the host with AadDeviceId `bc00e484-d0e5-4da4-9472-95568cccc07e`."
+  ],
+  "metadata": {
+    "start_alert": 70,
+    "end_alert": 118,
+    "start_entities": [
+      11,
+      60,
+      64,
+      65
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      70,
+      2,
+      118
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_322_test_q020",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "A security incident was reported where a connection from IP address 231.60.52.209 which corresponds to the hostname vnevado-win11h.vnevado.alpineskihouse.co, to the URL login.micro.demo.antoinetest.ovh was detected in the proxy logs. The connection was flagged as malicious and further investigation is needed on the computer involved.",
+  "question": "Following this incident, there is another alert about a malicious URL being clicked on a device. Can you identify the IP address associated with this device?",
+  "gold_answer": "172.33.118.200",
+  "solution_steps": [
+    "A connection from IP address `231.60.52.209` on host `vnevado-win11h` to login.micro.demo.antoinetest.ovh was detected.",
+    "A malicious URL was clicked from device with IP address `172.33.118.200`."
+  ],
+  "metadata": {
+    "start_alert": 11,
+    "end_alert": 33,
+    "start_entities": [
+      12,
+      14,
+      15
+    ],
+    "end_entities": [
+      35
+    ],
+    "shortest_alert_path": [
+      11,
+      13,
+      33
+    ]
+  }
+}

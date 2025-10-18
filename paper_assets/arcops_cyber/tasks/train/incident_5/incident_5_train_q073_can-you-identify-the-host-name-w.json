@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_5_train_q073",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "Integrated alert details indicate that 'CommandAndControl' malware was detected likely during lateral movement from another network device.",
+  "question": "Can you identify the host name where the 'CommandAndControl' malware was detected during the lateral movement?",
+  "gold_answer": "vnevado-win10r",
+  "solution_steps": [
+    "An actor associated with Russia-based Manatee Tempest, targeting industries with their diverse methods, and using domain fronting to establish command-and-control channels, had access via an account with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "The 'CommandAndControl' malware was detected on the host named `vnevado-win10r`, indicating an attempt at lateral movement by an attacker."
+  ],
+  "metadata": {
+    "start_alert": 136,
+    "end_alert": 158,
+    "start_entities": [
+      4,
+      5,
+      12,
+      13,
+      99
+    ],
+    "end_entities": [
+      64
+    ],
+    "shortest_alert_path": [
+      136,
+      3,
+      158
+    ]
+  }
+}

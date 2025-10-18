@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_test_q042",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident involving an attempt to access a Primary Refresh Token (PRT) was detected. The PRT is a key artifact of Azure AD authentication on various devices, including Windows 10. The incident involved a device with HostName `vnevado-win10s` and AadDeviceId `f5b847aa-8712-4bf6-b4f7-ed6cd89e1505`, where the process `browsercore.exe` (ProcessId `2676` created at `2024-06-20T09:10:59.867384Z`) was running. Attackers may use this to move laterally within the organization.",
+  "question": "Following this incident, 'CommandAndControl' malware was detected on another device during lateral movement. What is the AadDeviceId of this affected device?",
+  "gold_answer": "bc00e484-d0e5-4da4-9472-95568cccc07e",
+  "solution_steps": [
+    "A possible attempt to access Primary Refresh Token (PRT) has been detected for the user with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "'CommandAndControl' malware was detected on the device with AadDeviceId `bc00e484-d0e5-4da4-9472-95568cccc07e`, indicating an attempt of lateral movement."
+  ],
+  "metadata": {
+    "start_alert": 113,
+    "end_alert": 128,
+    "start_entities": [
+      12,
+      13,
+      40,
+      114
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      113,
+      3,
+      128
+    ]
+  }
+}

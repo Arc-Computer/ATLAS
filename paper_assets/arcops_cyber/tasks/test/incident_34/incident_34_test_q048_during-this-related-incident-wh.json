@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_34_test_q048",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A recent security incident involving the execution of PowerShell to download a file or run an encoded command indicates that PowerShell is often used by attackers to bypass security protection mechanisms. This was detected on 2024-07-04 indicating the execution of a suspicious command. In a related incident occurring at the same time, an uncommon file was observed being created on the system and added to a Registry Key, suggesting it might be a malicious software aiming to persist even after a reboot.",
+  "question": "During this related incident, what IP address was captured in association with the creation and registry key addition of the uncommon file?",
+  "gold_answer": "72.5.72.208",
+  "solution_steps": [
+    "A suspicious PowerShell command was executed either to download a file or run an encoded command by a user with SID `S-1-5-21-1870156660-7534030218-135086563-1193`.",
+    "An uncommon file was observed being created on the machine and added to a Run Key from IP address `72.5.72.208`."
+  ],
+  "metadata": {
+    "start_alert": 26,
+    "end_alert": 23,
+    "start_entities": [
+      7,
+      8,
+      11,
+      12
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      26,
+      5,
+      23
+    ]
+  }
+}

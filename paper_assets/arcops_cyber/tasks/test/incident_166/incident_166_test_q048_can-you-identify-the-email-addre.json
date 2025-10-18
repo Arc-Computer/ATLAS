@@ -1,0 +1,25 @@
+{
+  "task_id": "incident_166_test_q048",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "As part of a potential Business Email Compromise (BEC) financial fraud incident, an alert for suspicious events was triggered. The alert mentioned that an attacker might be attempting to conduct fraud against the organization, and it involved an account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82` and Sid `S-1-5-21-1740051960-3534030288-108486866-1602`.",
+  "question": "Can you identify the email address associated with the account that might be involved in the BEC financial fraud?",
+  "gold_answer": "Jordan P@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "A suspicious event with business email compromise (BEC) characteristics was observed on the email account `Jordan P@vnevado.alpineskihouse.co`. An attacker might be attempting to conduct a financial fraud attack against the organization."
+  ],
+  "metadata": {
+    "start_alert": 29,
+    "end_alert": 29,
+    "start_entities": [
+      1,
+      8
+    ],
+    "end_entities": [
+      7
+    ],
+    "shortest_alert_path": [
+      29
+    ]
+  }
+}

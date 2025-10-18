@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_39_test_q045",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "As part of a recent security investigation, a known credential theft tool execution was identified. The tool, associated with the account `tgs2z` and the host `vnevado-win10v`, was utilized with the command line intended to dump user credentials and other sensitive information.",
+  "question": "Can you specify the name of the file detected as a credential theft tool in this incident?",
+  "gold_answer": "mimikatz.exe",
+  "solution_steps": [
+    "A credential theft tool was executed by a user with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1`.",
+    "The Mimikatz tool, detected on the device, attempted to harvest credentials by running `mimikatz.exe`."
+  ],
+  "metadata": {
+    "start_alert": 89,
+    "end_alert": 108,
+    "start_entities": [
+      27,
+      28,
+      29,
+      32,
+      33,
+      67
+    ],
+    "end_entities": [
+      64
+    ],
+    "shortest_alert_path": [
+      89,
+      29,
+      108
+    ]
+  }
+}

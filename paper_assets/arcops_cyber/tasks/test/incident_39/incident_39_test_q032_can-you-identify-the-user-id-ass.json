@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_39_test_q032",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "An attempt to disable the Microsoft Defender Antivirus service was detected, indicating the presence of potential tampering and evasion techniques within the organization. The incident involves a file named `get-krbticket.ps1`. Subsequently, PsExec was employed to launch a command on a remote device, which might be an indicator of lateral movement.",
+  "question": "Can you identify the User ID associated with the remote session that dropped and executed a file?",
+  "gold_answer": "97e6a954-b6bd-48a5-808c-bd8464cce677",
+  "solution_steps": [
+    "An attempt to disable the Microsoft Defender Antivirus service was detected on the host with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`.",
+    "The PsExec tool was used to launch `rubeus.exe` on a remote device, indicating potential malicious activity.",
+    "A session involving the account with AadUserId `97e6a954-b6bd-48a5-808c-bd8464cce677` dropped and launched a file from a remote location, suggesting lateral movement or propagation."
+  ],
+  "metadata": {
+    "start_alert": 35,
+    "end_alert": 34,
+    "start_entities": [
+      38
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      35,
+      33,
+      95,
+      7,
+      34
+    ]
+  }
+}

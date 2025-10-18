@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q029",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "On 2024-07-04, there was an alert named 'Suspicious System Hardware Discovery' indicating that a known tool or technique was used to gather information on the device `mb-winclient`. The incident involved a process `powershell.exe` executed with specific commands which possibly indicate reconnaissance activities. Additionally, some accounts involved were `bjenkins` and `pwilson`, and an IP address `72.5.72.208` was associated with the activity.",
+  "question": "During this investigation, another suspicious alert reported a sequence of exploration activities. Can you identify the account name linked to this alert?",
+  "gold_answer": "gsmith",
+  "solution_steps": [
+    "There was a suspicious system hardware discovery activity involving the process `powershell.exe`.",
+    "A suspicious sequence of exploration activities was executed by the account `gsmith`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 52,
+    "start_entities": [
+      7,
+      4,
+      14,
+      9,
+      1,
+      13,
+      6,
+      10,
+      11,
+      2
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      0,
+      8,
+      52
+    ]
+  }
+}

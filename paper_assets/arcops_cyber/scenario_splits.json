@@ -1,0 +1,386 @@
+{
+  "scenario_1": {
+    "incident": "incident_38",
+    "num_questions": 11,
+    "questions": [
+      {
+        "task_id": "incident_38_test_q001",
+        "incident": "incident_38",
+        "question": "Can you identify the name of the account associated with this suspicious activity?",
+        "context_path": "test/incident_38/incident_38_test_q001_can-you-identify-the-name-of-the.json"
+      },
+      {
+        "task_id": "incident_38_test_q002",
+        "incident": "incident_38",
+        "question": "During this incident, a tool or technique was used to gather information on the target device or network. What is the command line of the process associated with this information gathering activity?",
+        "context_path": "test/incident_38/incident_38_test_q002_during-this-incident-a-tool-or.json"
+      },
+      {
+        "task_id": "incident_38_test_q003",
+        "incident": "incident_38",
+        "question": "Related to this alert, can you identify the URL associated with the suspicious process injection?",
+        "context_path": "test/incident_38/incident_38_test_q003_related-to-this-alert-can-you-i.json"
+      },
+      {
+        "task_id": "incident_38_test_q004",
+        "incident": "incident_38",
+        "question": "In relation to the suspicious process injection observed on 2024-07-04, can you provide the URL associated with this suspicious activity?",
+        "context_path": "test/incident_38/incident_38_test_q004_in-relation-to-the-suspicious-pr.json"
+      },
+      {
+        "task_id": "incident_38_test_q005",
+        "incident": "incident_38",
+        "question": "Related to this alert, there was also an observation of unexpected behavior by a process ran with no command line arguments the next second. Can you identify the IP address associated with this unexpected behavior?",
+        "context_path": "test/incident_38/incident_38_test_q005_related-to-this-alert-there-was.json"
+      },
+      {
+        "task_id": "incident_38_test_q006",
+        "incident": "incident_38",
+        "question": "What is the Process Id and the exact command line of the process that injected code as recorded on the endpoint during the suspicious process injection?",
+        "context_path": "test/incident_38/incident_38_test_q006_what-is-the-process-id-and-the-e.json"
+      },
+      {
+        "task_id": "incident_38_test_q007",
+        "incident": "incident_38",
+        "question": "Can you identify the Security Identifier (SID) associated with the user account involved in this suspicious activity?",
+        "context_path": "test/incident_38/incident_38_test_q007_can-you-identify-the-security-id.json"
+      },
+      {
+        "task_id": "incident_38_test_q008",
+        "incident": "incident_38",
+        "question": "Considering these abnormalities, what is the URL where additional suspicious activity related to fileless attacks was detected?",
+        "context_path": "test/incident_38/incident_38_test_q008_considering-these-abnormalities.json"
+      },
+      {
+        "task_id": "incident_38_test_q009",
+        "incident": "incident_38",
+        "question": "As part of this investigation involving suspicious process injection, can you identify the SID of the account associated with this suspicious activity?",
+        "context_path": "test/incident_38/incident_38_test_q009_as-part-of-this-investigation-in.json"
+      },
+      {
+        "task_id": "incident_38_test_q010",
+        "incident": "incident_38",
+        "question": "Can you identify the AadUserId associated with this incident?",
+        "context_path": "test/incident_38/incident_38_test_q010_can-you-identify-the-aaduserid-a.json"
+      },
+      {
+        "task_id": "incident_38_test_q011",
+        "incident": "incident_38",
+        "question": "During the investigation, it was found that a process injected code abnormally into another process, leading to possible abnormal behaviors. Can you identify the URL that was connected to this suspicious process injection?",
+        "context_path": "test/incident_38/incident_38_test_q011_during-the-investigation-it-was.json"
+      }
+    ]
+  },
+  "scenario_2": {
+    "incident": "incident_134",
+    "num_questions": 12,
+    "questions": [
+      {
+        "task_id": "incident_134_test_q001",
+        "incident": "incident_134",
+        "question": "Can you identify the anonymous IP address involved in the sign-in attempt related to this alert?",
+        "context_path": "test/incident_134/incident_134_test_q001_can-you-identify-the-anonymous-i.json"
+      },
+      {
+        "task_id": "incident_134_test_q002",
+        "incident": "incident_134",
+        "question": "What is the IP address associated with the user sending suspicious emails related to the BEC fraud attempt?",
+        "context_path": "test/incident_134/incident_134_test_q002_what-is-the-ip-address-associate.json"
+      },
+      {
+        "task_id": "incident_134_test_q003",
+        "incident": "incident_134",
+        "question": "Following the BEC financial fraud alert, a password spray attack was detected. Can you identify the originating IP address used in the password spray attack?",
+        "context_path": "test/incident_134/incident_134_test_q003_following-the-bec-financial-frau.json"
+      },
+      {
+        "task_id": "incident_134_test_q004",
+        "incident": "incident_134",
+        "question": "Can you identify the sender of the email associated with this potentially malicious URL click?",
+        "context_path": "test/incident_134/incident_134_test_q004_can-you-identify-the-sender-of-t.json"
+      },
+      {
+        "task_id": "incident_134_test_q005",
+        "incident": "incident_134",
+        "question": "Related to this incident, additional suspicious activities were detected. Can you identify the user account (AadUserId) that was targeted during the Password Spray attack?",
+        "context_path": "test/incident_134/incident_134_test_q005_related-to-this-incident-additi.json"
+      },
+      {
+        "task_id": "incident_134_test_q006",
+        "incident": "incident_134",
+        "question": "Can you identify the sender of the email messages that contained malicious URLs and were later removed after delivery?",
+        "context_path": "test/incident_134/incident_134_test_q006_can-you-identify-the-sender-of-t.json"
+      },
+      {
+        "task_id": "incident_134_test_q007",
+        "incident": "incident_134",
+        "question": "Can you identify the primary email address of the mailbox which had email messages containing malicious URLs that were removed after delivery?",
+        "context_path": "test/incident_134/incident_134_test_q007_can-you-identify-the-primary-ema.json"
+      },
+      {
+        "task_id": "incident_134_test_q008",
+        "incident": "incident_134",
+        "question": "In relation to this incident, an alert detected suspicious emails sent by a potentially compromised user account. Can you find out who received the emails sent by this compromised user?",
+        "context_path": "test/incident_134/incident_134_test_q008_in-relation-to-this-incident-an.json"
+      },
+      {
+        "task_id": "incident_134_test_q009",
+        "incident": "incident_134",
+        "question": "During the follow-up investigation of this malicious URL activity, a password spray attack was detected the next day. Can you identify the IP address associated with this Password Spray attack?",
+        "context_path": "test/incident_134/incident_134_test_q009_during-the-follow-up-investigati.json"
+      },
+      {
+        "task_id": "incident_134_test_q010",
+        "incident": "incident_134",
+        "question": "An endpoint linked to this attack later reported suspicious inbox manipulation. Can you identify the IP address associated with this suspicious activity?",
+        "context_path": "test/incident_134/incident_134_test_q010_an-endpoint-linked-to-this-attac.json"
+      },
+      {
+        "task_id": "incident_134_test_q011",
+        "incident": "incident_134",
+        "question": "During the investigation, a potentially malicious URL click by a user was detected. Can you identify the recipient of the email that contained the malicious URL?",
+        "context_path": "test/incident_134/incident_134_test_q011_during-the-investigation-a-pote.json"
+      },
+      {
+        "task_id": "incident_134_test_q012",
+        "incident": "incident_134",
+        "question": "Can you identify the email address of the account associated with the email messages containing malicious URLs that were later removed?",
+        "context_path": "test/incident_134/incident_134_test_q012_can-you-identify-the-email-addre.json"
+      }
+    ]
+  },
+  "scenario_3": {
+    "incident": "incident_5",
+    "num_questions": 12,
+    "questions": [
+      {
+        "task_id": "incident_5_test_q001",
+        "incident": "incident_5",
+        "question": "What is the IP address associated with the Manatee Tempest activity group detected in this security incident?",
+        "context_path": "test/incident_5/incident_5_test_q001_what-is-the-ip-address-associate.json"
+      },
+      {
+        "task_id": "incident_5_test_q002",
+        "incident": "incident_5",
+        "question": "What is the command line of the suspicious process involved in the user behavior change on device `vnevado-win11u`?",
+        "context_path": "test/incident_5/incident_5_test_q002_what-is-the-command-line-of-the.json"
+      },
+      {
+        "task_id": "incident_5_test_q003",
+        "incident": "incident_5",
+        "question": "Can you identify the IP address involved in the malicious credential theft tool execution detected?",
+        "context_path": "test/incident_5/incident_5_test_q003_can-you-identify-the-ip-address.json"
+      },
+      {
+        "task_id": "incident_5_test_q004",
+        "incident": "incident_5",
+        "question": "What is the URL associated with the Manatee Tempest activity group in this incident?",
+        "context_path": "test/incident_5/incident_5_test_q004_what-is-the-url-associated-with.json"
+      },
+      {
+        "task_id": "incident_5_test_q005",
+        "incident": "incident_5",
+        "question": "Can you identify the hostname of the device where system recovery setting tampering was observed?",
+        "context_path": "test/incident_5/incident_5_test_q005_can-you-identify-the-hostname-of.json"
+      },
+      {
+        "task_id": "incident_5_test_q006",
+        "incident": "incident_5",
+        "question": "As per the recent observation, what is the IP address identified in connection with the Manatee Tempest activity group?",
+        "context_path": "test/incident_5/incident_5_test_q006_as-per-the-recent-observation-w.json"
+      },
+      {
+        "task_id": "incident_5_test_q007",
+        "incident": "incident_5",
+        "question": "Alongside the usage of `vssblatemp.exe`, another process was used to disable recovery features. What was the command and process ID of the other process involved?",
+        "context_path": "test/incident_5/incident_5_test_q007_alongside-the-usage-of-vssblate.json"
+      },
+      {
+        "task_id": "incident_5_test_q008",
+        "incident": "incident_5",
+        "question": "What is the host name of the device involved in this tampering incident?",
+        "context_path": "test/incident_5/incident_5_test_q008_what-is-the-host-name-of-the-dev.json"
+      },
+      {
+        "task_id": "incident_5_test_q009",
+        "incident": "incident_5",
+        "question": "Related to this alert, there was an active malware detected subsequently. Can you identify the name of the malware file detected on the machine?",
+        "context_path": "test/incident_5/incident_5_test_q009_related-to-this-alert-there-was.json"
+      },
+      {
+        "task_id": "incident_5_test_q010",
+        "incident": "incident_5",
+        "question": "What is the name of the file associated with the ransomware-like behavior identified in the potentially compromised assets?",
+        "context_path": "test/incident_5/incident_5_test_q010_what-is-the-name-of-the-file-ass.json"
+      },
+      {
+        "task_id": "incident_5_test_q011",
+        "incident": "incident_5",
+        "question": "A related alert indicates the presence of a file associated with Mimikatz. Can you identify the name of this file that was detected?",
+        "context_path": "test/incident_5/incident_5_test_q011_a-related-alert-indicates-the-pr.json"
+      },
+      {
+        "task_id": "incident_5_test_q012",
+        "incident": "incident_5",
+        "question": "Can you identify the malicious URL that was associated with the command and control behavior blocked during the incident on 2024-07-04?",
+        "context_path": "test/incident_5/incident_5_test_q012_can-you-identify-the-malicious-u.json"
+      }
+    ]
+  },
+  "scenario_4": {
+    "incident": "incident_166",
+    "num_questions": 12,
+    "questions": [
+      {
+        "task_id": "incident_166_test_q001",
+        "incident": "incident_166",
+        "question": "Can you identify the Security Identifier (SID) of the account associated with the suspicious activity that created the inbox rule?",
+        "context_path": "test/incident_166/incident_166_test_q001_can-you-identify-the-security-id.json"
+      },
+      {
+        "task_id": "incident_166_test_q002",
+        "incident": "incident_166",
+        "question": "Can you identify the security identifier (SID) of the user whose inbox rules were suspiciously manipulated?",
+        "context_path": "test/incident_166/incident_166_test_q002_can-you-identify-the-security-id.json"
+      },
+      {
+        "task_id": "incident_166_test_q003",
+        "incident": "incident_166",
+        "question": "What is the IP address associated with the suspicious emails sent by the possibly compromised user related to the BEC fraud attempt?",
+        "context_path": "test/incident_166/incident_166_test_q003_what-is-the-ip-address-associate.json"
+      },
+      {
+        "task_id": "incident_166_test_q004",
+        "incident": "incident_166",
+        "question": "Related to this incident, there were suspicious emails sent by a possibly compromised user account tied to a BEC fraud attempt. Can you identify the user account involved in this suspicious activity?",
+        "context_path": "test/incident_166/incident_166_test_q004_related-to-this-incident-there.json"
+      },
+      {
+        "task_id": "incident_166_test_q005",
+        "incident": "incident_166",
+        "question": "What is the name of the user account that was involved in the possible BEC financial fraud observed on 2024-07-23?",
+        "context_path": "test/incident_166/incident_166_test_q005_what-is-the-name-of-the-user-acc.json"
+      },
+      {
+        "task_id": "incident_166_test_q006",
+        "incident": "incident_166",
+        "question": "An alert has indicated that a BEC-related user signed in to SAP in a suspicious manner. What is the AppId of the cloud application the user accessed?",
+        "context_path": "test/incident_166/incident_166_test_q006_an-alert-has-indicated-that-a-be.json"
+      },
+      {
+        "task_id": "incident_166_test_q007",
+        "incident": "incident_166",
+        "question": "In relation to the suspicious sign-in to SAP, there was a Password Spray attack detected the following day. Can you provide the IP address associated with this password spray attack?",
+        "context_path": "test/incident_166/incident_166_test_q007_in-relation-to-the-suspicious-si.json"
+      },
+      {
+        "task_id": "incident_166_test_q008",
+        "incident": "incident_166",
+        "question": "What is the anonymous IP address that was involved in the sign-in attempt related to this password spray attack?",
+        "context_path": "test/incident_166/incident_166_test_q008_what-is-the-anonymous-ip-address.json"
+      },
+      {
+        "task_id": "incident_166_test_q009",
+        "incident": "incident_166",
+        "question": "As part of the investigation, can you identify the IP address from which the password spray attack originated?",
+        "context_path": "test/incident_166/incident_166_test_q009_as-part-of-the-investigation-ca.json"
+      },
+      {
+        "task_id": "incident_166_test_q010",
+        "incident": "incident_166",
+        "question": "There was a sign-in from an anonymous IP address related to this security incident. Can you identify that IP address?",
+        "context_path": "test/incident_166/incident_166_test_q010_there-was-a-sign-in-from-an-anon.json"
+      },
+      {
+        "task_id": "incident_166_test_q011",
+        "incident": "incident_166",
+        "question": "During the investigation of this incident, it was found that a BEC-related user signed in to SAP. Can you provide the IP address from which the user signed in to SAP?",
+        "context_path": "test/incident_166/incident_166_test_q011_during-the-investigation-of-this.json"
+      },
+      {
+        "task_id": "incident_166_test_q012",
+        "incident": "incident_166",
+        "question": "In a related alert, a suspicious inbox rule was set by a user named Jordan P (laylaw@vnevado.alpineskihouse.co). Can you identify the AppId of the cloud application associated with this suspicious activity?",
+        "context_path": "test/incident_166/incident_166_test_q012_in-a-related-alert-a-suspicious.json"
+      }
+    ]
+  },
+  "scenario_5": {
+    "incident": "incident_55",
+    "num_questions": 12,
+    "questions": [
+      {
+        "task_id": "incident_55_test_q001",
+        "incident": "incident_55",
+        "question": "Can you identify the name of the file associated with the malicious PowerShell Cmdlet invocation on the machine from the related alert?",
+        "context_path": "test/incident_55/incident_55_test_q001_can-you-identify-the-name-of-the.json"
+      },
+      {
+        "task_id": "incident_55_test_q002",
+        "incident": "incident_55",
+        "question": "Can you identify the AadDeviceId of the host where this malicious activity was observed?",
+        "context_path": "test/incident_55/incident_55_test_q002_can-you-identify-the-aaddeviceid.json"
+      },
+      {
+        "task_id": "incident_55_test_q003",
+        "incident": "incident_55",
+        "question": "Based on the recent malicious activities, what is the SID of the account associated with the malicious PowerShell Cmdlet invocation?",
+        "context_path": "test/incident_55/incident_55_test_q003_based-on-the-recent-malicious-ac.json"
+      },
+      {
+        "task_id": "incident_55_test_q004",
+        "incident": "incident_55",
+        "question": "Can you identify the IP address of the sender in the emails containing malicious URLs that were removed after delivery?",
+        "context_path": "test/incident_55/incident_55_test_q004_can-you-identify-the-ip-address.json"
+      },
+      {
+        "task_id": "incident_55_test_q005",
+        "incident": "incident_55",
+        "question": "Can you identify the mailbox primary address where the email containing the malicious URL was delivered and later removed?",
+        "context_path": "test/incident_55/incident_55_test_q005_can-you-identify-the-mailbox-pri.json"
+      },
+      {
+        "task_id": "incident_55_test_q006",
+        "incident": "incident_55",
+        "question": "A known public tool, disguised with a different filename, was used during this attack. Can you identify the filename used in this attempt to hide the tool?",
+        "context_path": "test/incident_55/incident_55_test_q006_a-known-public-tool-disguised-w.json"
+      },
+      {
+        "task_id": "incident_55_test_q007",
+        "incident": "incident_55",
+        "question": "What was the command executed by the process during the suspicious sequence of exploration activities on host `MB-ADFS`?",
+        "context_path": "test/incident_55/incident_55_test_q007_what-was-the-command-executed-by.json"
+      },
+      {
+        "task_id": "incident_55_test_q008",
+        "incident": "incident_55",
+        "question": "What was the unexpected filename observed in an attempt to hide the use of a dual-purpose tool?",
+        "context_path": "test/incident_55/incident_55_test_q008_what-was-the-unexpected-filename.json"
+      },
+      {
+        "task_id": "incident_55_test_q009",
+        "incident": "incident_55",
+        "question": "In the context of the unusual addition of credentials to an OAuth app, can you identify the email of the user who performed this suspicious activity?",
+        "context_path": "test/incident_55/incident_55_test_q009_in-the-context-of-the-unusual-ad.json"
+      },
+      {
+        "task_id": "incident_55_test_q010",
+        "incident": "incident_55",
+        "question": "Can you identify the sender's email address for the email messages containing malicious URLs that were removed after delivery?",
+        "context_path": "test/incident_55/incident_55_test_q010_can-you-identify-the-sender-s-em.json"
+      },
+      {
+        "task_id": "incident_55_test_q011",
+        "incident": "incident_55",
+        "question": "In relation to this alert, there was an attempt to extract ADFS private keys using a suspicious LDAP query. Can you identify the name of the account that was involved in this attempt?",
+        "context_path": "test/incident_55/incident_55_test_q011_in-relation-to-this-alert-there.json"
+      },
+      {
+        "task_id": "incident_55_test_q012",
+        "incident": "incident_55",
+        "question": "Regarding the suspicious remote activity observed, which executable file was used during this activity?",
+        "context_path": "test/incident_55/incident_55_test_q012_regarding-the-suspicious-remote.json"
+      }
+    ]
+  }
+}

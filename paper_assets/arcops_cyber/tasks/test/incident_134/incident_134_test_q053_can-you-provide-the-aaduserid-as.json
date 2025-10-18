@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_134_test_q053",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A security incident involving a compromised account following a password-spray attack occurred. The user `Nina Park` with the email `Nina Park@vnevado.alpineskihouse.co` and SID `S-1-5-21-1874151667-3554330288-105586563-1715` was signed in from an unusual location and browser during the attack. This suggests that an attacker may have compromised the user account for unauthorized access to the network. Immediate investigation is recommended to mitigate potential security risks.",
+  "question": "Can you provide the AadUserId associated with the user account involved in the password spray attack?",
+  "gold_answer": "e036dee7-fa23-42ef-a019-468c8d3401f1",
+  "solution_steps": [
+    "A user account associated with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1` was targeted in a password spray attack.",
+    "The user with the breached account was later accessed from an unusual IP address `170.54.121.63`."
+  ],
+  "metadata": {
+    "start_alert": 25,
+    "end_alert": 24,
+    "start_entities": [
+      6,
+      7,
+      8
+    ],
+    "end_entities": [
+      9
+    ],
+    "shortest_alert_path": [
+      25,
+      12,
+      24
+    ]
+  }
+}

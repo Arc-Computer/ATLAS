@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_322_train_q019",
+  "incident": "incident_322",
+  "split": "train",
+  "context": "A security incident involving suspicious Azure Resource Management (ARM) activities by a risky user Hailey Johnson was flagged. The user signed in to a risky session according to a Microsoft Defender for Cloud alert related to ARM and Microsoft Entra ID Protection risk scores.",
+  "question": "What is the IP address associated with the suspicious Azure Resource Management activities performed by Hailey Johnson?",
+  "gold_answer": "253.1.244.215",
+  "solution_steps": [
+    "There are suspicious Azure Resource Management activities performed by a risky user from IP address `253.1.244.215`."
+  ],
+  "metadata": {
+    "start_alert": 32,
+    "end_alert": 32,
+    "start_entities": [
+      6,
+      9,
+      7,
+      8
+    ],
+    "end_entities": [
+      31
+    ],
+    "shortest_alert_path": [
+      32
+    ]
+  }
+}

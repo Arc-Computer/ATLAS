@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_39_train_q013",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "As part of a recent security incident where a file was dropped and launched from a remote location, an account named `fk8mq` executed `rubeus.exe` on host `vnevado-win10b`. The process was run with ProcessId__CreatedTimeUtc__CommandLine `2608__2024-06-27t14:33:27.7927134z__rubeus.exe dump /service:xfbzkp /user:lucasb`. This activity could indicate an attacker attempting to move laterally or propagate within the network.",
+  "question": "Can you retrieve the email address of the user who performed the suspected DCSync attack (replication of directory services) on VNEVADO-Win10V?",
+  "gold_answer": "Julian Burke@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "A remote session dropped and launched a file using the account with SID `S-1-5-21-1540151660-3530000288-105586595-1517`.",
+    "There was a suspected overpass-the-hash attack (Kerberos) attempt by Emma Clark (Helpdesk Administrator) on host `VNEVADO-DC`.",
+    "Julian Burke (IT director) with the email `Julian Burke@vnevado.alpineskihouse.co` sent a replication request to the host `VNEVADO-DC` in a suspected DCSync attack."
+  ],
+  "metadata": {
+    "start_alert": 34,
+    "end_alert": 122,
+    "start_entities": [
+      1,
+      7,
+      9,
+      10,
+      11,
+      23
+    ],
+    "end_entities": [
+      124
+    ],
+    "shortest_alert_path": [
+      34,
+      2,
+      119,
+      115,
+      122
+    ]
+  }
+}

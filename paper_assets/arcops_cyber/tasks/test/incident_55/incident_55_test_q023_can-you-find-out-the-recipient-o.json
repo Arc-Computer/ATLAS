@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q023",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "In a recent security incident, Luciano Herrera (with email Luciano Herrera@niseko.alpineskihouse.co) was reported for adding unusual credentials to an OAuth application named SimulandApp in Office 365, which might indicate a compromised app. Additionally, a malicious PowerShell Cmdlet was invoked on the machine, which may be associated with credential theft, exploitation, network reconnaissance, or code injection.",
+  "question": "Can you find out the recipient of the email messages containing malicious URLs that were removed after delivery?",
+  "gold_answer": "bjenkins@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "The user `Luciano Herrera` (with AadUserId `2de70991-2799-4a95-b734-8e3df3a50118`) performed an unusual addition of credentials to the application SimulandApp. The added credential was of type Password.",
+    "A malicious PowerShell Cmdlet was invoked by the user with SID `S-1-5-21-561436748-3867387497-1732241745-3701` on a machine. This might be associated with credential theft, exploitation, network reconnaissance, or code injection.",
+    "The email account `bjenkins@niseko.alpineskihouse.co` received emails containing malicious URLs, which were later removed after delivery."
+  ],
+  "metadata": {
+    "start_alert": 80,
+    "end_alert": 92,
+    "start_entities": [
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87
+    ],
+    "end_entities": [
+      94
+    ],
+    "shortest_alert_path": [
+      80,
+      11,
+      51,
+      2,
+      92
+    ]
+  }
+}

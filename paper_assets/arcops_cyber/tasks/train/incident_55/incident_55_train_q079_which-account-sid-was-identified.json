@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_55_train_q079",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A suspicious LDAP query was executed by user `pwilson`, indicating potential reconnaissance activity. The associated process was `ldaprequest.ps1` executed via `powershell.exe`. LDAP queries can be used by attackers to learn an organization's structure, which can lead to gaining higher privileges and access to important assets.",
+  "question": "Which account SID was identified in the sensitive credential memory read alert indicating a potential attack on lsass.exe?",
+  "gold_answer": "S-1-5-21-561436748-3867387497-1732241745-3701",
+  "solution_steps": [
+    "A suspicious LDAP query was executed using the process `powershell.exe`, indicating potential reconnaissance activity.",
+    "A process accessed the memory of lsass.exe to read sensitive credentials. The compromised account has the SID `S-1-5-21-561436748-3867387497-1732241745-3701`."
+  ],
+  "metadata": {
+    "start_alert": 64,
+    "end_alert": 67,
+    "start_entities": [
+      9,
+      10,
+      11,
+      65,
+      66
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      64,
+      8,
+      67
+    ]
+  }
+}

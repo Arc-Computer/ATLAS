@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_166_test_q055",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "On 2024-07-22, at 08:45:32.664841+00:00, a sign-in from an anonymous IP address 95.202.65.202 was detected. The account associated with this sign-in has the AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`. This incident might indicate potential malicious activity leveraging the anonymized IP.",
+  "question": "Following the anonymous sign-in, a suspicious inbox manipulation rule was set on the inbox of a user named Jordan P with email laylaw@vnevado.alpineskihouse.co. Can you identify the cloud application AppId associated with this suspicious activity?",
+  "gold_answer": "20893",
+  "solution_steps": [
+    "There was a sign-in from an anonymous IP address by the account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "A suspicious inbox rule named 'ITCleanup' was set on the inbox of the user `Jordan P` (email: `laylaw@vnevado.alpineskihouse.co`), moving messages to a folder named 'RSS Feeds'.",
+    "The cloud application with AppId `20893` may have been leveraged during this suspicious activity."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 5,
+    "start_entities": [
+      1,
+      2
+    ],
+    "end_entities": [
+      11
+    ],
+    "shortest_alert_path": [
+      0,
+      1,
+      5
+    ]
+  }
+}

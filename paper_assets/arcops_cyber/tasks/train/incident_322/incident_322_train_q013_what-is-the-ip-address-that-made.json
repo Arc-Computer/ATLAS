@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_322_train_q013",
+  "incident": "incident_322",
+  "split": "train",
+  "context": "Suspicious Azure Resource Management (ARM) activities were performed by a user account that signed in to a risky session from the IP address 253.1.244.215. This suspicious activity triggered an alert based on a Microsoft Defender for Cloud alert related to ARM and Microsoft Entra ID Protection risk scores. Subsequently, a malicious URL was clicked on a device, and that activity was logged. Additionally, a connection from an IP address to login.micro.demo.antoinetest.ovh was detected in the proxy logs. This connection should be investigated further to determine what happened on the computer.",
+  "question": "What is the IP address that made the connection to login.micro.demo.antoinetest.ovh?",
+  "gold_answer": "231.60.52.209",
+  "solution_steps": [
+    "Suspicious Azure Resource Management activities were performed by a risky user with SID `S-1-5-21-1840151686-3534835288-156286563-1127`.",
+    "The host `vnevado-win11h` clicked on a malicious URL.",
+    "A connection from IP address `231.60.52.209` was detected in the proxy logs, involving the host `vnevado-win11h` and the URL `login.micro.demo.antoinetest.ovh`."
+  ],
+  "metadata": {
+    "start_alert": 32,
+    "end_alert": 11,
+    "start_entities": [
+      31
+    ],
+    "end_entities": [
+      14
+    ],
+    "shortest_alert_path": [
+      32,
+      8,
+      33,
+      13,
+      11
+    ]
+  }
+}

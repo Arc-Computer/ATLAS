@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_test_q038",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "An uncommon file was observed being created on a machine and added to a Registry Key to ensure it runs after a reboot. This action was part of a larger security incident identified on 2024-07-04, where an attacker might have placed a malicious software to prevent losing access if a machine is turned off. One specific part of this incident involved an IP address `72.5.72.208`, with a process ID `10208` executing a command to add a registry entry that runs a backdoor executable after a reboot.",
+  "question": "Within this incident, what was the name of the process that executed PowerShell to download a file or run an encoded command?",
+  "gold_answer": "powershell.exe",
+  "solution_steps": [
+    "An uncommon file was created and added to a Run Key on a host with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f`.",
+    "A process executed PowerShell with the filename `powershell.exe` to download a file or run an encoded command."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 22,
+    "start_entities": [
+      18,
+      19
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      23,
+      2,
+      22
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_5_test_q021",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A ransomware payload was remotely launched on the device `vnevado-win11u`. Attackers might be attempting to encrypt content on this device, rendering it unusable to users. Related to this incident, lateral movement activities have been detected on `Vnevado-jump` server using PSExec.",
+  "question": "What is the name of the executable file used in the PSExec activity on `Vnevado-jump` server?",
+  "gold_answer": "notepad.exe",
+  "solution_steps": [
+    "A ransomware payload was remotely launched from IP address `99.83.111.100`.",
+    "PSExec was used to move laterally to the jump server `Vnevado-jump` with the file `notepad.exe`."
+  ],
+  "metadata": {
+    "start_alert": 139,
+    "end_alert": 174,
+    "start_entities": [
+      1,
+      2,
+      3,
+      7,
+      8
+    ],
+    "end_entities": [
+      176
+    ],
+    "shortest_alert_path": [
+      139,
+      42,
+      174
+    ]
+  }
+}

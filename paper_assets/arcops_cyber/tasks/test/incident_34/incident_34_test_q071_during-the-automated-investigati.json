@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_test_q071",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "An automated investigation was manually started by user u141 (u141@ash.alpineskihouse.co) on host `vnevado-win10e.vnevado.alpineskihouse.co`. The investigation aims to identify and review threat artifacts for possible remediation. This incident involved the host device identified by AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f`.",
+  "question": "During the automated investigation, a suspicious PowerShell command line activity was detected. Can you identify the file name associated with this suspicious activity?",
+  "gold_answer": "winatp-intro-backdoor.exe",
+  "solution_steps": [
+    "An automated investigation started manually by user `u141(u141@ash.alpineskihouse.co)` on the device with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f`.",
+    "A suspicious PowerShell command was executed on the device, associated with the file named `winatp-intro-backdoor.exe`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 10,
+    "start_entities": [
+      1,
+      2
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      0,
+      2,
+      10
+    ]
+  }
+}

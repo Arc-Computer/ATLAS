@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_5_test_q015",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "An alert indicated that 'CommandAndControl' malware was detected, suggesting an attempt to move laterally between devices.",
+  "question": "What is the hostname of the target device in the 'CommandAndControl' malware attempt?",
+  "gold_answer": "vnevado-win11u",
+  "solution_steps": [
+    "The 'CommandAndControl' malware was detected on the device associated with the account with SID `S-1-5-21-1840191660-8534830288-125585561-1522`.",
+    "The 'CommandAndControl' malware was detected on the host `vnevado-win11u` during an attempted lateral movement."
+  ],
+  "metadata": {
+    "start_alert": 127,
+    "end_alert": 128,
+    "start_entities": [
+      67,
+      68,
+      69
+    ],
+    "end_entities": [
+      7
+    ],
+    "shortest_alert_path": [
+      127,
+      2,
+      128
+    ]
+  }
+}

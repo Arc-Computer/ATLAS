@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_39_test_q030",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A Security Incident involved a detected SID history injection on device `vnevado-dc`. Process `powershell.exe` and `net.exe` were used, originated by account `lucasb`. This incident might allow attackers to access sensitive files, ensure persistence, and modify system settings.",
+  "question": "In relation to a suspected overpass-the-hash attack (Kerberos) involving Emma Clark (Helpdesk Administrator) on VNEVADO-Win10V, can you identify the Azure Active Directory (AAD) User ID of the account?",
+  "gold_answer": "97e6a954-b6bd-48a5-808c-bd8464cce677",
+  "solution_steps": [
+    "A SID history injection was detected targeting the account with AadUserId `7fcf9695-68fc-4258-864d-e1e5b166c66f`.",
+    "A suspected DCSync attack was performed by Julian Burke (IT director) on the host `VNEVADO-Win10V`, which sent a replication request to the host `VNEVADO-DC`.",
+    "A suspected overpass-the-hash attack attempt was made by Emma Clark (Helpdesk Administrator) on the host `VNEVADO-Win10V` attempting to authenticate against the host `VNEVADO-DC` using the account with AadUserId `97e6a954-b6bd-48a5-808c-bd8464cce677`."
+  ],
+  "metadata": {
+    "start_alert": 93,
+    "end_alert": 119,
+    "start_entities": [
+      13,
+      16,
+      17,
+      18,
+      20
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      93,
+      15,
+      122,
+      115,
+      119
+    ]
+  }
+}

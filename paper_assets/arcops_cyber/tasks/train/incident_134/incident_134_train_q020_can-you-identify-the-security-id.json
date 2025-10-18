@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_train_q020",
+  "incident": "incident_134",
+  "split": "train",
+  "context": "A security incident was reported involving a Password Spray attack on an IP address `170.54.121.63`. Password spray attacks typically involve attackers attempting multiple passwords against many accounts, and this event indicates a potential compromise of user accounts. During this investigation, we observed some connections to other suspicious activities.",
+  "question": "Can you identify the Security Identifier (SID) of the account related to the BEC financial fraud alert that involved creating a suspicious inbox rule in a risky Azure Active Directory session?",
+  "gold_answer": "S-1-5-21-1874151667-3554330288-105586563-1715",
+  "solution_steps": [
+    "A password spray attack targeted the user with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1`.",
+    "In a risky Azure Active Directory session, a suspicious inbox rule was created for the user with SID `S-1-5-21-1874151667-3554330288-105586563-1715`, indicating a potential BEC financial fraud attempt."
+  ],
+  "metadata": {
+    "start_alert": 24,
+    "end_alert": 17,
+    "start_entities": [
+      12
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      24,
+      9,
+      17
+    ]
+  }
+}

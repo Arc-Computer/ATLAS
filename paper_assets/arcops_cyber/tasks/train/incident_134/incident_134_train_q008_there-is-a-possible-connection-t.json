@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_train_q008",
+  "incident": "incident_134",
+  "split": "train",
+  "context": "As part of a security investigation, it was identified that a sign-in was made from an anonymous IP address `170.54.121.63`. This access potentially indicates malicious activity since such IP addresses are commonly associated with anonymizers like Tor browser or VPNs.",
+  "question": "There is a possible connection to a BEC financial fraud incident involving the creation of a suspicious inbox rule. Can you provide the name of the account involved in this BEC financial fraud?",
+  "gold_answer": "Nina Park",
+  "solution_steps": [
+    "A sign-in was detected from an anonymous IP address for the user with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1`.",
+    "A suspicious inbox rule that hides incoming email messages was created in a risky Azure Active Directory session by the user `Nina Park`. This may indicate an attempt to conduct business email compromise (BEC) financial fraud."
+  ],
+  "metadata": {
+    "start_alert": 11,
+    "end_alert": 17,
+    "start_entities": [
+      12
+    ],
+    "end_entities": [
+      6
+    ],
+    "shortest_alert_path": [
+      11,
+      9,
+      17
+    ]
+  }
+}

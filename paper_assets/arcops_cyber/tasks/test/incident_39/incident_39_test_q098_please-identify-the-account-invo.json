@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_39_test_q098",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A security incident involved activity on the host `VNEVADO-Win10V`, where an individual executed reconnaissance against `VNEVADO-DC` by enumerating SMB sessions and retrieving IP addresses of multiple accounts.",
+  "question": "Please identify the account involved in the reconnaissance activity involving SMB sessions on `VNEVADO-DC` from `VNEVADO-Win10V`.",
+  "gold_answer": "Ethan Brooks",
+  "solution_steps": [
+    "The account `Ethan Brooks` enumerated SMB sessions on `VNEVADO-DC`, retrieving recent IP addresses of 2 accounts."
+  ],
+  "metadata": {
+    "start_alert": 114,
+    "end_alert": 114,
+    "start_entities": [
+      29,
+      28,
+      116,
+      115
+    ],
+    "end_entities": [
+      117
+    ],
+    "shortest_alert_path": [
+      114
+    ]
+  }
+}

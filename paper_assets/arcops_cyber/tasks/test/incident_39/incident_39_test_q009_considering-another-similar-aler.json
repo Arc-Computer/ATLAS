@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_39_test_q009",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A security incident involving the execution of a known malicious credential theft tool (mimikatz.exe) was detected. An instance of such execution was observed with the process id 6880 executing the command: `mimikatz.exe privilege::debug sekurlsa::pth /user:fk8mq /ntlm:96def1a633fc6790124d5f8fe21cc72b /domain:vnevado.alpineskihouse.co /run:\"powershell.exe dir \\vnevado-win10b\\c$\"`.",
+  "question": "Considering another similar alert, can you provide the full command line associated with the process id 5196 that was detected for mimikatz.exe?",
+  "gold_answer": "\"mimikatz.exe\" privilege::debug sekurlsa::logonpasswords exit",
+  "solution_steps": [
+    "A known credential theft tool `mimikatz.exe` was executed with the command line `mimikatz.exe privilege::debug sekurlsa::logonpasswords exit` at `2024-06-27t14:32:35.4061023z`, with Process ID `5196`.",
+    "The malicious credential theft tool was executed by the user with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1`."
+  ],
+  "metadata": {
+    "start_alert": 104,
+    "end_alert": 89,
+    "start_entities": [
+      17,
+      68
+    ],
+    "end_entities": [
+      67
+    ],
+    "shortest_alert_path": [
+      104,
+      29,
+      89
+    ]
+  }
+}

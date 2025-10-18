@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_34_test_q070",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "In the security incident where powershell.exe dropped and executed a suspicious file (winatp-intro-backdoor.exe) on machine `vnevado-win10e`, the account named `samuelf` was involved along with multiple associated entities including host (`02b8f519-1123-4228-b32a-ccb78af3449f`) and process ID `8604`.",
+  "question": "Who is the Azure Active Directory (AAD) user associated with this suspicious activity?",
+  "gold_answer": "16320fec-8d90-403b-b7fe-78f715d4728d",
+  "solution_steps": [
+    "The user with AadUserId `16320fec-8d90-403b-b7fe-78f715d4728d` executed a Powershell command that dropped and executed a suspicious file on the machine."
+  ],
+  "metadata": {
+    "start_alert": 25,
+    "end_alert": 25,
+    "start_entities": [
+      1,
+      16,
+      4,
+      9,
+      5,
+      2,
+      7,
+      8
+    ],
+    "end_entities": [
+      6
+    ],
+    "shortest_alert_path": [
+      25
+    ]
+  }
+}

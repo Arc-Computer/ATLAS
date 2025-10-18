@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_39_train_q075",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident was detected involving the use of the Rubeus tool, which is known for performing kerberoasting and other techniques using Kerberos authentication. In this case, activities involving the execution of commands via `rubeus.exe` on host `???` were observed. This could imply an attacker attempting to request Kerberos tickets to get plaintext credentials or possibly performing pass-the-ticket attacks.",
+  "question": "During the same timeframe, suspicious remote activities were observed. Can you identify the file name of the process that was involved in these suspicious remote activities?",
+  "gold_answer": "psexesvc.exe",
+  "solution_steps": [
+    "The Rubeus kerberoasting tool was possibly used on the host `vnevado-win10b`.",
+    "Suspicious remote activity was observed involving the file `psexesvc.exe`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 101,
+    "start_entities": [
+      6,
+      7,
+      8,
+      9
+    ],
+    "end_entities": [
+      24
+    ],
+    "shortest_alert_path": [
+      0,
+      10,
+      101
+    ]
+  }
+}

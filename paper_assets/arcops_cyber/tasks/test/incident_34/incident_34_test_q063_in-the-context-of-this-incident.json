@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_34_test_q063",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "In response to a security incident involving a suspicious PowerShell execution, we've identified that a file `powershell.exe` was launched on host `vnevado-win10e` by the account `samuelf`. The command executed included invoking PowerShell with complex encoded instructions, suggesting the download or execution of an external payload. This type of behavior is consistent with attackers bypassing security measures to execute their payload directly in memory.",
+  "question": "In the context of this incident, what process is associated with the execution of the PowerShell command that might have been used to download a file or run an encoded command?",
+  "gold_answer": "winword.exe",
+  "solution_steps": [
+    "The user with AadUserId `16320fec-8d90-403b-b7fe-78f715d4728d` executed a suspicious PowerShell command.",
+    "The process `winword.exe` executed PowerShell to download a file or run an encoded command."
+  ],
+  "metadata": {
+    "start_alert": 3,
+    "end_alert": 26,
+    "start_entities": [
+      1,
+      2,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      3,
+      6,
+      26
+    ]
+  }
+}

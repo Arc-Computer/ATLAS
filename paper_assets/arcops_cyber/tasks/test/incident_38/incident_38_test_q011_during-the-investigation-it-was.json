@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_38_test_q011",
+  "incident": "incident_38",
+  "split": "test",
+  "context": "An unexpected behavior was observed with a process running with no command line arguments on 2024-07-04. The legitimate process by this name does not normally exhibit this behavior; this could be due to extraneous code injected into it or it masquerading as the legitimate process. The IP address associated with this activity is `202.183.149.174`.",
+  "question": "During the investigation, it was found that a process injected code abnormally into another process, leading to possible abnormal behaviors. Can you identify the URL that was connected to this suspicious process injection?",
+  "gold_answer": "https://wcdstaticfilesprdeus.blob.core.windows.net/wcdstaticfiles/winatp-intro-fileless.txt",
+  "solution_steps": [
+    "The user account with SID `S-1-5-21-1240151660-3534038288-105586567-4122` exhibited unexpected behavior observed in a process ran with no command line arguments.",
+    "A suspicious process injection was observed involving a URL `https://wcdstaticfilesprdeus.blob.core.windows.net/wcdstaticfiles/winatp-intro-fileless.txt`."
+  ],
+  "metadata": {
+    "start_alert": 15,
+    "end_alert": 14,
+    "start_entities": [
+      16
+    ],
+    "end_entities": [
+      13
+    ],
+    "shortest_alert_path": [
+      15,
+      2,
+      14
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_5_test_q097",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "Start Alert: File backups were deleted, performed by `vssblatemp.exe` with Process ID 1900 and command line `vssblatemp.exe delete shadows /all`. The incident also involves a blocked Command and Control behavior alert. The blocked action is related to active malware, which can receive remote commands to conduct cyber attacks.",
+  "question": "What is the URL involved in the Command and Control behavior that was blocked?",
+  "gold_answer": "http://vectorsandarrows.com/",
+  "solution_steps": [
+    "All file snapshots and shadow copies have been deleted via WMI or VSSAdmin by the user with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "Command and Control (C2) behavior was blocked from the URL `http://vectorsandarrows.com/`."
+  ],
+  "metadata": {
+    "start_alert": 116,
+    "end_alert": 149,
+    "start_entities": [
+      11,
+      80
+    ],
+    "end_entities": [
+      74
+    ],
+    "shortest_alert_path": [
+      116,
+      3,
+      149
+    ]
+  }
+}

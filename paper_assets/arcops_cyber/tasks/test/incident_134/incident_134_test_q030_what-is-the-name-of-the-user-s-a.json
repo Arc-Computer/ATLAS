@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_test_q030",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "Additionally, we noticed a suspicious manipulation of inbox rules indicating that an attacker might have gained access and is attempting to delete or move messages or folders to exfiltrate data.",
+  "question": "What is the name of the user's account that had suspicious inbox manipulation rules?",
+  "gold_answer": "Nina Park",
+  "solution_steps": [
+    "The user with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1` has signed in from a known malicious IP address.",
+    "The email account `Nina Park` has suspicious inbox manipulation rules, potentially indicating that an attacker has gained access and is attempting to exfiltrate data."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 14,
+    "start_entities": [
+      12
+    ],
+    "end_entities": [
+      6
+    ],
+    "shortest_alert_path": [
+      23,
+      9,
+      14
+    ]
+  }
+}

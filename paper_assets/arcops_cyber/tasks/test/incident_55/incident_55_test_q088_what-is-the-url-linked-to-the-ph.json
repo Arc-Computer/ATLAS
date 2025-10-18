@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_55_test_q088",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "As part of a recent security incident, attempts to hide a known public tool under an unexpected filename were observed. Following this, several suspicious activities were detected including renaming and launching a system executable and injecting code into another process. Eventually, an internal phishing campaign was identified, likely using these compromised processes.",
+  "question": "What is the URL linked to the phishing campaign?",
+  "gold_answer": "http://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/",
+  "solution_steps": [
+    "There was an attempt to hide the use of a dual-purpose tool on the host `mb-adfs`.",
+    "A renamed system executable `powershell.exe` was launched, which might be used for malicious activities.",
+    "A process was injected with potentially malicious code by a user with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0`.",
+    "An internal phishing campaign occurred, involving the URL `http://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/`."
+  ],
+  "metadata": {
+    "start_alert": 68,
+    "end_alert": 88,
+    "start_entities": [
+      69
+    ],
+    "end_entities": [
+      91
+    ],
+    "shortest_alert_path": [
+      68,
+      26,
+      27,
+      8,
+      41,
+      3,
+      88
+    ]
+  }
+}

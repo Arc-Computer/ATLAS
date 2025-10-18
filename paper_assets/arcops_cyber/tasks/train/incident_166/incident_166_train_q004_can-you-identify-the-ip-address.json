@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_166_train_q004",
+  "incident": "incident_166",
+  "split": "train",
+  "context": "As part of a security incident involving Business Email Compromise (BEC), it was detected that suspicious emails were sent by a possibly compromised user account (laylaw@vnevado.alpineskihouse.co). The emails were sent from the IP address 255.246.85.58 to tony@avoriaz.alpineskihouse.co. This activity was related to a possibly compromised user account that is part of an ongoing BEC fraud attempt.",
+  "question": "Can you identify the IP address that was involved in the suspicious inbox manipulation rule set on Jordan P's mailbox?",
+  "gold_answer": "192.238.237.190",
+  "solution_steps": [
+    "A possibly compromised user account with SID `S-1-5-21-1740051960-3534030288-108486866-1602` sent suspicious emails related to a BEC fraud attempt.",
+    "A user named Jordan P (laylaw@vnevado.alpineskihouse.co) had a suspicious inbox rule set by an IP address `192.238.237.190` to move messages to a folder named RSS Feeds."
+  ],
+  "metadata": {
+    "start_alert": 18,
+    "end_alert": 5,
+    "start_entities": [
+      19,
+      20,
+      21,
+      22
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      18,
+      8,
+      5
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_39_test_q019",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "During a security incident, a known credential theft tool `mimikatz.exe` was detected being executed with the command `mimikatz.exe privilege::debug sekurlsa::logonpasswords exit`. This tool is known to dump users' credentials, keys, and plain-text passwords. Shortly after, PsExec was detected being used to launch a command on a remote device, indicating a potential lateral movement attempt.",
+  "question": "Can you identify the file name of the process used to launch commands on a remote device?",
+  "gold_answer": "psexec.exe",
+  "solution_steps": [
+    "A malicious credential theft tool execution was detected on the account with SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "PsExec launched a command on a remote device, and the process involved was `psexec.exe`."
+  ],
+  "metadata": {
+    "start_alert": 89,
+    "end_alert": 95,
+    "start_entities": [
+      31,
+      67
+    ],
+    "end_entities": [
+      70
+    ],
+    "shortest_alert_path": [
+      89,
+      28,
+      95
+    ]
+  }
+}

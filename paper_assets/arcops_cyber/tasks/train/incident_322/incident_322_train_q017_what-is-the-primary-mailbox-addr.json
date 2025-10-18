@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_322_train_q017",
+  "incident": "incident_322",
+  "split": "train",
+  "context": "A user clicked on a link in an email `https://dj01161621.bravesand-e1ccd718.eastus.azurecontainerapps.io/` which was later quarantined by zero-hour auto purge (ZAP). This alert was triggered based on a Microsoft Defender for Office 365 alert.",
+  "question": "What is the primary mailbox address associated with the email message containing the malicious URL that was removed?",
+  "gold_answer": "alyssat@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "The user `Hailey Johnson@vnevado.alpineskihouse.co` accessed a link in an email that was later quarantined by ZAP.",
+    "The mailbox with the primary address `alyssat@vnevado.alpineskihouse.co` received an email containing a malicious URL, which was subsequently removed after delivery."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 2,
+    "start_entities": [
+      24
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      23,
+      7,
+      2
+    ]
+  }
+}

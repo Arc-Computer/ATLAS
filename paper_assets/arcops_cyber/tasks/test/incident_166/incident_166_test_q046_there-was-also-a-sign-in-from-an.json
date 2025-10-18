@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_166_test_q046",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A security incident involving a possible BEC financial fraud was detected where suspicious events with business email compromise characteristics were observed. This was linked to an account with the name `Jordan P` and email `Jordan P@vnevado.alpineskihouse.co`. The incidents might involve someone attempting to conduct a fraud attack against your organization.",
+  "question": "There was also a sign-in from an anonymous IP address connected to this incident. Can you provide the IP address that was used?",
+  "gold_answer": "95.202.65.202",
+  "solution_steps": [
+    "Suspicious activities with business email compromise (BEC) characteristics were detected from the account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "There was a sign-in attempt from an anonymous IP address `95.202.65.202`."
+  ],
+  "metadata": {
+    "start_alert": 29,
+    "end_alert": 0,
+    "start_entities": [
+      6,
+      7,
+      8
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      29,
+      1,
+      0
+    ]
+  }
+}

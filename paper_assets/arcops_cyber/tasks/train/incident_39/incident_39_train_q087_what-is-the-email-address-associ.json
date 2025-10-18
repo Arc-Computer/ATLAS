@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_39_train_q087",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A sign-in attempt was detected using a deceptive user account on host `vnevado-win10v` using the IP address `35.202.74.47`. The deceptive user account names involved were `tgs2z` and `kyleg`. This activity could potentially be used by an attacker to perform various attack activities, including lateral movement and accessing sensitive data. This incident is part of a larger investigation and involves multiple connected alerts.",
+  "question": "What is the email address associated with the user who conducted the reconnaissance activity on SMB sessions on VNEVADO-DC?",
+  "gold_answer": "Ethan Brooks@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "A sign-in attempt was detected using a deceptive user account with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1`.",
+    "Ethan Brooks (Account Executive) with the email `Ethan Brooks@vnevado.alpineskihouse.co` on VNEVADO-Win10V enumerated SMB sessions on VNEVADO-DC, retrieving recent IP addresses of 2 accounts."
+  ],
+  "metadata": {
+    "start_alert": 41,
+    "end_alert": 114,
+    "start_entities": [
+      27,
+      32,
+      33,
+      42,
+      43
+    ],
+    "end_entities": [
+      118
+    ],
+    "shortest_alert_path": [
+      41,
+      29,
+      114
+    ]
+  }
+}

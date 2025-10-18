@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_39_test_q028",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "In a recent suspected DCSync attack incident, Julian Burke (IT director) sent a replication request from VNEVADO-Win10V to VNEVADO-DC. This event is part of a broader context of security incidents involving directory services replication in your organization. Investigation into this incident suggests a potential connect to earlier suspicious activity.",
+  "question": "During the SID history injection attack that occurred earlier, can you identify the file name of the process that was involved?",
+  "gold_answer": "dkwj.mze",
+  "solution_steps": [
+    "The IT director Julian Burke, associated with AadUserId `7fcf9695-68fc-4258-864d-e1e5b166c66f`, sent a replication request to VNEVADO-DC from VNEVADO-Win10V, which is suspected to be a DCSync attack.",
+    "A SID history injection was detected involving the file `dkwj.mze`, indicating a possible elevation of privileges."
+  ],
+  "metadata": {
+    "start_alert": 122,
+    "end_alert": 72,
+    "start_entities": [
+      115,
+      116,
+      123,
+      124
+    ],
+    "end_entities": [
+      73
+    ],
+    "shortest_alert_path": [
+      122,
+      15,
+      72
+    ]
+  }
+}

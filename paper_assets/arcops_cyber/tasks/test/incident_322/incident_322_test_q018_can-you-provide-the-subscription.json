@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_322_test_q018",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "During a security incident involving multiple malicious activities, a connection from the IP address `231.60.52.209` to the URL `login.micro.demo.antoinetest.ovh` was detected in proxy logs, with the connection originating from the host `vnevado-win11h.vnevado.alpineskihouse.co`. Shortly afterward, a suspicious URL was clicked on the same device, and subsequently, a resource management operation was detected by Microsoft Defender for Resource Manager from an IP address associated with proxy services.",
+  "question": "Can you provide the Subscription ID associated with the resource management operation from the suspicious proxy IP address?",
+  "gold_answer": "7e838342-601f-4552-9baf-0dfb300cf555",
+  "solution_steps": [
+    "There was a connection from the host `vnevado-win11h` to a detected malicious URL at login.micro.demo.antoinetest.ovh on `2024-08-01 12:47:22.846409+00:00`.",
+    "The email account `Hailey Johnson@vnevado.alpineskihouse.co` clicked on a malicious URL on `2024-08-01 13:49:58.880422+00:00`.",
+    "An Azure Resource Manager operation from a suspicious proxy IP address was detected, involving a subscription with ID `7e838342-601f-4552-9baf-0dfb300cf555` on `2024-08-01 13:09:13.222398+00:00`."
+  ],
+  "metadata": {
+    "start_alert": 11,
+    "end_alert": 25,
+    "start_entities": [
+      12,
+      14,
+      15
+    ],
+    "end_entities": [
+      26
+    ],
+    "shortest_alert_path": [
+      11,
+      13,
+      33,
+      7,
+      25
+    ]
+  }
+}

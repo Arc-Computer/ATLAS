@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_55_test_q008",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "An incident was reported involving suspicious access to the LSASS service on the host identified by the name `mb-winclient`. Attackers aimed to decrypt the password stored in the LSASS service's memory, a step often linked to lateral movement activities. Following this, there was a detection of a suspicious execution of a command using the Impacket toolkit on the same device, which is indicative of further lateral movement attempts. Subsequently, an attempt to run a tool with both benign and malicious uses under an unexpected filename was observed. This specific action was carried out to potentially hide its malicious intent.",
+  "question": "What was the unexpected filename observed in an attempt to hide the use of a dual-purpose tool?",
+  "gold_answer": "iy2orr1e.rrg.exe",
+  "solution_steps": [
+    "There is a suspicious access to the LSASS service using the process `powershell.exe`.",
+    "There is an ongoing hands-on-keyboard attack via Impacket toolkit using an account with Sid `S-2-5-21-571436798-3864380397-1837441745-3206`.",
+    "There is an attempt to hide the use of a dual-purpose tool with the command line `iy2orr1e.rrg.exe -windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=` at `2024-07-06t00:00:01.7155092z` with Process ID `5752`."
+  ],
+  "metadata": {
+    "start_alert": 45,
+    "end_alert": 68,
+    "start_entities": [
+      50,
+      15,
+      49,
+      46,
+      2,
+      14,
+      7,
+      48,
+      3,
+      47
+    ],
+    "end_entities": [
+      69
+    ],
+    "shortest_alert_path": [
+      45,
+      8,
+      16,
+      19,
+      68
+    ]
+  }
+}

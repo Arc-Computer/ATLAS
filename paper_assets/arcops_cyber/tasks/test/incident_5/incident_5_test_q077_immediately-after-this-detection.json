@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_5_test_q077",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A possible attempt to access Primary Refresh Token (PRT) was detected, indicating that attackers may be trying to move laterally within the organization or perform credential theft. The suspicious activity was identified on `browsercore.exe` with the process ID 2676 at UTC time 2024-06-20 09:10:59.867384. The PRT is crucial for Azure AD authentication and SSO across various devices.",
+  "question": "Immediately after this detection, another suspicious WMI process was created on the machine. Can you find the command line used by this newly created WMI process?",
+  "gold_answer": "bcdedit /set bootstatuspolicy ignoreallfailures",
+  "solution_steps": [
+    "There is a possible attempt to access the Primary Refresh Token (PRT) by a user with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "A suspicious WMI process creation was detected with command line `bcdedit /set bootstatuspolicy ignoreallfailures` at `2024-06-20t09:10:49.1654106z`, with Process ID `1868`."
+  ],
+  "metadata": {
+    "start_alert": 113,
+    "end_alert": 144,
+    "start_entities": [
+      40,
+      114
+    ],
+    "end_entities": [
+      141
+    ],
+    "shortest_alert_path": [
+      113,
+      3,
+      144
+    ]
+  }
+}

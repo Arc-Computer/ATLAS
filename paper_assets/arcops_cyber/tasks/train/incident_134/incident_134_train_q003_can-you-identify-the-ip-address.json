@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_134_train_q003",
+  "incident": "incident_134",
+  "split": "train",
+  "context": "On 2024-07-17, an email containing a malicious URL `https://ms175052280.orangecliff-f53f26fd.eastus.azurecontainerapps.io/` was sent from `alyssat@vnevado.alpineskihouse.co` to `raphaelt@vnevado.alpineskihouse.co`. The email was initially delivered but later removed. The incident revealed a suspicious activity where a suspicious inbox rule hiding incoming email messages was created. This was identified in the context of a risky Azure Active Directory session, indicating a potential business email compromise (BEC) and financial fraud attempt.",
+  "question": "Can you identify the IP address involved in the suspicious Azure Active Directory session related to the BEC financial fraud?",
+  "gold_answer": "237.7.81.122",
+  "solution_steps": [
+    "The email account `Nina Park` received emails with a malicious URL which were later removed.",
+    "There is an attempt of business email compromise (BEC) and financial fraud involving a suspicious inbox rule creation from an IP address `237.7.81.122`."
+  ],
+  "metadata": {
+    "start_alert": 13,
+    "end_alert": 17,
+    "start_entities": [
+      1,
+      2,
+      3,
+      4,
+      10
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      13,
+      6,
+      17
+    ]
+  }
+}

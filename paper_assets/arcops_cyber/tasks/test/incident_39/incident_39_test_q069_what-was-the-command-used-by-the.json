@@ -1,0 +1,37 @@
+{
+  "task_id": "incident_39_test_q069",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A recent incident report indicates a possible use of the Rubeus kerberoasting tool on the host `vnevado-win10b`. The tool was observed requesting Kerberos tickets for an account's service principal name and possibly decrypting them to obtain credentials or performing a pass-the-ticket technique. During the course of this incident, a remote session dropped and executed a file. This activity hints at an attacker trying to move laterally or propagate. Following these events, a suspicious service was initiated, potentially by the attacker to launch malicious commands or maintain persistence.",
+  "question": "What was the command used by the suspicious service that was launched?",
+  "gold_answer": "powershell.exe -command \"net.exe stop ntds /y; add-addbsidhistory -samaccountname bdadmin -sidhistory \\\"s-1-5-32-544\\\" -databasepath (get-itemproperty -path registry::hklm\\system\\currentcontrolset\\services\\ntds\\parameters).\\\"dsa database file\\\" -force; net.exe start ntds\"",
+  "solution_steps": [
+    "The Rubeus tool was potentially used for kerberoasting activities, indicated by the presence of the process file `psexesvc.exe`.",
+    "A file was dropped and executed from a remote location by the account with AadUserId `7fcf9695-68fc-4258-864d-e1e5b166c66f`, potentially indicating lateral movement or propagation attempts.",
+    "A suspicious service was launched using the command line `powershell.exe -command \"net.exe stop ntds /y; add-addbsidhistory -samaccountname bdadmin -sidhistory \\\"s-1-5-32-544\\\" -databasepath (get-itemproperty -path registry::hklm\\system\\currentcontrolset\\services\\ntds\\parameters).\\\"dsa database file\\\" -force; net.exe start ntds\"` at `2024-06-27t14:34:10.5477279z`, with Process ID `3780`. This action could be used to maintain persistence or elevate privileges."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 12,
+    "start_entities": [
+      1,
+      2,
+      3,
+      4,
+      6,
+      9,
+      10,
+      11
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      0,
+      5,
+      60,
+      15,
+      12
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_test_q049",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "During a recent security incident, a user clicked on a potentially malicious URL (`http://ms175052280.orangecliff-f53f26fd.eastus.azurecontainerapps.io/`) on 2024-07-17 10:59:14.787387+00:00. This URL click was detected as potentially harmful. This activity involved email messages containing malicious URLs which were later removed after delivery.",
+  "question": "Can you find out the Security Identifier (SID) of the account that received the email messages containing the malicious URL?",
+  "gold_answer": "S-1-5-21-1874151667-3554330288-105586563-1715",
+  "solution_steps": [
+    "An email with a potentially malicious URL was sent by `alyssat@vnevado.alpineskihouse.co`.",
+    "The user with SID `S-1-5-21-1874151667-3554330288-105586563-1715` received and had their email containing the malicious URL removed."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 13,
+    "start_entities": [
+      5
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      0,
+      3,
+      13
+    ]
+  }
+}

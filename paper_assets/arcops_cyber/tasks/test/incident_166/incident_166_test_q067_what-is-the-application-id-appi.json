@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_166_test_q067",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A security incident involving suspicious SAP authentication was triggered when a user account with a risky sign-in alert in Microsoft Entra ID signed in to SAP. The user account details are as follows: Name `Jordan P`, Email `Jordan P@vnevado.alpineskihouse.co`, and associated IP address `107.253.5.27`. The attacker might have taken control of this user account to search through SAP for sensitive financial information, which could be leveraged in later attack stages such as phishing or social engineering.",
+  "question": "What is the Application ID (AppId) associated with the suspicious SAP authentication?",
+  "gold_answer": "100",
+  "solution_steps": [
+    "There was a suspicious sign-in to the SAP cloud application with AppId `100` at `2024-07-22 13:19:46.630275+00:00`.",
+    "There was a suspicious sign-in to the SAP cloud application with AppId `100` at `2024-07-22 12:59:26.126190+00:00`."
+  ],
+  "metadata": {
+    "start_alert": 26,
+    "end_alert": 23,
+    "start_entities": [
+      1,
+      6,
+      7,
+      8,
+      25
+    ],
+    "end_entities": [
+      24
+    ],
+    "shortest_alert_path": [
+      26,
+      24,
+      23
+    ]
+  }
+}

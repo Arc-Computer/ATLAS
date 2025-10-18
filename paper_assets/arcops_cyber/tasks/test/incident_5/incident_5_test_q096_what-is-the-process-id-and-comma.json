@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_5_test_q096",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident involving potentially compromised assets exhibiting ransomware-like behavior was detected, with the malicious presence identified through specific files `get-userprttoken.ps1`, `characterical.zip`, and `characterical.zip.lockbit` from IP address `99.83.111.100` and user account `S-0-6-5`. This activity may allow attackers to move laterally across the network and infect multiple devices with ransomware. Automated remediation action might be taken to disable the account or device the attacker used related to this incident. There is also an indication of a possible attempt to access a Primary Refresh Token (PRT) reported.",
+  "question": "What is the process ID and command line of the process that was used in the possible attempt to access the Primary Refresh Token (PRT)?",
+  "gold_answer": "Process Id: 7036, Command Line: \"browsercore.exe\"",
+  "solution_steps": [
+    "There is ransomware-like behavior detected on the host `vnevado-win11t`.",
+    "There was a possible attempt to access a Primary Refresh Token using the process `browsercore.exe` with the command line `browsercore.exe` at `2024-06-20t09:29:49.304018z`, with Process ID `7036`."
+  ],
+  "metadata": {
+    "start_alert": 138,
+    "end_alert": 82,
+    "start_entities": [
+      42,
+      47,
+      48,
+      94,
+      95
+    ],
+    "end_entities": [
+      83
+    ],
+    "shortest_alert_path": [
+      138,
+      68,
+      82
+    ]
+  }
+}

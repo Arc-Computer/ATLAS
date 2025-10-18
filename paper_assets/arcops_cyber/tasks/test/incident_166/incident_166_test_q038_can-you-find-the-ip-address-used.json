@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_166_test_q038",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "There has been a suspicious SAP authentication involving the user account `Jordan P` (Email: `Jordan P@vnevado.alpineskihouse.co`). The IP address involved in this activity was `107.253.5.27`. This incident was triggered based on a risky sign-in alert in Microsoft Entra ID, suggesting that an attacker might have been trying to gain access to sensitive financial information within SAP.",
+  "question": "Can you find the IP address used in the detected Password Spray attack related to this incident?",
+  "gold_answer": "95.202.65.202",
+  "solution_steps": [
+    "A user account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82` with a risky sign-in alert in Microsoft Entra ID signed in to SAP, potentially to record or modify sensitive financial information.",
+    "A password spray attack was detected from IP address `95.202.65.202`."
+  ],
+  "metadata": {
+    "start_alert": 26,
+    "end_alert": 28,
+    "start_entities": [
+      6,
+      7,
+      8,
+      24,
+      25
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      26,
+      1,
+      28
+    ]
+  }
+}

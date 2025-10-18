@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_test_q072",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "In relation to this, we also detected suspicious PowerShell activity where an attacker might be trying to download external payloads or execute commands in the device.",
+  "question": "Related to this incident, a suspicious PowerShell command was executed. What was the command line and the associated process ID for this execution?",
+  "gold_answer": "ProcessId: 9780, CommandLine: \"winword.exe\" c:\\scripts\\rs4_winatp-intro-invoice.docm",
+  "solution_steps": [
+    "A suspicious command or file was registered in ASEP registry key on host `vnevado-win10e`.",
+    "PowerShell was used to download a file or execute an encoded command with command line `winword.exe c:\\scripts\\rs4_winatp-intro-invoice.docm` at `2024-06-26t11:57:20.2959493z`, with Process ID `9780`."
+  ],
+  "metadata": {
+    "start_alert": 17,
+    "end_alert": 26,
+    "start_entities": [
+      18,
+      19
+    ],
+    "end_entities": [
+      11
+    ],
+    "shortest_alert_path": [
+      17,
+      1,
+      26
+    ]
+  }
+}

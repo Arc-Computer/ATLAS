@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_test_q070",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "During an investigation of a security incident involving suspicious exploration activities on host `vnevado-win10v`, several windows commands were identified. Processes such as `powershell.exe` executing `domaindominance27.ps1` and various `net.exe` commands were run, indicating potential malicious activity. This behavior suggests attackers might be trying to identify valuable assets and coordinate lateral movements after compromising a machine.",
+  "question": "Related to this incident, there is a suspicious service launched on the same device. Can you identify the name of the account associated with this activity?",
+  "gold_answer": "lucasb",
+  "solution_steps": [
+    "A process with the name `powershell.exe` executed a set of windows commands which can be used to identify valuable assets and coordinate lateral movement.",
+    "A suspicious service was launched on the device by the account with the name `lucasb`."
+  ],
+  "metadata": {
+    "start_alert": 77,
+    "end_alert": 12,
+    "start_entities": [
+      81,
+      28,
+      82,
+      49,
+      84,
+      50,
+      32,
+      83,
+      33,
+      78
+    ],
+    "end_entities": [
+      13
+    ],
+    "shortest_alert_path": [
+      77,
+      17,
+      12
+    ]
+  }
+}

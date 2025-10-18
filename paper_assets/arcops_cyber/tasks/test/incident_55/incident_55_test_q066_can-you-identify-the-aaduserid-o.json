@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q066",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A suspicious execution of a command via the Impacket toolkit was observed on the host `mb-adfs`, indicating potential lateral movement by attackers. This hands-on-keyboard attack used the tool to explore network shares and execute commands, which generally leads to installing ransomware or other payloads on target devices. Connected to this, there was a command executed with the PowerShell process `powershell.exe`. This was seen involving the accounts `gsmith` and `LocalSystem`, as well as the host `mb-adfs`.",
+  "question": "Can you identify the AadUserId of the account associated with the malicious PowerShell Cmdlet invoked on the machine at the end alert?",
+  "gold_answer": "a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0",
+  "solution_steps": [
+    "There is an ongoing hands-on-keyboard attack via the Impacket toolkit that used the process `powershell.exe`.",
+    "A malicious PowerShell Cmdlet was invoked on the machine by a user with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0`."
+  ],
+  "metadata": {
+    "start_alert": 16,
+    "end_alert": 51,
+    "start_entities": [
+      18,
+      25,
+      17,
+      22,
+      26,
+      21,
+      20,
+      23,
+      24,
+      19
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      16,
+      8,
+      51
+    ]
+  }
+}

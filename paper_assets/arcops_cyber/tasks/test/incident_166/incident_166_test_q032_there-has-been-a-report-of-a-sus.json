@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_166_test_q032",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "As part of a security incident, a user account `Jordan P@vnevado.alpineskihouse.co` involved in a business email compromise-related alert signed in to SAP in a suspicious manner. The alert was triggered based on a Microsoft Defender XDR alert. An attacker might have taken control of the user account to search through SAP intending to record or modify sensitive financial information, which could potentially be used for later stages in the attack, such as phishing or social engineering.",
+  "question": "There has been a report of a suspicious SAP authentication from an IP address indicating a risky sign-in. Can you identify the IP address from which the suspicious SAP authentication occurred?",
+  "gold_answer": "107.253.5.27",
+  "solution_steps": [
+    "The email account `Jordan P@vnevado.alpineskihouse.co` involved in a BEC-related alert signed into SAP in a suspicious manner.",
+    "A risky sign-in was detected from the IP address `107.253.5.27` to SAP, indicating possible attacker-controlled access to the enterprise application software."
+  ],
+  "metadata": {
+    "start_alert": 27,
+    "end_alert": 23,
+    "start_entities": [
+      1,
+      6,
+      7,
+      8,
+      24
+    ],
+    "end_entities": [
+      25
+    ],
+    "shortest_alert_path": [
+      27,
+      7,
+      23
+    ]
+  }
+}

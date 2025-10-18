@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_38_test_q002",
+  "incident": "incident_38",
+  "split": "test",
+  "context": "During this incident, a tool or technique was used to gather information on the target device or network. What is the command line of the process associated with this information gathering activity?",
+  "question": "During this incident, a tool or technique was used to gather information on the target device or network. What is the command line of the process associated with this information gathering activity?",
+  "gold_answer": "7472__2024-06-26t15:49:15.7860486z__powershell.exe",
+  "solution_steps": [
+    "A process `powershell.exe` abnormally injected code into another process, potentially executing malicious code within a trusted process.",
+    "An attacker used the process `powershell.exe` (with Process ID `7472`, created on `2024-06-26t15:49:15.7860486z`) to gather information about the target device or network."
+  ],
+  "metadata": {
+    "start_alert": 14,
+    "end_alert": 0,
+    "start_entities": [
+      11,
+      12,
+      13
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      14,
+      6,
+      0
+    ]
+  }
+}

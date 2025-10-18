@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_39_train_q045",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "As an addition to the Kekeo malware investigation on host `vnevado-win10b`, there was also a suspicious sequence of exploration activities identified. Such windows commands can be leveraged by attackers for reconnaissance and to coordinate lateral movement after compromising a machine. We need to further analyze this by identifying the specific process that performed these reconnaissance activities.",
+  "question": "Can you identify the process that executed the suspicious sequence of exploration activities?",
+  "gold_answer": "whoami.exe",
+  "solution_steps": [
+    "An active 'Kekeo' malware was detected running the process `rubeus.exe`.",
+    "PsExec was used to launch a command on a remote device, running the process `net.exe`.",
+    "A suspicious sequence of exploration activities was detected, with the command line process `whoami.exe` executed at `2024-06-27t14:32:19.285352z` with Process ID `6512`."
+  ],
+  "metadata": {
+    "start_alert": 106,
+    "end_alert": 77,
+    "start_entities": [
+      1,
+      2,
+      3,
+      9,
+      10,
+      11
+    ],
+    "end_entities": [
+      78
+    ],
+    "shortest_alert_path": [
+      106,
+      7,
+      95,
+      18,
+      77
+    ]
+  }
+}

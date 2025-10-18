@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_train_q028",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A security incident involving a possible attempt to access a Primary Refresh Token (PRT) was detected on the host `vnevado-win10s` with AadDeviceId `f5b847aa-8712-4bf6-b4f7-ed6cd89e1505`. The process involved was `browsercore.exe` with Process Id `2676` and the command line `browsercore.exe`. This indicates that attackers might be attempting to exploit the PRT feature of Azure AD authentication to move laterally within the organization or perform credential theft. For more information, you can refer to the Midnight Blizzard credential attacks Threat Analytics report provided by Microsoft.",
+  "question": "Following this alert, another suspicious activity was detected involving WMI process creation. Can you identify the AadDeviceId of the host where this suspicious WMI process was created?",
+  "gold_answer": "bc00e484-d0e5-4da4-9472-95568cccc07e",
+  "solution_steps": [
+    "There was a possible attempt to access Primary Refresh Token by the account `dp5hn`.",
+    "Suspicious WMI process creation was observed on the machine with AadDeviceId `bc00e484-d0e5-4da4-9472-95568cccc07e`."
+  ],
+  "metadata": {
+    "start_alert": 113,
+    "end_alert": 117,
+    "start_entities": [
+      12,
+      13,
+      40,
+      114
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      113,
+      1,
+      117
+    ]
+  }
+}

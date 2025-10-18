@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_39_train_q016",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A known credential theft tool execution command line was detected. Attackers used a process with Process ID 4748 and command line `mimikatz.exe lsadump::dcsync /domain:vnevado.alpineskihouse.co /user:xfbzkp exit` on 2024-07-04 to dump users' credentials. Following this, multiple dual-purpose tools which can be used for credential theft, privilege escalation, and lateral movement were dropped on the device. Shortly after, suspicious remote activity was observed on this machine, potentially indicating attempts to initiate interactive sessions, modify files, or pass commands remotely.",
+  "question": "Can you identify the AadUserId of the user associated with the suspicious remote activity on the machine?",
+  "gold_answer": "97e6a954-b6bd-48a5-808c-bd8464cce677",
+  "solution_steps": [
+    "A malicious credential theft tool was executed on the device with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`.",
+    "Multiple dual-purpose tools, including `psexesvc.exe`, were dropped on the same device.",
+    "Suspicious remote activity was observed on the device, initiated by the user with AadUserId `97e6a954-b6bd-48a5-808c-bd8464cce677`."
+  ],
+  "metadata": {
+    "start_alert": 26,
+    "end_alert": 101,
+    "start_entities": [
+      30
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      26,
+      33,
+      62,
+      24,
+      101
+    ]
+  }
+}

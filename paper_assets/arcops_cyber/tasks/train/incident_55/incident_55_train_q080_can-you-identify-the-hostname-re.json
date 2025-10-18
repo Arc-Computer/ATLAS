@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_55_train_q080",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "An attempt to hide the use of a dual-purpose tool was detected. A known public tool, under the unexpected filename `iy2orr1e.rrg.exe`, was executed with the command line `iy2orr1e.rrg.exe -windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=`. The process (`iy2orr1e.rrg.exe`) was created at the time `2024-07-02T09:48:23.9439954z`, and the user involved was `gsmith` with AadUserId `ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5` and Sid `S-2-5-21-571436798-3864380397-1837441745-3206`.",
+  "question": "Can you identify the hostname related to this alert where this suspicious activity was observed?",
+  "gold_answer": "mb-adfs",
+  "solution_steps": [
+    "There was an attempt to use a known dual-purpose tool under an unexpected filename on host `mb-adfs`."
+  ],
+  "metadata": {
+    "start_alert": 32,
+    "end_alert": 32,
+    "start_entities": [
+      29,
+      20,
+      28,
+      18,
+      19
+    ],
+    "end_entities": [
+      26
+    ],
+    "shortest_alert_path": [
+      32
+    ]
+  }
+}

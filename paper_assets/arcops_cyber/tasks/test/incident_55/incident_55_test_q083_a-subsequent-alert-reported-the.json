@@ -1,0 +1,38 @@
+{
+  "task_id": "incident_55_test_q083",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A suspicious command execution via the Impacket toolkit was observed, indicating a hands-on-keyboard attack. The attackers might be attempting to perform lateral movements across the network. The related incident started with suspicious usage of Impacket on `mb-adfs` and included a powershell.exe command launched with encoded arguments. Following this, another alert reported suspicious system hardware discovery, highlighting attackers' efforts to gather information about the target device or network for subsequent attacks.",
+  "question": "A subsequent alert reported the removal of emails containing malicious URLs after delivery. Can you identify the email address associated with this alert?",
+  "gold_answer": "Lucas Grey@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "A command via Impacket toolkit was executed with `powershell.exe` indicating a potential hands-on-keyboard attack.",
+    "Suspicious system hardware discovery was conducted using an account with SID `S-1-5-21-561436748-3867387497-1732241745-3701`.",
+    "The email account `Lucas Grey@niseko.alpineskihouse.co` received an email containing a malicious URL, which was later removed."
+  ],
+  "metadata": {
+    "start_alert": 16,
+    "end_alert": 92,
+    "start_entities": [
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      25,
+      26
+    ],
+    "end_entities": [
+      90
+    ],
+    "shortest_alert_path": [
+      16,
+      8,
+      0,
+      2,
+      92
+    ]
+  }
+}

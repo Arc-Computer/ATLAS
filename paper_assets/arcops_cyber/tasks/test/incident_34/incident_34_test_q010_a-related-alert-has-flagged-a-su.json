@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_34_test_q010",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "During a security investigation on July 4th, 2024, an anomaly was detected in the ASEP registry where a process registered a suspicious command or file. This could be an indicator that an attacker is attempting to maintain persistence on a machine that may be turned off. The detection originated from IP address `72.5.72.208`.",
+  "question": "A related alert has flagged a suspicious PowerShell command line on the machine indicating potential malicious activity. Can you find the name of the file that was associated with the suspicious PowerShell activity?",
+  "gold_answer": "winatp-intro-backdoor.exe",
+  "solution_steps": [
+    "An anomaly was detected in the ASEP registry on host `vnevado-win10e`.",
+    "A suspicious PowerShell command line activity involving the file `winatp-intro-backdoor.exe` was observed."
+  ],
+  "metadata": {
+    "start_alert": 17,
+    "end_alert": 10,
+    "start_entities": [
+      18
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      17,
+      1,
+      10
+    ]
+  }
+}

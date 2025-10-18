@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_166_test_q061",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A security incident related to business email compromise (BEC) fraud attempts has been observed. Suspicious emails were sent by a user account potentially compromised in this ongoing BEC incident. The emails were sent from `laylaw@vnevado.alpineskihouse.co` to `tony@avoriaz.alpineskihouse.co` with the sender IP address being `255.246.85.58`.",
+  "question": "In relation to the ongoing BEC incident, can you identify the Security Identifier (SID) of the account attempting the possible BEC financial fraud?",
+  "gold_answer": "S-1-5-21-1740051960-3534030288-108486866-1602",
+  "solution_steps": [
+    "Suspicious emails were sent by a possibly compromised user account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`, related to an ongoing BEC fraud attempt.",
+    "Suspicious events with business email compromise characteristics, indicating a possible BEC financial fraud by the user with Sid `S-1-5-21-1740051960-3534030288-108486866-1602`."
+  ],
+  "metadata": {
+    "start_alert": 18,
+    "end_alert": 29,
+    "start_entities": [
+      15,
+      19,
+      20,
+      21,
+      22
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      18,
+      1,
+      29
+    ]
+  }
+}

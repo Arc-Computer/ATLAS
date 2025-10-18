@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_39_test_q040",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A suspicious service was started on a device on 2024-07-04, which might have been used by attackers to launch malicious commands or programs. This technique is commonly used to maintain persistence or elevate privileges. During this investigation, a process `services.exe` with Process ID 652 was noted along with another process `psexesvc.exe` with Process ID 7668.",
+  "question": "A suspicious user account was also created on the same day. Can you identify the name of the account that was created?",
+  "gold_answer": "tgs2z",
+  "solution_steps": [
+    "A suspicious service was launched on the host `vnevado-dc`.",
+    "The suspicious service is associated with the executable file `net.exe`.",
+    "A new suspicious account with the name `tgs2z` was created, possibly to maintain access to the device or organization."
+  ],
+  "metadata": {
+    "start_alert": 86,
+    "end_alert": 48,
+    "start_entities": [
+      5,
+      61,
+      87,
+      88
+    ],
+    "end_entities": [
+      27
+    ],
+    "shortest_alert_path": [
+      86,
+      20,
+      12,
+      18,
+      48
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_39_train_q022",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident occurred where multiple dual-purpose tools were dropped on a device named `vnevado-win10v`. These tools can potentially be used for malicious purposes, such as credential theft, privilege escalation, and lateral movement. One of the dropped files was named `domaindominance27.ps1`, launched by `powershell.exe` via a script located in the user's downloads. Following this, there was an indication of human-operated malicious activity that might lead to serious consequences like ransomware installation.",
+  "question": "In connection to these alerts, a suspicious service was launched. Can you identify the name of the process file associated with this suspicious service?",
+  "gold_answer": "services.exe",
+  "solution_steps": [
+    "The file `rubeus.exe` was dropped on this device, which is a known dual-purpose tool.",
+    "A potentially malicious process `psexesvc.exe` was observed on this device, indicating possible human-operated malicious activity.",
+    "A suspicious service `services.exe` was launched on this device, which might be used by attackers to maintain persistence or elevate privileges."
+  ],
+  "metadata": {
+    "start_alert": 76,
+    "end_alert": 90,
+    "start_entities": [
+      63,
+      33,
+      32,
+      50,
+      49,
+      66,
+      64,
+      17,
+      29,
+      27
+    ],
+    "end_entities": [
+      88
+    ],
+    "shortest_alert_path": [
+      76,
+      65,
+      105,
+      5,
+      90
+    ]
+  }
+}

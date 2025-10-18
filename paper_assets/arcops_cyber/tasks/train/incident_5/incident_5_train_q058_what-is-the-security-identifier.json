@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_5_train_q058",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "An incident was reported involving 'CommandAndControl' malware detected during lateral movement on the device `vnevado-win11t`. It seems that the attacker might be attempting to move laterally to this device from another device on the network. The command executed was `curl http://vectorsandarrows.com`. Additionally, suspicious remote activity was observed, raising concerns about potential malicious activities.",
+  "question": "What is the Security Identifier (SID) of the account involved in the PSExec to the jump server `Vnevado-jump`?",
+  "gold_answer": "S-5-7-21-1843151660-3234030288-105586167-1422",
+  "solution_steps": [
+    "'CommandAndControl' malware was detected on the device associated with the account `dp5hn`.",
+    "Suspicious remote activity was observed on this machine from the IP address `99.83.111.100`.",
+    "Lateral movement to the jump server `Vnevado-jump` was conducted by the user with SID `S-5-7-21-1843151660-3234030288-105586167-1422`."
+  ],
+  "metadata": {
+    "start_alert": 127,
+    "end_alert": 174,
+    "start_entities": [
+      1,
+      2,
+      3,
+      67,
+      68,
+      69
+    ],
+    "end_entities": [
+      17
+    ],
+    "shortest_alert_path": [
+      127,
+      1,
+      107,
+      42,
+      174
+    ]
+  }
+}

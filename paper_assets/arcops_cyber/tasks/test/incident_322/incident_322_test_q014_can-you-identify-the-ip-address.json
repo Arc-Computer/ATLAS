@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_322_test_q014",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "A suspicious credential dump from NTDS.dit was observed on 2024-08-01, which often involves attackers trying to obtain user\u2019s credentials from the domain controller. Subsequently, there was an Azure Resource Manager operation detected from a suspicious proxy IP address, indicating it might be related to the same malicious activity. Later, a malicious URL was clicked on a device associated with another alert.",
+  "question": "Can you identify the IP address involved in the connection to login.micro.demo.antoinetest.ovh according to the proxy logs?",
+  "gold_answer": "231.60.52.209",
+  "solution_steps": [
+    "There is a suspicious credential dump from NTDS.dit on host `vnevado-dc`.",
+    "There is an Azure Resource Manager operation from a proxy IP address by the account `Hailey Johnson`.",
+    "There was a malicious URL clicked on the device `vnevado-win11h`.",
+    "There is a connection from IP `231.60.52.209` on the device `vnevado-win11h.vnevado.alpineskihouse.co` which accessed a known malicious URL `login.micro.demo.antoinetest.ovh`."
+  ],
+  "metadata": {
+    "start_alert": 16,
+    "end_alert": 11,
+    "start_entities": [
+      17,
+      18,
+      19,
+      20
+    ],
+    "end_entities": [
+      14
+    ],
+    "shortest_alert_path": [
+      16,
+      21,
+      25,
+      6,
+      33,
+      13,
+      11
+    ]
+  }
+}

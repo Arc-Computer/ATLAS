@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_134_train_q010",
+  "incident": "incident_134",
+  "split": "train",
+  "context": "",
+  "question": "Following the incident of the malicious URL click, there was a subsequent account compromise. Can you identify the IP address from which the compromised account was accessed?",
+  "gold_answer": "170.54.121.63",
+  "solution_steps": [
+    "The email account `Nina Park@vnevado.alpineskihouse.co` clicked on a link found to be malicious.",
+    "A compromised account was detected with an unusual sign-in from IP address `170.54.121.63` following a password-spray attack."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 25,
+    "start_entities": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      10
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      0,
+      7,
+      25
+    ]
+  }
+}

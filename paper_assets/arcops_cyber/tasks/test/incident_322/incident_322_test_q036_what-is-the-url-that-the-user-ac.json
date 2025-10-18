@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_322_test_q036",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "As part of an ongoing investigation into a multi-stage incident involving initial access & collection on multiple endpoints, `powershell.exe` and `ntdsutil.exe` processes were identified, potentially pointing to an attacker using Ntdsutil to maintain persistence or move laterally within the organization. Additionally, there was an alert triggered by Microsoft Defender for Resource Manager due to operations from a suspicious proxy IP address. Yet another part of this incident revealed a quarantined email that contained a link accessed by a user.",
+  "question": "What is the URL that the user accessed in the email which was subsequently quarantined by ZAP?",
+  "gold_answer": "https://dj01161621.bravesand-e1ccd718.eastus.azurecontainerapps.io/",
+  "solution_steps": [
+    "There is a collection of active directory information with ntutil.exe on host `vnevado-dc`.",
+    "There is a suspicious Azure Resource Manager operation associated with the account having SID `S-1-5-21-1840151686-3534835288-156286563-1127`.",
+    "A user accessed a link `https://dj01161621.bravesand-e1ccd718.eastus.azurecontainerapps.io/` which was subsequently quarantined by ZAP."
+  ],
+  "metadata": {
+    "start_alert": 22,
+    "end_alert": 23,
+    "start_entities": [
+      17,
+      18,
+      19,
+      20
+    ],
+    "end_entities": [
+      24
+    ],
+    "shortest_alert_path": [
+      22,
+      21,
+      25,
+      8,
+      23
+    ]
+  }
+}

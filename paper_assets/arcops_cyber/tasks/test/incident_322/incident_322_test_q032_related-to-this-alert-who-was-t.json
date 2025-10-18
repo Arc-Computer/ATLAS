@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_322_test_q032",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "A connection from IP address `231.60.52.209` on host `vnevado-win11h.vnevado.alpineskihouse.co` to the URL `login.micro.demo.antoinetest.ovh` was detected in our proxy logs as malicious. As part of the investigation, it was noted that a malicious URL was clicked on this device. The email messages containing the malicious URL were later removed after delivery.",
+  "question": "Related to this alert, who was the sender of the email messages containing the malicious URL that were removed after delivery?",
+  "gold_answer": "raphaelt@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "The host `vnevado-win11h` established a connection to a malicious URL `login.micro.demo.antoinetest.ovh`.",
+    "The email account `Hailey Johnson@vnevado.alpineskihouse.co` clicked on the malicious URL on the device `vnevado-win11h`.",
+    "Emails containing the malicious URL, sent by `raphaelt@vnevado.alpineskihouse.co`, were delivered and later removed."
+  ],
+  "metadata": {
+    "start_alert": 11,
+    "end_alert": 2,
+    "start_entities": [
+      12,
+      14,
+      15
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      11,
+      13,
+      33,
+      7,
+      2
+    ]
+  }
+}

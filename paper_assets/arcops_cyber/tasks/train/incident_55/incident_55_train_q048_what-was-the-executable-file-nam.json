@@ -1,0 +1,40 @@
+{
+  "task_id": "incident_55_train_q048",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "An email containing a malicious URL was delivered and later removed. The email was sent to `santiago@vnevado.alpineskihouse.co` from the IP address `106.214.87.198`. The sender's email address was `4qs6v9m@vnevado.alpineskihouse.co` and the malicious URL included in the email was `http://kn017721628.wittytree-b6f239d6.northeurope.azurecontainerapps.io/`. Following this, an internal phishing campaign was detected involving a compromised user account, and suspicious access to the LSASS service was observed. Additionally, a system executable was renamed and launched, indicating potential evasion of behavior-based detection mechanisms. The final alert indicated that a system program was registered as a suspicious service.",
+  "question": "What was the executable file name registered as a suspicious service during the final step of this incident?",
+  "gold_answer": "services.exe",
+  "solution_steps": [
+    "The email account with SID `S-1-5-11-7842151660-4834030208-105586563-1139` received an email with a malicious URL that was removed after delivery.",
+    "The user with account SID `S-1-5-21-561436748-3867387497-1732241745-3701` was observed sending phishing emails to recipients inside the organization, indicating a potential compromise and lateral movement attempt by an attacker.",
+    "There was a suspicious access to the LSASS service using the process `powershell.exe` to potentially obtain clear-text passwords.",
+    "A Windows executable renamed and launched on the host `mb-adfs`, possibly to avoid detection and run malicious code or connect to an attacker-controlled network address.",
+    "A system program `services.exe` was suspiciously registered as a service, indicating potential malicious intent to establish persistence or gain system privileges."
+  ],
+  "metadata": {
+    "start_alert": 70,
+    "end_alert": 61,
+    "start_entities": [
+      71,
+      72,
+      73,
+      74,
+      79
+    ],
+    "end_entities": [
+      63
+    ],
+    "shortest_alert_path": [
+      70,
+      77,
+      88,
+      2,
+      45,
+      8,
+      27,
+      26,
+      61
+    ]
+  }
+}

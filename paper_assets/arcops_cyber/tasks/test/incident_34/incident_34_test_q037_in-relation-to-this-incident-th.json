@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_34_test_q037",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "During a recent security incident, we observed a process `winatp-intro-backdoor.exe` connected to IP `72.5.72.208`, running the command `reg add hkcu\\software\\microsoft\\windows\\currentversion\\runonce /f /v yrei /t reg_expand_sz /d %userprofile%\\desktop\\winatp-intro-backdoor.exe`. This activity suggested an anomaly in the ASEP registry where a suspicious command or file was registered. This might be an attempt by an attacker to maintain persistence even after a reboot.",
+  "question": "In relation to this incident, there was a suspicious LDAP query suggesting reconnaissance activity. Could you identify the process and the command line used to execute this LDAP query?",
+  "gold_answer": "Process Id: 9780, Command Line: \"winword.exe\" c:\\scripts\\rs4_winatp-intro-invoice.docm",
+  "solution_steps": [
+    "A suspicious process registered a command or file in the ASEP registry key on the host with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f`.",
+    "A suspect LDAP query was executed, likely indicating reconnaissance activity, by the process `winword.exe` using the command line `c:\\scripts\\rs4_winatp-intro-invoice.docm` at `2024-06-26t11:57:20.2959493z`, with Process ID `9780`."
+  ],
+  "metadata": {
+    "start_alert": 17,
+    "end_alert": 24,
+    "start_entities": [
+      9,
+      18,
+      19
+    ],
+    "end_entities": [
+      11
+    ],
+    "shortest_alert_path": [
+      17,
+      2,
+      24
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_38_test_q003",
+  "incident": "incident_38",
+  "split": "test",
+  "context": "A security incident where unexpected behavior was observed in a process that ran with no command line arguments on IP address `202.183.149.174`. This kind of behavior can indicate code injection or a malicious execution masquerading as a legitimate process. As part of the investigation into this incident, it was reported that a process demonstrated suspicious activities such as injecting code into another, leading to abnormal behaviors like opening a listening port or connecting to a command control server.",
+  "question": "Related to this alert, can you identify the URL associated with the suspicious process injection?",
+  "gold_answer": "https://wcdstaticfilesprdeus.blob.core.windows.net/wcdstaticfiles/winatp-intro-fileless.txt",
+  "solution_steps": [
+    "Unexpected behavior was observed by a process on host `vnevado-win11a`, which was ran with no command line arguments.",
+    "A suspicious process injection has been observed, where code was injected using the URL `https://wcdstaticfilesprdeus.blob.core.windows.net/wcdstaticfiles/winatp-intro-fileless.txt`."
+  ],
+  "metadata": {
+    "start_alert": 15,
+    "end_alert": 10,
+    "start_entities": [
+      16
+    ],
+    "end_entities": [
+      13
+    ],
+    "shortest_alert_path": [
+      15,
+      8,
+      10
+    ]
+  }
+}

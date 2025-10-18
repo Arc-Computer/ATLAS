@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_test_q064",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "During the security investigation into an incident reported on 2024-07-04, it was noted that an uncommon file was created and added to a Run Key, which might indicate an attacker placing malicious software to maintain persistence on the machine. The process involved had an IP address `72.5.72.208` and executed the following command: `reg add hkcu\\software\\microsoft\\windows\\currentversion\\runonce /f /v yrei /t reg_expand_sz /d %userprofile%\\desktop\\winatp-intro-backdoor.exe`. There was also an indication of a suspicious PowerShell download or encoded command execution, which usually suggests an attempt to bypass security mechanisms.",
+  "question": "What was the name and command line of the process involved in the suspicious PowerShell activity?",
+  "gold_answer": "\"winword.exe\" c:\\scripts\\rs4_winatp-intro-invoice.docm",
+  "solution_steps": [
+    "An uncommon file was created on host `vnevado-win10e` and added to a Run Key.",
+    "A process with Process ID `9780` executed PowerShell through the command line `winword.exe c:\\scripts\\rs4_winatp-intro-invoice.docm` at `2024-06-26t11:57:20.2959493z`."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 26,
+    "start_entities": [
+      18,
+      19
+    ],
+    "end_entities": [
+      11
+    ],
+    "shortest_alert_path": [
+      23,
+      1,
+      26
+    ]
+  }
+}

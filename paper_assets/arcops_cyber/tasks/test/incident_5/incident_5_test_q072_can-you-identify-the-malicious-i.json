@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_test_q072",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident related to the Manatee Tempest activity group was also identified. Manatee Tempest is known for using various methods such as drive-by download, including malvertising and FakeUpdates (SocGholish) infections, to obtain initial access, and they frequently use BLISTER loader to deliver Cobalt Strike beacons for lateral movement and ransomware deployment. The group also employs domain fronting for command-and-control channels.",
+  "question": "Can you identify the malicious IP address associated with the Manatee Tempest group activities?",
+  "gold_answer": "198.43.121.209",
+  "solution_steps": [
+    "All file snapshots and shadow copies on the account `dp5hn` were deleted which is common during a ransomware infection.",
+    "The cybercriminal group, Manatee Tempest, known for deploying ransomware and other malware, accessed using IP address `198.43.121.209`."
+  ],
+  "metadata": {
+    "start_alert": 116,
+    "end_alert": 135,
+    "start_entities": [
+      11,
+      68,
+      69,
+      80
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      116,
+      1,
+      135
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_train_q024",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "An automated investigation was started manually by u141(u141@ash.alpineskihouse.co) on the host `vnevado-win10e`. During this investigation, an anomalous scheduled task was identified on the device. This could be an indication of an attacker attempting to gain persistence on the device.",
+  "question": "What is the username associated with the suspicious scheduled task that was created as part of this incident?",
+  "gold_answer": "samuelf",
+  "solution_steps": [
+    "An automated investigation was initiated manually by the user `u141@ash.alpineskihouse.co` on the host `vnevado-win10e.vnevado.alpineskihouse.co`.",
+    "An account with the name `samuelf` created an anomalous scheduled task, which may be used by an attacker to maintain persistence on the device."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 20,
+    "start_entities": [
+      1,
+      2
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      0,
+      1,
+      20
+    ]
+  }
+}

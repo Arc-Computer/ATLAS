@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_55_train_q068",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "During a recent security incident, an account `gsmith` on host `mb-adfs` was found to run a potentially malicious process `iy2orr1e.rrg.exe` with process ID 3116. This process utilized encoded commands and might be an attempt to hide the usage of a public tool for malicious purposes.",
+  "question": "As part of suspicious exploration activities following the initial alert, what was the IP address involved in the later stages of the incident?",
+  "gold_answer": "72.5.72.208",
+  "solution_steps": [
+    "The host `mb-adfs` had an attempt to hide the use of a dual-purpose tool under an unexpected filename.",
+    "The process `whoami.exe` executed a suspicious sequence of exploration activities.",
+    "A suspicious sequence of exploration activities was also observed involving the IP address `72.5.72.208`."
+  ],
+  "metadata": {
+    "start_alert": 32,
+    "end_alert": 57,
+    "start_entities": [
+      18,
+      19,
+      20,
+      26,
+      28,
+      29
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      32,
+      26,
+      52,
+      54,
+      57
+    ]
+  }
+}

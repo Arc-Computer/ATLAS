@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_39_test_q004",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A security incident involved suspicious access to the LSASS service where attackers used tools to decrypt clear-text passwords from the LSASS service's memory. The activity occurred on a specific device identified by AadDeviceId, and one of the tools used was `mimikatz.exe`. This can be indicative of an attempt to obtain credentials for the purpose of lateral movement in the network.",
+  "question": "Related to this alert, which process was responsible for the suspicious account creation?",
+  "gold_answer": "ProcessId 3624",
+  "solution_steps": [
+    "There is suspicious access to the LSASS service on the host with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`.",
+    "A suspicious account was created using the command line `net.exe user /add bdadmin password1! /domain` on `2024-06-27t14:33:43.4299474z`, with Process ID `3624`."
+  ],
+  "metadata": {
+    "start_alert": 102,
+    "end_alert": 48,
+    "start_entities": [
+      31,
+      37,
+      38,
+      40,
+      45,
+      56,
+      67,
+      68,
+      103
+    ],
+    "end_entities": [
+      51
+    ],
+    "shortest_alert_path": [
+      102,
+      33,
+      48
+    ]
+  }
+}

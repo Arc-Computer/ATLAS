@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_55_test_q007",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A suspicious service creation was detected on 2024-07-10 on host `MB-ADFS`. The service `DDLOXJDSQSNGMUKKFUXQ` was created by user `gsmith@niseko.alpineskihouse.co` to potentially execute malicious commands. This incident was part of a connected sequence of exploration activities performed by a process that executed a set of Windows commands, typically used by attackers to identify valuable assets and coordinate lateral movement post-compromise.",
+  "question": "What was the command executed by the process during the suspicious sequence of exploration activities on host `MB-ADFS`?",
+  "gold_answer": "The commands executed by the process are not provided in the given data.",
+  "solution_steps": [
+    "User with AadUserId `ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5` created a suspicious service named DDLOXJDSQSNGMUKKFUXQ on host `mb-adfs`.",
+    "There was a suspicious sequence of exploration activities involving windows commands on host `mb-adfs`."
+  ],
+  "metadata": {
+    "start_alert": 101,
+    "end_alert": 52,
+    "start_entities": [
+      102,
+      103
+    ],
+    "end_entities": [
+      26
+    ],
+    "shortest_alert_path": [
+      101,
+      20,
+      52
+    ]
+  }
+}

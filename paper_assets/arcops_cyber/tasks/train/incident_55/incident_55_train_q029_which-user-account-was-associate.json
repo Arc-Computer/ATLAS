@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_55_train_q029",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "During a recent incident where a suspicious LDAP (Lightweight Directory Access Protocol) query was executed, a script file `ldaprequest.ps1` was launched using PowerShell. This indicates potential reconnaissance activity, as LDAP queries are often used by attackers to learn the organization's structure by querying the domain controller for administrative users, groups, and interesting assets. This information could be used by attackers to gain higher privileges and access important assets in the organization.",
+  "question": "Which user account was associated with invoking a malicious PowerShell Cmdlet on the machine during this incident?",
+  "gold_answer": "bjenkins",
+  "solution_steps": [
+    "A suspect LDAP query indicating potential reconnaissance activity was executed from the host with AadDeviceId `7661dfd4-218f-4016-8a87-66d68a7f098e`.",
+    "A malicious PowerShell Cmdlet associated with potential malicious activities such as credential theft, exploitation, network reconnaissance or code injection was invoked by the account named `bjenkins`."
+  ],
+  "metadata": {
+    "start_alert": 64,
+    "end_alert": 51,
+    "start_entities": [
+      65,
+      66
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      64,
+      15,
+      51
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_39_test_q072",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "As part of a recent security investigation, we detected the execution of a known credential theft tool, `mimikatz.exe`, on host `vnevado-win10v` associated with the user account `tgs2z`. The tool was executed with the command line: `mimikatz.exe privilege::debug 'kerberos::ptt c:\\m365dattack\\admin-tickets' exit`. Shortly after, there was activity indicating the use of the Rubeus kerberoasting tool connected to this endpoint. Following this, an alert notified that a file was dropped and launched from a remote location, suggesting a possible lateral movement or propagation attempt.",
+  "question": "Can you identify the time this process was created?",
+  "gold_answer": "Time: 2024-06-27t14:32:53.2267179z",
+  "solution_steps": [
+    "A known credential theft tool execution was detected, involving an account with SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "The use of the Rubeus kerberoasting tool was observed, with a file named `adminticket.txt` being extracted.",
+    "The Rubeus tool was also associated with an account named `fk8mq`.",
+    "A file named `psexesvc.exe` was dropped and launched from a remote location with Process ID `5912` at `2024-06-27t14:32:53.2267179z`."
+  ],
+  "metadata": {
+    "start_alert": 85,
+    "end_alert": 58,
+    "start_entities": [
+      27,
+      28,
+      29,
+      31,
+      32,
+      33,
+      71
+    ],
+    "end_entities": [
+      59
+    ],
+    "shortest_alert_path": [
+      85,
+      28,
+      107,
+      8,
+      0,
+      1,
+      58
+    ]
+  }
+}

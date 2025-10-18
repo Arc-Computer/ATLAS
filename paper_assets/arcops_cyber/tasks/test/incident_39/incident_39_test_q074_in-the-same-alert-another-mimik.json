@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_39_test_q074",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A known credential theft tool execution command line was detected on 2024-07-04. The command line for the process `mimikatz.exe` was aiming to acquire credentials using the command: `mimikatz.exe privilege::debug \"kerberos::ptt c:\\m365dattack\\admin-tickets\" exit`. This was identified with the Process ID 5176.",
+  "question": "In the same alert, another Mimikatz process was detected. Can you provide the command line used along with its Process ID and creation time?",
+  "gold_answer": "5196__2024-06-27t14:32:35.4061023z__\"mimikatz.exe\" privilege::debug sekurlsa::logonpasswords exit",
+  "solution_steps": [
+    "A known credential theft tool execution was detected under the account with SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "A known credential theft tool 'mimikatz.exe' was executed with the command line `mimikatz.exe privilege::debug sekurlsa::logonpasswords exit` at `2024-06-27t14:32:35.4061023z`, with Process ID `5196`."
+  ],
+  "metadata": {
+    "start_alert": 85,
+    "end_alert": 89,
+    "start_entities": [
+      71
+    ],
+    "end_entities": [
+      67
+    ],
+    "shortest_alert_path": [
+      85,
+      28,
+      89
+    ]
+  }
+}

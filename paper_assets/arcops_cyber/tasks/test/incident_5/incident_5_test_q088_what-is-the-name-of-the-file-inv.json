@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_5_test_q088",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident was triggered due to a known credential theft tool execution command line. The process mimikatz.exe was used, showing an intent to dump user credentials. In relation to this, there was suspicious access to the LSASS service involving a specific file.",
+  "question": "What is the name of the file involved in the suspicious access to the LSASS service?",
+  "gold_answer": "cryptdll.dll",
+  "solution_steps": [
+    "A known credential theft tool named `mimikatz.exe` was executed.",
+    "Suspicious access to the LSASS service, potentially attempting to decrypt user passwords using the file `cryptdll.dll`, was detected."
+  ],
+  "metadata": {
+    "start_alert": 156,
+    "end_alert": 15,
+    "start_entities": [
+      111
+    ],
+    "end_entities": [
+      25
+    ],
+    "shortest_alert_path": [
+      156,
+      24,
+      15
+    ]
+  }
+}

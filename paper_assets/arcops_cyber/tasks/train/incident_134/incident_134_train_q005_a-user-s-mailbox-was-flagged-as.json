@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_train_q005",
+  "incident": "incident_134",
+  "split": "train",
+  "context": "On July 17th, 2024, an anonymous sign-in attempt was detected from IP address `170.54.121.63`, which may indicate the use of a Tor browser or anonymizer VPNs. This sign-in attempt is part of an ongoing security incident involving multiple alerts related to BEC (business email compromise) fraud attempts.",
+  "question": "A user's mailbox was flagged as part of a suspicious business email compromise activity. Can you provide the primary email address of this mailbox?",
+  "gold_answer": "nathan@avoriaz.alpineskihouse.co",
+  "solution_steps": [
+    "There was a sign-in from an anonymous IP address by a user with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1`.",
+    "Suspicious emails were sent by a possibly compromised user with the mailbox primary address `nathan@avoriaz.alpineskihouse.co`."
+  ],
+  "metadata": {
+    "start_alert": 11,
+    "end_alert": 18,
+    "start_entities": [
+      12
+    ],
+    "end_entities": [
+      19
+    ],
+    "shortest_alert_path": [
+      11,
+      9,
+      18
+    ]
+  }
+}

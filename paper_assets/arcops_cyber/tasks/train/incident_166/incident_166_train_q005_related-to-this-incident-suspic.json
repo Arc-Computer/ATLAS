@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_166_train_q005",
+  "incident": "incident_166",
+  "split": "train",
+  "context": "In the context of a security incident, a user account with a risky sign-in alert in Microsoft Entra ID signed in to an SAP cloud application using IP address `107.253.5.27`. This action triggered an alert due to a suspicious SAP authentication. The potential attacker might have taken control of a user account to search through SAP with the intention of recording or modifying sensitive financial information, which could be used for later stages in the attack, such as phishing or social engineering.",
+  "question": "Related to this incident, suspicious emails were later sent by a possibly compromised user account. Can you find the sender IP address of those emails?",
+  "gold_answer": "255.246.85.58",
+  "solution_steps": [
+    "The user account with email `Jordan P@vnevado.alpineskihouse.co` performed a suspicious sign-in to SAP, potentially indicating an attacker attempting to access sensitive financial information.",
+    "Suspicious emails were sent from the IP address `255.246.85.58`, in relation to a BEC fraud attempt, suggesting a compromised user account was involved in sending these emails."
+  ],
+  "metadata": {
+    "start_alert": 26,
+    "end_alert": 18,
+    "start_entities": [
+      24,
+      25
+    ],
+    "end_entities": [
+      21
+    ],
+    "shortest_alert_path": [
+      26,
+      7,
+      18
+    ]
+  }
+}

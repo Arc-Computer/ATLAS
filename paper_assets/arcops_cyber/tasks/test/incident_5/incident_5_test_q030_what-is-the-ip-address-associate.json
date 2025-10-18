@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_test_q030",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "On July 4, 2024, at 22:35:01, a security incident involving system recovery setting tampering was observed. The device `vnevado-win11t` with AadDeviceId `e5799261-6720-4297-961e-bd9ca4275033` was targeted. Command lines `vssblatemp.exe delete shadows /all` and `bcdedit /set recoveryenabled no` were executed, which may indicate that adversaries attempted to stop or delete system recovery features to prevent recovering a corrupted system.",
+  "question": "What is the IP address associated with the suspicious remote activity observed on this machine?",
+  "gold_answer": "99.83.111.100",
+  "solution_steps": [
+    "The user account `dp5hn` was observed tampering with system recovery settings, possibly attempting to delete or disable recovery features.",
+    "Suspicious remote activity was detected from IP address `99.83.111.100`, which could indicate attempts to initiate interactive sessions, modify files, pass WMI commands, create scheduled tasks, or other malicious activities."
+  ],
+  "metadata": {
+    "start_alert": 79,
+    "end_alert": 140,
+    "start_entities": [
+      68,
+      69,
+      80,
+      81
+    ],
+    "end_entities": [
+      42
+    ],
+    "shortest_alert_path": [
+      79,
+      1,
+      140
+    ]
+  }
+}

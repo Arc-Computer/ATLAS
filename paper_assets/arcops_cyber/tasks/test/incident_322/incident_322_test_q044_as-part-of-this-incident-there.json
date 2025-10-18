@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_322_test_q044",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "A user accessed a link `https://dj01161621.bravesand-e1ccd718.eastus.azurecontainerapps.io/` in an email which was later quarantined by zero-hour auto purge (ZAP). This alert was flagged by Microsoft Defender for Office 365 and indicated potential malicious activity. Subsequently, we observed a resource management operation from a suspicious proxy IP address, which could be associated with malicious intent.",
+  "question": "As part of this incident, there was also a suspicious credential dump from NTDS.dit detected. What file was used to perform this credential dump?",
+  "gold_answer": "powershell.exe",
+  "solution_steps": [
+    "A user with SID `S-1-5-21-1840151686-3534835288-156286563-1127` accessed a link in an email that was subsequently quarantined by ZAP.",
+    "There was a suspicious Azure Resource Manager operation from the host `vnevado-dc` using a proxy IP address.",
+    "Attackers used `powershell.exe` to perform a suspicious credential dump from NTDS.dit."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 16,
+    "start_entities": [
+      24
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      23,
+      8,
+      25,
+      21,
+      16
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_34_test_q029",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A security incident involving a suspicious file named `winatp-intro-backdoor.exe` was reported. The file was dropped and executed on the machine using PowerShell. Attackers often use PowerShell to run encoded commands or download external payloads to bypass security protections.",
+  "question": "Following the alert where Powershell dropped a suspicious file, there was another alert about a suspicious PowerShell download or encoded command execution. Can you find the process ID and command line of the process used to execute this PowerShell command?",
+  "gold_answer": "ProcessId: 9780, CommandLine: \"winword.exe\" c:\\scripts\\rs4_winatp-intro-invoice.docm",
+  "solution_steps": [
+    "The PowerShell run by a user with AadUserId `16320fec-8d90-403b-b7fe-78f715d4728d` dropped a suspicious file on the machine and executed it.",
+    "A process with Process ID `9780` executed PowerShell to download a file or run an encoded command at `2024-06-26t11:57:20.2959493z` with the command line `winword.exe c:\\scripts\\rs4_winatp-intro-invoice.docm`."
+  ],
+  "metadata": {
+    "start_alert": 25,
+    "end_alert": 26,
+    "start_entities": [
+      16
+    ],
+    "end_entities": [
+      11
+    ],
+    "shortest_alert_path": [
+      25,
+      6,
+      26
+    ]
+  }
+}

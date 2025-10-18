@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_39_test_q063",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "During a multi-stage investigation of malicious activities involving potential malware and antivirus tampering, it was reported that the 'Kekeo' malware was detected and believed to be active on the host `vnevado-win10b`. The command line execution of `rubeus.exe` indicated potential credential dumping activity. The investigation revealed that the malware might have been stopped from delivering its payload. There was also an attempt to disable the Microsoft Defender Antivirus service, which might be an indication of an attempt to evade detection.",
+  "question": "What is the Security Identifier (SID) of the account involved in the attempt to disable Microsoft Defender Antivirus service?",
+  "gold_answer": "S-5-7-21-1843151660-3234030288-105586167-1422",
+  "solution_steps": [
+    "The 'Kekeo' malware was detected and was active with a file named `rubeus.exe`.",
+    "The 'Kekeo' malware was initially detected on a host with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`.",
+    "An attempt to disable the Microsoft Defender Antivirus service was detected from an account with SID `S-5-7-21-1843151660-3234030288-105586167-1422`."
+  ],
+  "metadata": {
+    "start_alert": 100,
+    "end_alert": 35,
+    "start_entities": [
+      1,
+      2,
+      3,
+      9,
+      10,
+      11
+    ],
+    "end_entities": [
+      28
+    ],
+    "shortest_alert_path": [
+      100,
+      65,
+      92,
+      33,
+      35
+    ]
+  }
+}

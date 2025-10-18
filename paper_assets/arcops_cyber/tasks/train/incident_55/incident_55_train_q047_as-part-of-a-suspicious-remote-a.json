@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_55_train_q047",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A security incident was reported where a potentially malicious URL click was detected involving account `Lucas Grey` with email `Lucas Grey@niseko.alpineskihouse.co`. The URL in question was `http://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/`. Following this, there was an alert indicating that a malicious PowerShell Cmdlet was invoked on the machine, potentially tied to activities like credential theft or network reconnaissance.",
+  "question": "As part of a suspicious remote activity alert, which account name was involved in this remote activity?",
+  "gold_answer": "LocalSystem",
+  "solution_steps": [
+    "User with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0` clicked on a potentially malicious URL.",
+    "A malicious PowerShell Cmdlet was invoked using `powershell.exe` on a machine.",
+    "Suspicious remote activity was observed on a machine involving the account `LocalSystem`."
+  ],
+  "metadata": {
+    "start_alert": 104,
+    "end_alert": 37,
+    "start_entities": [
+      89,
+      90,
+      91,
+      93,
+      94
+    ],
+    "end_entities": [
+      17
+    ],
+    "shortest_alert_path": [
+      104,
+      3,
+      51,
+      8,
+      37
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_train_q051",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "Recently, there was a suspicious access to the LSASS service on host `mb-winclient`, which may have been an attempt to obtain clear-text passwords from the LSASS service's memory. Multiple public tools as well as custom ones could be used to perform this operation. Once obtained, these credentials are often used in lateral movement activities to infiltrate other machines and servers in the network.",
+  "question": "In a related alert, there was a suspicious sequence of exploration activities. Can you identify the user account that performed these exploration activities?",
+  "gold_answer": "gsmith",
+  "solution_steps": [
+    "Suspicious access to the LSASS service was attempted using the process `powershell.exe` on 2024-07-04 at 22:35:02.783154+00:00.",
+    "A user account with the name `gsmith` conducted a suspicious sequence of exploration activities involving a set of windows commands on 2024-07-04 at 22:35:03.106654+00:00."
+  ],
+  "metadata": {
+    "start_alert": 45,
+    "end_alert": 52,
+    "start_entities": [
+      24,
+      15,
+      48,
+      7,
+      47,
+      14,
+      46,
+      49,
+      50,
+      1
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      45,
+      8,
+      52
+    ]
+  }
+}

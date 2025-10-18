@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q036",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "During a security investigation, it was discovered that Luciano Herrera (CIO) on the host MB-WINCLIENT sent a replication request to MB-DC1, indicating a suspected DCSync attack. This type of attack involves the replication of directory services and could potentially compromise account credentials and other sensitive information. Following this alert, there was an indication that a malicious PowerShell Cmdlet was invoked on the machine, often associated with credential theft, exploitation, network reconnaissance, or code injection. Additionally, a sequence of suspicious exploration activities was detected, involving windows commands that might be used by attackers to identify valuable assets and coordinate lateral movement after compromising a machine. The final alert in the sequence pointed to an attempt to extract an Active Directory Federation Service (ADFS) private key through a suspicious LDAP query.",
+  "question": "Can you determine the Security Identifier (SID) of the account involved in the ADFS private key extraction attempt?",
+  "gold_answer": "S-2-5-21-571436798-3864380397-1837441745-3206",
+  "solution_steps": [
+    "The account with SID `S-1-5-21-551436448-9871687716-9837441745-1903`, linked to Luciano Herrera (CIO), executed a replication request to MB-DC1, indicating a suspected DCSync attack.",
+    "A malicious PowerShell Cmdlet was executed on the machine, detected in the process `powershell.exe`.",
+    "The user account `gsmith` was associated with a suspicious sequence of exploration activities.",
+    "An attempt was made to extract ADFS private keys by the account with SID `S-2-5-21-571436798-3864380397-1837441745-3206` using a suspicious LDAP query."
+  ],
+  "metadata": {
+    "start_alert": 98,
+    "end_alert": 43,
+    "start_entities": [
+      81,
+      82,
+      99,
+      100
+    ],
+    "end_entities": [
+      19
+    ],
+    "shortest_alert_path": [
+      98,
+      10,
+      51,
+      8,
+      52,
+      18,
+      43
+    ]
+  }
+}

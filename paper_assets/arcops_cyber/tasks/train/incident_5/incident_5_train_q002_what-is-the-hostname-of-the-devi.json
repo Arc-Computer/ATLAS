@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_train_q002",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "In a recent incident, a ransomware payload was remotely launched, suggesting possible file encryption attempts to render the device unusable to users. The user's account identified in this incident is `dp5hn` with a Sid of `S-1-5-21-1840191660-8534830288-125585561-1522`, and an associated AadUserId of `731adb71-b11c-4bbf-850b-57989b350e96`. The suspicious activity originated from IP address `99.83.111.100`.",
+  "question": "What is the hostname of the device where suspicious file system changes indicative of ransomware activity were detected?",
+  "gold_answer": "vnevado-win11t",
+  "solution_steps": [
+    "A ransomware payload was remotely launched on the device with AadDeviceId `e5799261-6720-4297-961e-bd9ca4275033`.",
+    "Suspicious file system changes indicating ransomware activity were detected on the host `vnevado-win11t`."
+  ],
+  "metadata": {
+    "start_alert": 134,
+    "end_alert": 105,
+    "start_entities": [
+      1,
+      2,
+      3,
+      42
+    ],
+    "end_entities": [
+      68
+    ],
+    "shortest_alert_path": [
+      134,
+      69,
+      105
+    ]
+  }
+}

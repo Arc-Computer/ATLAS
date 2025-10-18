@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q041",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A security incident involving a suspicious sequence of exploration activities occurred where a series of Windows commands were executed by various processes on the host `mb-adfs`. These commands could potentially indicate attackers identifying valuable assets and coordinating lateral movements after compromising the machine. It included suspicious processes like `iy2orr1e.rrg.exe`, `powershell.exe`, and `whoami.exe`.",
+  "question": "During the incident, a suspicious service creation was detected. Can you find out which email account was involved in creating the suspicious service on host `mb-adfs`?",
+  "gold_answer": "gsmith@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "There is a suspicious sequence of exploration activities performed by the account with AadUserId `ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5`.",
+    "The user `gsmith@niseko.alpineskihouse.co` created the suspicious service `DDLOXJDSQSNGMUKKFUXQ` on MB-ADFS to execute potentially malicious commands."
+  ],
+  "metadata": {
+    "start_alert": 52,
+    "end_alert": 101,
+    "start_entities": [
+      26,
+      29,
+      44,
+      28,
+      8,
+      56,
+      25,
+      53,
+      54,
+      55
+    ],
+    "end_entities": [
+      103
+    ],
+    "shortest_alert_path": [
+      52,
+      20,
+      101
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_55_train_q049",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "In a recent security incident, an unusual addition of credentials to an OAuth application was performed by the user Luciano Herrera, which indicated a potential compromise. The user, associated with the email Luciano Herrera@niseko.alpineskihouse.co, might be involved in spreading phishing, exfiltrating data, or gaining access to other accounts. Subsequent alerts indicated suspicious LDAP queries and exploration activities, eventually leading to an observed attempt to hide the use of a dual-purpose tool under an unexpected filename.",
+  "question": "What is the AadUserId of the account involved in the attempt to hide the use of a dual-purpose tool?",
+  "gold_answer": "ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5",
+  "solution_steps": [
+    "User with AadUserId `2de70991-2799-4a95-b734-8e3df3a50118` (Luciano Herrera) performed an unusual addition of credentials to the application SimulandApp.",
+    "A suspicious LDAP query was executed using `powershell.exe`, indicating potential reconnaissance activity.",
+    "A process named `iy2orr1e.rrg.exe` executed a suspicious sequence of exploration activities.",
+    "An attempt was made to hide the use of a dual-purpose tool by a user with AadUserId `ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5`."
+  ],
+  "metadata": {
+    "start_alert": 80,
+    "end_alert": 32,
+    "start_entities": [
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87
+    ],
+    "end_entities": [
+      20
+    ],
+    "shortest_alert_path": [
+      80,
+      11,
+      64,
+      8,
+      52,
+      29,
+      32
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_134_train_q009",
+  "incident": "incident_134",
+  "split": "train",
+  "context": "A security incident flagged as business email compromise (BEC) fraud attempt indicated that suspicious emails were sent by a possibly compromised user account `raphaelt@vnevado.alpineskihouse.co` to `nathan@avoriaz.alpineskihouse.co` with a sender IP of `237.7.81.122`. As part of this incident, we are investigating the email activity to determine any malicious patterns. Additionally, a user's inbox rules were manipulated in a suspicious manner, which might be part of the attacker's attempt to exfiltrate data.",
+  "question": "There was also a suspicious inbox manipulation rule associated with this incident. Can you identify the application ID of the cloud application involved in the inbox manipulation?",
+  "gold_answer": "20893",
+  "solution_steps": [
+    "There were suspicious emails sent by a possibly compromised user account from the IP address `237.7.81.122` related to an ongoing BEC fraud attempt.",
+    "A user's inbox rules were manipulated suspiciously on the cloud application with AppId `20893`, indicating possible attacker access and data exfiltration efforts."
+  ],
+  "metadata": {
+    "start_alert": 18,
+    "end_alert": 14,
+    "start_entities": [
+      19,
+      20,
+      21,
+      22
+    ],
+    "end_entities": [
+      15
+    ],
+    "shortest_alert_path": [
+      18,
+      16,
+      14
+    ]
+  }
+}

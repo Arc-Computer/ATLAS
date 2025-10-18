@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_39_test_q002",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A remote file drop and execution incident was detected on host `vnevado-win10b`, involving an executable file launched from the system. The incident was associated with the account `fk8mq` (SID: S-1-5-21-1540151660-3530000288-105586595-1517, AadUserId: 97e6a954-b6bd-48a5-808c-bd8464cce677). The process execution details indicate it was run with specific command line parameters and originated from the IP address `141.216.110.153`. Related to this alert, there is also potential human-operated malicious activity on this device which might lead to ransomware or other payloads installed.",
+  "question": "What is the name of the executable file that was involved in the remote file drop and potential human-operated malicious activity on `vnevado-win10b`?",
+  "gold_answer": "rubeus.exe",
+  "solution_steps": [
+    "An attacker with AadUserId `97e6a954-b6bd-48a5-808c-bd8464cce677` remotely dropped and executed a file.",
+    "A file named `rubeus.exe` was involved in potential human-operated malicious activity that could lead to ransomware or other harmful payloads."
+  ],
+  "metadata": {
+    "start_alert": 34,
+    "end_alert": 105,
+    "start_entities": [
+      1,
+      2,
+      3,
+      9,
+      10,
+      11,
+      23,
+      25
+    ],
+    "end_entities": [
+      65
+    ],
+    "shortest_alert_path": [
+      34,
+      3,
+      105
+    ]
+  }
+}

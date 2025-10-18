@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_5_train_q093",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A recent security incident involved suspicious 'GenRansom' behavior detected on host `vnevado-win11u`, sourced from a machine that showed signs of active malware. The incident involved malware that could potentially replicate and execute commands from remote attackers. The initial alert indicated an active infection requiring precautionary measures and checks for residual signs. Following this, a command and control behavior was blocked and file backups were deleted, which is a common action during a ransomware infection.",
+  "question": "What is the hostname of the system involved in the detected ransomware behavior in the file system?",
+  "gold_answer": "vnevado-win11t",
+  "solution_steps": [
+    "Suspicious 'GenRansom' behavior was detected on the host with AadDeviceId `bc00e484-d0e5-4da4-9472-95568cccc07e`.",
+    "Command and Control behavior was blocked for the user with SID `S-1-5-21-1840191660-8534830288-125585561-1522`.",
+    "File backups were deleted on the host `vnevado-win11t`.",
+    "Ransomware behavior was detected in the file system of the host `vnevado-win11t`."
+  ],
+  "metadata": {
+    "start_alert": 14,
+    "end_alert": 105,
+    "start_entities": [
+      7,
+      8
+    ],
+    "end_entities": [
+      68
+    ],
+    "shortest_alert_path": [
+      14,
+      8,
+      73,
+      2,
+      116,
+      68,
+      105
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_5_train_q014",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A security incident was detected involving a possible attempt to access a Primary Refresh Token (PRT). This is concerning as PRT is a key artifact of Azure AD authentication across multiple devices and versions. Attackers can use this resource to move laterally or perform credential theft. The incident involves the host `vnevado-win11t` and a process `browsercore.exe` with the Process ID 7036 and commit timestamp 2024-06-20T09:29:49.304018Z. The activity was observed around the same time and is related to a midnight credential attack attempt.",
+  "question": "In line with this activity, a Windows Sysinternals tool was renamed and then launched. Can you identify the name of the file that was used for this tool?",
+  "gold_answer": "mimikatz.exe",
+  "solution_steps": [
+    "There was a possible attempt to access the Primary Refresh Token (PRT) using the process `browsercore.exe`.",
+    "The host involved in the attempt to access the PRT is `vnevado-win10v`.",
+    "A Windows Sysinternals tool `mimikatz.exe` was renamed and launched, potentially for covert malicious use."
+  ],
+  "metadata": {
+    "start_alert": 82,
+    "end_alert": 122,
+    "start_entities": [
+      1,
+      2,
+      3,
+      68,
+      69,
+      83
+    ],
+    "end_entities": [
+      19
+    ],
+    "shortest_alert_path": [
+      82,
+      40,
+      36,
+      34,
+      122
+    ]
+  }
+}

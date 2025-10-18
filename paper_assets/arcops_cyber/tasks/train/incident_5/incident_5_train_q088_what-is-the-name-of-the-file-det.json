@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_5_train_q088",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "In a recent security incident, a Command and Control behavior was blocked after detecting malware on a machine. The malware might have received commands from remote attackers. A related entity was the URL `http://vectorsandarrows.com/`, which could have been involved in malicious activity. Shortly after, a ransomware payload was remotely launched on the same device, potentially aimed at encrypting the content and rendering it unusable for users. Later, there was evidence of lateral movement to the jump server Vnevado-jump using PSExec. Following these events, the Mimikatz credential theft tool was detected on the device, potentially used to harvest credentials.",
+  "question": "What is the name of the file detected as the Mimikatz credential theft tool?",
+  "gold_answer": "mimilove.exe",
+  "solution_steps": [
+    "The account with SID `S-1-5-21-1840191660-8534830288-125585561-1522` was involved in Command and Control behavior that was blocked.",
+    "A ransomware payload was remotely launched from the IP address `99.83.111.100`.",
+    "There was lateral movement using PSExec to the jump server `vnevado-win10v`.",
+    "The Mimikatz credential theft tool, detected as `mimilove.exe`, was found on the device."
+  ],
+  "metadata": {
+    "start_alert": 106,
+    "end_alert": 151,
+    "start_entities": [
+      74
+    ],
+    "end_entities": [
+      154
+    ],
+    "shortest_alert_path": [
+      106,
+      2,
+      143,
+      42,
+      174,
+      34,
+      151
+    ]
+  }
+}

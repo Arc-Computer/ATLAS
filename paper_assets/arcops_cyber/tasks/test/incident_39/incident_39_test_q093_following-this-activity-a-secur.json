@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_test_q093",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "As part of a security incident, multiple dual-purpose tools were observed being dropped on a device. The attacker utilized tools such as mimikatz to perform credential theft and executed various commands on host `vnevado-win10v`. Suspicious command lines were detected, including those where mimikatz.exe was used for privilege escalation and lateral movement.",
+  "question": "Following this activity, a Security Identification (SID) history injection was detected on the device. Can you identify the Azure AD user ID of the account that was involved in the SID history injection?",
+  "gold_answer": "7fcf9695-68fc-4258-864d-e1e5b166c66f",
+  "solution_steps": [
+    "Multiple dual-purpose tools, including `powershell.exe`, were dropped on the device.",
+    "A SID history injection involving the account with AadUserId `7fcf9695-68fc-4258-864d-e1e5b166c66f` was detected on the device."
+  ],
+  "metadata": {
+    "start_alert": 62,
+    "end_alert": 93,
+    "start_entities": [
+      29,
+      50,
+      32,
+      63,
+      40,
+      36,
+      64,
+      31,
+      67,
+      45
+    ],
+    "end_entities": [
+      15
+    ],
+    "shortest_alert_path": [
+      62,
+      17,
+      93
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_test_q008",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A password spray attack was detected in our system, which involves the account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`. This kind of attack is typically deemed risky due to multiple login attempts with common passwords against many accounts.",
+  "question": "What is the anonymous IP address that was involved in the sign-in attempt related to this password spray attack?",
+  "gold_answer": "95.202.65.202",
+  "solution_steps": [
+    "A password spray attack was detected from IP address `95.202.65.202` on `2024-07-23 14:23:51.925093+00:00`.",
+    "There was a sign-in from an anonymous IP address `95.202.65.202` on `2024-07-22 08:45:32.664841+00:00`."
+  ],
+  "metadata": {
+    "start_alert": 28,
+    "end_alert": 0,
+    "start_entities": [
+      1
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      28,
+      2,
+      0
+    ]
+  }
+}

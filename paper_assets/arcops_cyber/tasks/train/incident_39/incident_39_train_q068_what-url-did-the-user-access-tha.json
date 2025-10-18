@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_39_train_q068",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A suspected DCSync attack (replication of directory services) involving Julian Burke, IT director, was observed on host VNEVADO-Win10V. This event is part of a multi-stage incident where Ethan Brooks, an Account Executive, conducted user and IP address reconnaissance via SMB sessions on the same device, VNEVADO-Win10V, targeting VNEVADO-DC. Further investigation revealed that a user accessed a link in an email that was quarantined by zero-hour auto purge (ZAP). This alert was triggered based on a Microsoft Defender for Office 365 alert.",
+  "question": "What URL did the user access that was found in a ZAP-quarantined email?",
+  "gold_answer": "https://ac27145722.livelygrass-8d4c4013.eastus2.azurecontainerapps.io/",
+  "solution_steps": [
+    "Julian Burke (IT director) on host `VNEVADO-Win10V` sent a replication request to host `VNEVADO-DC` which is suspected to be a DCSync attack.",
+    "Ethan Brooks (Account Executive) with SID `S-5-7-21-1843151660-3234030288-105586167-1422` on host `VNEVADO-Win10V` enumerated SMB sessions on `VNEVADO-DC`, retrieving recent IP addresses of 2 accounts.",
+    "A user accessed the URL `https://ac27145722.livelygrass-8d4c4013.eastus2.azurecontainerapps.io/` in an email that was quarantined by zero-hour auto purge (ZAP)."
+  ],
+  "metadata": {
+    "start_alert": 122,
+    "end_alert": 141,
+    "start_entities": [
+      14,
+      15,
+      123,
+      124
+    ],
+    "end_entities": [
+      137
+    ],
+    "shortest_alert_path": [
+      122,
+      115,
+      114,
+      28,
+      141
+    ]
+  }
+}

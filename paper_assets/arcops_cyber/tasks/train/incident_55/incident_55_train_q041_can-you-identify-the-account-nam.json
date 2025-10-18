@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_55_train_q041",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A suspicious activity was detected related to an account `gsmith` where a process with ID `8764` was launched with a hidden window style and an encoded command, which might be indicative of an ADFS private key extraction attempt. This incident could potentially allow attackers to steal Active Directory Federation Service (ADFS) private keys or move laterally on the network. It's part of a larger incident involving a renamed and launched system executable.",
+  "question": "Can you identify the account name associated with the system executable that was renamed and launched in this incident?",
+  "gold_answer": "SYSTEM",
+  "solution_steps": [
+    "A suspicious LDAP query was launched with command line `iy2orr1e.rrg.exe -windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=` at `2024-07-02t09:48:23.9439954z`, with Process ID `3116`.",
+    "A Windows executable file that has been renamed was launched by the account `SYSTEM`."
+  ],
+  "metadata": {
+    "start_alert": 43,
+    "end_alert": 27,
+    "start_entities": [
+      18,
+      19,
+      20,
+      44
+    ],
+    "end_entities": [
+      30
+    ],
+    "shortest_alert_path": [
+      43,
+      28,
+      27
+    ]
+  }
+}

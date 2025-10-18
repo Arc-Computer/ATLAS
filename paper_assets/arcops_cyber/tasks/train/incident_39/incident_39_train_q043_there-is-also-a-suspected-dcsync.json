@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_39_train_q043",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident was detected involving a SID history injection. This SID history injection is detected on a device and was traced back to the account `lucasb` with a PowerShell command involving `net.exe` and `powershell.exe` on the host `vnevado-dc`. The detected process ids with their respective command lines are `3780` and `7712`. This suggests an attacker might be using SID history changes to achieve elevated privileges. Note: SID history is an attribute that supports migration scenarios and is usually targeted by attackers to gain elevated privileges and persist in the system.",
+  "question": "There is also a suspected DCSync attack (replication of directory services) within the same incident. Can you identify the email of the user involved in the DCSync attack?",
+  "gold_answer": "Julian Burke@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "A SID history injection was detected on the account with AadUserId `7fcf9695-68fc-4258-864d-e1e5b166c66f`.",
+    "A suspected DCSync attack was performed by `Julian Burke (IT director)` using the email `Julian Burke@vnevado.alpineskihouse.co` on device `VNEVADO-Win10V`, sending a replication request to `VNEVADO-DC`."
+  ],
+  "metadata": {
+    "start_alert": 72,
+    "end_alert": 122,
+    "start_entities": [
+      13,
+      16,
+      17,
+      18,
+      20,
+      73,
+      74
+    ],
+    "end_entities": [
+      124
+    ],
+    "shortest_alert_path": [
+      72,
+      15,
+      122
+    ]
+  }
+}

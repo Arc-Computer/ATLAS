@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_134_test_q051",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A security incident involving suspicious emails sent by a possibly compromised user account related to an ongoing BEC (business email compromise) fraud attempt was reported. Suspicious emails were sent to `nathan@avoriaz.alpineskihouse.co` by `raphaelt@vnevado.alpineskihouse.co` from IP address `237.7.81.122`.",
+  "question": "Can you identify the name of the account involved in the BEC fraud attempt?",
+  "gold_answer": "Nina Park",
+  "solution_steps": [
+    "Suspicious emails were sent by the possibly compromised user account named `Nina Park`."
+  ],
+  "metadata": {
+    "start_alert": 18,
+    "end_alert": 18,
+    "start_entities": [
+      19,
+      20,
+      16,
+      21,
+      22,
+      9,
+      8
+    ],
+    "end_entities": [
+      6
+    ],
+    "shortest_alert_path": [
+      18
+    ]
+  }
+}

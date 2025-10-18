@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_39_test_q087",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "During a security incident involving a suspected DCSync attack, user Julian Burke, with the email `Julian Burke@vnevado.alpineskihouse.co`, sent a replication request from host `VNEVADO-Win10V` to `VNEVADO-DC`. This incident was flagged due to its potential malicious intent, typically used to replicate directory services for unauthorized access.",
+  "question": "Can you identify the account name associated with the incident involving the suspicious process stopping services?",
+  "gold_answer": "lucasb",
+  "solution_steps": [
+    "The IT director, Julian Burke, associated with AadUserId `7fcf9695-68fc-4258-864d-e1e5b166c66f`, sent 1 replication request to VNEVADO-DC, indicating a suspected DCSync attack.",
+    "The account `lucasb` was involved in suspicious activity where a process stopped services on a device, which might be part of a larger malicious operation."
+  ],
+  "metadata": {
+    "start_alert": 122,
+    "end_alert": 46,
+    "start_entities": [
+      115,
+      116,
+      123,
+      124
+    ],
+    "end_entities": [
+      13
+    ],
+    "shortest_alert_path": [
+      122,
+      15,
+      46
+    ]
+  }
+}

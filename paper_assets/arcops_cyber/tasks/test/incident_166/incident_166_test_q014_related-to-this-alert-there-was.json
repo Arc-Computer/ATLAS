@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_166_test_q014",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A security incident involves possible BEC (Business Email Compromise) financial fraud where suspicious events were observed that indicate an attacker may be attempting to conduct a fraud attack against the organization. This alert was associated with the account of Jordan P (`Jordan P@vnevado.alpineskihouse.co`).",
+  "question": "Related to this alert, there was also a suspicious manipulation of a user's inbox rules. Can you identify the AppId of the cloud application involved in the suspicious inbox manipulation?",
+  "gold_answer": "20893",
+  "solution_steps": [
+    "Suspicious events characteristic of business email compromise (BEC) were observed involving the account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "Suspicious inbox manipulation rules were detected, potentially indicating an attack on the cloud application with AppId `20893`."
+  ],
+  "metadata": {
+    "start_alert": 29,
+    "end_alert": 16,
+    "start_entities": [
+      1,
+      6,
+      7,
+      8
+    ],
+    "end_entities": [
+      11
+    ],
+    "shortest_alert_path": [
+      29,
+      1,
+      16
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_5_test_q076",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A 'CommandAndControl' malware was detected on the device `vnevado-win11u` during a security incident on July 4, 2024. This detection suggests an attempt to move laterally within the network. During this investigation, a process with ID 5572 was initiated by the user account `dp5hn`, executing the `curl http://vectorsandarrows.com` command.",
+  "question": "Can you identify the command line of the suspicious WMI process that was observed?",
+  "gold_answer": "powershell -file c:\\scripts\\get-userprttoken.ps1",
+  "solution_steps": [
+    "The account `dp5hn` was tied to a 'CommandAndControl' malware detection during lateral movement on 2024-07-04 22:35:02.559990+00:00.",
+    "A suspicious WMI process creation was detected, where process with ID `5708` was created at `2024-06-20T09:32:06.0902858Z` using the command line `powershell -file c:\\scripts\\get-userprttoken.ps1`."
+  ],
+  "metadata": {
+    "start_alert": 128,
+    "end_alert": 117,
+    "start_entities": [
+      1,
+      2,
+      3,
+      6,
+      7,
+      8
+    ],
+    "end_entities": [
+      90
+    ],
+    "shortest_alert_path": [
+      128,
+      1,
+      117
+    ]
+  }
+}

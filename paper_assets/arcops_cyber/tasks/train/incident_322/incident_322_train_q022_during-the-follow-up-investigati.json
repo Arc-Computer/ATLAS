@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_322_train_q022",
+  "incident": "incident_322",
+  "split": "train",
+  "context": "A recent incident involved attackers using Ntdsutil to gather information for persistence or to move laterally in our network or organization. As part of this activity, the file `ntdsutil.exe` was executed with the specific command line to manage Active Directory Domain Services (AD DS) and Active Directory Lightweight Directory Services (AD LDS). This event occured on a host with specific unnamed details and multiple processes were involved.",
+  "question": "During the follow-up investigation, Microsoft Defender for Resource Manager detected a resource management operation from a suspicious proxy IP address. Can you provide the name of the account that was involved in this suspicious Azure Resource Manager operation?",
+  "gold_answer": "Hailey Johnson",
+  "solution_steps": [
+    "There is a collection of Active Directory information with ntutil.exe on host `vnevado-dc`.",
+    "There is a suspicious Azure Resource Manager operation from an account with the name `Hailey Johnson`."
+  ],
+  "metadata": {
+    "start_alert": 22,
+    "end_alert": 25,
+    "start_entities": [
+      17,
+      18,
+      19,
+      20
+    ],
+    "end_entities": [
+      6
+    ],
+    "shortest_alert_path": [
+      22,
+      21,
+      25
+    ]
+  }
+}

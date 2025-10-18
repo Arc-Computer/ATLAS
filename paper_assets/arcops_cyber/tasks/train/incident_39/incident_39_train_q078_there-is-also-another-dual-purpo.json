@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_train_q078",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident was observed on the host `vnevado-win10v` where multiple dual-purpose tools were dropped. These tools could be used for credential theft, privilege escalation, and lateral movement. Among the files identified are `powershell.exe`, `mimikatz.exe`, `domaindominance27.ps1`, `rubeus.exe`, and `psexec.exe`. The user account involved is `tgs2z` with the SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+  "question": "There is also another dual-purpose tool that was identified in this alert. Can you find out what this additional file name is?",
+  "gold_answer": "psexesvc.exe",
+  "solution_steps": [
+    "The attacker launched PowerShell with the command line `powershell.exe -executionpolicy bypass -file c:\\users\\tgs2z\\downloads\\domaindominance27\\domaindominance27.ps1` on `2024-06-27T14:32:08.4041849Z`, with Process ID `4676`.",
+    "The file `psexesvc.exe` which is a known dual-purpose tool was dropped on the device."
+  ],
+  "metadata": {
+    "start_alert": 76,
+    "end_alert": 62,
+    "start_entities": [
+      49,
+      63,
+      33,
+      28,
+      64,
+      17,
+      27,
+      32,
+      66,
+      65
+    ],
+    "end_entities": [
+      24
+    ],
+    "shortest_alert_path": [
+      76,
+      49,
+      62
+    ]
+  }
+}

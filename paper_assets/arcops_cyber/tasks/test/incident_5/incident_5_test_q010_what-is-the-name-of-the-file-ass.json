@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_5_test_q010",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A ransomware payload was remotely launched on a host named `vnevado-win11t` with AadDeviceId `e5799261-6720-4297-961e-bd9ca4275033`. Attackers might be attempting to encrypt content on this device, rendering it unusable to users. For more information, refer to the Threat Analytics report, Threat overview: Human-operated ransomware: https://security.microsoft.com/threatanalytics3/05658b6c-dc62-496d-ad3c-c6a795a33c27/analystreport. Soon after, potentially compromised assets began exhibiting ransomware-like behavior, impacting multiple devices.",
+  "question": "What is the name of the file associated with the ransomware-like behavior identified in the potentially compromised assets?",
+  "gold_answer": "syncretic.7z.lockbit",
+  "solution_steps": [
+    "A ransomware payload was remotely launched by the user with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "Potentially compromised assets are exhibiting ransomware-like behavior involving the file `syncretic.7z.lockbit`."
+  ],
+  "metadata": {
+    "start_alert": 134,
+    "end_alert": 147,
+    "start_entities": [
+      68,
+      69
+    ],
+    "end_entities": [
+      46
+    ],
+    "shortest_alert_path": [
+      134,
+      3,
+      147
+    ]
+  }
+}

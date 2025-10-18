@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_39_train_q021",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "During a security incident, a file with suspicious attributes was registered as a service on host `vnevado-win10b`. This was flagged as a potential breach activity, with an attempt to register the file as a service for persistence. As part of further activities noticed around the same time, multiple known public tools which could also be used for malicious reasons were dropped on the device.",
+  "question": "Can you identify the name of one of the dual-purpose tools that were dropped on the device?",
+  "gold_answer": "psexec.exe",
+  "solution_steps": [
+    "A file named `psexesvc.exe` with suspicious attributes was registered as a service, possibly for persistence.",
+    "Multiple dual-purpose tools were dropped on the device, including a file named `psexec.exe` which could be used for malicious activities such as credential theft, privilege escalation, and lateral movement."
+  ],
+  "metadata": {
+    "start_alert": 21,
+    "end_alert": 62,
+    "start_entities": [
+      1,
+      2,
+      3,
+      10,
+      11,
+      22,
+      23,
+      25
+    ],
+    "end_entities": [
+      63
+    ],
+    "shortest_alert_path": [
+      21,
+      24,
+      62
+    ]
+  }
+}

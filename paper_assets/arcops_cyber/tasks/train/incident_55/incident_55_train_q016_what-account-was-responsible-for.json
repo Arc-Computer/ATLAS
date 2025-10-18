@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_train_q016",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A suspicious remote activity on a machine occurred as part of a recent security incident. This incident involved attempts to initiate interactive sessions, modify files, pass WMI commands, create scheduled tasks, and other potentially malicious activities from a remote machine. Notably, the file `cmd.exe` was executed with ProcessId `8896` on 2024-07-02, indicating a possibility of a remote activity. The compromised machine is yet to be identified (host name missing).",
+  "question": "What account was responsible for the launching of the renamed and executed system executable in the end alert?",
+  "gold_answer": "SYSTEM",
+  "solution_steps": [
+    "Suspicious remote activity was observed on the host `mb-adfs` which could involve actions such as initiating interactive sessions, modifying files, passing WMI commands, or creating scheduled tasks.",
+    "A system executable that was renamed was launched on the account `SYSTEM`, indicating possible attempts to use it for malicious activities or to connect to an attacker-controlled network."
+  ],
+  "metadata": {
+    "start_alert": 37,
+    "end_alert": 27,
+    "start_entities": [
+      22,
+      40,
+      38,
+      19,
+      39,
+      20,
+      17,
+      21,
+      23,
+      24
+    ],
+    "end_entities": [
+      30
+    ],
+    "shortest_alert_path": [
+      37,
+      26,
+      27
+    ]
+  }
+}

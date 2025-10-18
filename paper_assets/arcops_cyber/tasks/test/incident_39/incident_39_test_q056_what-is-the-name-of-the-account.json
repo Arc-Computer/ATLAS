@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_39_test_q056",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A security incident was noted where Ethan Brooks, an Account Executive, was involved in enumerating SMB sessions on VNEVADO-DC from VNEVADO-Win10V, retrieving recent IP addresses of 2 accounts. During the investigation, it was discovered that tools dropped on a device were potentially used for malicious reasons including credential theft, privilege escalation, and lateral movement. Subsequently, a 'Kekeo' malware was detected and was active on the device, indicating potential cyber attack activities.",
+  "question": "What is the name of the account associated with the machine where the 'Kekeo' malware was detected?",
+  "gold_answer": "fk8mq",
+  "solution_steps": [
+    "The user with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1` performed SMB enumeration on VNEVADO-DC to retrieve recent IP addresses.",
+    "The file `rubeus.exe`, which is a dual-purpose tool, was dropped on the device on 2024-07-04 22:35:02.140784+00:00.",
+    "The 'Kekeo' malware was detected and active on the device, associated with the account named `fk8mq`. This indicates that the machine might have been infected and requires further investigation."
+  ],
+  "metadata": {
+    "start_alert": 114,
+    "end_alert": 100,
+    "start_entities": [
+      117,
+      118
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      114,
+      29,
+      62,
+      65,
+      100
+    ]
+  }
+}

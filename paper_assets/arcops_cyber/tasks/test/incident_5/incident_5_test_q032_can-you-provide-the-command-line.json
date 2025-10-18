@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_test_q032",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A possible attempt to access the Primary Refresh Token (PRT) was detected on the host `vnevado-win11u` with AadDeviceId `bc00e484-d0e5-4da4-9472-95568cccc07e`. The process involved in this attempt was `browsercore.exe` (ProcessId: 1640), launched at `2024-06-20T09:32:12.1031042Z`. PRT is a key artifact of Azure AD authentication used for single sign-on across applications, and attackers may target it to move laterally or perform credential theft. For more information, read the Activity profile: Midnight Blizzard credential attacks Threat Analytics report on the Microsoft Security website.",
+  "question": "Can you provide the command line of the process that was created using WMI on the host?",
+  "gold_answer": "vssblatemp.exe delete shadows /all",
+  "solution_steps": [
+    "There was a possible attempt to access the Primary Refresh Token (PRT) associated with the Azure AD user with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "There was a suspicious WMI process creation observed with the process command line `vssblatemp.exe delete shadows /all` at `2024-06-20t09:29:40.8785892z` with Process ID `1900`."
+  ],
+  "metadata": {
+    "start_alert": 118,
+    "end_alert": 145,
+    "start_entities": [
+      7,
+      8,
+      40,
+      119
+    ],
+    "end_entities": [
+      80
+    ],
+    "shortest_alert_path": [
+      118,
+      3,
+      145
+    ]
+  }
+}

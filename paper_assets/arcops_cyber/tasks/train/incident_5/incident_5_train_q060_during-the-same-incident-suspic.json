@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_5_train_q060",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A security incident involving the Manatee Tempest activity group was flagged. The Manatee Tempest is a Russia-based cybercriminal group known for its association with the Dridex banking trojan and other malicious activities, including domain fronting to establish command-and-control channels for Cobalt Strike beacons. As part of the incident, a curl command was executed to access the URL `vectorsandarrows.com` from the host `vnevado-win11u`.",
+  "question": "During the same incident, suspicious remote activity was observed on the machine. Can you determine the SID of the account involved in this remote activity?",
+  "gold_answer": "S-0-6-5",
+  "solution_steps": [
+    "The account `dp5hn` is associated with the Manatee Tempest activity group, which is a Russia-based cybercriminal group known for using various malware and attack techniques.",
+    "There is suspicious remote activity involving an account with SID `S-0-6-5`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 57,
+    "start_entities": [
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "end_entities": [
+      47
+    ],
+    "shortest_alert_path": [
+      0,
+      1,
+      57
+    ]
+  }
+}

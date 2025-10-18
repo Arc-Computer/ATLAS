@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_5_test_q036",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident involving system recovery setting tampering was observed on the device with name `vnevado-win10r`. The incident involved processes `vssblatemp.exe` and `bcdedit.exe` being executed on the host `vnevado-win10r` to potentially disrupt recovery options. Additionally, suspicious hands-on keyboard user behavior was detected around the same time, which might indicate that the user has been compromised.",
+  "question": "Following these activities, there was an indication of ransomware behavior detected in the file system on a device. Can you determine the AadDeviceId of the host where this ransomware activity was detected?",
+  "gold_answer": "e5799261-6720-4297-961e-bd9ca4275033",
+  "solution_steps": [
+    "The account `dp5hn` was responsible for tampering with system recovery settings.",
+    "The same host device with AadDeviceId `e5799261-6720-4297-961e-bd9ca4275033` exhibited suspicious hands-on keyboard behavior, indicating a potential user compromise.",
+    "Ransomware behavior was detected on the host with AadDeviceId `e5799261-6720-4297-961e-bd9ca4275033`, indicating potential mass encryption of files by ransomware."
+  ],
+  "metadata": {
+    "start_alert": 120,
+    "end_alert": 105,
+    "start_entities": [
+      60,
+      63,
+      64,
+      65
+    ],
+    "end_entities": [
+      69
+    ],
+    "shortest_alert_path": [
+      120,
+      1,
+      66,
+      69,
+      105
+    ]
+  }
+}

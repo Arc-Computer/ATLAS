@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q042",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A security incident involving a suspicious sequence of exploration activities occurred on the host `mb-adfs`. Various Windows commands were executed by processes such as `whoami.exe`, `iy2orr1e.rrg.exe`, and `powershell.exe`, which can be used by attackers to identify valuable assets and coordinate lateral movement after compromising a machine.",
+  "question": "An activity related to this incident was the reading of the DKM key of an ADFS object. Can you provide the email address of the user who performed this activity?",
+  "gold_answer": "gsmith@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "There is a suspicious sequence of exploration activities by the user with AadUserId `ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5`.",
+    "The user `gsmith@niseko.alpineskihouse.co` read the DKM key of ADFS object with id `4cac49d3-29d3-407e-8c9b-b7ebb21541b2`."
+  ],
+  "metadata": {
+    "start_alert": 52,
+    "end_alert": 106,
+    "start_entities": [
+      56,
+      55,
+      26,
+      53,
+      28,
+      44,
+      25,
+      54,
+      29,
+      8
+    ],
+    "end_entities": [
+      103
+    ],
+    "shortest_alert_path": [
+      52,
+      20,
+      106
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_134_test_q016",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A suspicious inbox rule that hides incoming email messages was created in a risky Azure Active Directory session by the account associated with `Nina Park` (Nina Park@vnevado.alpineskihouse.co, Sid: S-1-5-21-1874151667-3554330288-105586563-1715). This could indicate a potential business email compromise (BEC), a form of financial fraud.",
+  "question": "Related to this suspicious inbox rule creation, there was also an alert of suspicious emails sent by the BEC-related user. Can you identify the sender IP for these suspicious emails?",
+  "gold_answer": "237.7.81.122",
+  "solution_steps": [
+    "A suspicious inbox rule that hides incoming email messages was created in a risky Azure Active Directory session by a user with SID `S-1-5-21-1874151667-3554330288-105586563-1715`.",
+    "Suspicious emails were sent by a possibly compromised account from IP address `237.7.81.122`, related to an ongoing BEC (business email compromise) fraud attempt."
+  ],
+  "metadata": {
+    "start_alert": 17,
+    "end_alert": 18,
+    "start_entities": [
+      6,
+      7,
+      8,
+      9
+    ],
+    "end_entities": [
+      21
+    ],
+    "shortest_alert_path": [
+      17,
+      8,
+      18
+    ]
+  }
+}

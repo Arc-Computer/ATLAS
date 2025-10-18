@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_34_train_q013",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "Description: Potential reconnaissance activity involving a suspicious LDAP query was detected on host `vnevado-win10e`. Furthermore, a PowerShell command was executed soon after on this host to download a file or run an encoded command, which can be seen as an attempt to bypass security mechanisms.",
+  "question": "What process executed a PowerShell command to download a file during the same security incident?",
+  "gold_answer": "powershell.exe",
+  "solution_steps": [
+    "A suspicious LDAP query was executed using the process `winword.exe`.",
+    "A process with ID `8604` executed `powershell.exe` on `2024-06-26t12:00:39.2886108z` with a complex command targeting the creation and execution of a file named `winatp-intro-backdoor.exe`."
+  ],
+  "metadata": {
+    "start_alert": 24,
+    "end_alert": 26,
+    "start_entities": [
+      1,
+      2,
+      4,
+      5,
+      6,
+      11,
+      12
+    ],
+    "end_entities": [
+      7
+    ],
+    "shortest_alert_path": [
+      24,
+      12,
+      26
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_5_train_q045",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "On July 4, 2024, a ransomware payload was remotely launched on the device `vnevado-win11u` which is associated with the account `dp5hn` and the host with AadDeviceId `bc00e484-d0e5-4da4-9472-95568cccc07e`. This attack aims to encrypt the content on the device, making it inaccessible to users. For more information, read the Threat Analytics report, Threat overview: Human-operated ransomware.",
+  "question": "A few days later, suspicious activity involving SMB remote file access was blocked. Can you provide the name of the account associated with this SMB activity?",
+  "gold_answer": "Grace Chen",
+  "solution_steps": [
+    "A ransomware payload was remotely launched using the account with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "A lateral movement attempt using SMB remote file access was blocked for the user account `Grace Chen` on multiple devices."
+  ],
+  "metadata": {
+    "start_alert": 112,
+    "end_alert": 171,
+    "start_entities": [
+      1,
+      7,
+      8
+    ],
+    "end_entities": [
+      172
+    ],
+    "shortest_alert_path": [
+      112,
+      3,
+      171
+    ]
+  }
+}

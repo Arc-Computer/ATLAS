@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_test_q006",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A security incident involving a password spray attack was detected at the IP address `170.54.121.63` on 2024-07-18. The password spray attack is an attempt to gain unauthorized access by trying a common password against multiple accounts. This is followed by another alert related to email security, where malicious emails with harmful URLs were delivered and later removed. The removal of these emails was specifically flagged.",
+  "question": "Can you identify the sender of the email messages that contained malicious URLs and were later removed after delivery?",
+  "gold_answer": "alyssat@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "A password spray attack was detected on the account with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1`.",
+    "An email containing a malicious URL was sent from `alyssat@vnevado.alpineskihouse.co` and was later removed after delivery."
+  ],
+  "metadata": {
+    "start_alert": 24,
+    "end_alert": 13,
+    "start_entities": [
+      12
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      24,
+      9,
+      13
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_55_test_q070",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A security incident began with suspicious Task Scheduler activity, where a process `schtasks.exe` was observed creating and running tasks which might be launching malicious code and establishing persistence on a system. Following this, suspicious remote activity was detected, potentially involving interactive sessions, file modifications, or creating scheduled tasks.",
+  "question": "Who created the suspicious service DDLOXJDSQSNGMUKKFUXQ on MB-ADFS to execute potentially malicious commands?",
+  "gold_answer": "gsmith@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "There was suspicious Task Scheduler activity on the host `mb-adfs`.",
+    "Suspicious remote activity was initiated by the account `gsmith`.",
+    "The user `gsmith` (email: `gsmith@niseko.alpineskihouse.co`) created a potentially malicious service named `DDLOXJDSQSNGMUKKFUXQ` on the host `mb-adfs`."
+  ],
+  "metadata": {
+    "start_alert": 33,
+    "end_alert": 101,
+    "start_entities": [
+      34,
+      35,
+      36
+    ],
+    "end_entities": [
+      103
+    ],
+    "shortest_alert_path": [
+      33,
+      26,
+      37,
+      18,
+      101
+    ]
+  }
+}

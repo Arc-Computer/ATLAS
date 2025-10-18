@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_test_q073",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A security incident was identified that involves suspicious LDAP query activities and the creation of an anomalous scheduled task. The LDAP query, which indicates potential reconnaissance activity, was executed by the process `winword.exe` with the command line: `winword.exe c:\\scripts\\rs4_winatp-intro-invoice.docm`. The alert flagged this as potentially malicious as attackers often use LDAP queries to learn about the organization's structure by querying the domain controller for administrative users, groups, and assets. This intelligence allows them to gain higher privileges and access important assets in the organization.",
+  "question": "Which filename was associated with the process that created the anomalous scheduled task on the device?",
+  "gold_answer": "schtasks.exe",
+  "solution_steps": [
+    "A suspicious LDAP query was executed on host `vnevado-win10e`. This indicates potential reconnaissance activity that may align with attackers attempting to learn the organization's structure.",
+    "An anomalous scheduled task was created using the process `schtasks.exe`. This may be an indication of an attacker trying to gain persistence on the device."
+  ],
+  "metadata": {
+    "start_alert": 24,
+    "end_alert": 20,
+    "start_entities": [
+      11,
+      12
+    ],
+    "end_entities": [
+      14
+    ],
+    "shortest_alert_path": [
+      24,
+      1,
+      20
+    ]
+  }
+}

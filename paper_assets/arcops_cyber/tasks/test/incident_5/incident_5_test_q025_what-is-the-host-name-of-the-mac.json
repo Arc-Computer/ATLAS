@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_5_test_q025",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident involved a possible compromised user account delivering ransomware-related files across multiple devices. Among these, ransomware-related files named `ponceau.7z`, `unstreaming.xlsx.lockbit`, `syncretic.7z.lockbit`, and others were observed on the device with host name `vnevado-win11u`. The device also had its unique Azure Active Directory ID `bc00e484-d0e5-4da4-9472-95568cccc07e`. Shortly after this, suspicious remote activity was detected. This type of activity might include attempts to initiate sessions, modify files, and more.",
+  "question": "What is the host name of the machine where suspicious 'GenRansom' behavior was detected, indicating the machine is actively running malware?",
+  "gold_answer": "vnevado-win11t",
+  "solution_steps": [
+    "A user account from IP address `99.83.111.100` was observed delivering ransomware-related files on several devices.",
+    "Suspicious remote activity was initiated on the host `vnevado-win11t`.",
+    "Suspicious 'GenRansom' behavior was detected on the host `vnevado-win11t`."
+  ],
+  "metadata": {
+    "start_alert": 41,
+    "end_alert": 148,
+    "start_entities": [
+      49,
+      54,
+      8,
+      50,
+      44,
+      53,
+      43,
+      46,
+      7,
+      45
+    ],
+    "end_entities": [
+      68
+    ],
+    "shortest_alert_path": [
+      41,
+      42,
+      107,
+      68,
+      148
+    ]
+  }
+}

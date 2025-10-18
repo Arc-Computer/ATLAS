@@ -1,0 +1,38 @@
+{
+  "task_id": "incident_5_test_q031",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A recent security incident involved multiple attempts to access a Primary Refresh Token (PRT) which is a key artifact of Azure AD authentication on various devices. During the investigation, it was observed that a suspicious activity attempted to access PRT from the account associated with the user `tgs2z`, possibly moving laterally within the organization. The IP address involved in this incident was `107.224.99.179`, and one of the processes noted was `powershell.exe`. This investigation further revealed a Command and Control (C2) behavior that was blocked.",
+  "question": "What was the URL blocked due to Command and Control (C2) behavior in this incident?",
+  "gold_answer": "http://vectorsandarrows.com/",
+  "solution_steps": [
+    "There was a possible attempt to access the Primary Refresh Token (PRT) using the process `browsercore.exe`.",
+    "The account `dp5hn` was associated with a possible attempt to access the Primary Refresh Token (PRT).",
+    "Command and Control behavior was detected and blocked for the URL `http://vectorsandarrows.com/`."
+  ],
+  "metadata": {
+    "start_alert": 36,
+    "end_alert": 137,
+    "start_entities": [
+      16,
+      17,
+      18,
+      20,
+      34,
+      35,
+      37,
+      38,
+      39
+    ],
+    "end_entities": [
+      74
+    ],
+    "shortest_alert_path": [
+      36,
+      40,
+      71,
+      1,
+      137
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_134_train_q006",
+  "incident": "incident_134",
+  "split": "train",
+  "context": "The incident started with BEC financial fraud and extended to a suspicious inbox manipulation rule, suggesting an attacker might have gained access to a user's inbox for malicious purposes.",
+  "question": "Can you identify the cloud application ID involved in the suspicious inbox manipulation rule incident?",
+  "gold_answer": "20893",
+  "solution_steps": [
+    "There was a creation of a suspicious inbox rule in the email account `Nina Park@vnevado.alpineskihouse.co` during a risky Azure Active Directory session, indicating a potential business email compromise (BEC) attempt.",
+    "A suspicious manipulation of inbox rules was detected in cloud application with AppId `20893`, hinting at possible unauthorized access and data exfiltration."
+  ],
+  "metadata": {
+    "start_alert": 17,
+    "end_alert": 14,
+    "start_entities": [
+      6,
+      7,
+      8,
+      9,
+      16
+    ],
+    "end_entities": [
+      15
+    ],
+    "shortest_alert_path": [
+      17,
+      7,
+      14
+    ]
+  }
+}

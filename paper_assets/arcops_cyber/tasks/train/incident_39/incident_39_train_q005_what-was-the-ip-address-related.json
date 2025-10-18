@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_39_train_q005",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A Mimikatz credential theft tool activity was detected on a device, with Mimikatz attempting to use DCSync functionality to harvest credentials and potentially impersonate a valid user. This activity was tracked as part of investigating a larger security incident. Additionally, multiple known public tools that could be used maliciously were dropped on the same device.",
+  "question": "What was the IP address related to the suspicious file that was registered as a service?",
+  "gold_answer": "141.216.110.153",
+  "solution_steps": [
+    "A Mimikatz credential theft tool script named `get-krbticket.ps1` was detected.",
+    "A dual-purpose tool named `psexesvc.exe` was dropped on the device.",
+    "A suspicious file was registered as a service originating from IP address `141.216.110.153`."
+  ],
+  "metadata": {
+    "start_alert": 108,
+    "end_alert": 21,
+    "start_entities": [
+      30
+    ],
+    "end_entities": [
+      25
+    ],
+    "shortest_alert_path": [
+      108,
+      37,
+      62,
+      24,
+      21
+    ]
+  }
+}

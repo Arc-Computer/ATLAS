@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_5_test_q050",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "On 2024-07-04, there was a security incident involving suspicious WMI process creation on a machine. Malware often uses WMI to spawn new processes, breaking process trees and further infecting a machine. During this incident, various commands and scripts were executed, including `vssblatemp.exe delete shadows /all`, `bcdedit /set bootstatuspolicy ignoreallfailures`, and a PowerShell script `get-userprttoken.ps1`. This activity might be connected to a ransomware attack.",
+  "question": "What is the IP address from which the ransomware payload was remotely launched?",
+  "gold_answer": "99.83.111.100",
+  "solution_steps": [
+    "A suspicious WMI process creation was observed on the machine by the user with SID `S-1-5-21-1840191660-8534830288-125585561-1522`.",
+    "A ransomware payload was remotely launched from IP address `99.83.111.100`."
+  ],
+  "metadata": {
+    "start_alert": 117,
+    "end_alert": 139,
+    "start_entities": [
+      6,
+      11,
+      59,
+      77,
+      78,
+      89,
+      90
+    ],
+    "end_entities": [
+      42
+    ],
+    "shortest_alert_path": [
+      117,
+      2,
+      139
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_train_q045",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "Based on the security incident reported, there was a follow-up alert indicating suspicious activities involving sequences of window commands used to identify assets and plan lateral movements within the network. This was related to a suspected DCSync attack on 2024-07-10, where `Luciano Herrera` (CIO) on `MB-WINCLIENT` sent a replication request to MB-DC1.",
+  "question": "Who is the CIO involved in the suspected DCSync attack, and what is the name of the machine from which the replication request was sent?",
+  "gold_answer": "Luciano Herrera, MB-WINCLIENT",
+  "solution_steps": [
+    "The user with SID `S-1-5-21-561436748-3867387497-1732241745-3701` received an email with a malicious URL which was later removed.",
+    "A user with AadUserId `2de70991-2799-4a95-b734-8e3df3a50118` engaged in a suspicious sequence of exploration activities to identify valuable assets and coordinate lateral movement.",
+    "Luciano Herrera (CIO) on MB-WINCLIENT sent a DCSync attack replication request to MB-DC1."
+  ],
+  "metadata": {
+    "start_alert": 92,
+    "end_alert": 98,
+    "start_entities": [
+      89,
+      90,
+      93,
+      94,
+      95,
+      96,
+      97
+    ],
+    "end_entities": [
+      81
+    ],
+    "shortest_alert_path": [
+      92,
+      2,
+      57,
+      11,
+      98
+    ]
+  }
+}

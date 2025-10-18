@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_34_test_q079",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "An anomalous scheduled task was created on 2024-07-04 at 22:35:01.260626+00:00 using `schtasks.exe`. This may indicate that an attacker is trying to obtain persistence on the device. Further investigation is required to understand the extent of the threat. An associated report can be read for more information: https://security.microsoft.com/threatanalytics3/c9709a39-ac8d-493d-9a63-71da3ca1e745/analystreport.",
+  "question": "Following the creation of the anomalous scheduled task, whose account was used for a suspicious PowerShell download or encoded command execution?",
+  "gold_answer": "samuelf",
+  "solution_steps": [
+    "An anomalous scheduled task was created using the process `powershell.exe`.",
+    "The account `samuelf` triggered a suspicious PowerShell download or executed an encoded command."
+  ],
+  "metadata": {
+    "start_alert": 20,
+    "end_alert": 22,
+    "start_entities": [
+      14
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      20,
+      8,
+      22
+    ]
+  }
+}

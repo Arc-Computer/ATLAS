@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_55_test_q098",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A suspicious service registration was observed where `services.exe` was registered as a service, potentially indicating malicious intent. An ongoing hands-on-keyboard attack was also detected involving the Impacket toolkit, used to connect to other hosts, explore network shares, and execute commands.",
+  "question": "During this multi-stage incident, suspicious system hardware discovery activities were also observed. Can you identify the account name used to gather information about the target device?",
+  "gold_answer": "pwilson",
+  "solution_steps": [
+    "The system program was registered as a service on host `mb-adfs`, indicating a possible attempt at persistence or privilege escalation.",
+    "Suspicious execution of a command via Impacket toolkit using `powershell.exe` was observed, suggesting an ongoing hands-on-keyboard attack attempting lateral movement across the network.",
+    "Account `pwilson` was involved in a suspicious system hardware discovery activity, where a known tool or technique was used to gather information about the device or network for potential future attacks."
+  ],
+  "metadata": {
+    "start_alert": 61,
+    "end_alert": 0,
+    "start_entities": [
+      62,
+      63
+    ],
+    "end_entities": [
+      9
+    ],
+    "shortest_alert_path": [
+      61,
+      26,
+      16,
+      8,
+      0
+    ]
+  }
+}

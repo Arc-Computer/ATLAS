@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_134_test_q013",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "An email containing a malicious URL was sent from `alyssat@vnevado.alpineskihouse.co` to `raphaelt@vnevado.alpineskihouse.co` and was later removed. This email was associated with Nina Park who has the email address `Nina Park@vnevado.alpineskihouse.co` and the SID `S-1-5-21-1874151667-3554330288-105586563-1715`. The sender IP was `254.241.243.229`, and the recipient accessed the URL `https://ms175052280.orangecliff-f53f26fd.eastus.azurecontainerapps.io/` contained in the email.",
+  "question": "What is the IP address that was identified as malicious during the sign-in attempt?",
+  "gold_answer": "170.54.121.63",
+  "solution_steps": [
+    "The email account with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1` received an email with a malicious URL.",
+    "A sign-in attempt was made from a known malicious IP address `170.54.121.63`."
+  ],
+  "metadata": {
+    "start_alert": 13,
+    "end_alert": 23,
+    "start_entities": [
+      1,
+      2,
+      3,
+      4,
+      6,
+      7,
+      8,
+      10
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      13,
+      9,
+      23
+    ]
+  }
+}

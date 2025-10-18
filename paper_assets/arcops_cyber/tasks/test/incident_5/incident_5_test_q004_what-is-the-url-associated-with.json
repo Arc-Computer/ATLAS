@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_5_test_q004",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "On July 4, 2024, a security incident involving malware behavior named 'GenRansom' was detected on host `vnevado-win11t`. This malware was identified as active on the machine, and immediate precautionary measures were recommended. This incident is part of a broader malicious activity linked to the Manatee Tempest activity group. Manatee Tempest is a Russia-based cybercriminal group known for engaging in various sophisticated cyberattacks targeting numerous industries.",
+  "question": "What is the URL associated with the Manatee Tempest activity group in this incident?",
+  "gold_answer": "vectorsandarrows.com",
+  "solution_steps": [
+    "Suspicious 'GenRansom' behavior was detected on the host with AadDeviceId `e5799261-6720-4297-961e-bd9ca4275033`.",
+    "The Manatee Tempest activity group, a Russia-based cybercriminal group, has potential malicious activity related to the URL `vectorsandarrows.com`."
+  ],
+  "metadata": {
+    "start_alert": 148,
+    "end_alert": 75,
+    "start_entities": [
+      68,
+      69
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      148,
+      69,
+      75
+    ]
+  }
+}

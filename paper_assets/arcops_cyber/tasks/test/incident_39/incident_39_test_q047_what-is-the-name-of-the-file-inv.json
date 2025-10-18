@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_39_test_q047",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A potential lateral movement was observed in our network, triggered by a Microsoft Defender for Endpoint alert. The suspicious network event involved the IP address `35.202.74.47`, suggesting an attacker might be attempting to move laterally across devices to gather data or elevate privileges.",
+  "question": "What is the name of the file involved in the suspicious remote activity that followed the lateral movement attempt?",
+  "gold_answer": "psexesvc.exe",
+  "solution_steps": [
+    "Lateral movement was observed on the host `vnevado-win10b`.",
+    "Suspicious remote activity involving the file `psexesvc.exe` was noted on the host."
+  ],
+  "metadata": {
+    "start_alert": 57,
+    "end_alert": 101,
+    "start_entities": [
+      43
+    ],
+    "end_entities": [
+      24
+    ],
+    "shortest_alert_path": [
+      57,
+      10,
+      101
+    ]
+  }
+}

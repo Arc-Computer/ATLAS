@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_train_q026",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A link in an email quarantined by zero-hour auto purge (ZAP) was accessed by a user, triggering a Microsoft Defender for Office 365 alert.",
+  "question": "Can you provide the URL that was accessed by the user in the ZAP-quarantined email?",
+  "gold_answer": "https://ac27145722.livelygrass-8d4c4013.eastus2.azurecontainerapps.io/",
+  "solution_steps": [
+    "Multiple dual-purpose tools were dropped by the user with SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "A user accessed a link in a ZAP-quarantined email with URL `https://ac27145722.livelygrass-8d4c4013.eastus2.azurecontainerapps.io/`."
+  ],
+  "metadata": {
+    "start_alert": 76,
+    "end_alert": 141,
+    "start_entities": [
+      63,
+      65,
+      50,
+      27,
+      49,
+      64,
+      33,
+      32,
+      17,
+      66
+    ],
+    "end_entities": [
+      137
+    ],
+    "shortest_alert_path": [
+      76,
+      28,
+      141
+    ]
+  }
+}

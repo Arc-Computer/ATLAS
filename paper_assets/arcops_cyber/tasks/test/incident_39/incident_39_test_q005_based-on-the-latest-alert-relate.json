@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_39_test_q005",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "Recently, there was a suspected overpass-the-hash attack (Kerberos) involving the Helpdesk Administrator Emma Clark on VNEVADO-Win10V attempting to authenticate against VNEVADO-DC. The attack was part of a broader security incident where a file with suspicious attributes was registered as a service.",
+  "question": "Based on the latest alert related to this incident, can you determine the SID of the deceptive user account involved in the sign-in attempt?",
+  "gold_answer": "S-0-6-5",
+  "solution_steps": [
+    "The account with AadUserId `97e6a954-b6bd-48a5-808c-bd8464cce677` belonging to Emma Clark (Helpdesk Administrator) on VNEVADO-Win10V attempted to authenticate against VNEVADO-DC, suspected of overpass-the-hash attack using Kerberos.",
+    "A file with suspicious attributes was registered as a service on the host `vnevado-win10b`. An attacker might be attempting to establish persistence.",
+    "A sign-in attempt was detected using a deceptive user account with SID `S-0-6-5`. The attacker might be using this fake or decoy account to perform further attacks."
+  ],
+  "metadata": {
+    "start_alert": 119,
+    "end_alert": 75,
+    "start_entities": [
+      115,
+      116,
+      120,
+      121
+    ],
+    "end_entities": [
+      23
+    ],
+    "shortest_alert_path": [
+      119,
+      3,
+      21,
+      10,
+      75
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_39_train_q054",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident was identified involving processes and services manipulation on a device. Initially, a process 'powershell.exe' suspiciously stopped services running on the device. An attacker might do this to avoid detection or to facilitate further malicious activities. In close proximity, a file was dropped and launched from a remote location, indicating a possible lateral movement attempt.",
+  "question": "What is the SID of the deceptive user account involved in the sign-in attempt?",
+  "gold_answer": "S-0-6-5",
+  "solution_steps": [
+    "A process suspiciously stopped services on host `vnevado-dc`.",
+    "A file was dropped and launched from a remote location with IP address `141.216.110.153`.",
+    "A sign-in attempt was detected using a deceptive user account with SID `S-0-6-5`."
+  ],
+  "metadata": {
+    "start_alert": 46,
+    "end_alert": 75,
+    "start_entities": [
+      16,
+      17,
+      18,
+      47
+    ],
+    "end_entities": [
+      23
+    ],
+    "shortest_alert_path": [
+      46,
+      20,
+      60,
+      25,
+      75
+    ]
+  }
+}

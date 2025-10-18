@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_34_train_q007",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "A suspicious Task Scheduler activity was detected indicating potential malicious activity. The initial process involved was likely aiming to launch malicious code automatically and establish persistence. In relation to this activity, an uncommon file was later created and added to a Run Key, suggesting further persistence mechanisms being established by the attacker.",
+  "question": "In relation to this suspicious Task Scheduler activity, an uncommon file was later created and added to a Run Key. Can you provide the IP address associated with this uncommon file creation?",
+  "gold_answer": "72.5.72.208",
+  "solution_steps": [
+    "A suspicious task scheduler activity was detected involving the process with extracted filename `winatp-intro-backdoor.exe`.",
+    "An uncommon file connected to IP address `72.5.72.208` was created and added to a Run Key."
+  ],
+  "metadata": {
+    "start_alert": 21,
+    "end_alert": 23,
+    "start_entities": [
+      7,
+      8,
+      13,
+      14,
+      15
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      21,
+      9,
+      23
+    ]
+  }
+}

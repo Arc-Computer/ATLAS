@@ -1,0 +1,37 @@
+{
+  "task_id": "incident_39_train_q034",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident was observed starting with a file dropped and launched from a remote location on host `vnevado-win10b`. It involved the execution of the file `psexesvc.exe` by account `fk8mq` with ProcessID `5512`. This could indicate an attacker or malware attempting lateral movement or propagation. Later, an alert was triggered indicating a suspected overpass-the-hash attack (Kerberos) attempted by Emma Clark (Helpdesk Administrator) on VNEVADO-Win10V against VNEVADO-DC.",
+  "question": "In the subsequent alert, a user was involved in enumerating SMB sessions on VNEVADO-DC and retrieving recent IP addresses of 2 accounts. Can you identify the name of this user?",
+  "gold_answer": "Ethan Brooks",
+  "solution_steps": [
+    "An account with Sid `S-1-5-21-1540151660-3530000288-105586595-1517` was used in a remote session to drop and execute a file, potentially by an attacker or malware attempting lateral movement.",
+    "Emma Clark (Helpdesk Administrator) on host `VNEVADO-Win10V` attempted to authenticate against `VNEVADO-DC`, suspected to be an overpass-the-hash attack involving Kerberos.",
+    "Ethan Brooks (Account Executive) on host `VNEVADO-Win10V` performed SMB reconnaissance to enumerate SMB sessions on `VNEVADO-DC` and retrieved recent IP addresses of 2 accounts."
+  ],
+  "metadata": {
+    "start_alert": 58,
+    "end_alert": 114,
+    "start_entities": [
+      1,
+      4,
+      5,
+      10,
+      11,
+      23,
+      25,
+      59
+    ],
+    "end_entities": [
+      117
+    ],
+    "shortest_alert_path": [
+      58,
+      2,
+      119,
+      116,
+      114
+    ]
+  }
+}

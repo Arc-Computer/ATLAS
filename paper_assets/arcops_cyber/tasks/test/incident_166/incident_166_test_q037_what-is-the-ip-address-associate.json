@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_test_q037",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "Sign-in from an anonymous IP address (e.g. Tor browser, anonymizer VPNs) at `95.202.65.202` was detected in our organization on 2024-07-22. This activity is part of a broader investigation into a potential security breach.",
+  "question": "What is the IP address associated with the suspicious inbox manipulation rule detected at 10:00:07.502771 on 2024-07-22?",
+  "gold_answer": "255.246.85.58",
+  "solution_steps": [
+    "There was a sign-in from an anonymous IP address to an account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "There was a suspicious manipulation of inbox rules from the IP address `255.246.85.58`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 16,
+    "start_entities": [
+      2
+    ],
+    "end_entities": [
+      15
+    ],
+    "shortest_alert_path": [
+      0,
+      1,
+      16
+    ]
+  }
+}

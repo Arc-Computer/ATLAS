@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_39_train_q100",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident involves a remote session where a file `psexesvc.exe` was dropped and executed, indicating an attempt to move laterally or propagate malware. During the incident, Activity indicating the use of the Rubeus tool was observed, which can perform kerberoasting and other attack techniques utilizing Kerberos authentication. PsExec was also used to launch a command on a remote device, potentially to move laterally.",
+  "question": "Can you identify the Azure Active Directory (AAD) User ID associated with the malicious credential theft tool execution?",
+  "gold_answer": "1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1",
+  "solution_steps": [
+    "A remote session dropped and launched the file `psexesvc.exe` with Process ID `5512` at `2024-06-27t14:33:27.3525354z`.",
+    "The Rubeus tool activity indicated kerberoasting attempts involving the file `adminticket.txt`.",
+    "PsExec launched a command on a remote device by an account with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1`.",
+    "A malicious credential theft tool was executed by the same account with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1`."
+  ],
+  "metadata": {
+    "start_alert": 58,
+    "end_alert": 104,
+    "start_entities": [
+      59
+    ],
+    "end_entities": [
+      29
+    ],
+    "shortest_alert_path": [
+      58,
+      4,
+      0,
+      8,
+      95,
+      29,
+      104
+    ]
+  }
+}

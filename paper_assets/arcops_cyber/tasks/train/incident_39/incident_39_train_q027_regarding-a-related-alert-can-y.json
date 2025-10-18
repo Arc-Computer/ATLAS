@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_39_train_q027",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "",
+  "question": "Regarding a related alert, can you find the name of the account associated with the execution of a known malicious credential theft tool?",
+  "gold_answer": "tgs2z",
+  "solution_steps": [
+    "The email account with SID `S-5-7-21-1843151660-3234030288-105586167-1422` received an email with a malicious URL, which was later removed.",
+    "A malicious credential theft tool was executed by the account with the name `tgs2z`."
+  ],
+  "metadata": {
+    "start_alert": 138,
+    "end_alert": 26,
+    "start_entities": [
+      117,
+      118,
+      136,
+      137,
+      139,
+      140
+    ],
+    "end_entities": [
+      27
+    ],
+    "shortest_alert_path": [
+      138,
+      28,
+      26
+    ]
+  }
+}

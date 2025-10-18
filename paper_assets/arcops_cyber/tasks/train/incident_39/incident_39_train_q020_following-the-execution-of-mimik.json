@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_39_train_q020",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident has been detected in our organization involving the execution of a known credential theft tool. Specifically, the tool `mimikatz.exe` was executed with the command line `mimikatz.exe lsadump::dcsync /domain:vnevado.alpineskihouse.co /user:xfbzkp` to potentially dump users' credentials. This activity is indicative of malicious intent to extract sensitive information such as keys and plain-text passwords.",
+  "question": "Following the execution of mimikatz.exe, PsExec was subsequently used to launch another command on a remote device. Can you determine the name of the script or file used in the PsExec command?",
+  "gold_answer": "get-krbticket.ps1",
+  "solution_steps": [
+    "A known credential theft tool was executed with the user having SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "PsExec was used to launch the command `get-krbticket.ps1` on a remote device."
+  ],
+  "metadata": {
+    "start_alert": 26,
+    "end_alert": 95,
+    "start_entities": [
+      30,
+      31
+    ],
+    "end_entities": [
+      37
+    ],
+    "shortest_alert_path": [
+      26,
+      28,
+      95
+    ]
+  }
+}

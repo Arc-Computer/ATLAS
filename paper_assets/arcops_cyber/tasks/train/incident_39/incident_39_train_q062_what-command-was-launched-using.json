@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_39_train_q062",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "As part of a recent multi-stage security incident involving movement through lateral processes, a file `psexec.exe` was used to execute commands on remote devices. This activity was flagged under an alert involving the potential use of the Rubeus kerberoasting tool, known for its ability to exploit Kerberos authentication.",
+  "question": "What command was launched using PsExec that involves PowerShell on a remote device?",
+  "gold_answer": "`4676__2024-06-27t14:32:08.4041849z__\"powershell.exe\" -executionpolicy bypass -file c:\\users\\tgs2z\\downloads\\domaindominance27\\domaindominance27.ps1`",
+  "solution_steps": [
+    "A suspicious use of the Rubeus tool was detected with the command `psexec.exe \\vnevado-win10b -accepteula cmd /c \"c:\\temp\\rubeus.exe dump /service:xfbzkp /user:lucasb > c:\\temp\\adminticket.txt\"` at `2024-06-27t14:33:14.4981439z`, with Process ID `5924`.",
+    "PsExec was used to launch a command on a remote device with the command `powershell.exe -executionpolicy bypass -file c:\\users\\tgs2z\\downloads\\domaindominance27\\domaindominance27.ps1` at `2024-06-27t14:32:08.4041849z`, with Process ID `4676`."
+  ],
+  "metadata": {
+    "start_alert": 107,
+    "end_alert": 95,
+    "start_entities": [
+      32,
+      37,
+      70,
+      28,
+      33,
+      97,
+      29,
+      7,
+      17
+    ],
+    "end_entities": [
+      49
+    ],
+    "shortest_alert_path": [
+      107,
+      97,
+      95
+    ]
+  }
+}

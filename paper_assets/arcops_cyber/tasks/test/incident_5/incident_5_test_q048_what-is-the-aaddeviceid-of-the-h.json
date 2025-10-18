@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_5_test_q048",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "On 2024-07-04 at 22:35:03.423858, a possible ransomware activity based on a known malicious extension was detected. Numerous file system changes were observed on the device `vnevado-win11u`. These changes involved appending file extensions such as `ponceau.7z.lockbit`, `kiters.7z.lockbit`, and `unstreaming.xlsx.lockbit`. This activity might indicate mass encryption of files by ransomware.",
+  "question": "What is the AadDeviceId of the host where 'CommandAndControl' malware was detected during lateral movement at 2024-07-04 22:35:03.912589?",
+  "gold_answer": "9d4887ba-0b69-47d6-89bc-9b32787f379e",
+  "solution_steps": [
+    "There is possible ransomware activity detected on an account with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`, involving file system changes indicative of mass encryption of files.",
+    "'CommandAndControl' malware was detected on the device with AadDeviceId `9d4887ba-0b69-47d6-89bc-9b32787f379e`, suggesting that an attacker might be attempting lateral movement to this device from another device on the network."
+  ],
+  "metadata": {
+    "start_alert": 146,
+    "end_alert": 158,
+    "start_entities": [
+      49,
+      44,
+      50,
+      43,
+      46,
+      7,
+      8,
+      54,
+      48,
+      51
+    ],
+    "end_entities": [
+      65
+    ],
+    "shortest_alert_path": [
+      146,
+      3,
+      158
+    ]
+  }
+}

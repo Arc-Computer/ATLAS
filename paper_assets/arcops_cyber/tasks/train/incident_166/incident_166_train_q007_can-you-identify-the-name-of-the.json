@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_train_q007",
+  "incident": "incident_166",
+  "split": "train",
+  "context": "A password spray attack was detected originating from IP address `95.202.65.202`. This attack is part of a broader security incident. A password spray attack is often used to attempt a large number of passwords against a list of usernames to identify valid credential combinations. It was connected to a suspicious SAP authentication event where a user account with a risky sign-in alert in Microsoft Entra ID signed in to SAP. This user account may have been compromised to search through sensitive SAP financial information.",
+  "question": "Can you identify the name of the user account involved in the suspicious SAP authentication?",
+  "gold_answer": "Jordan P",
+  "solution_steps": [
+    "A password spray attack was detected for the Azure Active Directory user with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "A suspicious SAP authentication was detected for the user account named `Jordan P`."
+  ],
+  "metadata": {
+    "start_alert": 28,
+    "end_alert": 26,
+    "start_entities": [
+      2
+    ],
+    "end_entities": [
+      6
+    ],
+    "shortest_alert_path": [
+      28,
+      1,
+      26
+    ]
+  }
+}

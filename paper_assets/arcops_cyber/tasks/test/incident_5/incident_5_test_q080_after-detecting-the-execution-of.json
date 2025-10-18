@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_5_test_q080",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident was detected on 2024-07-04 involving the execution of a known credential theft tool, indicated by a suspicious command line intended to access sensitive user credentials.",
+  "question": "After detecting the execution of this malicious tool, there was an event involving the renaming and launching of a Windows Sysinternals tool. What file name was used in this second alert?",
+  "gold_answer": "mimikatz.exe",
+  "solution_steps": [
+    "An account with Name `tgs2z` executed a known credential theft tool.",
+    "The renamed Windows Sysinternals tool `mimikatz.exe` was launched, potentially for malicious purposes."
+  ],
+  "metadata": {
+    "start_alert": 91,
+    "end_alert": 122,
+    "start_entities": [
+      92
+    ],
+    "end_entities": [
+      19
+    ],
+    "shortest_alert_path": [
+      91,
+      16,
+      122
+    ]
+  }
+}

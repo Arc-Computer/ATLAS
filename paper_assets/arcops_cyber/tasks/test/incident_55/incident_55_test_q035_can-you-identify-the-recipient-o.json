@@ -1,0 +1,38 @@
+{
+  "task_id": "incident_55_test_q035",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A known public tool, identified by the file `iy2orr1e.rrg.exe`, was observed under an unexpected filename on the host `mb-adfs`. The tool was launched using the account `gsmith`. This might be an attempt to hide the usage of that tool for malicious purposes. Following this, a suspicious sequence of exploration activities was executed, and a malicious PowerShell Cmdlet was invoked on the machine. Additionally, emails containing a malicious URL were later removed after delivery.",
+  "question": "Can you identify the recipient of the email messages that contained the malicious URL and were later removed?",
+  "gold_answer": "bjenkins@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "A known public tool with the filename `iy2orr1e.rrg.exe` was launched with a hidden window style and an encoded command at `2024-07-02t09:48:23.9439954z`, with Process ID `3116`.",
+    "A suspicious process `powershell.exe` was used to execute a sequence of exploration activities.",
+    "A PowerShell Cmdlet with potential malicious intent was invoked by a user with SID `S-1-5-21-561436748-3867387497-1732241745-3701`.",
+    "An email containing a malicious URL was received by `bjenkins@niseko.alpineskihouse.co` and subsequently removed."
+  ],
+  "metadata": {
+    "start_alert": 32,
+    "end_alert": 92,
+    "start_entities": [
+      18,
+      19,
+      20,
+      26,
+      28,
+      29
+    ],
+    "end_entities": [
+      94
+    ],
+    "shortest_alert_path": [
+      32,
+      28,
+      52,
+      8,
+      51,
+      2,
+      92
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_134_test_q008",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "In a security incident that included a potentially malicious URL click detected on 2024-07-17, it was observed that a user with email `raphaelt@vnevado.alpineskihouse.co` clicked on URLs `http://ms175052280.orangecliff-f53f26fd.eastus.azurecontainerapps.io/` and `https://ms175052280.orangecliff-f53f26fd.eastus.azurecontainerapps.io/`. The email had a sender address of `alyssat@vnevado.alpineskihouse.co` and was sent from IP address `254.241.243.229`.",
+  "question": "In relation to this incident, an alert detected suspicious emails sent by a potentially compromised user account. Can you find out who received the emails sent by this compromised user?",
+  "gold_answer": "Nathan@avoriaz.alpineskihouse.co",
+  "solution_steps": [
+    "The user account `Nina Park` clicked on a malicious URL.",
+    "Suspicious emails were sent to `Nathan@avoriaz.alpineskihouse.co` by a possibly compromised user account in a potential BEC (business email compromise) fraud attempt."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 18,
+    "start_entities": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      10
+    ],
+    "end_entities": [
+      20
+    ],
+    "shortest_alert_path": [
+      0,
+      6,
+      18
+    ]
+  }
+}

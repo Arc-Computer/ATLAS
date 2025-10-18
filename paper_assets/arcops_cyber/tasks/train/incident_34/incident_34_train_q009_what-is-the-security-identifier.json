@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_34_train_q009",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "A suspicious PowerShell activity was observed on the machine which might indicate usage of PowerShell during installation, exploration, or lateral movement activities by attackers. Attackers often use PowerShell to bypass security protection mechanisms by executing their payload in memory without leaving any trace. As part of this activity, the process `winword.exe` executed a file `winatp-intro-backdoor.exe`. Subsequently, Task Scheduler activity was noted, which might involve malicious code being launched automatically to establish persistence.",
+  "question": "What is the Security Identifier (SID) of the account that performed the suspicious Task Scheduler activity?",
+  "gold_answer": "S-1-5-21-1870156660-7534030218-135086563-1193",
+  "solution_steps": [
+    "A suspicious PowerShell command line was executed using the process `powershell.exe`.",
+    "The user with SID `S-1-5-21-1870156660-7534030218-135086563-1193` used Task Scheduler in a suspicious manner, likely attempting to establish persistence by creating, modifying, or deleting a task."
+  ],
+  "metadata": {
+    "start_alert": 10,
+    "end_alert": 21,
+    "start_entities": [
+      11,
+      12,
+      16
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      10,
+      8,
+      21
+    ]
+  }
+}

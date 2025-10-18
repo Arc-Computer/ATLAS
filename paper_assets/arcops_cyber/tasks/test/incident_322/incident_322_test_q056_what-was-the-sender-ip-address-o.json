@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_322_test_q056",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "A security incident involving a suspicious credential dump from NTDS.dit and an Azure resource management operation from a suspicious proxy IP address was identified. Furthermore, there were email messages that contained a malicious URL which were delivered and later removed.",
+  "question": "What was the sender IP address of the email messages containing the malicious URL?",
+  "gold_answer": "202.205.215.225",
+  "solution_steps": [
+    "There was a suspicious credential dump from NTDS.dit on host `vnevado-dc`.",
+    "A resource management operation from a suspicious proxy IP address was initiated by an account with SID `S-1-5-21-1840151686-3534835288-156286563-1127`.",
+    "An email message containing a malicious URL, sent from IP address `202.205.215.225`, was delivered and later removed."
+  ],
+  "metadata": {
+    "start_alert": 16,
+    "end_alert": 2,
+    "start_entities": [
+      17,
+      18,
+      19,
+      20
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      16,
+      21,
+      25,
+      8,
+      2
+    ]
+  }
+}

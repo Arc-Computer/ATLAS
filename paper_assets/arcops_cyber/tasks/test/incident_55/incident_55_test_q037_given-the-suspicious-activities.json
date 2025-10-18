@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_55_test_q037",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "As part of a recent security incident, a process named `contosoadfsblatempcreds.ps1` was executed on `mb-winclient` by account `pwilson`. The process ID was 13968, and it was run using PowerShell. This process might have injected code into another process, indicating suspicious code execution within a trusted process. A subsequent alert indicated suspicious Task Scheduler activity, involving modification or deletion of a task, potentially to launch malicious code automatically and establish persistence.",
+  "question": "Given the suspicious activities observed, can you identify the SID of the account related to the ADFS private key extraction attempt?",
+  "gold_answer": "S-2-5-21-571436798-3864380397-1837441745-3206",
+  "solution_steps": [
+    "A potentially malicious code injection occurred into `powershell.exe`.",
+    "The executable `iy2orr1e.rrg.exe` was involved in suspicious Task Scheduler activity.",
+    "An attempt to extract ADFS private key was made using a suspicious LDAP query by an account with SID `S-2-5-21-571436798-3864380397-1837441745-3206`."
+  ],
+  "metadata": {
+    "start_alert": 41,
+    "end_alert": 43,
+    "start_entities": [
+      14,
+      42,
+      9,
+      2,
+      10,
+      1,
+      15,
+      13,
+      12,
+      4
+    ],
+    "end_entities": [
+      19
+    ],
+    "shortest_alert_path": [
+      41,
+      8,
+      33,
+      29,
+      43
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_55_test_q072",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "Suspicious activity was noted where `cmd.exe` was used to execute a command invoking `powershell.exe` on a device. This activity is part of a broader security incident involving a hands-on-keyboard attack using the Impacket toolkit. This incident involved attempts to move laterally across the network, with attackers possibly trying to execute ransomware or other payloads on the target device. We have linked this remote activity to an ongoing Impacket toolkit attack.",
+  "question": "Whose account is associated with the suspicious execution of a command via the Impacket toolkit observed on the device?",
+  "gold_answer": "gsmith",
+  "solution_steps": [
+    "There was a suspicious remote activity involving the Azure Active Directory user with AadUserId `ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5`.",
+    "There is an ongoing hands-on-keyboard attack using the Impacket toolkit by the account with the name `gsmith`."
+  ],
+  "metadata": {
+    "start_alert": 37,
+    "end_alert": 16,
+    "start_entities": [
+      38,
+      39,
+      40
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      37,
+      20,
+      16
+    ]
+  }
+}

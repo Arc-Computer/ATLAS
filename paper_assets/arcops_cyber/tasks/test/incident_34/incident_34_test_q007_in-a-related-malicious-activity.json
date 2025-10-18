@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_34_test_q007",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "An uncommon file was created and added to a Run Key on a machine, which can be an indication of persistence established by an attacker. This occurred in a security incident observed on 2024-07-04. The initial observation included an IP address, `72.5.72.208`, associated with the event. This malicious activity could imply that an attacker places software into this location to ensure continued access even after the machine reboots.",
+  "question": "In a related malicious activity on this machine, a suspicious PowerShell command was used. Can you find the name of the file associated with this PowerShell activity?",
+  "gold_answer": "winatp-intro-backdoor.exe",
+  "solution_steps": [
+    "An uncommon file `winatp-intro-backdoor.exe` was created on the machine with HostName `vnevado-win10e` and added to a Run Key, ensuring it will execute after a reboot.",
+    "There was a suspicious PowerShell command executed on the machine `vnevado-win10e`, indicating potential malicious activity such as installation or lateral movement by an attacker."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 10,
+    "start_entities": [
+      18
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      23,
+      1,
+      10
+    ]
+  }
+}

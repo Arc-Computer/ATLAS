@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_train_q014",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "In a recent security incident, a process executed PowerShell to download a file or run an encoded command. This often indicates that an attacker might be trying to download external payloads or execute commands on the device without leaving a trace. Additionally, earlier in the same incident, the process `winword.exe` was found to be executed with a suspicious command line on June 26, 2024 (Process ID: 9780). Furthermore, we observed that a process involved in this malicious activity used Task Scheduler to create, modify, or delete a task, potentially as an attempt to launch malicious code automatically and establish persistence.",
+  "question": "Which process was executed to create, modify, or delete a task using Task Scheduler during this incident?",
+  "gold_answer": "schtasks.exe",
+  "solution_steps": [
+    "The attacker executed a PowerShell command that downloaded or ran an encoded command, resulting in the file `winatp-intro-backdoor.exe`.",
+    "The attacker used the Task Scheduler with the command line `schtasks.exe /run /tn yrei` at `2024-06-26t12:00:40.6793914z`, with Process ID `1616` to create, modify, or delete a task for persistence."
+  ],
+  "metadata": {
+    "start_alert": 26,
+    "end_alert": 21,
+    "start_entities": [
+      11,
+      12
+    ],
+    "end_entities": [
+      15
+    ],
+    "shortest_alert_path": [
+      26,
+      9,
+      21
+    ]
+  }
+}

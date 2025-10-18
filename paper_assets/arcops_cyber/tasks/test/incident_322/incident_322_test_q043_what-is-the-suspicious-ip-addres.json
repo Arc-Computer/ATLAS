@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_322_test_q043",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "In a recent security incident, Microsoft Defender for Resource Manager detected a resource management operation from an IP address associated with proxy services, such as TOR. This operation was performed on the host `vnevado-dc`, which is part of the resource group `ctfcat` under subscription ID `7e838342-601f-4552-9baf-0dfb300cf555`. Such behaviors are often seen in malicious activities when threat actors try to hide their source IP.",
+  "question": "What is the suspicious IP address associated with the Azure Resource Management activities by a risky user?",
+  "gold_answer": "253.1.244.215",
+  "solution_steps": [
+    "The user account `Hailey Johnson` performed an Azure Resource Manager operation from a suspicious proxy IP address.",
+    "There are suspicious Azure Resource Management activities from IP address `253.1.244.215`."
+  ],
+  "metadata": {
+    "start_alert": 25,
+    "end_alert": 32,
+    "start_entities": [
+      21,
+      26,
+      27,
+      28,
+      29,
+      30
+    ],
+    "end_entities": [
+      31
+    ],
+    "shortest_alert_path": [
+      25,
+      6,
+      32
+    ]
+  }
+}

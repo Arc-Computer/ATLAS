@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_5_test_q043",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident was detected involving suspicious 'GenRansom' behavior on the host 'vnevado-win11t'. This malware can perform harmful actions and spread across machines. The active malware was found running or having persistence mechanisms in place, necessitating urgent precautionary measures. Following this, a system recovery setting tampering alert was observed on the device, where adversaries might be disabling recovery features using native Windows utilities.",
+  "question": "There was suspicious remote activity involving this malware incident. Can you identify the AadDeviceId of the host involved in this suspicious remote activity?",
+  "gold_answer": "bc00e484-d0e5-4da4-9472-95568cccc07e",
+  "solution_steps": [
+    "Suspicious 'GenRansom' behavior was detected on device with AadDeviceId `e5799261-6720-4297-961e-bd9ca4275033`.",
+    "System recovery setting tampering was observed with the process `vssblatemp.exe`.",
+    "Suspicious remote activity was detected on device with AadDeviceId `bc00e484-d0e5-4da4-9472-95568cccc07e`."
+  ],
+  "metadata": {
+    "start_alert": 148,
+    "end_alert": 88,
+    "start_entities": [
+      68,
+      69
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      148,
+      69,
+      79,
+      11,
+      88
+    ]
+  }
+}

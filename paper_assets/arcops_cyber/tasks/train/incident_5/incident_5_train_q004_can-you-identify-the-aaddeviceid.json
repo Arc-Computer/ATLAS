@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_5_train_q004",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A potentially compromised asset exhibiting ransomware-like behavior was detected on 2024-07-04. This incident might involve multiple devices and could be driven by an attacker using the specified user account or IP address to spread the ransomware. Automated remediation might be initiated to disable the account or device involved. However, there was a suspicious 'GenRansom' behavior detected around the same time, indicating active malware that can replicate or receive commands from remote attackers.",
+  "question": "Can you identify the AadDeviceId associated with the suspicious 'GenRansom' behavior detected on 2024-07-04?",
+  "gold_answer": "bc00e484-d0e5-4da4-9472-95568cccc07e",
+  "solution_steps": [
+    "A device with AadDeviceId `bc00e484-d0e5-4da4-9472-95568cccc07e` is exhibiting ransomware-like behavior and is potentially compromised.",
+    "The same device with AadDeviceId `bc00e484-d0e5-4da4-9472-95568cccc07e` was found running active malware with 'GenRansom' behavior."
+  ],
+  "metadata": {
+    "start_alert": 100,
+    "end_alert": 14,
+    "start_entities": [
+      2,
+      48,
+      45,
+      47,
+      44,
+      52,
+      42,
+      43,
+      46,
+      3
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      100,
+      8,
+      14
+    ]
+  }
+}

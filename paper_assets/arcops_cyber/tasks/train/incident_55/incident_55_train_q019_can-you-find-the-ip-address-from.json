@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_55_train_q019",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A multi-stage security incident has been reported. It started with a known public tool observed under an unexpected filename (`iy2orr1e.rrg.exe`) attempting to hide its usage possibly for malicious purposes, executed with ProcessId 5752. Subsequently, suspicious remote activity was reported, followed by a suspicious LDAP query indicating potential reconnaissance activity. The incidents culminated with an unusual addition of credentials to an OAuth app, SimulandApp, by the user Luciano Herrera (pwilson@niseko.alpineskihouse.co). The user added a credential of type Password, which could indicate app compromise and potential misuse.",
+  "question": "Can you find the IP address from where Luciano Herrera added the unusual credentials to the OAuth app?",
+  "gold_answer": "36.193.21.220",
+  "solution_steps": [
+    "User account `gsmith` might be attempting to hide the use of a dual-purpose tool by using it under an unexpected filename.",
+    "Suspicious remote activity involving `powershell.exe` was initiated on the machine.",
+    "A suspect LDAP query was executed by the account with AadUserId `2de70991-2799-4a95-b734-8e3df3a50118`, indicating potential reconnaissance.",
+    "User `Luciano Herrera (pwilson@niseko.alpineskihouse.co)` added a credential of type Password to the OAuth application SimulandApp from IP address `36.193.21.220`, which may indicate a possible compromise of the app for malicious purposes."
+  ],
+  "metadata": {
+    "start_alert": 68,
+    "end_alert": 80,
+    "start_entities": [
+      69
+    ],
+    "end_entities": [
+      87
+    ],
+    "shortest_alert_path": [
+      68,
+      18,
+      37,
+      8,
+      64,
+      11,
+      80
+    ]
+  }
+}

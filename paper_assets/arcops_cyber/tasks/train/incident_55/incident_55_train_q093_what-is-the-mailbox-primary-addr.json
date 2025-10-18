@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_train_q093",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "An alert was generated on 2024-07-06 indicating an attempt to hide the use of a dual-purpose tool under an unexpected filename. The process involved had a ProcessId of 5752 and was run with the command line: `iy2orr1e.rrg.exe -windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=`. This is part of an investigation into a multi-stage incident concerning various exploration activities, suspicious access to LSASS service, and an internal phishing campaign.",
+  "question": "What is the mailbox primary address associated with the emails containing malicious URL that were removed after delivery?",
+  "gold_answer": "santiago@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "The account with SID `S-2-5-21-571436798-3864380397-1837441745-3206` is observed using a tool known for both legitimate and malicious purposes, potentially under a deceptive filename.",
+    "A process named `powershell.exe` executed a series of suspicious commands potentially used for asset identification and lateral movement.",
+    "The account with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0` accessed the LSASS service, which could be an attempt to obtain clear-text passwords for further lateral movement.",
+    "The user account `Nina Sullivan` sent phishing emails internally, indicating a possible compromise and an attempt for lateral movement within the organization.",
+    "Emails containing a malicious URL were sent to the mailbox `santiago@vnevado.alpineskihouse.co` and subsequently removed."
+  ],
+  "metadata": {
+    "start_alert": 68,
+    "end_alert": 70,
+    "start_entities": [
+      69
+    ],
+    "end_entities": [
+      71
+    ],
+    "shortest_alert_path": [
+      68,
+      19,
+      52,
+      8,
+      45,
+      3,
+      88,
+      75,
+      70
+    ]
+  }
+}

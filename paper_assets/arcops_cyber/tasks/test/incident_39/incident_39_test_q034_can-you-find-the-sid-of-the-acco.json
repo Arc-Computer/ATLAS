@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_39_test_q034",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A recent security incident involved a suspicious service launch on a device, which is a technique often used by attackers to maintain persistence or elevate privileges. As part of the incident, the executable files `psexesvc.exe` and `services.exe` were observed being launched with respective process IDs: `7668` and `652`. This incident is connected to a further alert where the Mimikatz credential theft tool, designed to harvest credentials like plaintext passwords and Kerberos tickets, was detected.",
+  "question": "Can you find the SID of the account that was involved in the detected use of the Mimikatz tool?",
+  "gold_answer": "S-5-7-21-1843151660-3234030288-105586167-1422",
+  "solution_steps": [
+    "There was a suspicious service started on host `vnevado-dc` on 2024-07-04 22:35:02.631253.",
+    "The suspicious service launched `powershell.exe` on 2024-07-04 22:35:00.511266 on the same device.",
+    "The Mimikatz credential theft tool was detected on the device `vnevado-dc`, and the involved account had the SID `S-5-7-21-1843151660-3234030288-105586167-1422` on 2024-07-04 22:35:04.055507."
+  ],
+  "metadata": {
+    "start_alert": 86,
+    "end_alert": 108,
+    "start_entities": [
+      5,
+      61,
+      87,
+      88
+    ],
+    "end_entities": [
+      28
+    ],
+    "shortest_alert_path": [
+      86,
+      20,
+      12,
+      17,
+      108
+    ]
+  }
+}

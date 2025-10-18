@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_322_test_q003",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "A security incident involving an Azure Resource Manager operation from a suspicious proxy IP address was detected on host `vnevado-dc`. The subscription ID related to this is `7e838342-601f-4552-9baf-0dfb300cf555` and it is within the resource group `ctfcat`. The detected IP address was `253.1.244.215`. This suspicious activity was followed by a malicious URL clicked on a device.",
+  "question": "What is the URL that was detected in the proxy logs indicating malicious activity from the IP address 231.60.52.209?",
+  "gold_answer": "login.micro.demo.antoinetest.ovh",
+  "solution_steps": [
+    "A resource management operation was detected from a suspicious proxy IP address, the account involved has SID `S-1-5-21-1840151686-3534835288-156286563-1127`.",
+    "A malicious URL `login.micro.demo.antoinetest.ovh` was clicked on the device `vnevado-win11h`.",
+    "Malicious URL `login.micro.demo.antoinetest.ovh` was detected in proxy logs, indicating a connection from IP address `231.60.52.209` to the device `vnevado-win11h.vnevado.alpineskihouse.co`."
+  ],
+  "metadata": {
+    "start_alert": 25,
+    "end_alert": 11,
+    "start_entities": [
+      21,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      25,
+      8,
+      33,
+      13,
+      11
+    ]
+  }
+}

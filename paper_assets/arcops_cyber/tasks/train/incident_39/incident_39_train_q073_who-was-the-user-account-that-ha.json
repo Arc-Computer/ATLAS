@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_train_q073",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident involving the Mimikatz credential theft tool was detected on the device `vnevado-win10v` on 2024-07-04. Mimikatz is used by attackers to harvest credentials such as plaintext passwords, password hashes, smartcard PINs, and Kerberos tickets. The presence of the Mimikatz tool indicates that an attacker might be attempting to log into this or other devices on the network by impersonating a valid user.",
+  "question": "Who was the user account that had a Security Identification (SID) history injection detected in this incident?",
+  "gold_answer": "lucasb",
+  "solution_steps": [
+    "The credential theft tool Mimikatz was detected being executed by `powershell.exe`.",
+    "There was a Security Identification (SID) history injection detected involving the account `lucasb`."
+  ],
+  "metadata": {
+    "start_alert": 108,
+    "end_alert": 93,
+    "start_entities": [
+      64,
+      30,
+      67,
+      31,
+      32,
+      28,
+      68,
+      37,
+      45,
+      27
+    ],
+    "end_entities": [
+      13
+    ],
+    "shortest_alert_path": [
+      108,
+      17,
+      93
+    ]
+  }
+}

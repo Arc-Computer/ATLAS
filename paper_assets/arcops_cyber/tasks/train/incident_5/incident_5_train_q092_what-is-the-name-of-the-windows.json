@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_5_train_q092",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "As part of the investigation into the Manatee Tempest activity group, known for its use of tactics such as drive-by downloads and malvertising in partnership with Mustard Tempest, an alert was detected involving suspicious access attempts to the Primary Refresh Token (PRT). The actor uses various methods to gain initial access, followed by delivery of Cobalt Strike beacons for lateral movement and ransomware deployment. The activity group Manatee Tempest is linked with EvilCorp, UNC2165, and Indrik Spider.",
+  "question": "What is the name of the Windows Sysinternals tool that was renamed and launched, possibly for malicious purposes?",
+  "gold_answer": "mimikatz.exe",
+  "solution_steps": [
+    "Manatee Tempest activity group, known for targeting organizations with methods such as drive-by download and using BLISTER loader to deliver Cobalt Strike beacons, is associated with the account `dp5hn`.",
+    "A possible attempt to access Primary Refresh Token (PRT) was detected via the process `browsercore.exe`.",
+    "Another possible attempt to access Primary Refresh Token (PRT) was detected via the process `powershell.exe`.",
+    "A Windows Sysinternals tool was renamed to `mimikatz.exe` and launched, potentially for malicious purposes."
+  ],
+  "metadata": {
+    "start_alert": 135,
+    "end_alert": 122,
+    "start_entities": [
+      4,
+      5
+    ],
+    "end_entities": [
+      19
+    ],
+    "shortest_alert_path": [
+      135,
+      1,
+      118,
+      40,
+      36,
+      38,
+      122
+    ]
+  }
+}

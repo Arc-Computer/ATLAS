@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_166_train_q015",
+  "incident": "incident_166",
+  "split": "train",
+  "context": "A security incident indicating Possible BEC financial fraud was observed, where suspicious events with business email compromise characteristics were noted. The flagged user account belongs to Jordan P with email `Jordan P@vnevado.alpineskihouse.co`. There might be an attempt to conduct a fraud attack against the organization. As part of investigating this incident, we need to look into any risky sign-in alerts that might have been triggered.",
+  "question": "The suspicious SAP authentication alert indicates that a user may have signed in from a risky IP address. Can you find the IP address from which this suspicious sign-in to SAP occurred?",
+  "gold_answer": "107.253.5.27",
+  "solution_steps": [
+    "There is a possible business email compromise attempt involving the account `Jordan P`.",
+    "A suspicious SAP authentication occurred from the IP address `107.253.5.27` where the attacker might have controlled a user account to search or modify sensitive financial information."
+  ],
+  "metadata": {
+    "start_alert": 29,
+    "end_alert": 26,
+    "start_entities": [
+      1,
+      6,
+      7,
+      8
+    ],
+    "end_entities": [
+      25
+    ],
+    "shortest_alert_path": [
+      29,
+      6,
+      26
+    ]
+  }
+}

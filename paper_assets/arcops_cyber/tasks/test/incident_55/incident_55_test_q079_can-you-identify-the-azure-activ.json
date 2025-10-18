@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q079",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A suspected DCSync attack was initiated by Luciano Herrera (CIO) from MB-WINCLIENT, sending a replication request to MB-DC1 on 2024-07-10. During the investigation, it was discovered that there was a suspicious system hardware discovery on 2024-07-04 where a known tool or technique was used to gather information on the device. Additionally, there was suspicious remote activity observed on the same day, indicating possible malicious actions initiated remotely.",
+  "question": "Can you identify the Azure Active Directory (AAD) user ID associated with the attempt to hide the use of a dual-purpose tool?",
+  "gold_answer": "ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5",
+  "solution_steps": [
+    "Luciano Herrera (CIO) with AadUserId `2de70991-2799-4a95-b734-8e3df3a50118` on MB-WINCLIENT sent a replication request to MB-DC1.",
+    "A suspicious system hardware discovery was attempted using `powershell.exe`.",
+    "Suspicious remote activity was observed, initiated by an account with AadUserId `ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5`.",
+    "An account with AadUserId `ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5` attempted to hide the use of a dual-purpose tool under an unexpected filename."
+  ],
+  "metadata": {
+    "start_alert": 98,
+    "end_alert": 32,
+    "start_entities": [
+      81,
+      82,
+      99,
+      100
+    ],
+    "end_entities": [
+      20
+    ],
+    "shortest_alert_path": [
+      98,
+      11,
+      0,
+      8,
+      37,
+      20,
+      32
+    ]
+  }
+}

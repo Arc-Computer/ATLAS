@@ -1,0 +1,37 @@
+{
+  "task_id": "incident_5_train_q061",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A security incident was reported where LSASS process memory was modified, indicating potential attempts to bypass security mechanisms or circumvent legitimate checks. During this investigation, Mimikatz.exe was found running multiple commands involving privilege escalation and lateral movement, particularly targeting 'vnevado-jump'. Subsequently, there were alerts indicating ransomware payloads being remotely launched and possible lateral movements detected across devices.",
+  "question": "Can you identify the IP address associated with the possible lateral movement observed in close proximity to the suspicious network event?",
+  "gold_answer": "38.142.109.10",
+  "solution_steps": [
+    "The account with SID `S-5-7-21-1843151660-3234030288-105586167-1422` was involved in modifying the LSASS process memory.",
+    "There was a lateral movement to the jump server indicated by the PSExec operation from IP address `99.83.111.100`.",
+    "A ransomware payload was remotely launched on the host with AadDeviceId `bc00e484-d0e5-4da4-9472-95568cccc07e`.",
+    "A possible lateral movement was observed involving the IP address `38.142.109.10`."
+  ],
+  "metadata": {
+    "start_alert": 115,
+    "end_alert": 101,
+    "start_entities": [
+      24,
+      29,
+      30,
+      31,
+      32
+    ],
+    "end_entities": [
+      102
+    ],
+    "shortest_alert_path": [
+      115,
+      17,
+      174,
+      42,
+      112,
+      8,
+      101
+    ]
+  }
+}

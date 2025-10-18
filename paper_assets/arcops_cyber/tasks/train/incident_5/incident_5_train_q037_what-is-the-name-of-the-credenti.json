@@ -1,0 +1,42 @@
+{
+  "task_id": "incident_5_train_q037",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A multi-stage security incident was detected on a machine involving suspicious WMI process creation and a potential attempt to access a Primary Refresh Token (PRT). This incident may involve the attacker trying to move laterally in the organization or perform credential theft. In the process, several Suspicious WMI process creation and attempts to access PRT tokens were recorded.",
+  "question": "What is the name of the credential theft tool that was detected at the end of this security incident?",
+  "gold_answer": "mimikatz.exe",
+  "solution_steps": [
+    "A suspicious WMI process creation was observed on the machine with the user SID `S-1-5-21-1840191660-8534830288-125585561-1522`.",
+    "There was a possible attempt to access the Primary Refresh Token (PRT) using the process `browsercore.exe`.",
+    "A possible attempt to access the Primary Refresh Token (PRT) was detected on the host with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`.",
+    "A malicious credential theft tool execution was detected using the process `mimikatz.exe`."
+  ],
+  "metadata": {
+    "start_alert": 117,
+    "end_alert": 131,
+    "start_entities": [
+      8,
+      59,
+      2,
+      90,
+      6,
+      1,
+      11,
+      78,
+      89,
+      77
+    ],
+    "end_entities": [
+      24
+    ],
+    "shortest_alert_path": [
+      117,
+      2,
+      82,
+      40,
+      36,
+      35,
+      131
+    ]
+  }
+}

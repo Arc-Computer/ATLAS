@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_5_test_q012",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "The context implies that the suspicious activity involved multiple process creations and communications that were likely related to malware. The specific URL that was blocked as part of this command and control activity can provide pivotal information for further investigation into the attack vectors.",
+  "question": "Can you identify the malicious URL that was associated with the command and control behavior blocked during the incident on 2024-07-04?",
+  "gold_answer": "http://vectorsandarrows.com/",
+  "solution_steps": [
+    "There is a suspicious WMI process creation by an account with SID `S-1-5-21-1840191660-8534830288-125585561-1522`.",
+    "The Command and Control behavior was blocked, originating from the URL `http://vectorsandarrows.com/`."
+  ],
+  "metadata": {
+    "start_alert": 145,
+    "end_alert": 73,
+    "start_entities": [
+      11,
+      59,
+      67,
+      68,
+      69,
+      80,
+      81,
+      108,
+      109
+    ],
+    "end_entities": [
+      74
+    ],
+    "shortest_alert_path": [
+      145,
+      2,
+      73
+    ]
+  }
+}

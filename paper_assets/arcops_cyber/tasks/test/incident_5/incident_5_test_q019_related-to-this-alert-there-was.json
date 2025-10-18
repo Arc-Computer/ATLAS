@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_5_test_q019",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "On July 4th, 2024, a ransomware payload was remotely launched on device 'vnevado-win11t' with IP address '99.83.111.100'. Attackers might be attempting to encrypt content on this device, rendering it unusable to users. For more information, refer to the Threat Analytics report: Threat overview: Human-operated ransomware.",
+  "question": "Related to this alert, there was a possible attempt to access the Primary Refresh Token (PRT). What is the file name of the process that was used in this attempt?",
+  "gold_answer": "browsercore.exe",
+  "solution_steps": [
+    "A ransomware payload was remotely launched on an account with the name `dp5hn`.",
+    "A possible attempt to access the Primary Refresh Token (PRT) was detected, involving the process with the filename `browsercore.exe`."
+  ],
+  "metadata": {
+    "start_alert": 143,
+    "end_alert": 71,
+    "start_entities": [
+      42,
+      68,
+      69
+    ],
+    "end_entities": [
+      40
+    ],
+    "shortest_alert_path": [
+      143,
+      1,
+      71
+    ]
+  }
+}

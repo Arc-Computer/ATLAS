@@ -1,0 +1,49 @@
+agent:
+  type: openai
+  name: arcops-cyber-student
+  system_prompt: |
+    You are the ArcOps-Cyber Student. Answer the investigator's question using only the information provided in context. Prefer concise responses and cite exact indicators when relevant.
+  tools: []
+  llm:
+    provider: openai
+    model: gpt-5-mini
+    api_key_env: OPENAI_API_KEY
+    temperature: 0.0
+    max_output_tokens: 768
+  response_format: null
+
+teacher:
+  llm:
+    provider: openai
+    model: gpt-5
+    api_key_env: OPENAI_API_KEY
+    temperature: 0.1
+    max_output_tokens: 1024
+
+rim:
+  small_model:
+    provider: openai
+    model: gpt-5-mini
+    api_key_env: OPENAI_API_KEY
+    max_output_tokens: 512
+  large_model:
+    provider: openai
+    model: gpt-5
+    api_key_env: OPENAI_API_KEY
+    max_output_tokens: 512
+  judge_prompt: "Reward the agent for identifying the correct indicator based on the provided incident context."
+  variance_threshold: 0.15
+  uncertainty_threshold: 0.3
+
+adaptive_teaching:
+  enabled: true
+  certify_first_run: false
+  mode_override: auto
+  probe:
+    fallback_mode: paired
+
+storage:
+  database_url: postgresql://atlas:atlas@localhost:5433/atlas
+  min_connections: 1
+  max_connections: 5
+  statement_timeout_seconds: 30

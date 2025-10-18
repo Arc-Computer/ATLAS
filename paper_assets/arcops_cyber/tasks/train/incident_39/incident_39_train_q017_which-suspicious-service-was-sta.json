@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_39_train_q017",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "There has been a sequence of alerts indicating potential human-operated malicious activity which might lead to ransomware or other payloads being installed on target devices. Some of the notable processes executed include `powershell.exe` to disable real-time monitoring, `psexesvc.exe`, and `rubeus.exe` used to extract service tickets. These actions were observed on host `vnevado-win10b` and involved accounts such as `kyleg` (AadUserId: 97e6a954-b6bd-48a5-808c-bd8464cce677) and `fk8mq` (Sid: S-1-5-21-1540151660-3530000288-105586595-1517). One particular instance included the extraction of credentials using the Rubeus tool, which was later executed via command line by the user `lucasb`.",
+  "question": "Which suspicious service was started using the `net.exe` command?",
+  "gold_answer": "ntds",
+  "solution_steps": [
+    "A suspicious service was launched with command line `net.exe start ntds` at `2024-06-27t14:34:44.6620407z`, with Process ID `3400`.",
+    "Multiple dual-purpose tools, such as `powershell.exe`, were dropped on the device.",
+    "Potential human-operated malicious activity was detected involving the execution of `rubeus.exe`."
+  ],
+  "metadata": {
+    "start_alert": 105,
+    "end_alert": 12,
+    "start_entities": [
+      99,
+      10,
+      4,
+      1,
+      2,
+      6,
+      9,
+      3,
+      42,
+      11
+    ],
+    "end_entities": [
+      19
+    ],
+    "shortest_alert_path": [
+      105,
+      65,
+      62,
+      17,
+      12
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_39_train_q094",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident involving a file being dropped and launched from a remote location was detected. During this incident, an attacker or malware might be attempting to move laterally or propagate. The remote session involved an account with the SID `S-0-6-5` and an IP address `141.216.110.153`.",
+  "question": "Can you identify the name of the file associated with the detected malware activity?",
+  "gold_answer": "rubeus.exe",
+  "solution_steps": [
+    "A remote session dropped and executed the file `rubeus.exe` with the command line `rubeus.exe dump /service:xfbzkp /user:lucasb` on 2024-06-27 at 14:33:27.7927134 UTC, with Process ID `2608`.",
+    "The file `rubeus.exe` was detected as 'Kekeo' malware and was active."
+  ],
+  "metadata": {
+    "start_alert": 34,
+    "end_alert": 100,
+    "start_entities": [
+      23,
+      25
+    ],
+    "end_entities": [
+      65
+    ],
+    "shortest_alert_path": [
+      34,
+      9,
+      100
+    ]
+  }
+}

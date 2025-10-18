@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q022",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "In the context of the described security incident involving suspicious access to the LSASS service, we found emails with malicious URLs which were delivered and later removed.",
+  "question": "Can you provide the name of the account involved in the email messages containing malicious URLs that were removed after delivery?",
+  "gold_answer": "Lucas Grey",
+  "solution_steps": [
+    "There was a suspicious access to the LSASS service with potential credential decryption activity involving the user with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0`.",
+    "The email account `Lucas Grey` received an email with a malicious URL that was later removed after delivery."
+  ],
+  "metadata": {
+    "start_alert": 45,
+    "end_alert": 92,
+    "start_entities": [
+      8,
+      1,
+      47,
+      14,
+      7,
+      46,
+      15,
+      4,
+      50,
+      49
+    ],
+    "end_entities": [
+      89
+    ],
+    "shortest_alert_path": [
+      45,
+      3,
+      92
+    ]
+  }
+}

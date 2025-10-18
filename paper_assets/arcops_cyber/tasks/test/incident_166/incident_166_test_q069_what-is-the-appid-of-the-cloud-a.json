@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_166_test_q069",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "During a security incident involving a suspicious inbox manipulation rule at 2024-07-22 10:00:07.502771+00:00, it was observed that a user account with the name Jordan P, SID S-1-5-21-1740051960-3534030288-108486866-1602, and email `Jordan P@vnevado.alpineskihouse.co` was potentially compromised. The attacker's IP address involved in this activity was `255.246.85.58`.",
+  "question": "What is the AppId of the cloud application involved in the suspicious activity?",
+  "gold_answer": "20893",
+  "solution_steps": [
+    "The cloud application with AppId `20893` was used to manipulate a user's inbox rules in a suspicious manner."
+  ],
+  "metadata": {
+    "start_alert": 16,
+    "end_alert": 16,
+    "start_entities": [
+      6,
+      8,
+      7,
+      1,
+      15
+    ],
+    "end_entities": [
+      11
+    ],
+    "shortest_alert_path": [
+      16
+    ]
+  }
+}

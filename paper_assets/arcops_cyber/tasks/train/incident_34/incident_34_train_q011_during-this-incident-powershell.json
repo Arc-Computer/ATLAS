@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_34_train_q011",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "In a recent security incident where an anomaly was detected in the ASEP registry, it was found that a process had registered a suspicious command or file in the ASEP registry key. This could be a move by an attacker to maintain persistence even after a machine reboot. This incident is connected to the IP address 72.5.72.208.",
+  "question": "During this incident, Powershell dropped a suspicious file on the machine. Can you identify the name of the suspicious file?",
+  "gold_answer": "winatp-intro-backdoor.exe",
+  "solution_steps": [
+    "A suspicious command or file was registered in the ASEP registry on the host with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f`.",
+    "Powershell dropped and executed a suspicious file named `winatp-intro-backdoor.exe` on the machine."
+  ],
+  "metadata": {
+    "start_alert": 17,
+    "end_alert": 25,
+    "start_entities": [
+      18
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      17,
+      2,
+      25
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_train_q054",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "As part of a recent incident where a process was injected with potentially malicious code, it was found that the PowerShell script `contosoadfsblatempcreds.ps1` was executed on the host `mb-winclient` and this might be associated with suspicious code running in the target process memory of a user account. This account's unique identifier, its SID value, and related behaviors indicate potential malicious activities.",
+  "question": "Who was the sender of the email containing the malicious URL that was later removed after delivery?",
+  "gold_answer": "santiago@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "There has been malicious code injection detected, associated with the account having AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0`.",
+    "An email containing a malicious URL was delivered from the sender `santiago@vnevado.alpineskihouse.co` and subsequently removed."
+  ],
+  "metadata": {
+    "start_alert": 41,
+    "end_alert": 92,
+    "start_entities": [
+      11,
+      1,
+      42,
+      9,
+      13,
+      12,
+      10,
+      7,
+      4,
+      14
+    ],
+    "end_entities": [
+      96
+    ],
+    "shortest_alert_path": [
+      41,
+      3,
+      92
+    ]
+  }
+}

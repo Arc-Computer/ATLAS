@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_55_test_q033",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "During a security incident involving unusual addition of credentials to an OAuth app, the user Luciano Herrera (pwilson@niseko.alpineskihouse.co) performed an unusual addition of credentials to the application SimulandApp. This might indicate that an attacker has compromised the app and is using it for malicious activities such as phishing, data exfiltration, or gaining access to other accounts and devices. A starting IP address associated with this incident is `2801:e0a:1eb:dea0:642e:5bb6:d315:fbb3`.",
+  "question": "What is the IP address involved in the earlier incident where Luciano Herrera added a credential to the application SimulandApp?",
+  "gold_answer": "36.193.21.220",
+  "solution_steps": [
+    "The user `Luciano Herrera (pwilson@niseko.alpineskihouse.co)` performed an unusual addition of credentials to the OAuth app `SimulandApp`.",
+    "This credential addition was done on `2024-07-10 11:24:45.686939+00:00` using a credential of type Password.",
+    "Another instance of unusual addition of credentials to the OAuth app `SimulandApp` by the same user `Luciano Herrera` occurred on `2024-07-07 09:54:21.810789+00:00` from the IP address `36.193.21.220`."
+  ],
+  "metadata": {
+    "start_alert": 108,
+    "end_alert": 80,
+    "start_entities": [
+      109
+    ],
+    "end_entities": [
+      87
+    ],
+    "shortest_alert_path": [
+      108,
+      81,
+      80
+    ]
+  }
+}

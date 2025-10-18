@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_55_train_q017",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A comprehensive investigation reveals multiple suspicious activities related to a security incident. Initially, a suspicious service named DDLOXJDSQSNGMUKKFUXQ was created by the user gsmith on the host MB-ADFS, suggesting potential execution of malicious commands. Further investigation uncovered a suspicious LDAP query indicating an ADFS private key extraction attempt, suggesting lateral movement in the network. Subsequently, it was identified that a process involved in the earlier malicious activity used Task Scheduler to create, modify, or delete a task, which could facilitate the automatic launch of malicious code and establish persistence.",
+  "question": "What is the extracted file name of the process that used Task Scheduler in the suspicious activity?",
+  "gold_answer": "schtasks.exe",
+  "solution_steps": [
+    "The account with SID `S-2-5-21-571436798-3864380397-1837441745-3206` created the service `DDLOXJDSQSNGMUKKFUXQ` on `MB-ADFS` to potentially execute malicious commands.",
+    "There was a suspicious LDAP query on host `mb-adfs` which might be an attempt to steal ADFS private keys or enable lateral movement on the network.",
+    "The process `schtasks.exe` was involved in earlier malicious activity and used Task Scheduler to create, modify, or delete a task likely to launch malicious code and establish persistence."
+  ],
+  "metadata": {
+    "start_alert": 101,
+    "end_alert": 33,
+    "start_entities": [
+      102,
+      103
+    ],
+    "end_entities": [
+      35
+    ],
+    "shortest_alert_path": [
+      101,
+      19,
+      43,
+      26,
+      33
+    ]
+  }
+}

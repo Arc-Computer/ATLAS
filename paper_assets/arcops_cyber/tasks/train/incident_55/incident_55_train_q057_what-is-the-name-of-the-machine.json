@@ -1,0 +1,37 @@
+{
+  "task_id": "incident_55_train_q057",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "Our monitoring systems have flagged several potentially malicious activities. Initially, Lucas Grey (Email: Lucas Grey@niseko.alpineskihouse.co) accessed a suspicious URL: `http://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/`. Following this event, there was an alert indicating the execution of a malicious PowerShell Cmdlet on a device. Further investigation revealed a potential DCSync attack initiated by Luciano Herrera (CIO) from MB-WINCLIENT, who sent a replication request to another machine. The final alert indicated that a key was accessed on that machine.",
+  "question": "What is the name of the machine that accessed the DKM key of the ADFS object id 4cac49d3-29d3-407e-8c9b-b7ebb21541b2?",
+  "gold_answer": "MB-DC1",
+  "solution_steps": [
+    "The user with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0` clicked on a potentially malicious URL.",
+    "A malicious PowerShell Cmdlet was invoked on the machine by the user with AadUserId `2de70991-2799-4a95-b734-8e3df3a50118`.",
+    "Luciano Herrera (CIO) on host `MB-WINCLIENT` sent 1 replication request to host `MB-DC1`, suspected to be a DCSync attack.",
+    "Host `MB-DC1` read the DKM key of the ADFS object with id `4cac49d3-29d3-407e-8c9b-b7ebb21541b2`."
+  ],
+  "metadata": {
+    "start_alert": 104,
+    "end_alert": 105,
+    "start_entities": [
+      89,
+      90,
+      91,
+      93,
+      94
+    ],
+    "end_entities": [
+      99
+    ],
+    "shortest_alert_path": [
+      104,
+      3,
+      51,
+      11,
+      98,
+      99,
+      105
+    ]
+  }
+}

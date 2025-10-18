@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_34_train_q006",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "On 2024-07-04, a security incident reported suspicious Task Scheduler activity suggesting a process with earlier malicious activity used Task Scheduler to potentially launch malicious code automatically for persistence. One of the observed malicious activities involved the execution of a process `schtasks.exe` creating and running tasks.",
+  "question": "During this security incident, a process executed PowerShell to download a file or run an encoded command. What is the Security Identifier (SID) of the account associated with this suspicious PowerShell activity?",
+  "gold_answer": "S-1-5-21-1870156660-7534030218-135086563-1193",
+  "solution_steps": [
+    "There was a suspicious Task Scheduler activity initiated by a user with SID `S-1-5-21-1870156660-7534030218-135086563-1193` to potentially establish persistence.",
+    "The same user with SID `S-1-5-21-1870156660-7534030218-135086563-1193` executed a suspicious PowerShell command to download a file or run an encoded command."
+  ],
+  "metadata": {
+    "start_alert": 21,
+    "end_alert": 22,
+    "start_entities": [
+      13,
+      14,
+      15
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      21,
+      5,
+      22
+    ]
+  }
+}

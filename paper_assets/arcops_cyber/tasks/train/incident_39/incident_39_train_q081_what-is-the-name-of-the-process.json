@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_39_train_q081",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A recent security incident involving suspicious services being launched on a device was flagged. Attackers might use such services to launch malicious commands or programs, which can be used to maintain persistence or elevate privileges on the target device. In this incident, an account with the name `lucasb` and multiple processes such as `powershell.exe` and `net.exe` were associated with the suspicious activity.",
+  "question": "What is the name of the process that was identified as launching the suspicious service?",
+  "gold_answer": "services.exe",
+  "solution_steps": [
+    "A suspicious service was launched on the host `vnevado-dc`.",
+    "The suspicious service started the process `services.exe`."
+  ],
+  "metadata": {
+    "start_alert": 12,
+    "end_alert": 86,
+    "start_entities": [
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    "end_entities": [
+      88
+    ],
+    "shortest_alert_path": [
+      12,
+      20,
+      86
+    ]
+  }
+}

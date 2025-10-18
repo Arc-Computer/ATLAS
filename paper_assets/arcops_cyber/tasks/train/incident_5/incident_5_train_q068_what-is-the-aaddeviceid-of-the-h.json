@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_5_train_q068",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A ransomware behavior was detected on the host `vnevado-win11t`, which may indicate mass encryption of files by ransomware as part of a larger security incident. The host has the AadDeviceId `e5799261-6720-4297-961e-bd9ca4275033`, and further investigation shows that this activity is potentially linked to the Manatee Tempest, a Russia-based cybercriminal group active since June 2014, known for deploying tactics such as drive-by downloads, BLISTER loader, and Cobalt Strike beacons for lateral movement and ransomware deployment. Following these observations, `CommandAndControl` malware was detected, indicating an attempt at lateral movement to another device on the network.",
+  "question": "What is the AadDeviceId of the host where 'CommandAndControl' malware was detected during lateral movement?",
+  "gold_answer": "bc00e484-d0e5-4da4-9472-95568cccc07e",
+  "solution_steps": [
+    "Suspicious file system changes suggesting ransomware behavior were detected on the host with AadDeviceId `e5799261-6720-4297-961e-bd9ca4275033`.",
+    "The actor tracked as Manatee Tempest, known for its diverse cybercriminal activities, targeted an account with the name `dp5hn`.",
+    "The 'CommandAndControl' malware was detected on the host with AadDeviceId `bc00e484-d0e5-4da4-9472-95568cccc07e`, suggesting an attempt for lateral movement by an attacker."
+  ],
+  "metadata": {
+    "start_alert": 105,
+    "end_alert": 128,
+    "start_entities": [
+      68,
+      69
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      105,
+      69,
+      75,
+      1,
+      128
+    ]
+  }
+}

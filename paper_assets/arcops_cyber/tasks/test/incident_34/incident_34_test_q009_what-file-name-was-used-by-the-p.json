@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_34_test_q009",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "As part of a recent suspicious PowerShell activity detected on `vnevado-win10e`, an account with SID `S-1-5-21-1870156660-7534030218-135086563-1193` and username `samuelf` executed a process which downloaded a file or ran an encoded command via PowerShell. Attackers often use PowerShell to bypass security mechanisms by executing their payload in memory without leaving a trace or touching the disk.",
+  "question": "What file name was used by the process that executed PowerShell to download a file or run an encoded command?",
+  "gold_answer": "powershell.exe",
+  "solution_steps": [
+    "A process executed `powershell.exe` to download a file or run an encoded command."
+  ],
+  "metadata": {
+    "start_alert": 22,
+    "end_alert": 22,
+    "start_entities": [
+      2,
+      5,
+      4,
+      9,
+      6,
+      1
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      22
+    ]
+  }
+}

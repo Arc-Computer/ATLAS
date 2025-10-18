@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_test_q070",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A security incident involving a sign-in from an anonymous IP address `95.202.65.202` occurred on 2024-07-22. This could potentially indicate the use of an anonymizer tool like Tor browser or VPNs.",
+  "question": "During the investigation, a suspicious event with business email compromise (BEC) characteristics was observed on 2024-07-23. Can you identify the Security Identifier (SID) of the account involved in the possible BEC financial fraud?",
+  "gold_answer": "S-1-5-21-1740051960-3534030288-108486866-1602",
+  "solution_steps": [
+    "The account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82` signed in from an anonymous IP address.",
+    "Suspicious BEC financial fraud activities were observed for the user with SID `S-1-5-21-1740051960-3534030288-108486866-1602`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 29,
+    "start_entities": [
+      2
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      0,
+      1,
+      29
+    ]
+  }
+}

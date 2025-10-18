@@ -1,0 +1,24 @@
+{
+  "task_id": "incident_166_test_q009",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A security incident was detected on 2024-07-23 which involved a password spray attack targeting a user account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`. This kind of attack involves attempting a few commonly used passwords against many accounts to avoid triggering account lockups.",
+  "question": "As part of the investigation, can you identify the IP address from which the password spray attack originated?",
+  "gold_answer": "95.202.65.202",
+  "solution_steps": [
+    "A password spray attack was detected from the IP address `95.202.65.202`."
+  ],
+  "metadata": {
+    "start_alert": 28,
+    "end_alert": 28,
+    "start_entities": [
+      1
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      28
+    ]
+  }
+}

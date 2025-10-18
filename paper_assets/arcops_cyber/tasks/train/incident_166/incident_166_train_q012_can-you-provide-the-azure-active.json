@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_train_q012",
+  "incident": "incident_166",
+  "split": "train",
+  "context": "As part of an investigation into a security incident, there was a sign-in attempt from the anonymous IP address `95.202.65.202`, which could indicate a possible use of a Tor browser or VPN anonymizer. This was detected on 2024-07-22 at 08:45:32. Following this, a password spray attack was detected.",
+  "question": "Can you provide the Azure Active Directory (AAD) User ID involved in the password spray attack?",
+  "gold_answer": "89e933b9-5b2e-4bd6-bcdf-033db707ef82",
+  "solution_steps": [
+    "A sign-in attempt was made from an anonymous IP address `95.202.65.202`.",
+    "A password spray attack was detected targeting the user account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 28,
+    "start_entities": [
+      2
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      0,
+      2,
+      28
+    ]
+  }
+}

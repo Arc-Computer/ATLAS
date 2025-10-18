@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_5_test_q046",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A recent security incident involved the modification of the LSASS process memory. This process enforces security policy by verifying user logons and password changes. Attackers might modify LSASS memory to bypass security mechanisms or circumvent legitimate checks. In the same incident, the device `vnevado-win10v` showed signs of the Mimikatz hacktool being detected.",
+  "question": "What is the name of the credential theft tool detected on the device `vnevado-win10v`?",
+  "gold_answer": "mimikatz.exe",
+  "solution_steps": [
+    "The LSASS process memory was modified on host `vnevado-win10v`.",
+    "The Mimikatz credential theft tool, known as mimikatz.exe, was detected on the same host `vnevado-win10v`."
+  ],
+  "metadata": {
+    "start_alert": 115,
+    "end_alert": 151,
+    "start_entities": [
+      24,
+      32,
+      34,
+      31,
+      35,
+      30,
+      17,
+      18,
+      20
+    ],
+    "end_entities": [
+      19
+    ],
+    "shortest_alert_path": [
+      115,
+      34,
+      151
+    ]
+  }
+}

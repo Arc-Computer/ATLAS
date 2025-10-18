@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_39_test_q088",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "In the recent suspicious activity, it was observed that a new user account was created which can indicate an attempt to establish backup access to the services within the organization. Furthermore, it was found that execution commands such as `powershell.exe` and `net.exe` were used. For instance, `powershell.exe` was executed with the script `domaindominance27.ps1` and `net.exe` was used to create the user `bdadmin` with the password `password1!` for the domain.",
+  "question": "Following this, the execution of a known credential theft tool was detected. Can you identify the name of the file used for the credential theft tool?",
+  "gold_answer": "mimikatz.exe",
+  "solution_steps": [
+    "A suspicious new user account `tgs2z` was created.",
+    "A malicious credential theft tool `mimikatz.exe` was executed."
+  ],
+  "metadata": {
+    "start_alert": 48,
+    "end_alert": 89,
+    "start_entities": [
+      17,
+      18,
+      49,
+      50,
+      51
+    ],
+    "end_entities": [
+      31
+    ],
+    "shortest_alert_path": [
+      48,
+      27,
+      89
+    ]
+  }
+}

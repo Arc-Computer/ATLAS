@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_train_q079",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "As part of investigating a suspicious sequence of exploration activities on a machine, we observed several Windows commands being executed, including PowerShell and net.exe commands to manage domain users and groups. These commands are often used by attackers to identify valuable assets and facilitate lateral movement. The commands were executed using the script `domaindominance27.ps1`.",
+  "question": "During the investigation, another alert indicated that a known credential theft tool was executed on the machine. Can you identify the script file name associated with this malicious credential theft tool?",
+  "gold_answer": "get-krbticket.ps1",
+  "solution_steps": [
+    "A user with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1` executed a sequence of suspicious exploration activities.",
+    "A malicious credential theft tool named `get-krbticket.ps1` was executed, indicating an attempt to dump users' credentials."
+  ],
+  "metadata": {
+    "start_alert": 77,
+    "end_alert": 44,
+    "start_entities": [
+      49,
+      18,
+      80,
+      81,
+      50,
+      79,
+      51,
+      83,
+      84,
+      82
+    ],
+    "end_entities": [
+      38
+    ],
+    "shortest_alert_path": [
+      77,
+      29,
+      44
+    ]
+  }
+}

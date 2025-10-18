@@ -1,0 +1,24 @@
+{
+  "task_id": "incident_166_test_q059",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "During an ongoing investigation of a security incident, a sign-in from an anonymous IP address `95.202.65.202`, which could indicate the use of an anonymizer such as Tor browser or an anonymizer VPN, was detected. This type of activity often suggests attempts to mask the origin of the connection, hinting at a potential unauthorized access attempt or other suspicious behaviors.",
+  "question": "Can you identify the User ID of the account that was associated with the anonymous IP address sign-in?",
+  "gold_answer": "89e933b9-5b2e-4bd6-bcdf-033db707ef82",
+  "solution_steps": [
+    "The user with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82` signed in from an anonymous IP address."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 0,
+    "start_entities": [
+      2
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      0
+    ]
+  }
+}

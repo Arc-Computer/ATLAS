@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_166_train_q026",
+  "incident": "incident_166",
+  "split": "train",
+  "context": "This security incident occurred in the context of multiple suspicious activities across different endpoints and cloud applications suggesting a wide range of unchecked access, likely through Business Email Compromise (BEC) patterns.",
+  "question": "Related to this alert, there were suspicious emails sent by a potentially compromised user account. Can you identify the sender of these suspicious emails?",
+  "gold_answer": "laylaw@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "A suspicious inbox rule named ITCleanup was set on the inbox of the user with SID `S-1-5-21-1740051960-3534030288-108486866-1602` (Jordan P, laylaw@vnevado.alpineskihouse.co) to move messages to a folder named RSS Feeds.",
+    "Suspicious emails were sent by the possibly compromised user account `laylaw@vnevado.alpineskihouse.co` which might be related to a BEC (business email compromise) fraud attempt."
+  ],
+  "metadata": {
+    "start_alert": 5,
+    "end_alert": 18,
+    "start_entities": [
+      2,
+      4,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "end_entities": [
+      22
+    ],
+    "shortest_alert_path": [
+      5,
+      8,
+      18
+    ]
+  }
+}

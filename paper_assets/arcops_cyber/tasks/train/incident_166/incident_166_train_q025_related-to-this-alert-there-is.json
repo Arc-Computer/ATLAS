@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_166_train_q025",
+  "incident": "incident_166",
+  "split": "train",
+  "context": "There was an alert involving Business Email Compromise (BEC) where a user signed in to SAP in a suspicious manner. This behavior suggests that an attacker might have taken control of a user account to search through SAP with the intention of recording or modifying sensitive financial information. This alert was triggered based on a Microsoft Defender XDR alert. The login to this cloud-application happens from IP address `107.253.5.27` and the application has an AppId of `100`.",
+  "question": "Related to this alert, there is also a suspicious inbox manipulation rule set on a user's mailbox. Can you find the IP address from which this suspicious activity was detected?",
+  "gold_answer": "192.238.237.190",
+  "solution_steps": [
+    "A user account named `Jordan P` involved in a business email compromise-related alert signed in to SAP in a suspicious manner.",
+    "The inbox of the user `Jordan P` (laylaw@vnevado.alpineskihouse.co) had a suspicious inbox manipulation rule set, moving messages to a folder named RSS Feeds using an IP address `192.238.237.190`."
+  ],
+  "metadata": {
+    "start_alert": 27,
+    "end_alert": 5,
+    "start_entities": [
+      24,
+      25
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      27,
+      6,
+      5
+    ]
+  }
+}

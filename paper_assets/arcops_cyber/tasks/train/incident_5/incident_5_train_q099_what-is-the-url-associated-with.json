@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_5_train_q099",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A 'CommandAndControl' malware was detected on the host `vnevado-win11t`, which might be an indicator of an attacker attempting to move laterally to this device from another device on the network. A process involving `curl http://vectorsandarrows.com` on this host with ID `e5799261-6720-4297-961e-bd9ca4275033` was flagged during this detection.",
+  "question": "What is the URL associated with the blocked Command and Control behavior?",
+  "gold_answer": "http://vectorsandarrows.com/",
+  "solution_steps": [
+    "The 'CommandAndControl' malware was detected on the device associated with the account `dp5hn`.",
+    "A command and control behavior from the URL `http://vectorsandarrows.com/` was blocked, indicating that the malware was active and attempting to perform malicious activities."
+  ],
+  "metadata": {
+    "start_alert": 127,
+    "end_alert": 137,
+    "start_entities": [
+      67,
+      68,
+      69
+    ],
+    "end_entities": [
+      74
+    ],
+    "shortest_alert_path": [
+      127,
+      1,
+      137
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_test_q042",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "As part of a recent security incident, there was a sign-in from an anonymous IP address (192.238.237.190), which could be associated with tools such as Tor browser or anonymizer VPNs. This indication might show an initial access attempt by an attacker.",
+  "question": "During the continued investigation, it was discovered that a suspicious SAP authentication was performed. Can you find out the AppId used for the SAP application during this suspicious authentication?",
+  "gold_answer": "100",
+  "solution_steps": [
+    "Suspicious sign-in from an anonymous IP address detected with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "A risky user account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82` signed in to SAP cloud application with AppId `100`, indicating possible account compromise."
+  ],
+  "metadata": {
+    "start_alert": 3,
+    "end_alert": 26,
+    "start_entities": [
+      4
+    ],
+    "end_entities": [
+      24
+    ],
+    "shortest_alert_path": [
+      3,
+      1,
+      26
+    ]
+  }
+}

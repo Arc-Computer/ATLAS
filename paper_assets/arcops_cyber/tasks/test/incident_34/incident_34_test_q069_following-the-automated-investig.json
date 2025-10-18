@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_34_test_q069",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "As part of a security incident, u141(u141@ash.alpineskihouse.co) initiated an automated investigation on `vnevado-win10e` which automatically identifies and reviews threat artifacts for possible remediation. The process involved Powershell dropping a suspicious file on the machine and executing it.",
+  "question": "Following the automated investigation, Powershell dropped a suspicious file on the machine and executed it. Can you provide the SID of the account involved in this activity?",
+  "gold_answer": "S-1-5-21-1870156660-7534030218-135086563-1193",
+  "solution_steps": [
+    "An Automated investigation was manually initiated by user `u141` with email `u141@ash.alpineskihouse.co` on the host with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f`.",
+    "Powershell on this host dropped and executed a suspicious file.",
+    "The suspicious activity involves the account with SID `S-1-5-21-1870156660-7534030218-135086563-1193`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 25,
+    "start_entities": [
+      1,
+      2
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      0,
+      2,
+      25
+    ]
+  }
+}

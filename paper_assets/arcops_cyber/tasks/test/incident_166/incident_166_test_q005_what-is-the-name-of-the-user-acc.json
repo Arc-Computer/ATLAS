@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_test_q005",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A suspicious inbox rule that hides incoming email messages was created in a risky Azure Active Directory session from the IP address `255.246.85.58`. This activity indicates that an attacker might be trying to conduct business email compromise (BEC).",
+  "question": "What is the name of the user account that was involved in the possible BEC financial fraud observed on 2024-07-23?",
+  "gold_answer": "Jordan P",
+  "solution_steps": [
+    "A suspicious inbox rule that hides incoming email messages was created in a risky Azure Active Directory session by the user with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "Suspicious events with business email compromise (BEC) characteristics were observed involving the account named `Jordan P`."
+  ],
+  "metadata": {
+    "start_alert": 17,
+    "end_alert": 29,
+    "start_entities": [
+      15
+    ],
+    "end_entities": [
+      6
+    ],
+    "shortest_alert_path": [
+      17,
+      1,
+      29
+    ]
+  }
+}

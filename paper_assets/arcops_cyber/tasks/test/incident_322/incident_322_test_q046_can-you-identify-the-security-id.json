@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_322_test_q046",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "A security incident was reported involving a user clicking on a potentially malicious URL, specifically by the recipient `alyssat@vnevado.alpineskihouse.co`. This was followed by an email message containing a malicious URL being detected and removed after delivery.",
+  "question": "Can you identify the security identifier (SID) associated with the account involved in the email messages containing the malicious URL?",
+  "gold_answer": "S-1-5-21-1840151686-3534835288-156286563-1127",
+  "solution_steps": [
+    "The email account `alyssat@vnevado.alpineskihouse.co` clicked on a malicious URL.",
+    "The user with SID `S-1-5-21-1840151686-3534835288-156286563-1127` received an email with a malicious URL which was later removed."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 2,
+    "start_entities": [
+      1
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      0,
+      1,
+      2
+    ]
+  }
+}

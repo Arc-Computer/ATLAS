@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_55_test_q099",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A suspicious service creation was detected on host `MB-ADFS` where a user created a service named `DDLOXJDSQSNGMUKKFUXQ` to execute potentially malicious commands. This activity might be part of a larger security incident involving the same host.",
+  "question": "What is the name of the account involved in reading the DKM key of the ADFS object?",
+  "gold_answer": "gsmith",
+  "solution_steps": [
+    "User `gsmith` created a service named `DDLOXJDSQSNGMUKKFUXQ` to execute potentially malicious commands on `MB-ADFS`.",
+    "User `gsmith` read the DKM key of ADFS object id `4cac49d3-29d3-407e-8c9b-b7ebb21541b2`."
+  ],
+  "metadata": {
+    "start_alert": 101,
+    "end_alert": 106,
+    "start_entities": [
+      102
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      101,
+      18,
+      106
+    ]
+  }
+}

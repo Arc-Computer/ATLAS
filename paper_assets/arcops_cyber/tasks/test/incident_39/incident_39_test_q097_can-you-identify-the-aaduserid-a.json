@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_39_test_q097",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "As part of a recent security incident, an account was created using the command line `\"net.exe\" user /add bdadmin password1! /domain`, which indicates suspicious account creation. This could be an attempt by an attacker to maintain access to the device or organization. Following this, multiple public tools, which could also be used maliciously, were dropped on the same device.",
+  "question": "Can you identify the AadUserId associated with the suspicious file that was registered as a service during the incident?",
+  "gold_answer": "97e6a954-b6bd-48a5-808c-bd8464cce677",
+  "solution_steps": [
+    "A new user account was created using the script `domaindominance27.ps1`.",
+    "Multiple dual-purpose tools, such as `psexesvc.exe`, were dropped on the device.",
+    "A suspicious file was registered as a service by the account with AadUserId `97e6a954-b6bd-48a5-808c-bd8464cce677`."
+  ],
+  "metadata": {
+    "start_alert": 48,
+    "end_alert": 21,
+    "start_entities": [
+      18,
+      51
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      48,
+      50,
+      62,
+      24,
+      21
+    ]
+  }
+}

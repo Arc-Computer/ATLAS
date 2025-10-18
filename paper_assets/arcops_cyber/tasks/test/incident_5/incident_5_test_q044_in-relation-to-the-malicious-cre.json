@@ -1,0 +1,40 @@
+{
+  "task_id": "incident_5_test_q044",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident regarding System recovery setting tampering and possible attempts to access Primary Refresh Token (PRT) was reported. Specifically, there was an attempt to disable system recovery features using `vssblatemp.exe` and `bcdedit` on the host `vnevado-win11u` with a user account having the SID `S-1-5-21-1840191660-8534830288-125585561-1522`. Notably, it included a potential access of PRTs, as mentioned in the Midnight Blizzard credential attacks Threat Analytics report.",
+  "question": "In relation to the malicious credential theft tool execution detected in this multi-stage incident, can you identify the file name of the tool that was executed?",
+  "gold_answer": "mimikatz.exe",
+  "solution_steps": [
+    "The system recovery settings tampering was attempted by the user with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "An attempt to access Primary Refresh Token (PRT) was detected, associated with the process `browsercore.exe`.",
+    "Another attempt to access Primary Refresh Token (PRT) was detected, originating from the IP address `107.224.99.179`.",
+    "A malicious credential theft tool `mimikatz.exe` was executed."
+  ],
+  "metadata": {
+    "start_alert": 76,
+    "end_alert": 156,
+    "start_entities": [
+      1,
+      2,
+      3,
+      7,
+      8,
+      11,
+      77,
+      78
+    ],
+    "end_entities": [
+      24
+    ],
+    "shortest_alert_path": [
+      76,
+      3,
+      113,
+      40,
+      36,
+      20,
+      156
+    ]
+  }
+}

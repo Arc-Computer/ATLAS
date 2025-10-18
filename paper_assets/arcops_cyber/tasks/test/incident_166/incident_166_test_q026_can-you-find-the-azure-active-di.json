@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_166_test_q026",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A business email compromise-related alert indicated that the user with account `Jordan P` (Email: Jordan P@vnevado.alpineskihouse.co, Sid: S-1-5-21-1740051960-3534030288-108486866-1602) signed into SAP with IP address 107.253.5.27. This action was flagged as suspicious due to potential recording or modification of sensitive financial information in SAP. The goal could be setting up further stages of the attack, such as phishing or social engineering.",
+  "question": "Can you find the Azure Active Directory User ID associated with the suspicious SAP authentication sign-in?",
+  "gold_answer": "89e933b9-5b2e-4bd6-bcdf-033db707ef82",
+  "solution_steps": [
+    "A user involved in a business email compromise-related alert signed in to SAP with AppId `100`.",
+    "A user account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82` performed a suspicious SAP authentication."
+  ],
+  "metadata": {
+    "start_alert": 27,
+    "end_alert": 26,
+    "start_entities": [
+      6,
+      7,
+      8,
+      24,
+      25
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      27,
+      24,
+      26
+    ]
+  }
+}

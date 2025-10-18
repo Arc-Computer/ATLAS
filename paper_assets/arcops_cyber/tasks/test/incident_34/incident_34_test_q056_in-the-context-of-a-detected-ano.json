@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_test_q056",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A suspicious LDAP query was executed which might indicate reconnaissance activity targeting the organization. LDAP queries can be used to learn about the organizational structure, which may help an attacker gain higher privileges and access to important assets. It was noted that the process `winword.exe` was executed with the command line `winword.exe c:\\scripts\\rs4_winatp-intro-invoice.docm`.",
+  "question": "In the context of a detected anomaly related to ASEP registry activities, can you identify the IP address involved in this suspicious activity?",
+  "gold_answer": "72.5.72.208",
+  "solution_steps": [
+    "A suspicious LDAP query was executed on a host with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f`.",
+    "An anomaly was detected in the ASEP registry from an IP address `72.5.72.208`."
+  ],
+  "metadata": {
+    "start_alert": 24,
+    "end_alert": 17,
+    "start_entities": [
+      11,
+      12
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      24,
+      2,
+      17
+    ]
+  }
+}

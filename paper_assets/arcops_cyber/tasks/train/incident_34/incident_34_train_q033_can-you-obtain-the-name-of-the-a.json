@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_34_train_q033",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "Our organization experienced a security incident where an uncommon file `winatp-intro-backdoor.exe` was created on the host `vnevado-win10e` with the IP address `72.5.72.208`, and was added to a Run Key in the registry suggesting persistence attempts by an attacker. The file was added to the registry with the command line `reg add hkcu\\software\\microsoft\\windows\\currentversion\\runonce /f /v yrei /t reg_expand_sz /d %userprofile%\\desktop\\winatp-intro-backdoor.exe`.",
+  "question": "Can you obtain the name of the account involved in this incident?",
+  "gold_answer": "samuelf",
+  "solution_steps": [
+    "An uncommon file was created by the account `samuelf` and added to a Run Key, where it will be executed after a reboot."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 23,
+    "start_entities": [
+      2,
+      1,
+      18,
+      9,
+      5,
+      19,
+      6
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      23
+    ]
+  }
+}

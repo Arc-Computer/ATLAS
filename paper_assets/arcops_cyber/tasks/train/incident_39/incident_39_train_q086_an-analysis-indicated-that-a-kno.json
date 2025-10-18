@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_39_train_q086",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "On 2024-07-04, our systems detected the 'Kekeo' malware, an undesirable application that performs annoying, disruptive, or harmful actions on affected machines. The detection might indicate that the malware was stopped from delivering its payload, but it is prudent to check the machine for signs of infection. As part of this investigation, the file `rubeus.exe` was identified as associated with the malware activity.",
+  "question": "An analysis indicated that a known malicious credential theft tool was executed. Can you find the Azure Active Directory User ID (AadUserId) related to this activity?",
+  "gold_answer": "1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1",
+  "solution_steps": [
+    "The 'Kekeo' malware was detected on host `vnevado-win10v`.",
+    "A malicious credential theft tool execution was detected connected to the account with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1`."
+  ],
+  "metadata": {
+    "start_alert": 92,
+    "end_alert": 111,
+    "start_entities": [
+      65
+    ],
+    "end_entities": [
+      29
+    ],
+    "shortest_alert_path": [
+      92,
+      32,
+      111
+    ]
+  }
+}

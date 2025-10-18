@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_39_train_q041",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "During a security incident where a remote session dropped and executed a file `psexesvc.exe` from IP address `141.216.110.153` on 2024-07-04, a suspicious service was started on the device. This might indicate that the attacker used the service to launch malicious commands or programs, possibly to maintain persistence or elevate privileges on the target device.",
+  "question": "Related to this alert and subsequent suspicious service launch, what was the SID of the account detected during the execution of the malicious credential theft tool?",
+  "gold_answer": "S-5-7-21-1843151660-3234030288-105586167-1422",
+  "solution_steps": [
+    "A remote session dropped a file, which was launched by the account with AadUserId `7fcf9695-68fc-4258-864d-e1e5b166c66f`.",
+    "A suspicious service `powershell.exe` was started on the device.",
+    "A malicious credential theft tool execution was detected, involving the user account with Sid `S-5-7-21-1843151660-3234030288-105586167-1422`."
+  ],
+  "metadata": {
+    "start_alert": 60,
+    "end_alert": 44,
+    "start_entities": [
+      5,
+      25,
+      61
+    ],
+    "end_entities": [
+      28
+    ],
+    "shortest_alert_path": [
+      60,
+      15,
+      12,
+      17,
+      44
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_38_train_q001",
+  "incident": "incident_38",
+  "split": "train",
+  "context": "A security incident involving a suspicious process injection was observed on 2024-07-04. An abnormal code was injected into another process and as a result, unexpected code might be running in the targeted process memory. One of the involved processes was `notepad.exe` with a Process ID `8932__2024-06-26t15:49:51.3043595z`. This might lead to abnormal behaviors. A URL linked with this event is `https://wcdstaticfilesprdeus.blob.core.windows.net/wcdstaticfiles/winatp-intro-fileless.txt`.",
+  "question": "During the investigation of this incident, another alert indicated the use of a known tool or technique for gathering information on the device. Can you provide the command line used to launch the `powershell.exe` process associated with this suspicious activity?",
+  "gold_answer": "7472__2024-06-26t15:49:15.7860486z__powershell.exe",
+  "solution_steps": [
+    "There was a suspicious process injection observed on the host `vnevado-win11a`.",
+    "A suspicious application window discovery was conducted using the command line `powershell.exe` with Process ID `7472` at `2024-06-26T15:49:15.7860486Z`."
+  ],
+  "metadata": {
+    "start_alert": 10,
+    "end_alert": 0,
+    "start_entities": [
+      11,
+      12,
+      13
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      10,
+      8,
+      0
+    ]
+  }
+}

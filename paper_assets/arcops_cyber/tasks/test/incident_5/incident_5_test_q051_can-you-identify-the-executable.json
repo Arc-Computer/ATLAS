@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_5_test_q051",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident involving suspected tampering with system recovery settings using various commands and processes, including `vssblatemp.exe` to delete all volume shadow copies, was observed on device `vnevado-win11t` (AAD Device ID: `e5799261-6720-4297-961e-bd9ca4275033`). During the incident, the process `vssblatemp.exe` was executed with command: `vssblatemp.exe delete shadows /all`. This is part of an adversarial attempt to prevent the recovery of corrupted systems by deleting built-in operating system data or turning off recovery services. The incident was detected on 2024-07-04. This tampering could deny access to available backups and recovery options, augmenting the effects of data destruction or data encryption.",
+  "question": "Can you identify the executable file name of the process that attempted to access the Primary Refresh Token (PRT) as part of the related alerts?",
+  "gold_answer": "browsercore.exe",
+  "solution_steps": [
+    "There was system recovery setting tampering by the Azure AD user with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "There was a possible attempt to access the Primary Refresh Token (PRT) involving the process `browsercore.exe`."
+  ],
+  "metadata": {
+    "start_alert": 79,
+    "end_alert": 118,
+    "start_entities": [
+      11,
+      68,
+      69,
+      80,
+      81
+    ],
+    "end_entities": [
+      40
+    ],
+    "shortest_alert_path": [
+      79,
+      3,
+      118
+    ]
+  }
+}

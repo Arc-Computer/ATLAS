@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_39_train_q088",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A suspicious service `psexesvc.exe` was started on a device on 2024-07-04. Attackers might use services to launch malicious commands or programs to maintain persistence or elevate privileges on the target device. Following this, a Security IDentifcation (SID) history injection was detected on the same device. Attackers typically exploit this technique to gain elevated privileges, allowing access to sensitive files, persistence, and system modifications.",
+  "question": "During the incident on 2024-07-04, an attempt to disable the Microsoft Defender Antivirus service was detected. Which user account was involved in this tampering attempt?",
+  "gold_answer": "tgs2z",
+  "solution_steps": [
+    "There is a suspicious service started on the host `vnevado-dc`.",
+    "A SID history injection was detected involving the process `powershell.exe`.",
+    "An attempt to disable the Microsoft Defender Antivirus service was detected from the account `tgs2z`."
+  ],
+  "metadata": {
+    "start_alert": 86,
+    "end_alert": 35,
+    "start_entities": [
+      5,
+      61,
+      87,
+      88
+    ],
+    "end_entities": [
+      27
+    ],
+    "shortest_alert_path": [
+      86,
+      20,
+      93,
+      17,
+      35
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_test_q040",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A suspicious PowerShell command was executed, indicating possible malicious activity attempting to download external payloads or execute commands on the device. This activity was flagged as part of an ongoing security investigation.",
+  "question": "Can you identify the username of the account involved in executing the suspicious PowerShell command?",
+  "gold_answer": "samuelf",
+  "solution_steps": [
+    "The account with SID `S-1-5-21-1870156660-7534030218-135086563-1193` executed PowerShell to download a file or run an encoded command.",
+    "The account `samuelf` executed PowerShell to download a file or run an encoded command."
+  ],
+  "metadata": {
+    "start_alert": 26,
+    "end_alert": 22,
+    "start_entities": [
+      11,
+      12
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      26,
+      5,
+      22
+    ]
+  }
+}

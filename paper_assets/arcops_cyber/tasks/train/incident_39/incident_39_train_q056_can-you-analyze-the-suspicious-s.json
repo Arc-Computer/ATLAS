@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_39_train_q056",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A multi-faceted security incident started with emails containing a malicious URL `https://ac27145722.livelygrass-8d4c4013.eastus2.azurecontainerapps.io/` being delivered and later removed. The emails were associated with accounts including Ethan Brooks with the email address `Ethan Brooks@vnevado.alpineskihouse.co`. Later, there was activity indicating the use of Rubeus tool to perform kerberoasting or pass-the-ticket attacks, followed by detection of 'Kekeo' malware which could have been stopped before paying out its payload.",
+  "question": "Can you analyze the suspicious service activity and provide the command line details for the process involved?",
+  "gold_answer": "5912__2024-06-27t14:32:53.2267179z__psexesvc.exe",
+  "solution_steps": [
+    "The email account with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1` received an email with a malicious URL which was later removed.",
+    "The Rubeus kerberoasting tool was detected with the executable name `rubeus.exe`.",
+    "The host `vnevado-win10b` was found to have the 'Kekeo' malware.",
+    "A suspicious service was launched with Process ID `5912` at `2024-06-27t14:32:53.2267179z` using the command line `psexesvc.exe`."
+  ],
+  "metadata": {
+    "start_alert": 138,
+    "end_alert": 90,
+    "start_entities": [
+      117,
+      118,
+      135,
+      136,
+      137,
+      139,
+      140
+    ],
+    "end_entities": [
+      59
+    ],
+    "shortest_alert_path": [
+      138,
+      29,
+      107,
+      7,
+      100,
+      10,
+      90
+    ]
+  }
+}

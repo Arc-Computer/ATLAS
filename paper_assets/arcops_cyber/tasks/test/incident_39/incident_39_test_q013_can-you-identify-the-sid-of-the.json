@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_39_test_q013",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A potential human-operated malicious activity was observed on the device `vnevado-win10b`, associated with the IP address `141.216.110.153`. This activity may indicate possible ransomware or other payloads being installed on target devices. Multiple accounts such as `kyleg` with SID `S-0-6-5` and `fk8mq` were involved, along with the Azure AD device ID `fafdcd65-46c6-45a6-aa85-ec9b77ca0bcb`.",
+  "question": "Can you identify the SID of the account associated with the suspicious activity from this device?",
+  "gold_answer": "S-1-5-21-1540151660-3530000288-105586595-1517",
+  "solution_steps": [
+    "Potential human-operated malicious activity was detected, which could lead to ransomware or other malicious payloads being installed.",
+    "The suspicious activity is associated with the account having SID `S-1-5-21-1540151660-3530000288-105586595-1517`."
+  ],
+  "metadata": {
+    "start_alert": 109,
+    "end_alert": 109,
+    "start_entities": [
+      42,
+      23,
+      3,
+      10,
+      1,
+      11,
+      25
+    ],
+    "end_entities": [
+      2
+    ],
+    "shortest_alert_path": [
+      109
+    ]
+  }
+}

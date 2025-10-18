@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_test_q025",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "There was an incident where an anomalous scheduled task was created using `schtasks.exe`, which may indicate an attacker attempting to obtain persistence on the device. The task was set to execute a backdoor named `winatp-intro-backdoor.exe` located in the user's OneDrive folder. This incident is a part of a larger series of suspicious events.",
+  "question": "In relation to this incident, can you identify the Security Identifier (SID) of the account that executed the suspicious PowerShell command?",
+  "gold_answer": "S-1-5-21-1870156660-7534030218-135086563-1193",
+  "solution_steps": [
+    "There was an anomalous scheduled task created on the host `vnevado-win10e`.",
+    "A suspicious process executed a PowerShell command by the user with SID `S-1-5-21-1870156660-7534030218-135086563-1193`."
+  ],
+  "metadata": {
+    "start_alert": 20,
+    "end_alert": 3,
+    "start_entities": [
+      13,
+      14
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      20,
+      1,
+      3
+    ]
+  }
+}

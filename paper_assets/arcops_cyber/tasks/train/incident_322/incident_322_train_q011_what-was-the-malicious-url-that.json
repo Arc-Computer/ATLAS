@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_322_train_q011",
+  "incident": "incident_322",
+  "split": "train",
+  "context": "In a recent event on 2024-08-01, an email containing a malicious URL was sent from `raphaelt@vnevado.alpineskihouse.co` to `alyssat@vnevado.alpineskihouse.co`. The email was later removed after delivery due to its malicious content. Subsequently, a user accessed a link from an email which was later quarantined by zero-hour auto purge (ZAP). This raised a Microsoft Defender for Office 365 alert.",
+  "question": "What was the malicious URL that the user accessed from the email that was later quarantined by ZAP?",
+  "gold_answer": "https://dj01161621.bravesand-e1ccd718.eastus.azurecontainerapps.io/",
+  "solution_steps": [
+    "The user with SID `S-1-5-21-1840151686-3534835288-156286563-1127` received an email containing a malicious URL, which was subsequently removed.",
+    "The user accessed the link `https://dj01161621.bravesand-e1ccd718.eastus.azurecontainerapps.io/` in an email that was later quarantined by zero-hour auto purge (ZAP)."
+  ],
+  "metadata": {
+    "start_alert": 2,
+    "end_alert": 23,
+    "start_entities": [
+      1,
+      3,
+      4,
+      5
+    ],
+    "end_entities": [
+      24
+    ],
+    "shortest_alert_path": [
+      2,
+      8,
+      23
+    ]
+  }
+}

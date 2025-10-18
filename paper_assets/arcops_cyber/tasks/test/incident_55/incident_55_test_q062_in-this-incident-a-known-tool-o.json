@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q062",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A security incident described as 'Ongoing hands-on-keyboard attack via Impacket toolkit' was observed on one of our devices. The suspicious execution of a command via Impacket shows that attackers might be attempting to move laterally across the network. This hands-on-keyboard attack is concerning as it may indicate ransomware or other payload installations. An entity connected to this alert is related to a process using `powershell.exe`.",
+  "question": "In this incident, a known tool or technique was used to gather information on the device. Can you provide the name of the account involved in the system hardware discovery activity?",
+  "gold_answer": "bjenkins",
+  "solution_steps": [
+    "There is an ongoing hands-on-keyboard attack via Impacket toolkit involving the execution of `powershell.exe`.",
+    "A suspicious system hardware discovery was performed by the account `bjenkins`."
+  ],
+  "metadata": {
+    "start_alert": 16,
+    "end_alert": 0,
+    "start_entities": [
+      19,
+      24,
+      22,
+      26,
+      25,
+      18,
+      17,
+      21,
+      23,
+      20
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      16,
+      8,
+      0
+    ]
+  }
+}

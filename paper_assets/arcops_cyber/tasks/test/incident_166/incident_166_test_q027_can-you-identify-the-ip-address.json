@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_166_test_q027",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A recent security incident involved a possible business email compromise (BEC) aimed at financial fraud. The user named `Jordan P` with the email `Jordan P@vnevado.alpineskihouse.co` and AAD User ID `89e933b9-5b2e-4bd6-bcdf-033db707ef82` was flagged for suspicious activities. An unusual login from this account points towards an attempted fraud against our organization.",
+  "question": "Can you identify the IP address from which the suspicious SAP login was made as part of this business email compromise-related alert?",
+  "gold_answer": "107.253.5.27",
+  "solution_steps": [
+    "There was a suspicious event with BEC (Business Email Compromise) characteristics observed for the email account `Jordan P@vnevado.alpineskihouse.co`.",
+    "A user related to the business email compromise alert signed in to SAP from the IP address `107.253.5.27` in a suspicious manner."
+  ],
+  "metadata": {
+    "start_alert": 29,
+    "end_alert": 27,
+    "start_entities": [
+      1,
+      6,
+      7,
+      8
+    ],
+    "end_entities": [
+      25
+    ],
+    "shortest_alert_path": [
+      29,
+      7,
+      27
+    ]
+  }
+}

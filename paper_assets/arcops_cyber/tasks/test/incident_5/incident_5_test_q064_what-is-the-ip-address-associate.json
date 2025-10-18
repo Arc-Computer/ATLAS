@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_test_q064",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A recent incident occurred where all file snapshots and shadow copies were deleted via WMI or VSSAdmin on the host `vnevado-win11u` using the file `vssblatemp.exe`. This is a common action performed during a ransomware infection. Additionally, in relation to this incident, there is a historical context that the Manatee Tempest group, a Russia-based cybercriminal group known for its Dridex banking trojan campaigns, was involved. They have been active since June 2014 and use sophisticated methods such as drive-by download attacks and the BLISTER loader to deliver Cobalt Strike beacons.",
+  "question": "What is the IP address associated with the malicious Manatee Tempest activity?",
+  "gold_answer": "198.43.121.209",
+  "solution_steps": [
+    "File backups were deleted via WMI or VSSAdmin by a user with SID `S-1-5-21-1840191660-8534830288-125585561-1522`, which is a common tactic during a ransomware infection.",
+    "A suspicious IP address `198.43.121.209` was associated with the Manatee Tempest activity group, known for malicious activities such as malware campaigns and ransomware deployment."
+  ],
+  "metadata": {
+    "start_alert": 121,
+    "end_alert": 75,
+    "start_entities": [
+      7,
+      8,
+      11,
+      77
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      121,
+      2,
+      75
+    ]
+  }
+}

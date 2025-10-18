@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_test_q014",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A suspicious sequence of exploration activities was detected on a machine where a set of Windows commands were executed. These commands can be used by attackers to identify assets of value and coordinate lateral movement after compromising a machine. This incident involved several processes involving the file `net.exe` and other associated files like `domaindominance27.ps1`, `whoami.exe`, and `powershell.exe`.",
+  "question": "Can you identify the command that was detected related to the execution of the credential theft tool?",
+  "gold_answer": "mimikatz.exe privilege::debug \"kerberos::ptt c:\\m365dattack\\admin-tickets\" exit",
+  "solution_steps": [
+    "There was a suspicious sequence of exploration activities on the host `vnevado-win10v`.",
+    "A known credential theft tool `mimikatz.exe` was executed with the command line `mimikatz.exe privilege::debug kerberos::ptt c:\\m365dattack\\admin-tickets exit` at `2024-06-27t14:33:32.4282796z`, with Process ID `5176`."
+  ],
+  "metadata": {
+    "start_alert": 77,
+    "end_alert": 85,
+    "start_entities": [
+      51,
+      18,
+      81,
+      82,
+      50,
+      80,
+      83,
+      84,
+      79,
+      17
+    ],
+    "end_entities": [
+      71
+    ],
+    "shortest_alert_path": [
+      77,
+      32,
+      85
+    ]
+  }
+}

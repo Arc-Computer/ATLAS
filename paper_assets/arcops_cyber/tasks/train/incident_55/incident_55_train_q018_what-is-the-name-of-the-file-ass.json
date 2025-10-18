@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_55_train_q018",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A suspicious service creation activity was detected where the account gsmith (gsmith@niseko.alpineskihouse.co) created a service named DDLOXJDSQSNGMUKKFUXQ on the host MB-ADFS in order to execute potentially malicious commands. This is part of a larger incident involving a suspicious sequence of exploration activities followed by a process injecting potentially malicious code into another process, indicating possible code execution within the target process.",
+  "question": "What is the name of the file associated with the process that was injected with potentially malicious code?",
+  "gold_answer": "contosoadfsblatempcreds.ps1",
+  "solution_steps": [
+    "The account `gsmith` created a suspicious service named `DDLOXJDSQSNGMUKKFUXQ` on `MB-ADFS` to execute potentially malicious commands.",
+    "A process named `powershell.exe` executed a series of windows commands likely in exploration activities to identify assets and coordinate lateral movement after potentially compromising a machine.",
+    "A process `contosoadfsblatempcreds.ps1` was injected with potentially malicious code, which may involve suspicious activities such as opening a listening port or connecting to a command and control server."
+  ],
+  "metadata": {
+    "start_alert": 101,
+    "end_alert": 41,
+    "start_entities": [
+      102,
+      103
+    ],
+    "end_entities": [
+      42
+    ],
+    "shortest_alert_path": [
+      101,
+      18,
+      52,
+      8,
+      41
+    ]
+  }
+}

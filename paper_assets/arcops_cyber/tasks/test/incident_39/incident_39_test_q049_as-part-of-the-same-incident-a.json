@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_39_test_q049",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A security incident was detected involving suspicious activities. During this incident, a file `rubeus.exe` was dropped and launched from a remote location with the command line `rubeus.exe dump /service:xfbzkp /user:lucasb`. This could indicate that an attacker or malware is attempting to move laterally or propagate within the network.",
+  "question": "As part of the same incident, a suspicious remote activity was observed. Can you identify the file name associated with this remote activity?",
+  "gold_answer": "psexesvc.exe",
+  "solution_steps": [
+    "The account `fk8mq` established a remote session and dropped a file, then executed it.",
+    "Suspicious remote activity involving the file `psexesvc.exe` was observed on the machine."
+  ],
+  "metadata": {
+    "start_alert": 34,
+    "end_alert": 101,
+    "start_entities": [
+      7,
+      9
+    ],
+    "end_entities": [
+      24
+    ],
+    "shortest_alert_path": [
+      34,
+      1,
+      101
+    ]
+  }
+}

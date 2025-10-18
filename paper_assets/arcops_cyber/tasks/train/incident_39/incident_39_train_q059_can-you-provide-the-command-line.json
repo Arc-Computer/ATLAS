@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_39_train_q059",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "As part of a security incident where multiple known public tools, which could be used for malicious reasons, were dropped on this device, we observed various processes such as `mimikatz.exe`, `powershell.exe`, and `psexec.exe` being executed. One of the processes involved, `domaindominance27.ps1`, was run using PowerShell. This incident likely involves credential theft, privilege escalation, and lateral movement.",
+  "question": "Can you provide the command line associated with the execution of the known credential theft tool detected in this incident?",
+  "gold_answer": "4748__2024-06-27t14:33:38.0249949z__\"mimikatz.exe\" \"lsadump::dcsync /domain:vnevado.alpineskihouse.co /user:xfbzkp\" exit",
+  "solution_steps": [
+    "Multiple dual-purpose tools were dropped on the device using account with SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "A malicious credential theft tool (mimikatz) was executed with the command line `mimikatz.exe lsadump::dcsync /domain:vnevado.alpineskihouse.co /user:xfbzkp exit` at `2024-06-27t14:33:38.0249949z`, with Process ID `4748`."
+  ],
+  "metadata": {
+    "start_alert": 62,
+    "end_alert": 26,
+    "start_entities": [
+      50,
+      40,
+      71,
+      17,
+      36,
+      67,
+      69,
+      49,
+      38
+    ],
+    "end_entities": [
+      30
+    ],
+    "shortest_alert_path": [
+      62,
+      28,
+      26
+    ]
+  }
+}

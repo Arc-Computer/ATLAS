@@ -1,0 +1,42 @@
+{
+  "task_id": "incident_5_test_q023",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident involving multiple alerts reported by various entities. One of the alerts indicates the detection of active unknown malware that poses a significant threat as it can perform harmful actions and has persistence mechanisms in place.",
+  "question": "What was the URL associated with the command and control behavior that was blocked?",
+  "gold_answer": "http://vectorsandarrows.com/",
+  "solution_steps": [
+    "Active unknown malware was detected on the host with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`.",
+    "Lateral movement to the jump server was conducted using PSExec to IP address `99.83.111.100`.",
+    "Potentially compromised assets with SID `S-1-5-21-1840191660-8534830288-125585561-1522` exhibited ransomware-like behavior, impacting several devices.",
+    "A malicious command and control behavior directed to the URL `http://vectorsandarrows.com/` was blocked."
+  ],
+  "metadata": {
+    "start_alert": 150,
+    "end_alert": 73,
+    "start_entities": [
+      23,
+      24,
+      19,
+      111,
+      33,
+      29,
+      30,
+      92,
+      31,
+      32
+    ],
+    "end_entities": [
+      74
+    ],
+    "shortest_alert_path": [
+      150,
+      35,
+      174,
+      42,
+      147,
+      2,
+      73
+    ]
+  }
+}

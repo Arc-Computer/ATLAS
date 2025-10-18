@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_34_train_q021",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "A suspicious PowerShell command execution was detected on the host `vnevado-win10e`. The file `winatp-intro-backdoor.exe` was also involved, which might indicate that an attacker is trying to download external payloads or executing commands in the device. PowerShell is commonly utilized by attackers to bypass security protection mechanisms and execute their payloads in memory.",
+  "question": "What is the SID of the account that executed the suspicious PowerShell command?",
+  "gold_answer": "S-1-5-21-1870156660-7534030218-135086563-1193",
+  "solution_steps": [
+    "The account `samuelf` executed a PowerShell command to download a file or run an encoded command on 2024-07-04 at 22:35:01.807662+00:00.",
+    "The user with SID `S-1-5-21-1870156660-7534030218-135086563-1193` executed a suspicious PowerShell command on 2024-07-04 at 22:35:00.698474+00:00."
+  ],
+  "metadata": {
+    "start_alert": 22,
+    "end_alert": 3,
+    "start_entities": [
+      1,
+      2,
+      4,
+      6,
+      7,
+      8,
+      9
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      22,
+      4,
+      3
+    ]
+  }
+}

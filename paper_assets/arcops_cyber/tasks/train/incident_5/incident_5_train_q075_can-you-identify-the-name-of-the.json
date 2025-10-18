@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_5_train_q075",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A security incident involving possible ransomware activity, which includes appending a known malicious file extension, has been detected. Various files including `kiters.7z.lockbit`, `ponceau.7z`, `syncretic.7z.lockbit`, `earlap.doc`, `syncretic.7z`, `unstreaming.xlsx`, `ponceau.7z.lockbit`, `kiters.7z` and `unstreaming.xlsx.lockbit` were affected on the device with the AadDeviceId `bc00e484-d0e5-4da4-9472-95568cccc07e`.",
+  "question": "Can you identify the name of the file that shows ransomware-like behavior in the end alert?",
+  "gold_answer": "characterical.zip.lockbit",
+  "solution_steps": [
+    "The account `dp5hn` is linked to potential ransomware activity, as numerous file system changes have been observed indicating mass encryption.",
+    "A file named `characterical.zip.lockbit` is also linked to ransomware-like behavior, suggesting it is a part of the compromised assets showing such behavior."
+  ],
+  "metadata": {
+    "start_alert": 146,
+    "end_alert": 138,
+    "start_entities": [
+      44,
+      49,
+      46,
+      51,
+      45,
+      53,
+      8,
+      50,
+      43,
+      54
+    ],
+    "end_entities": [
+      95
+    ],
+    "shortest_alert_path": [
+      146,
+      1,
+      138
+    ]
+  }
+}

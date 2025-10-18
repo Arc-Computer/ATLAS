@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_34_test_q003",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A suspicious PowerShell activity was observed on a machine, which might indicate that PowerShell was used during installation, exploration, or lateral movement activities. This can be used by attackers to invoke modules, download external payloads, or get more information about the system. They often use PowerShell to bypass security protection mechanisms by executing their payload in memory without touching the disk and leaving any trace. Connected entities show the involvement of processes like `winword.exe` and `schtasks.exe`.",
+  "question": "What is the Security Identifier (SID) of the account related to the anomalous scheduled task creation?",
+  "gold_answer": "S-1-5-21-1870156660-7534030218-135086563-1193",
+  "solution_steps": [
+    "A suspicious PowerShell command line was used to run the file `winatp-intro-backdoor.exe`.",
+    "An anomalous scheduled task was created by the user with SID `S-1-5-21-1870156660-7534030218-135086563-1193`, which may be used by an attacker to maintain persistence on the device."
+  ],
+  "metadata": {
+    "start_alert": 10,
+    "end_alert": 20,
+    "start_entities": [
+      11,
+      12,
+      15,
+      16
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      10,
+      9,
+      20
+    ]
+  }
+}

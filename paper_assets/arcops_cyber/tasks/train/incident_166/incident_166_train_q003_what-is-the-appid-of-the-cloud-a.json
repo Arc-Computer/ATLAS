@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_166_train_q003",
+  "incident": "incident_166",
+  "split": "train",
+  "context": "In a recent security incident, a suspicious SAP authentication was detected where a user account with a risky sign-in alert in Microsoft Entra ID accessed SAP. This might indicate that an attacker has taken control of the user account, potentially searching SAP for sensitive financial information to use in later stages of an attack, such as phishing or social engineering. The suspicious activity originated from the IP address `107.253.5.27`, using the cloud application with AppId `100`.",
+  "question": "What is the AppId of the cloud application that was used when the suspicious inbox manipulation rule was set in the user's mailbox?",
+  "gold_answer": "11161",
+  "solution_steps": [
+    "There was a suspicious SAP authentication by a user account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`, potentially indicating that an attacker might have taken control of the user account.",
+    "A suspicious inbox manipulation rule was set on the inbox of Jordan P (laylaw@vnevado.alpineskihouse.co), indicating that the account might be compromised. The user created a MoveToFolder rule named ITCleanup to move messages to a folder named RSS Feeds. This activity was performed by the cloud application with AppId `11161`."
+  ],
+  "metadata": {
+    "start_alert": 26,
+    "end_alert": 5,
+    "start_entities": [
+      24,
+      25
+    ],
+    "end_entities": [
+      13
+    ],
+    "shortest_alert_path": [
+      26,
+      1,
+      5
+    ]
+  }
+}

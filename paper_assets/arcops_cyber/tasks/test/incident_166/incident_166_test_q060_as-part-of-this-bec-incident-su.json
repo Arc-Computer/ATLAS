@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_166_test_q060",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A security incident involving possible BEC (business email compromise) financial fraud was reported. The user `Jordan P` with email address `Jordan P@vnevado.alpineskihouse.co` and user ID `89e933b9-5b2e-4bd6-bcdf-033db707ef82` was flagged for suspicious activities that might be an attempt to conduct a fraud attack against the organization.",
+  "question": "As part of this BEC incident, suspicious emails were sent by a potentially compromised user account. Can you determine the IP address from which these suspicious emails were sent?",
+  "gold_answer": "255.246.85.58",
+  "solution_steps": [
+    "A possible BEC financial fraud attempt was observed involving the user with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "Suspicious emails were sent by a possibly compromised user from IP address `255.246.85.58` as part of an ongoing BEC fraud attempt."
+  ],
+  "metadata": {
+    "start_alert": 29,
+    "end_alert": 18,
+    "start_entities": [
+      1,
+      6,
+      7,
+      8
+    ],
+    "end_entities": [
+      21
+    ],
+    "shortest_alert_path": [
+      29,
+      1,
+      18
+    ]
+  }
+}

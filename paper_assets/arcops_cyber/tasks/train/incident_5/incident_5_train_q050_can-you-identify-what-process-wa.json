@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_5_train_q050",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A security incident flagged a possible attempt to access a Primary Refresh Token (PRT) on a system, executed by the process `browsercore.exe` with Process ID 2676 on 2024-06-20t09:10:59.867384z. PRT is crucial for Azure AD authentication and attackers might be targeting it for lateral movement or credential theft.",
+  "question": "Can you identify what process was used to disable the system recovery feature on the same indar kasoo",
+  "gold_answer": "8136__2024-06-20t09:10:48.0438707z",
+  "solution_steps": [
+    "There is a possible attempt to access Primary Refresh Token (PRT) associated with the AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "System recovery setting tampering was detected with process ID `8136`, created at `2024-06-20t09:10:48.0438707z` with command line `bcdedit /set recoveryenabled no`."
+  ],
+  "metadata": {
+    "start_alert": 113,
+    "end_alert": 96,
+    "start_entities": [
+      40,
+      114
+    ],
+    "end_entities": [
+      97
+    ],
+    "shortest_alert_path": [
+      113,
+      3,
+      96
+    ]
+  }
+}

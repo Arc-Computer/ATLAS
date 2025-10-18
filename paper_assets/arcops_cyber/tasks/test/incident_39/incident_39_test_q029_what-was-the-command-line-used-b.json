@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_39_test_q029",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A security incident was reported involving malicious credential theft tool execution on July 4, 2024. The well-known credential theft tool `mimikatz.exe` was detected with the command line: `\"mimikatz.exe\" privilege::debug \"sekurlsa::pth /user:kyleg /ntlm:96def1a633fc6790124d5f8fe31cc72b /domain:vnevado.alpineskihouse.co /run:\"powershell.exe dir \\vnevado-win10b\\c$\"\" exit`. As part of the connected events of this incident, PsExec was used to launch a command on a remote device which might suggest an attacker's attempt to move laterally within the organization.",
+  "question": "What was the command line used by PsExec on the remote device that might indicate lateral movement?",
+  "gold_answer": "`4676__2024-06-27t14:32:08.4041849z__\"powershell.exe\" -executionpolicy bypass -file c:\\users\\tgs2z\\downloads\\domaindominance27\\domaindominance27.ps1`",
+  "solution_steps": [
+    "A malicious credential theft tool was executed using `powershell.exe`.",
+    "PsExec was used to launch the command `powershell.exe -executionpolicy bypass -file c:\\users\\tgs2z\\downloads\\domaindominance27\\domaindominance27.ps1` at `2024-06-27T14:32:08.4041849Z` with Process ID `4676`."
+  ],
+  "metadata": {
+    "start_alert": 39,
+    "end_alert": 95,
+    "start_entities": [
+      31,
+      40
+    ],
+    "end_entities": [
+      49
+    ],
+    "shortest_alert_path": [
+      39,
+      17,
+      95
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_166_test_q020",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "During a recent investigation, it was observed that a suspicious inbox rule was set on the inbox of the user Jordan P (laylaw@vnevado.alpineskihouse.co). This raised concerns that the user's account could be compromised for spreading phishing emails and accessing other accounts and devices. Specifically, a MoveToFolder rule named ITCleanup was created to move messages to a folder named RSS Feeds.",
+  "question": "In connection to this, there was a possible business email compromise with financial fraud characteristics. Can you identify the AadUserId of the account involved in the BEC attempt?",
+  "gold_answer": "89e933b9-5b2e-4bd6-bcdf-033db707ef82",
+  "solution_steps": [
+    "A suspicious inbox manipulation rule was set on the inbox of Jordan P using the account with Sid `S-1-5-21-1740051960-3534030288-108486866-1602`. This rule moves messages to a folder named RSS Feeds.",
+    "There were suspicious events with business email compromise characteristics involving the user with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`. An attacker might be attempting to conduct a financial fraud against the organization."
+  ],
+  "metadata": {
+    "start_alert": 5,
+    "end_alert": 29,
+    "start_entities": [
+      2,
+      4,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      5,
+      8,
+      29
+    ]
+  }
+}

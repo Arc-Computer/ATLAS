@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_166_train_q029",
+  "incident": "incident_166",
+  "split": "train",
+  "context": "A security incident involving possible BEC financial fraud was identified. Suspicious events with business email compromise (BEC) characteristics were observed involving the user account Jordan P whose email is JordanP@vnevado.alpineskihouse.co. This incident might indicate that an attacker is attempting to conduct a fraud attack against the organization.",
+  "question": "What is the IP address associated with the suspicious inbox rule created during the BEC financial fraud incident?",
+  "gold_answer": "255.246.85.58",
+  "solution_steps": [
+    "There were suspicious events with BEC characteristics observed for the account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "A suspicious inbox rule that hides incoming email messages was created from an IP address `255.246.85.58`, indicating BEC financial fraud."
+  ],
+  "metadata": {
+    "start_alert": 29,
+    "end_alert": 17,
+    "start_entities": [
+      1,
+      6,
+      7,
+      8
+    ],
+    "end_entities": [
+      15
+    ],
+    "shortest_alert_path": [
+      29,
+      1,
+      17
+    ]
+  }
+}

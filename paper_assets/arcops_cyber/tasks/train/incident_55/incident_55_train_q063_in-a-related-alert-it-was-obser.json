@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_55_train_q063",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "As part of a recent multi-stage incident involving execution & collection on multiple endpoints, it was observed that email messages containing malicious URLs were delivered and later removed. The emails were sent to Santiago from a suspicious sender, potentially as part of an effort to compromise the organization. Note: This agianst on internal user phishing emails might be part of a larger attack campaign.",
+  "question": "In a related alert, it was observed that a user was sending phishing emails internally, potentially indicating a compromised account. What is the name of the user whose account might have been compromised?",
+  "gold_answer": "Lucas Grey",
+  "solution_steps": [
+    "An email account with AadUserId `28058d92-fc24-4869-9231-6546a34b00f2` received an email with a malicious URL, which was later removed.",
+    "The account `Lucas Grey` was observed sending phishing emails to recipients within the organization, indicating a potential account compromise."
+  ],
+  "metadata": {
+    "start_alert": 70,
+    "end_alert": 88,
+    "start_entities": [
+      71,
+      72,
+      73,
+      74,
+      79
+    ],
+    "end_entities": [
+      89
+    ],
+    "shortest_alert_path": [
+      70,
+      78,
+      88
+    ]
+  }
+}

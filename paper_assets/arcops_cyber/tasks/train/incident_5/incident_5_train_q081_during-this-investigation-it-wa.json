@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_5_train_q081",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A suspicious WMI process creation was observed on the machine `vnevado-win10s`. This machine has seen multiple processes such as `vssblatemp.exe`, `bcdedit`, `curl`, and a PowerShell script `get-userprttoken.ps1` being executed in a short time frame. This malware activity is known to frequently use WMI to spawn new processes and could be indicative of a further infection.",
+  "question": "During this investigation, it was found that there was also a possible ransomware activity involving numerous file system changes. What is the file name of the file that was appended with a known ransomware extension?",
+  "gold_answer": "characterical.zip.lockbit",
+  "solution_steps": [
+    "A suspicious WMI process was created on the machine using the account `dp5hn`.",
+    "Possible ransomware activity was detected where files were appended with the extension `.lockbit`, specifically `characterical.zip.lockbit`."
+  ],
+  "metadata": {
+    "start_alert": 144,
+    "end_alert": 159,
+    "start_entities": [
+      10,
+      11,
+      12,
+      13,
+      59,
+      97,
+      99,
+      141,
+      142
+    ],
+    "end_entities": [
+      95
+    ],
+    "shortest_alert_path": [
+      144,
+      1,
+      159
+    ]
+  }
+}

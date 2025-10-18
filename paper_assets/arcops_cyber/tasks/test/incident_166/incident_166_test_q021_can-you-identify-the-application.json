@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_test_q021",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A security incident reported a sign-in from an anonymous IP address `192.238.237.190` on 2024-07-22 at 09:11:31. This alert suggests that anonymizing methods might have been used to hide the user's identity, which could indicate a potential malicious intent. Subsequently, a user involved in a business email compromise (BEC) alert signed in to SAP applications in a suspicious manner, indicating potential unauthorized access to sensitive financial information.",
+  "question": "Can you identify the Application ID for the cloud application where the SAP sign-in activity was observed?",
+  "gold_answer": "100",
+  "solution_steps": [
+    "A user with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82` signed in from an anonymous IP address (e.g. Tor browser, anonymizer VPNs) on 2024-07-22 at 09:11:31.290020+00:00.",
+    "The same user with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82` signed in to SAP (AppId `100`) in a suspicious manner, which is related to a business email compromise alert on 2024-07-22 at 14:09:41.075798+00:00."
+  ],
+  "metadata": {
+    "start_alert": 3,
+    "end_alert": 27,
+    "start_entities": [
+      4
+    ],
+    "end_entities": [
+      24
+    ],
+    "shortest_alert_path": [
+      3,
+      1,
+      27
+    ]
+  }
+}

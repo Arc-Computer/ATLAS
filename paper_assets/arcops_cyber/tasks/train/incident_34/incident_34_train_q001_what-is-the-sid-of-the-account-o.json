@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_34_train_q001",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "During an investigation into an advanced security incident, an anomaly was detected in the ASEP registry, indicating that a process named `winatp-intro-backdoor.exe` with ProcessId__CreatedTimeUtc__CommandLine `10208__2024-06-26t13:17:18.8268389z__reg  add hkcu\\software\\microsoft\\windows\\currentversion\\runonce /f /v yrei /t reg_expand_sz /d %userprofile%\\desktop\\winatp-intro-backdoor.exe` was registered to run after a reboot on host `vnevado-win10e` linked to user `samuelf`.",
+  "question": "What is the SID of the account observed in the alert indicating that an uncommon file was created and added to a Run Key?",
+  "gold_answer": "S-1-5-21-1870156660-7534030218-135086563-1193",
+  "solution_steps": [
+    "An anomaly detected in ASEP registry involved the account with SID `S-1-5-21-1870156660-7534030218-135086563-1193`.",
+    "An uncommon file was created and added to a Run Key involving the same account with SID `S-1-5-21-1870156660-7534030218-135086563-1193`."
+  ],
+  "metadata": {
+    "start_alert": 17,
+    "end_alert": 23,
+    "start_entities": [
+      1,
+      2,
+      4,
+      6,
+      9,
+      18,
+      19
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      17,
+      5,
+      23
+    ]
+  }
+}

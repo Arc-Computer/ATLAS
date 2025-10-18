@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_134_test_q050",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A security incident was reported involving an anonymous IP address sign-in. The alert was triggered by a sign-in originating from IP address `170.54.121.63` with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1` and detected on 2024-07-17. Such anonymous IP addresses are often used by attackers to mask their identity via Tor browsers or anonymizer VPNs.",
+  "question": "Following the investigation, a user account was compromised during a password-spray attack. Can you provide the SID of the compromised user account?",
+  "gold_answer": "S-1-5-21-1874151667-3554330288-105586563-1715",
+  "solution_steps": [
+    "There was a sign-in from an anonymous IP address `170.54.121.63`.",
+    "A user account with SID `S-1-5-21-1874151667-3554330288-105586563-1715` was compromised following a password-spray attack."
+  ],
+  "metadata": {
+    "start_alert": 11,
+    "end_alert": 25,
+    "start_entities": [
+      9,
+      12
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      11,
+      12,
+      25
+    ]
+  }
+}

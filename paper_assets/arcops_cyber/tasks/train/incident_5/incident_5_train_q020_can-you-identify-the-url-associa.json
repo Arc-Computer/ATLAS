@@ -1,0 +1,38 @@
+{
+  "task_id": "incident_5_train_q020",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "In a recent security incident, a known credential theft tool execution command line was detected indicating potential credential dumping. The process `mimikatz.exe` was executed, which might have been an attempt to dump users' credentials, keys, and plain-text passwords. This incident reported malicious activities from the actor Manatee Tempest, a Russia-based cybercriminal group active since June 2014. They are known for using malware campaigns such as the Dridex banking trojan and establish command-and-control channels for Cobalt Strike beacons through domain fronting.",
+  "question": "Can you identify the URL associated with the activities of the Manatee Tempest group detected in this incident?",
+  "gold_answer": "vectorsandarrows.com",
+  "solution_steps": [
+    "A known credential theft tool was detected on the host with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`.",
+    "Lateral movement to the jump server `Vnevado-jump` was conducted via IP `99.83.111.100`.",
+    "Suspicious remote activity was observed involving the user with AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`.",
+    "Activity linked to the Manatee Tempest cybercriminal group was observed, with a URL potentially associated with the group: `vectorsandarrows.com`."
+  ],
+  "metadata": {
+    "start_alert": 131,
+    "end_alert": 136,
+    "start_entities": [
+      24,
+      30,
+      31,
+      33,
+      132,
+      133
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      131,
+      35,
+      174,
+      42,
+      140,
+      3,
+      136
+    ]
+  }
+}

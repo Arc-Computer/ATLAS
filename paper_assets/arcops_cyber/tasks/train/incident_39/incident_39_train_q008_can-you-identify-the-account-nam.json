@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_39_train_q008",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "During an investigation, we noted a file `psexesvc.exe` was dropped and launched from a remote location, which might be an attempt by an attacker or malware to move laterally or propagate. This was flagged as part of a larger incident observed on 2024-07-04 at 22:35:01.862275+00:00.",
+  "question": "Can you identify the account name associated with the human-operated malicious activity observed on the device on 2024-07-04 at 22:35:03.712134+00:00?",
+  "gold_answer": "kyleg",
+  "solution_steps": [
+    "A file was dropped and executed from a remote location by the account with SID `S-1-5-21-1540151660-3530000288-105586595-1517`.",
+    "Potential human-operated malicious activity was observed, involving the user account `kyleg`, which might indicate ransomware or other malicious payloads."
+  ],
+  "metadata": {
+    "start_alert": 58,
+    "end_alert": 105,
+    "start_entities": [
+      59
+    ],
+    "end_entities": [
+      42
+    ],
+    "shortest_alert_path": [
+      58,
+      2,
+      105
+    ]
+  }
+}

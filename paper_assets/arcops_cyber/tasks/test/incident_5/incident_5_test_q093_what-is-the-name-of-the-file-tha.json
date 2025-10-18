@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_5_test_q093",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident involving ransomware-like behavior impacting several devices has been observed. Initial detection included the use of PsExec to launch a command on a remote device, suggesting lateral movement using this tool. This was followed by suspicious activities leading to compromised assets exhibiting ransomware-like behavior. The attacker might be using the specified user account, IP, or device to infect multiple devices with ransomware. Automated remediation actions were considered to address the threat.",
+  "question": "What is the name of the file that is associated with the ransomware-like behavior?",
+  "gold_answer": "ponceau.7z",
+  "solution_steps": [
+    "An attacker used the account `tgs2z` to launch a command on a remote device via PsExec.",
+    "There was a lateral movement to the jump server with IP address `99.83.111.100` using PsExec.",
+    "A file named `ponceau.7z` is associated with ransomware-like behavior, indicating potentially compromised assets."
+  ],
+  "metadata": {
+    "start_alert": 84,
+    "end_alert": 100,
+    "start_entities": [
+      20,
+      30,
+      31,
+      85,
+      86,
+      87
+    ],
+    "end_entities": [
+      49
+    ],
+    "shortest_alert_path": [
+      84,
+      16,
+      174,
+      42,
+      100
+    ]
+  }
+}

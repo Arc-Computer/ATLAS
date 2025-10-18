@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_5_test_q092",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "In continuation, a suspicious activity indicated that a user account might have been compromised to deliver ransomware-related files across multiple devices. Remedial action might be necessary to disable the compromised user account.",
+  "question": "Can you identify the name of the possibly compromised user account that was dropping ransomware-related files on several devices?",
+  "gold_answer": "dp5hn",
+  "solution_steps": [
+    "A known credential theft tool execution was detected with the user account SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "Lateral movement using PSExec was detected to the IP address `99.83.111.100` associated with the host `vnevado-jump`.",
+    "A possible compromised user account `dp5hn` was observed delivering ransomware-related files on several devices."
+  ],
+  "metadata": {
+    "start_alert": 129,
+    "end_alert": 93,
+    "start_entities": [
+      20,
+      24,
+      30,
+      31,
+      33
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      129,
+      17,
+      174,
+      42,
+      93
+    ]
+  }
+}

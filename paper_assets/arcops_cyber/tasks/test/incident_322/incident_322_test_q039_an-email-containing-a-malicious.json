@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_322_test_q039",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "During a recent security incident, a suspicious Azure Resource Manager operation was detected originating from a host named `vnevado-dc` using the IP address `253.1.244.215`. This operation was notable because it was performed through a proxy IP address, potentially linked to malicious activities. The suspicion arose due to the common usage of proxy services, like TOR, by threat actors to hide their source IP. Additionally, emails containing malicious URLs were removed after being delivered -V62.34.26.163.",
+  "question": "An email containing a malicious URL was also part of this incident. Can you provide the recipient's email address of that email?",
+  "gold_answer": "alyssat@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "There was an Azure Resource Manager operation from a suspicious proxy IP address by the account with SID `S-1-5-21-1840151686-3534835288-156286563-1127`.",
+    "The account associated with the email `alyssat@vnevado.alpineskihouse.co` received an email containing a malicious URL which was later removed."
+  ],
+  "metadata": {
+    "start_alert": 25,
+    "end_alert": 2,
+    "start_entities": [
+      21,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      25,
+      8,
+      2
+    ]
+  }
+}

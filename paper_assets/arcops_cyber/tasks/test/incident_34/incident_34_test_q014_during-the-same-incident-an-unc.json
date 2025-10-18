@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_34_test_q014",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "On 2024-07-04, a security incident occurred where an anomalous scheduled task was created. This could indicate an attacker trying to gain persistence on the device. Specifically, a file `powershell.exe` was executed with specific commands, followed by `schtasks.exe` to schedule a task using the file `winatp-intro-backdoor.exe` located on the user's desktop.",
+  "question": "During the same incident, an uncommon file was created and added to a Run Key. What is the IP address associated with this anomalous activity?",
+  "gold_answer": "72.5.72.208",
+  "solution_steps": [
+    "An anomalous scheduled task was created on the device with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f`.",
+    "An uncommon file was created and added to a Run Key on an IP address `72.5.72.208`."
+  ],
+  "metadata": {
+    "start_alert": 20,
+    "end_alert": 23,
+    "start_entities": [
+      7,
+      8,
+      13,
+      14
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      20,
+      2,
+      23
+    ]
+  }
+}

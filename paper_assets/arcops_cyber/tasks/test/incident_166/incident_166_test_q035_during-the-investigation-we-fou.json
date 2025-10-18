@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_166_test_q035",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "There was a sign-in from an anonymous IP address `192.238.237.190` which could indicate an attacker trying to hide their original IP, linked to the user account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`. This is part of an ongoing investigation where suspicious activities have been detected.",
+  "question": "During the investigation, we found that an inbox rule was manipulated for the user Jordan P (laylaw@vnevado.alpineskihouse.co). Can you identify the IP address used when this suspicious inbox rule was set?",
+  "gold_answer": "180.144.153.174",
+  "solution_steps": [
+    "A sign-in occurred from an anonymous IP address `192.238.237.190`.",
+    "A suspicious inbox manipulation rule was set on the inbox of user `laylaw@vnevado.alpineskihouse.co` from IP address `180.144.153.174`. The user, Jordan P, created a MoveToFolder rule named ITCleanup to move messages to a folder named RSS Feeds."
+  ],
+  "metadata": {
+    "start_alert": 3,
+    "end_alert": 5,
+    "start_entities": [
+      1,
+      4
+    ],
+    "end_entities": [
+      14
+    ],
+    "shortest_alert_path": [
+      3,
+      4,
+      5
+    ]
+  }
+}

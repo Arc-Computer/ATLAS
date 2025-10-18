@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q024",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "As part of this incident, a suspicious remote activity was also observed on the machine which could involve attempts to initiate interactive sessions, modify files, pass WMI commands, create scheduled tasks, and other potentially malicious activities.",
+  "question": "Can you identify the email associated with the account that read the DKM key of ADFS object?",
+  "gold_answer": "gsmith@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "There is a suspected AD FS DKM key read by host `MB-DC1`.",
+    "Luciano Herrera (CIO) with SID `S-1-5-21-551436448-9871687716-9837441745-1903` on `MB-WINCLIENT` sent a replication request to `MB-DC1`, indicating a suspected DCSync attack.",
+    "A suspicious LDAP query was executed via `powershell.exe`, indicating potential reconnaissance activity.",
+    "Suspicious remote activity was observed, initiated by the user with SID `S-2-5-21-571436798-3864380397-1837441745-3206`.",
+    "The DKM key of ADFS object id 4cac49d3-29d3-407e-8c9b-b7ebb21541b2 was read by `gsmith@niseko.alpineskihouse.co`."
+  ],
+  "metadata": {
+    "start_alert": 105,
+    "end_alert": 106,
+    "start_entities": [
+      99
+    ],
+    "end_entities": [
+      103
+    ],
+    "shortest_alert_path": [
+      105,
+      99,
+      98,
+      10,
+      64,
+      8,
+      37,
+      19,
+      106
+    ]
+  }
+}

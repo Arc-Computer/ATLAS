@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_39_train_q007",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A multi-stage incident involving the Kekeo malware was identified on the endpoint. During this incident, a malicious file 'rubeus.exe' was executed by account fk8mq on host vnevado-win10b, possibly indicating credential theft attempts. Additionally, dual-purpose tools were dropped to the same device.",
+  "question": "Can you find the account name associated with the dropped dual-purpose tools during the incident?",
+  "gold_answer": "tgs2z",
+  "solution_steps": [
+    "The 'Kekeo' malware named `rubeus.exe` was detected and active on a machine.",
+    "Multiple dual-purpose tools were dropped on the device by the account `tgs2z`."
+  ],
+  "metadata": {
+    "start_alert": 100,
+    "end_alert": 76,
+    "start_entities": [
+      1,
+      2,
+      3,
+      7,
+      9,
+      10,
+      11
+    ],
+    "end_entities": [
+      27
+    ],
+    "shortest_alert_path": [
+      100,
+      65,
+      76
+    ]
+  }
+}

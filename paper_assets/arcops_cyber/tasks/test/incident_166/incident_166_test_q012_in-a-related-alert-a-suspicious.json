@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_166_test_q012",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A recent security incident detected involved a password spray attack on an account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82` from the IP address `95.202.65.202`. This is part of a larger multi-alert incident. Note that a password spray attack is a brute force attack that attempts a single password against many accounts before moving on to the next password, to avoid detection.",
+  "question": "In a related alert, a suspicious inbox rule was set by a user named Jordan P (laylaw@vnevado.alpineskihouse.co). Can you identify the AppId of the cloud application associated with this suspicious activity?",
+  "gold_answer": "11161",
+  "solution_steps": [
+    "A password spray attack was detected from IP address `95.202.65.202`.",
+    "A suspicious inbox rule was created by the user `Jordan P` with email `laylaw@vnevado.alpineskihouse.co`. The user created a rule named `ITCleanup` to move messages to a folder named `RSS Feeds`, indicating a potential compromise of the account.",
+    "The suspicious activity is related to the cloud application with AppId `11161`."
+  ],
+  "metadata": {
+    "start_alert": 28,
+    "end_alert": 5,
+    "start_entities": [
+      1,
+      2
+    ],
+    "end_entities": [
+      13
+    ],
+    "shortest_alert_path": [
+      28,
+      2,
+      5
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_166_test_q006",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A suspicious inbox rule was set up in the mailbox of Jordan P (laylaw@vnevado.alpineskihouse.co) using IP addresses such as 95.202.65.202, 192.238.237.190, etc. This might indicate that the user account is compromised and is being used for malicious activities. The user created a MoveToFolder rule named ITCleanup on their own inbox, to move messages to a folder named RSS Feeds.",
+  "question": "An alert has indicated that a BEC-related user signed in to SAP in a suspicious manner. What is the AppId of the cloud application the user accessed?",
+  "gold_answer": "100",
+  "solution_steps": [
+    "A suspicious inbox rule was set on the account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`, indicating that the account might be compromised.",
+    "The compromised account `89e933b9-5b2e-4bd6-bcdf-033db707ef82` was then used to sign in to the SAP cloud application with AppId `100` in a suspicious manner."
+  ],
+  "metadata": {
+    "start_alert": 5,
+    "end_alert": 27,
+    "start_entities": [
+      2,
+      4,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "end_entities": [
+      24
+    ],
+    "shortest_alert_path": [
+      5,
+      1,
+      27
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_322_train_q003",
+  "incident": "incident_322",
+  "split": "train",
+  "context": "A security incident was triggered when a connection from IP address 231.60.52.209 (host 'vnevado-win11h.vnevado.alpineskihouse.co') to URL `login.micro.demo.antoinetest.ovh` was detected in proxy logs. Subsequently, it was reported that a malicious URL was clicked on a device. The incident continued with a user accessing a link in an email that was later quarantined by zero-hour auto purge (ZAP) based on a Microsoft Defender for Office 365 alert.",
+  "question": "Can you determine the SID (Security Identifier) of the account that accessed the link in the email which was subsequently quarantined by ZAP?",
+  "gold_answer": "S-1-5-21-1840151686-3534835288-156286563-1127",
+  "solution_steps": [
+    "The host `vnevado-win11h` made a connection to a suspicious URL `login.micro.demo.antoinetest.ovh` identified in proxy logs.",
+    "The user account `Hailey Johnson` clicked on a malicious URL on the device `vnevado-win11h`.",
+    "The user with SID `S-1-5-21-1840151686-3534835288-156286563-1127` accessed a link in an email that was later quarantined by zero-hour auto purge (ZAP)."
+  ],
+  "metadata": {
+    "start_alert": 11,
+    "end_alert": 23,
+    "start_entities": [
+      12,
+      14,
+      15
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      11,
+      13,
+      33,
+      6,
+      23
+    ]
+  }
+}

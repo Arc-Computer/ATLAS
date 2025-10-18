@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_5_train_q039",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "In a recent incident, 'CommandAndControl' malware was detected on the device with hostname `vnevado-win11t`. This could be an indication of an attacker trying to move laterally within the network. The investigation started from the account `dp5hn`, which used the process `curl http://vectorsandarrows.com` and was found on the device with AadDeviceId `e5799261-6720-4297-961e-bd9ca4275033`.",
+  "question": "In relation to this incident, we have observed activity linked to the Manatee Tempest cybercriminal group. Can you identify the IP address associated with this activity?",
+  "gold_answer": "198.43.121.209",
+  "solution_steps": [
+    "The 'CommandAndControl' malware was detected during lateral movement on the device with AadDeviceId `e5799261-6720-4297-961e-bd9ca4275033`.",
+    "The Manatee Tempest activity group, a Russia-based cybercriminal group known for various malware campaigns, is associated with the IP address `198.43.121.209`."
+  ],
+  "metadata": {
+    "start_alert": 127,
+    "end_alert": 75,
+    "start_entities": [
+      1,
+      2,
+      3,
+      67,
+      68,
+      69
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      127,
+      69,
+      75
+    ]
+  }
+}

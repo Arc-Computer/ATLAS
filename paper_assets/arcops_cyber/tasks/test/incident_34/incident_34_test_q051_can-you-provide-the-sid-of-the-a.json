@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_test_q051",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "An Automated investigation was initiated manually by user u141(u141@ash.alpineskihouse.co) on the host vnevado-win10e.vnevado.alpineskihouse.co. This investigation automatically identifies and reviews threat artifacts for possible remediation. Following this, a suspicious LDAP query was executed, which is often used by attackers to learn an organization's structure, including administrative users, groups, and interesting assets.",
+  "question": "Can you provide the SID of the account involved in executing the suspicious LDAP query?",
+  "gold_answer": "S-1-5-21-1870156660-7534030218-135086563-1193",
+  "solution_steps": [
+    "An Automated investigation was initiated manually by user `u141@ash.alpineskihouse.co`, targeting device with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f`.",
+    "A suspicious LDAP query was executed by the account with SID `S-1-5-21-1870156660-7534030218-135086563-1193`, indicating potential reconnaissance activity."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 24,
+    "start_entities": [
+      1,
+      2
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      0,
+      2,
+      24
+    ]
+  }
+}

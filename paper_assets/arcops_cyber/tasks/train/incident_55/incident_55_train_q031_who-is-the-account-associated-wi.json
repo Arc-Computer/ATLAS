@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_55_train_q031",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A recent security incident on the host `mb-adfs` involved multiple malicious activities. Initially, the system executable `iy2orr1e.rrg.exe` was renamed and launched, potentially by an attacker aiming to run malicious code or connect to an attacker-controlled network address while avoiding certain behavior-based detection technologies. The process is associated with the account `SYSTEM` with SID `S-2-2-78`.",
+  "question": "Who is the account associated with the process that accessed the Local Security Authority Subsystem Service (lsass.exe) memory?",
+  "gold_answer": "bjenkins",
+  "solution_steps": [
+    "A renamed executable file `powershell.exe` was launched.",
+    "The account `bjenkins` was involved in a sensitive credential memory read from the Local Security Authority Subsystem Service (lsass.exe)."
+  ],
+  "metadata": {
+    "start_alert": 27,
+    "end_alert": 67,
+    "start_entities": [
+      25,
+      26,
+      28,
+      29,
+      30,
+      31
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      27,
+      8,
+      67
+    ]
+  }
+}

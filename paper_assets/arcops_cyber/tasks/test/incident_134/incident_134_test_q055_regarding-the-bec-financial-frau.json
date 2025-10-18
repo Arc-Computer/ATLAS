@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_test_q055",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A user's inbox rules were manipulated in a suspicious manner using the cloud application with AppId `20893`. This indicates the possibility of an attacker gaining access to the user's inbox and manipulating rules to delete or move messages or folders to exfiltrate data from your organization.",
+  "question": "Regarding the BEC financial fraud alert, which user account was identified as possibly compromised?",
+  "gold_answer": "e036dee7-fa23-42ef-a019-468c8d3401f1",
+  "solution_steps": [
+    "Suspicious inbox manipulation rule detected from IP address `237.7.81.122`.",
+    "Business Email Compromise (BEC) financial fraud detected with a suspicious inbox rule created by a user with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1`."
+  ],
+  "metadata": {
+    "start_alert": 14,
+    "end_alert": 17,
+    "start_entities": [
+      15
+    ],
+    "end_entities": [
+      9
+    ],
+    "shortest_alert_path": [
+      14,
+      16,
+      17
+    ]
+  }
+}

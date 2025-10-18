@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_39_train_q048",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident was reported where a suspicious service was launched on a device, and PsExec was used to launch a command on a remote device. These activities suggest that an attacker might be using services to maintain persistence or elevate privileges, and leveraging PsExec to move laterally in the organization. During the investigation, an active 'Kekeo' malware was detected. This malware can perform annoying, disruptive, or harmful actions on affected machines and can be controlled remotely by attackers.",
+  "question": "Can you identify the account name associated with the active 'Kekeo' malware detection?",
+  "gold_answer": "fk8mq",
+  "solution_steps": [
+    "A suspicious service `powershell.exe` was launched on the device.",
+    "PsExec was used to launch a command on a remote device using `rubeus.exe`.",
+    "An active 'Kekeo' malware was detected, associated with the account `fk8mq`."
+  ],
+  "metadata": {
+    "start_alert": 12,
+    "end_alert": 106,
+    "start_entities": [
+      13,
+      14,
+      15,
+      16,
+      19,
+      20
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      12,
+      17,
+      95,
+      7,
+      106
+    ]
+  }
+}

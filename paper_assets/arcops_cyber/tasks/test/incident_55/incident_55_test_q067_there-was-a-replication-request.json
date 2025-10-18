@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q067",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A security incident involving a suspicious sequence of exploration activities was detected where a process used a set of windows commands for potentially identifying assets of value and coordinating lateral movement after compromising a machine. One notable process invocation was `svchost.exe` on the host `mb-winclient` with several PowerShell and script executions observed.",
+  "question": "There was a replication request related to this incident by an account on MB-WINCLIENT. Can you provide the email of the account involved in the suspected DCSync attack?",
+  "gold_answer": "Luciano Herrera@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "An account with SID `S-1-5-21-551436448-9871687716-9837441745-1903` executed a set of suspicious windows commands.",
+    "The account associated with email `Luciano Herrera@niseko.alpineskihouse.co` initiated a suspected DCSync attack on MB-DC1."
+  ],
+  "metadata": {
+    "start_alert": 57,
+    "end_alert": 98,
+    "start_entities": [
+      7,
+      3,
+      12,
+      6,
+      13,
+      8,
+      54,
+      5,
+      2,
+      14
+    ],
+    "end_entities": [
+      82
+    ],
+    "shortest_alert_path": [
+      57,
+      10,
+      98
+    ]
+  }
+}

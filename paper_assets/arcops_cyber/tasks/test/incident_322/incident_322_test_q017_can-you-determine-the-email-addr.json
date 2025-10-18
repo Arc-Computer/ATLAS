@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_322_test_q017",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "A security incident was reported where a malicious URL `https://dj01161621.bravesand-e1ccd718.eastus.azurecontainerapps.io/` was clicked on a device with the hostname `vnevado-win11h`. The msedge.exe process was used for this activity, with Process ID 4256. This has triggered multiple alerts including one indicating email messages containing the malicious URL being removed after delivery.",
+  "question": "Can you determine the email address of the recipient who received the email containing the malicious URL which was later clicked on?",
+  "gold_answer": "alyssat@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "The email account `Hailey Johnson@vnevado.alpineskihouse.co` clicked on a malicious URL.",
+    "An email containing a malicious URL was delivered to and later removed from the account `alyssat@vnevado.alpineskihouse.co`.",
+    "The user with the account `alyssat@vnevado.alpineskihouse.co` clicked on a malicious URL."
+  ],
+  "metadata": {
+    "start_alert": 33,
+    "end_alert": 0,
+    "start_entities": [
+      13,
+      24,
+      34,
+      35,
+      36,
+      37
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      33,
+      7,
+      2,
+      1,
+      0
+    ]
+  }
+}

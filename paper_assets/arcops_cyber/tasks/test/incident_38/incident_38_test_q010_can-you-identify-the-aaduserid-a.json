@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_38_test_q010",
+  "incident": "incident_38",
+  "split": "test",
+  "context": "An unexpected behavior was observed by a process `notepad.exe` executed with no command line arguments on host `vnevado-win11a`. This behavior is unusual for a legitimate `notepad.exe` process and could be a result of code injection or a malicious executable masquerading as `notepad.exe`. The process `notepad.exe` was launched with Process ID `8932` and involved IP addresses `72.5.72.208` and `202.183.149.174`. The associated account name was `nathans` with Sid `S-1-5-21-1240151660-3534038288-105586567-4122` and AadDeviceId `39d8c57f-2d08-4888-b0cd-12cd0679337a`.",
+  "question": "Can you identify the AadUserId associated with this incident?",
+  "gold_answer": "12185914-91dd-4fb9-94f9-3252203b0426",
+  "solution_steps": [
+    "Unexpected behavior observed by a process ran with no command line arguments might indicate extraneous code injection or a malicious executable masquerading as the legitimate one. This activity was observed for the user with AadUserId `12185914-91dd-4fb9-94f9-3252203b0426`."
+  ],
+  "metadata": {
+    "start_alert": 15,
+    "end_alert": 15,
+    "start_entities": [
+      4,
+      8,
+      2,
+      16,
+      11,
+      1,
+      9,
+      12
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      15
+    ]
+  }
+}

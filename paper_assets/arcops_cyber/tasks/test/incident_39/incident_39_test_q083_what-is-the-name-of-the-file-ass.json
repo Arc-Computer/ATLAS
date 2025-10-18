@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_test_q083",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "During the investigation of a potential human-operated malicious activity, it was observed that a sequence of alerts indicated suspicious behavior on the device `vnevado-win10b`. The incident involved multiple suspicious activities such as a sign-in attempt with a deceptive user account and the creation of a new user account. These activities suggest that an attacker might be preparing to install ransomware or perform other malicious tasks.",
+  "question": "What is the name of the file associated with the suspicious account creation process?",
+  "gold_answer": "powershell.exe",
+  "solution_steps": [
+    "The account `kyleg` was involved in potential human-operated malicious activity.",
+    "A sign-in attempt was detected using a deceptive user account on the host `vnevado-win10v`.",
+    "A suspicious account was created using the process `powershell.exe`."
+  ],
+  "metadata": {
+    "start_alert": 109,
+    "end_alert": 48,
+    "start_entities": [
+      1,
+      2,
+      3,
+      10,
+      11,
+      23,
+      25
+    ],
+    "end_entities": [
+      17
+    ],
+    "shortest_alert_path": [
+      109,
+      42,
+      41,
+      32,
+      48
+    ]
+  }
+}

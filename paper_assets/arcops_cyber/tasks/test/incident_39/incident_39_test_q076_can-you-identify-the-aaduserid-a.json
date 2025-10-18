@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_test_q076",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A security incident involved multiple dual-purpose tools being dropped on a device on 2024-07-04, which could be used for malicious reasons such as credential theft, privilege escalation, and lateral movement. Tools such as `mimikatz.exe` and `psexec.exe` were observed. Among the tools dropped, the initial process extracted the file name `mimikatz.exe`. However, the exact tool that triggered the malicious credential theft tool execution detection has not been established yet.",
+  "question": "Can you identify the AadUserId associated with the detected execution of the malicious credential theft tool?",
+  "gold_answer": "1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1",
+  "solution_steps": [
+    "The dual-purpose tool `mimikatz.exe` was dropped on the device.",
+    "A malicious credential theft tool execution was detected being initiated by the user with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1`."
+  ],
+  "metadata": {
+    "start_alert": 62,
+    "end_alert": 104,
+    "start_entities": [
+      38,
+      71,
+      69,
+      49,
+      66,
+      45,
+      36,
+      64,
+      70,
+      50
+    ],
+    "end_entities": [
+      29
+    ],
+    "shortest_alert_path": [
+      62,
+      31,
+      104
+    ]
+  }
+}

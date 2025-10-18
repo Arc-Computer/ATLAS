@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_55_test_q065",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A security incident involving a sensitive credential memory read was detected. A process scanned or dumped memory from the Local Security Authority Subsystem Service (lsass.exe). This process was run by the account `bjenkins` with SID `S-1-5-21-561436748-3867387497-1732241745-3701` and AAD UserID `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0`. Specifically, the command used was `powershell.exe -noexit -command set-location -literalpath 'c:\\users\\bjenkins\\downloads\\midnight14'`. Accessing the memory of lsass.exe allows attackers to potentially extract authentication hashes or passwords.",
+  "question": "In relation to this security incident, there was a suspicious LDAP query executed which indicates potential reconnaissance activity. Can you find out the name of the account that executed this suspicious LDAP query?",
+  "gold_answer": "pwilson",
+  "solution_steps": [
+    "A sensitive credential memory read from the process lsass.exe was detected on the host with AadDeviceId `7661dfd4-218f-4016-8a87-66d68a7f098e`.",
+    "A suspicious LDAP query was executed by the account named `pwilson`."
+  ],
+  "metadata": {
+    "start_alert": 67,
+    "end_alert": 64,
+    "start_entities": [
+      1,
+      2,
+      3,
+      7,
+      24,
+      50
+    ],
+    "end_entities": [
+      9
+    ],
+    "shortest_alert_path": [
+      67,
+      15,
+      64
+    ]
+  }
+}

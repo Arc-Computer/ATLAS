@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_322_train_q006",
+  "incident": "incident_322",
+  "split": "train",
+  "context": "As part of a suspicious Azure Resource Management (ARM) activity documented on 2024-08-01, we noted an IP address `253.1.244.215` linked with risky user actions. There were also email messages containing a malicious URL that were delivered and later removed. Evidence suggests this may involve a user clicking on a potentially malicious URL identified in the same timeframe.",
+  "question": "Can you identify the email recipient who clicked on the potentially malicious URL recently?",
+  "gold_answer": "alyssat@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "Suspicious ARM activities were performed by a user account with SID `S-1-5-21-1840151686-3534835288-156286563-1127` that logged into a risky session.",
+    "The email recipient `alyssat@vnevado.alpineskihouse.co` received emails with malicious URLs which were later removed.",
+    "The email recipient `alyssat@vnevado.alpineskihouse.co` clicked on a malicious URL."
+  ],
+  "metadata": {
+    "start_alert": 32,
+    "end_alert": 0,
+    "start_entities": [
+      31
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      32,
+      8,
+      2,
+      1,
+      0
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "task_id": "incident_5_train_q082",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A user account, identified as `dp5hn` and possibly compromised, was observed delivering ransomware-related files such as `characterical.zip` and `characterical.zip.lockbit` on host `vnevado-win11t`. This incident was flagged on July 4, 2024, and indicated as part of a possible ransomware attack where an attacker might also be attempting lateral movement within the network.",
+  "question": "What was the IP address used in the PsExec command to launch a remote device command as part of this incident?",
+  "gold_answer": "107.224.99.179",
+  "solution_steps": [
+    "A ransomware-related file was dropped using the IP address `99.83.111.100`.",
+    "Lateral movement using PSExec was done to the host with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`.",
+    "PSExec was used to launch a command on a remote device with IP address `107.224.99.179`."
+  ],
+  "metadata": {
+    "start_alert": 93,
+    "end_alert": 84,
+    "start_entities": [
+      1,
+      2,
+      3,
+      47,
+      48,
+      68,
+      69,
+      94,
+      95
+    ],
+    "end_entities": [
+      20
+    ],
+    "shortest_alert_path": [
+      93,
+      42,
+      174,
+      35,
+      84
+    ]
+  }
+}

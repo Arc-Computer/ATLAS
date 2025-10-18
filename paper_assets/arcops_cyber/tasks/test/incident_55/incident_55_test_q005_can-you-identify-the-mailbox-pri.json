@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_55_test_q005",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "In a recent incident, the host `MB-DC1` read the DKM key of ADFS object id 4cac49d3-29d3-407e-8c9b-b7ebb21541b2. This was followed by a suspected DCSync attack where Luciano Herrera (CIO) on MB-WINCLIENT sent 1 replication request to the aforementioned host. Subsequently, a series of suspicious exploration activities were recorded, possibly indicating an attacker attempting to identify assets of value and coordinate lateral movement. Lastly, it was observed that an email containing a malicious URL was delivered and later removed.",
+  "question": "Can you identify the mailbox primary address where the email containing the malicious URL was delivered and later removed?",
+  "gold_answer": "bjenkins@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "The host `MB-DC1` read the DKM key of ADFS object id `4cac49d3-29d3-407e-8c9b-b7ebb21541b2`.",
+    "Luciano Herrera (CIO) on `MB-WINCLIENT` with SID `S-1-5-21-551436448-9871687716-9837441745-1903` sent a directory services replication request to `MB-DC1`.",
+    "An account with SID `S-1-5-21-561436748-3867387497-1732241745-3701` executed a suspicious sequence of windows commands, potentially exploring for valuable assets and coordinating lateral movement.",
+    "The mailbox `bjenkins@niseko.alpineskihouse.co` received an email containing a malicious URL, which was later removed."
+  ],
+  "metadata": {
+    "start_alert": 105,
+    "end_alert": 92,
+    "start_entities": [
+      99
+    ],
+    "end_entities": [
+      93
+    ],
+    "shortest_alert_path": [
+      105,
+      99,
+      98,
+      10,
+      57,
+      2,
+      92
+    ]
+  }
+}

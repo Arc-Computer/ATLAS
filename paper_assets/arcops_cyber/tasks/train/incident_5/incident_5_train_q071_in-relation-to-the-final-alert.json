@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_5_train_q071",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "As part of a security investigation, we identified suspicious remote activities involving various process commands such as `bcdedit`, `vssblatemp.exe`, and `powershell` scripts. These activities involved accounts with SID `S-0-6-5` and AadUserId `731adb71-b11c-4bbf-850b-57989b350e96`, and included lateral movement to the jump server `Vnevado-jump`.",
+  "question": "In relation to the final alert, a known credential theft tool was executed. Could you provide the IP address associated with this malicious credential theft tool execution?",
+  "gold_answer": "107.224.99.179",
+  "solution_steps": [
+    "There was suspicious remote activity from IP address `99.83.111.100`.",
+    "There was a lateral movement to the jump server `vnevado-win10v` using PSExec.",
+    "A known credential theft tool was executed from IP address `107.224.99.179` indicating an intent to dump users' credentials."
+  ],
+  "metadata": {
+    "start_alert": 88,
+    "end_alert": 156,
+    "start_entities": [
+      78,
+      77,
+      11,
+      47,
+      6,
+      90,
+      89,
+      1,
+      59,
+      3
+    ],
+    "end_entities": [
+      20
+    ],
+    "shortest_alert_path": [
+      88,
+      42,
+      174,
+      34,
+      156
+    ]
+  }
+}

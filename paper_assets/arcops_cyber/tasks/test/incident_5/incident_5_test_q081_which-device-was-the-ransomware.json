@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_5_test_q081",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident involving a possible compromised user account was reported. The user account was observed dropping a ransomware-related file on several devices, including a file named `get-userprttoken.ps1` on the host `vnevado-win11t`. The compromised account is suspected to spread laterally across the network, delivering ransomware-related files. Automated actions might be taken to disable the compromised account.",
+  "question": "Which device was the ransomware payload remotely launched on as indicated by the end alert?",
+  "gold_answer": "vnevado-win11u",
+  "solution_steps": [
+    "A user account `dp5hn` appears to have been compromised and was observed dropping ransomware-related files on several devices.",
+    "A ransomware payload was remotely launched on the device with the host name `vnevado-win11u`."
+  ],
+  "metadata": {
+    "start_alert": 93,
+    "end_alert": 112,
+    "start_entities": [
+      47,
+      48,
+      68,
+      69,
+      94,
+      95
+    ],
+    "end_entities": [
+      7
+    ],
+    "shortest_alert_path": [
+      93,
+      1,
+      112
+    ]
+  }
+}

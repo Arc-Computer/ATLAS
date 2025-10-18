@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_train_q006",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "In connection with a security incident involving credential theft tool execution and the dropping of dual-purpose tools on a device, a suspicious file was registered as a service, likely for persistence. This activity was associated with a specific account.",
+  "question": "What is the name of the account linked to the suspicious file that was registered as a service?",
+  "gold_answer": "fk8mq",
+  "solution_steps": [
+    "A malicious credential theft tool was executed by a user with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1`.",
+    "Multiple dual-purpose tools, including `psexesvc.exe`, were dropped on a device.",
+    "A file registered as a suspicious service by a user with account name `fk8mq`."
+  ],
+  "metadata": {
+    "start_alert": 85,
+    "end_alert": 21,
+    "start_entities": [
+      27,
+      28,
+      29,
+      31,
+      32,
+      33,
+      71
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      85,
+      29,
+      62,
+      24,
+      21
+    ]
+  }
+}

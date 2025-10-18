@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_train_q023",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "A security incident involved a suspicious LDAP query, indicating potential reconnaissance activity. The process `winword.exe` was executed with the command line `winword.exe c:\\scripts\\rs4_winatp-intro-invoice.docm`. LDAP queries are often exploited by attackers to gather information about the organizational structure by querying the domain controller for users, groups, and assets. This can help gain higher privileges and access important resources. As part of the same incident, an uncommon file was also created on a machine and added to a Run Key in the registry, suggesting that an attacker may be trying to maintain persistence even after a machine reboot.",
+  "question": "In the context of the uncommon file creation alert, what is the IP address associated with this suspicious activity?",
+  "gold_answer": "72.5.72.208",
+  "solution_steps": [
+    "A suspicious LDAP query was executed, indicating potential reconnaissance activity from the device with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f`.",
+    "An uncommon file was created and added to a Run Key from the IP address `72.5.72.208`."
+  ],
+  "metadata": {
+    "start_alert": 24,
+    "end_alert": 23,
+    "start_entities": [
+      11,
+      12
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      24,
+      2,
+      23
+    ]
+  }
+}

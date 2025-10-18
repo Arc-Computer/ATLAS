@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_55_train_q067",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "The investigation into a security incident revealed that Luciano Herrera with the email `Luciano Herrera@niseko.alpineskihouse.co` performed an unusual addition of credentials to the application SimulandApp. This activity might indicate a possible app compromise. Further investigation shows that a malicious PowerShell Cmdlet was invoked on the machine, followed by suspicious Task Scheduler activity which modified or deleted a task.",
+  "question": "In the continuation of this malicious activity, what was the command line used by the process that attempted to hide the use of a dual-purpose tool?",
+  "gold_answer": "5752__2024-07-06t00:00:01.7155092z__\"iy2orr1e.rrg.exe\" -windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=",
+  "solution_steps": [
+    "The user Luciano Herrera (pwilson@niseko.alpineskihouse.co) with AadUserId `2de70991-2799-4a95-b734-8e3df3a50118` performed an unusual addition of a Password credential to the OAuth application SimulandApp.",
+    "A malicious PowerShell Cmdlet associated with `powershell.exe` was invoked on a machine, which could be involved in credential theft, exploitation, network reconnaissance, or code injection.",
+    "Suspicious Task Scheduler activity was detected involving the process `iy2orr1e.rrg.exe`, which previously participated in malicious activities.",
+    "An attempt to hide the use of the dual-purpose tool `iy2orr1e.rrg.exe` was detected with command line `iy2orr1e.rrg.exe -windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=` and Process ID `5752`, created at `2024-07-06t00:00:01.7155092z`."
+  ],
+  "metadata": {
+    "start_alert": 80,
+    "end_alert": 68,
+    "start_entities": [
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87
+    ],
+    "end_entities": [
+      69
+    ],
+    "shortest_alert_path": [
+      80,
+      11,
+      51,
+      8,
+      33,
+      29,
+      68
+    ]
+  }
+}

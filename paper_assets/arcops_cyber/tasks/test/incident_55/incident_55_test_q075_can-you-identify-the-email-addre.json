@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_55_test_q075",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A suspicious sequence of exploration activities has been detected on host `mb-winclient` involving various processes like `powershell.exe` and `whoami.exe`. One of the involved accounts is `bjenkins`, and the activity is likely part of an attacker's efforts to identify assets and coordinate lateral movement after compromising the machine. One of the alerts in this sequence indicated potentially malicious service creation by another account.",
+  "question": "Can you identify the email address of the account that created the suspicious service DDLOXJDSQSNGMUKKFUXQ on MB-ADFS?",
+  "gold_answer": "gsmith@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "A process named `powershell.exe` was used in suspicious sequence of exploration activities.",
+    "The suspicious sequence of exploration activities was executed by the account with SID `S-2-5-21-571436798-3864380397-1837441745-3206`.",
+    "The account `gsmith@niseko.alpineskihouse.co` created a suspicious service `DDLOXJDSQSNGMUKKFUXQ` on MB-ADFS to execute potentially malicious commands."
+  ],
+  "metadata": {
+    "start_alert": 57,
+    "end_alert": 101,
+    "start_entities": [
+      12,
+      1,
+      15,
+      14,
+      3,
+      58,
+      11,
+      4,
+      7,
+      60
+    ],
+    "end_entities": [
+      103
+    ],
+    "shortest_alert_path": [
+      57,
+      8,
+      52,
+      19,
+      101
+    ]
+  }
+}

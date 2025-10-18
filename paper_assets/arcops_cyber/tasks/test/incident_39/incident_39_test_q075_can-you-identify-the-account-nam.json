@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_39_test_q075",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A recent security incident showed multiple dual-purpose tools dropped on a device, including `psexec.exe`, `mimikatz.exe`, and `domaindominance27.ps1`. Shortly after, 'Kekeo' malware was detected indicating a possible lateral movement attack. Following these events, there was observed activity pointing towards the potential use of the Rubeus tool for kerberoasting on the same endpoint. This tool is used to exploit Kerberos authentication by requesting Kerberos tickets for an account's service principal name (SPN) and decrypting them to obtain plaintext credentials, or using the pass-the-ticket technique for authentication.",
+  "question": "Can you identify the account name associated with the possible use of the Rubeus kerberoasting tool?",
+  "gold_answer": "fk8mq",
+  "solution_steps": [
+    "The file `rubeus.exe` was dropped on this device, which could be used for purposes such as credential theft, privilege escalation, and lateral movement.",
+    "The `fk8mq` account was detected during lateral movement involving the 'Kekeo' malware.",
+    "The `fk8mq` account was also involved in possible activities indicating the use of the Rubeus tool, which targets Kerberos authentication."
+  ],
+  "metadata": {
+    "start_alert": 76,
+    "end_alert": 0,
+    "start_entities": [
+      63,
+      64,
+      66
+    ],
+    "end_entities": [
+      1
+    ],
+    "shortest_alert_path": [
+      76,
+      65,
+      110,
+      1,
+      0
+    ]
+  }
+}

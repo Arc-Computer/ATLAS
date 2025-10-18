@@ -1,0 +1,37 @@
+{
+  "task_id": "incident_39_train_q050",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident involving potential human-operated malicious activity was observed on the device `vnevado-win10b`. This sequence of alerts might lead to ransomware or other payloads installed on target devices. The incident involved multiple user accounts and IP addresses including `141.216.110.153`. During the incident, one of the potentially malicious activities was detected and later, 'Kekeo' malware was identified, which indicates an undesirable application that could perform harmful actions on affected machines and perform activities associated with cyber attacks.",
+  "question": "Which file was detected as 'Kekeo' malware during this security incident?",
+  "gold_answer": "rubeus.exe",
+  "solution_steps": [
+    "A sequence of alerts indicative of human-operated malicious activity was observed on the device, associated with account `fk8mq`.",
+    "The detected activity includes the presence of the file `rubeus.exe`.",
+    "Additionally, 'Kekeo' malware was detected, associated with the file `rubeus.exe`, which might indicate that the malware was stopped from delivering its payload."
+  ],
+  "metadata": {
+    "start_alert": 109,
+    "end_alert": 92,
+    "start_entities": [
+      1,
+      2,
+      3,
+      10,
+      11,
+      23,
+      25,
+      42
+    ],
+    "end_entities": [
+      65
+    ],
+    "shortest_alert_path": [
+      109,
+      1,
+      105,
+      65,
+      92
+    ]
+  }
+}

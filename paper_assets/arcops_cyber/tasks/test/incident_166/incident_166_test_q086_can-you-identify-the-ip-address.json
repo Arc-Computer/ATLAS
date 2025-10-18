@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_test_q086",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A Password Spray attack was detected from IP address `95.202.65.202` on 2024-07-23. The attack involved trying to gain unauthorized access by guessing common passwords. In connection with this, there was also a Business Email Compromise (BEC)-related alert where a user associated with suspicious email activities signed in to SAP in a way that suggested the account had been compromised. The attacker might have been trying to record or modify sensitive financial information within SAP. This alert was based on a Microsoft Defender XDR alert.",
+  "question": "Can you identify the IP address associated with the BEC-related user who signed in to SAP suspiciously?",
+  "gold_answer": "107.253.5.27",
+  "solution_steps": [
+    "A password spray attack was detected targeting a user with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`.",
+    "A business email compromise-related user signed in to SAP suspiciously from IP address `107.253.5.27`."
+  ],
+  "metadata": {
+    "start_alert": 28,
+    "end_alert": 27,
+    "start_entities": [
+      2
+    ],
+    "end_entities": [
+      25
+    ],
+    "shortest_alert_path": [
+      28,
+      1,
+      27
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q049",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A security incident involving suspicious execution of a command via the Impacket toolkit was detected. This tool connects to other hosts to explore network shares and execute commands. Attackers might be attempting to move laterally across the network using this tool, which is often observed in hands-on-keyboard attacks, where ransomware and other payloads are installed on target devices. One of the connected entities to this alert is a file `lsass.exe` that reflects suspicious activity.",
+  "question": "There was a process injection detected in relation to this incident. Can you identify the account name associated with the potentially injected process?",
+  "gold_answer": "pwilson",
+  "solution_steps": [
+    "There was a suspicious command execution using the Impacket toolkit via the process `powershell.exe`.",
+    "A process injected potentially malicious code into another process, and the account associated with this activity is `pwilson`."
+  ],
+  "metadata": {
+    "start_alert": 16,
+    "end_alert": 41,
+    "start_entities": [
+      26,
+      24,
+      25,
+      21,
+      18,
+      20,
+      23,
+      22,
+      19,
+      17
+    ],
+    "end_entities": [
+      9
+    ],
+    "shortest_alert_path": [
+      16,
+      8,
+      41
+    ]
+  }
+}

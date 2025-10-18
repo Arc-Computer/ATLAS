@@ -1,0 +1,37 @@
+{
+  "task_id": "incident_39_test_q054",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "During an observed security incident, an attacker may have utilized the Rubeus tool on endpoint `vnevado-win10b` for kerberoasting and possibly other Kerberos-related attacks. It's possible that the attacker requested Kerberos tickets for a specific account's service principal name (SPN) and decrypted them to acquire plaintext credentials, or used the pass-the-ticket technique. This was detected with execution of specific processes, and the attack continued with the dropping and launching of files from a remote location, potentially indicating lateral movement. Following this, a Security Identification (SID) history injection was detected on the same device, pointing to an attacker possibly gaining elevated privileges.",
+  "question": "What is the name of the file involved in the SID history injection detected during this incident?",
+  "gold_answer": "dkwj.mze",
+  "solution_steps": [
+    "Activity indicating the use of the Rubeus tool was observed on the endpoint with the process `psexesvc.exe`.",
+    "A remote session dropped a file and executed it using an account with AadUserId `7fcf9695-68fc-4258-864d-e1e5b166c66f`.",
+    "A Security IDentifcation (SID) history injection was detected involving the file `dkwj.mze`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 72,
+    "start_entities": [
+      1,
+      2,
+      3,
+      4,
+      6,
+      9,
+      10,
+      11
+    ],
+    "end_entities": [
+      73
+    ],
+    "shortest_alert_path": [
+      0,
+      5,
+      60,
+      15,
+      72
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_166_test_q015",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A security incident involving potential BEC financial fraud was reported. A suspicious inbox rule that hides incoming email messages was created in a risky Azure Active Directory session. The user account involved in this session had the email `Jordan P@vnevado.alpineskihouse.co` and was connecting from IP address `255.246.85.58`.",
+  "question": "What is the AppId of the cloud application used in the suspicious inbox manipulation rule?",
+  "gold_answer": "20893",
+  "solution_steps": [
+    "A suspicious inbox rule was created in a risky Azure Active Directory session for user with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82`, indicating a potential business email compromise (BEC) attempt.",
+    "A suspicious manipulation of inbox rules was detected in cloud application with AppId `20893`, suggesting that an attacker might be exfiltrating data by altering or deleting email messages."
+  ],
+  "metadata": {
+    "start_alert": 17,
+    "end_alert": 16,
+    "start_entities": [
+      1,
+      6,
+      7,
+      8,
+      15
+    ],
+    "end_entities": [
+      11
+    ],
+    "shortest_alert_path": [
+      17,
+      1,
+      16
+    ]
+  }
+}

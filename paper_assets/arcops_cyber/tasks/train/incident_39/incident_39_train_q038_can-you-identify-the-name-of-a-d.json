@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_39_train_q038",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident was reported involving potential lateral movement or propagation, where a file named `psexesvc.exe` was dropped and executed from a remote location. This remote activity might indicate an attacker or malware. Subsequently, a sequence of alerts indicative of human-operated malicious activity on the same device followed, which might lead to ransomware or other payloads.",
+  "question": "Can you identify the name of a dropped file that might be used for credential theft, privilege escalation, or lateral movement related to this incident?",
+  "gold_answer": "domaindominance27.ps1",
+  "solution_steps": [
+    "A file was dropped and launched from the remote IP address `141.216.110.153`.",
+    "A potential human-operated malicious activity was observed involving the file `rubeus.exe`.",
+    "Multiple dual-purpose tools, including `domaindominance27.ps1`, were dropped on the device for potential malicious use."
+  ],
+  "metadata": {
+    "start_alert": 60,
+    "end_alert": 76,
+    "start_entities": [
+      61
+    ],
+    "end_entities": [
+      66
+    ],
+    "shortest_alert_path": [
+      60,
+      25,
+      105,
+      65,
+      76
+    ]
+  }
+}

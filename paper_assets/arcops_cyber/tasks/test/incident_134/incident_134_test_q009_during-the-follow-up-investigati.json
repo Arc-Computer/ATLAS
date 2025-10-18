@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_134_test_q009",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "On 2024-07-17, a potentially malicious URL was clicked by one of our users. The suspicious link `http://ms175052280.orangecliff-f53f26fd.eastus.azurecontainerapps.io/` was identified in an email sent from `alyssat@vnevado.alpineskihouse.co` to `raphaelt@vnevado.alpineskihouse.co`. This incident was part of a larger security investigation involving multiple suspicious activities involving various accounts, including the email of Nina Park (Nina Park@vnevado.alpineskihouse.co).",
+  "question": "During the follow-up investigation of this malicious URL activity, a password spray attack was detected the next day. Can you identify the IP address associated with this Password Spray attack?",
+  "gold_answer": "170.54.121.63",
+  "solution_steps": [
+    "The user with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1` clicked on a malicious URL.",
+    "A password spray attack was detected originating from IP address `170.54.121.63`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 24,
+    "start_entities": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      10
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      0,
+      9,
+      24
+    ]
+  }
+}

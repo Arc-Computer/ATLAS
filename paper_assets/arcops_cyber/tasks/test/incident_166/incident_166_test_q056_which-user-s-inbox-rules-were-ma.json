@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_166_test_q056",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A suspicious inbox rule was set on the inbox of the user Jordan P (laylaw@vnevado.alpineskihouse.co). This could indicate that the user account is compromised and being used for spreading phishing emails or gaining access to other accounts and devices. The suspicious rule is named ITCleanup and moves messages to a folder named RSS Feeds. One of the IP addresses involved in this alert is `95.202.65.202`.",
+  "question": "Which user's inbox rules were manipulated suspiciously at the same time as Jordan P?",
+  "gold_answer": "Jordan P@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "A suspicious inbox manipulation rule was set using IP address `255.246.85.58`, which created a MoveToFolder rule named ITCleanup on the inbox of the user Jordan P (laylaw@vnevado.alpineskihouse.co).",
+    "A user's inbox rule was manipulated in a suspicious manner in the account with email `Jordan P@vnevado.alpineskihouse.co`."
+  ],
+  "metadata": {
+    "start_alert": 5,
+    "end_alert": 16,
+    "start_entities": [
+      2,
+      4,
+      9,
+      10,
+      12,
+      13,
+      14
+    ],
+    "end_entities": [
+      7
+    ],
+    "shortest_alert_path": [
+      5,
+      15,
+      16
+    ]
+  }
+}

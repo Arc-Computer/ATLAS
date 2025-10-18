@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_34_test_q032",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "In the context of recent security incidents, we have observed suspicious PowerShell command line activity on the machine `vnevado-win10e`. The presence of this activity indicates that PowerShell may have been used by attackers to bypass security mechanisms, execute their payloads in memory, or perform lateral movements without leaving traces. Furthermore, the suspicious command line involves the execution of `PowerShell.exe` with certain modules for potential malicious purposes.",
+  "question": "There is a related process that might have been used to schedule a task on the machine. Can you identify the file name of the process used to schedule the task?",
+  "gold_answer": "schtasks.exe",
+  "solution_steps": [
+    "A suspicious PowerShell command line activity was observed, where the process `schtasks.exe` was involved."
+  ],
+  "metadata": {
+    "start_alert": 10,
+    "end_alert": 10,
+    "start_entities": [
+      16,
+      12,
+      4,
+      11,
+      2,
+      9,
+      8,
+      1,
+      15
+    ],
+    "end_entities": [
+      14
+    ],
+    "shortest_alert_path": [
+      10
+    ]
+  }
+}

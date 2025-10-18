@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_34_test_q039",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "An uncommon file was created and added to a Run Key on a machine, which is a tactic an attacker might use to maintain persistence. For more information, refer to the Simulated threat Threat Analytics report available online. The associated IP address for this activity is `72.5.72.208`.",
+  "question": "What is the name of the suspicious file dropped and executed by Powershell on the machine?",
+  "gold_answer": "winatp-intro-backdoor.exe",
+  "solution_steps": [
+    "An uncommon file was created and added to a Run Key by the account with AadUserId `16320fec-8d90-403b-b7fe-78f715d4728d`.",
+    "A suspicious file named `winatp-intro-backdoor.exe` was dropped and executed by Powershell on the machine."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 25,
+    "start_entities": [
+      18
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      23,
+      6,
+      25
+    ]
+  }
+}

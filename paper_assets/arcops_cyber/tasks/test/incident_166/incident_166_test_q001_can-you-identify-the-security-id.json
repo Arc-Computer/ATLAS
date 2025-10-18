@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_test_q001",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A sign-in from an anonymous IP address `95.202.65.202` was detected, which might indicate use of Tor browser or anonymizer VPNs. This is part of a larger security incident involving multiple alerts, one of which is a BEC financial fraud attempt wherein a suspicious inbox rule was created during a risky Azure Active Directory session.",
+  "question": "Can you identify the Security Identifier (SID) of the account associated with the suspicious activity that created the inbox rule?",
+  "gold_answer": "S-1-5-21-1740051960-3534030288-108486866-1602",
+  "solution_steps": [
+    "The user with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82` signed in from an anonymous IP address.",
+    "A suspicious inbox rule was created in a risky Azure Active Directory session, associated with the user account having SID `S-1-5-21-1740051960-3534030288-108486866-1602`, indicating a potential business email compromise (BEC) financial fraud attempt."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 17,
+    "start_entities": [
+      2
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      0,
+      1,
+      17
+    ]
+  }
+}

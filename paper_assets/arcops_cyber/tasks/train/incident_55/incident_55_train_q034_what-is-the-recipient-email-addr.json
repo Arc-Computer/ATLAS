@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_55_train_q034",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A security incident involving internal phishing was detected where a user named Lucas Grey with an email Lucas Grey@niseko.alpineskihouse.co was observed to have sent phishing emails from their device to recipients inside the organization. This user account might have been compromised as part of a lateral movement attempt by an attacker. The malicious URL involved in the phishing email was `http://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/`.",
+  "question": "What is the recipient email address that received the malicious URL in the phishing email sent during this incident?",
+  "gold_answer": "santiago@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "The account with email `Nina Sullivan@vnevado.alpineskihouse.co` was observed sending phishing emails internally, suggesting possible account compromise.",
+    "The email account `santiago@vnevado.alpineskihouse.co` received emails containing malicious URLs, which were later removed."
+  ],
+  "metadata": {
+    "start_alert": 88,
+    "end_alert": 70,
+    "start_entities": [
+      2,
+      3,
+      89,
+      90,
+      91
+    ],
+    "end_entities": [
+      72
+    ],
+    "shortest_alert_path": [
+      88,
+      76,
+      70
+    ]
+  }
+}

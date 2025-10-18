@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_55_test_q043",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "An internal phishing campaign was detected within the organization where a user, Nina Sullivan (`Nina Sullivan@vnevado.alpineskihouse.co`), sent phishing emails from their account to other recipients inside the organization. This suggests that Nina Sullivan's account might have been compromised, possibly allowing attackers to move laterally within the organization. The alert was triggered based on a Microsoft Defender for Office 365 alert.",
+  "question": "Can you identify the recipient of the phishing email that led to the potentially malicious URL click detected later?",
+  "gold_answer": "bjenkins@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "The email account `Lucas Grey@niseko.alpineskihouse.co` sent phishing emails within the organization.",
+    "The recipient `bjenkins@niseko.alpineskihouse.co` clicked on a potentially malicious URL."
+  ],
+  "metadata": {
+    "start_alert": 88,
+    "end_alert": 104,
+    "start_entities": [
+      75,
+      76,
+      77,
+      78
+    ],
+    "end_entities": [
+      94
+    ],
+    "shortest_alert_path": [
+      88,
+      90,
+      104
+    ]
+  }
+}

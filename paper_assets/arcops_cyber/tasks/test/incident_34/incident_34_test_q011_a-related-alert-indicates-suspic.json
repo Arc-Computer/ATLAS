@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_test_q011",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A security incident involving an anomalous scheduled task was created on a device using `schtasks.exe`. This incident could be used by an attacker to obtain persistence on the device. The command involved in this alert was: `schtasks.exe /create /sc once /tn yrei /tr \"c:\\users\\samuelf\\onedrive - (new) alpineskihouse\\desktop\\winatp-intro-backdoor.exe\" /st 11:58 /f`. This suggests that the attacker may be trying to gain persistence by scheduling the execution of a potentially malicious executable.",
+  "question": "A related alert indicates suspicious activity involving PowerShell to download a file or run an encoded command. Can you identify the process that was used in this suspicious activity?",
+  "gold_answer": "winword.exe",
+  "solution_steps": [
+    "An anomalous scheduled task was created using `powershell.exe`, which might be used by an attacker to obtain persistence on the device.",
+    "A suspicious PowerShell download or encoded command was executed by `winword.exe`, indicating that an attacker might be trying to download external payloads or execute commands on the device."
+  ],
+  "metadata": {
+    "start_alert": 20,
+    "end_alert": 26,
+    "start_entities": [
+      13,
+      14
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      20,
+      8,
+      26
+    ]
+  }
+}

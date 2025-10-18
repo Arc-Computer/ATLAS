@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_39_train_q089",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident involving a suspected identity theft (pass-the-ticket) originating from Julian Burke's account and device VNEVADO-Win10B was detected. The attacker used the stolen Kerberos ticket on the host VNEVADO-Win10V to access several resources. Later, a suspicious process stopping services was observed, indicating potential malicious activity related to data encryption or avoidance of detection.",
+  "question": "What is the name of the known credential theft tool that was executed?",
+  "gold_answer": "mimikatz.exe",
+  "solution_steps": [
+    "An actor used Julian Burke (AadUserId '7fcf9695-68fc-4258-864d-e1e5b166c66f')'s Kerberos ticket from `VNEVADO-Win10B` to access resources on `VNEVADO-Win10V`.",
+    "A process with the filename `powershell.exe` suspiciously stopped services on the device likely to avoid detection or interfere with security operations.",
+    "A process with the filename `mimikatz.exe`, a known credential theft tool, was executed, indicating an attempt to dump users' credentials."
+  ],
+  "metadata": {
+    "start_alert": 130,
+    "end_alert": 104,
+    "start_entities": [
+      123,
+      124,
+      131,
+      132,
+      133
+    ],
+    "end_entities": [
+      31
+    ],
+    "shortest_alert_path": [
+      130,
+      15,
+      46,
+      17,
+      104
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_test_q065",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "During a security incident investigation on 2024-07-04, a PowerShell command was executed by a suspicious process. This action might be an indicator of an attacker executing commands to bypass security protection mechanisms by running their payload in memory without touching the disk. We tracked the PowerShell process which executed a base64 encoded payload using the command line. This is relevant to the overall threat model where an attacker might leverage such tactics to maintain persistence.",
+  "question": "Following this activity, an anomaly was detected in the ASEP registry. Can you identify the IP address that corresponds to this anomaly?",
+  "gold_answer": "72.5.72.208",
+  "solution_steps": [
+    "The host `vnevado-win10e` executed a suspicious PowerShell command.",
+    "There was an anomaly detected in the ASEP registry from the IP address `72.5.72.208`."
+  ],
+  "metadata": {
+    "start_alert": 3,
+    "end_alert": 17,
+    "start_entities": [
+      7,
+      8
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      3,
+      1,
+      17
+    ]
+  }
+}

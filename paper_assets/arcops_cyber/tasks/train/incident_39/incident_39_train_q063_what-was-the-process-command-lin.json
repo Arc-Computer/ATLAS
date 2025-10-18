@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_39_train_q063",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "During a security incident detected on 2024-07-04, a malicious credential theft tool named `mimikatz.exe` was executed with the command line indicating intent to dump users' credentials, keys, and plain-text passwords. This was a high-risk activity given its potential impact on accessing sensitive information.",
+  "question": "What was the process command line used during the observed activity indicating the use of the Rubeus kerberoasting tool?",
+  "gold_answer": "5924__2024-06-27t14:33:14.4981439z__\"psexec.exe\" \\vnevado-win10b -accepteula cmd /c \"c:\\temp\\rubeus.exe dump /service:xfbzkp /user:lucasb > c:\\temp\\adminticket.txt\"",
+  "solution_steps": [
+    "A known credential theft tool was executed on host `vnevado-win10v`.",
+    "The Rubeus tool was used via process with ID `5924` at `2024-06-27T14:33:14.4981439Z` with the command line `psexec.exe \\vnevado-win10b -accepteula cmd /c \"c:\\temp\\rubeus.exe dump /service:xfbzkp /user:lucasb > c:\\temp\\adminticket.txt\"`."
+  ],
+  "metadata": {
+    "start_alert": 44,
+    "end_alert": 107,
+    "start_entities": [
+      31,
+      38,
+      45
+    ],
+    "end_entities": [
+      97
+    ],
+    "shortest_alert_path": [
+      44,
+      32,
+      107
+    ]
+  }
+}

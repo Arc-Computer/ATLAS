@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_166_test_q062",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "There is a case of a suspicious inbox manipulation rule concerning the user Jordan P (laylaw@vnevado.alpineskihouse.co). A rule named ITCleanup was created on their inbox to move messages to the folder named RSS Feeds. This suspicious action might suggest that the user's account has been compromised and is being used to spread phishing emails and gain access to other accounts and devices. Multiple IP addresses, including 95.202.65.202, 192.238.237.190, 180.144.153.174, and 255.246.85.58, were involved.",
+  "question": "From which IP address was the risky sign-in alert for accessing SAP recorded?",
+  "gold_answer": "107.253.5.27",
+  "solution_steps": [
+    "A suspicious inbox rule named `ITCleanup` was set on the inbox of the user account with SID `S-1-5-21-1740051960-3534030288-108486866-1602` to move messages to a folder named RSS Feeds, indicating a possible account compromise.",
+    "A user account signed in to SAP from a risky IP address `107.253.5.27`, possibly indicating that an attacker might have control of the account to search through and manipulate sensitive financial information."
+  ],
+  "metadata": {
+    "start_alert": 5,
+    "end_alert": 26,
+    "start_entities": [
+      2,
+      4,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "end_entities": [
+      25
+    ],
+    "shortest_alert_path": [
+      5,
+      8,
+      26
+    ]
+  }
+}

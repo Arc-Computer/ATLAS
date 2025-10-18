@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_5_test_q047",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident involving system recovery setting tampering has been observed where a file `vssblatemp.exe` was launched on host `vnevado-win10s`, indicating potential adversary tampering to delete or remove built-in operating system data and turn off recovery services. Another file `bcdedit.exe` was also executed as part of this activity.",
+  "question": "Following this alert regarding system tampering, there was also a command and control behavior blocked. Can you identify the URL associated with the blocked behavior?",
+  "gold_answer": "http://vectorsandarrows.com/",
+  "solution_steps": [
+    "The system recovery setting tampering was attempted by the account `dp5hn`.",
+    "A Command and Control behavior from the URL `http://vectorsandarrows.com/` was detected and blocked."
+  ],
+  "metadata": {
+    "start_alert": 96,
+    "end_alert": 149,
+    "start_entities": [
+      10,
+      11,
+      12,
+      13,
+      97
+    ],
+    "end_entities": [
+      74
+    ],
+    "shortest_alert_path": [
+      96,
+      1,
+      149
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_train_q055",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident was detected involving multiple dual-purpose tools being dropped on the device `vnevado-win10v`. These tools include `domaindominance27.ps1`, `rubeus.exe`, `mimikatz.exe`, and `psexec.exe`. The process `powershell.exe` was launched with the file `domaindominance27.ps1` which could potentially be used for credential theft, privilege escalation, and lateral movement.",
+  "question": "During this security incident, a SID history injection was also detected on this device. Can you provide the SID value associated with the affected account?",
+  "gold_answer": "S-1-5-21-1440151660-4837038288-105596163-1120",
+  "solution_steps": [
+    "Multiple dual-purpose tools like `powershell.exe` were dropped on the device.",
+    "A SID history injection was detected involving an account with SID `S-1-5-21-1440151660-4837038288-105596163-1120`."
+  ],
+  "metadata": {
+    "start_alert": 76,
+    "end_alert": 72,
+    "start_entities": [
+      29,
+      32,
+      66,
+      49,
+      27,
+      50,
+      65,
+      64,
+      63,
+      33
+    ],
+    "end_entities": [
+      14
+    ],
+    "shortest_alert_path": [
+      76,
+      17,
+      72
+    ]
+  }
+}

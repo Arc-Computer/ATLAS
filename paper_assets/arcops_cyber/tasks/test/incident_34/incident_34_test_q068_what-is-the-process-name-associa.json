@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_34_test_q068",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "During an investigation into a security incident, it was found that on 2024-07-04, a suspicious PowerShell command was used to drop and execute a file named `winatp-intro-backdoor.exe`. This activity was flagged as it could indicate malicious intent. In addition, the investigation revealed a suspect LDAP query executed around the same time. LDAP queries might be used by attackers for reconnaissance to understand the organizational structure and identify high-value targets.",
+  "question": "What is the process name associated with the execution of the suspect LDAP query?",
+  "gold_answer": "winword.exe",
+  "solution_steps": [
+    "A powershell command initiated by the user with AadUserId `16320fec-8d90-403b-b7fe-78f715d4728d` dropped a suspicious file on the machine and executed it.",
+    "A suspicious LDAP query was executed by the process `winword.exe`, indicating potential reconnaissance activity."
+  ],
+  "metadata": {
+    "start_alert": 25,
+    "end_alert": 24,
+    "start_entities": [
+      7,
+      8,
+      9,
+      16
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      25,
+      6,
+      24
+    ]
+  }
+}

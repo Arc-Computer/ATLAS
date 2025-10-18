@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q092",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A process initiated a suspicious sequence of exploration activities by calling a set of windows commands. These commands are often used by attackers to identify valuable assets and coordinate lateral movement after compromising a machine. During this incident, multiple processes including `whoami.exe` and `svchost.exe` were run, and the device involved is `mb-winclient` associated with the account `pwilson` and IP address `72.5.72.208`.",
+  "question": "It was later observed that a phishing email was sent internally, likely from a compromised user account. Can you identify the email address of the user who sent the phishing email?",
+  "gold_answer": "Nina Sullivan@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "A suspicious sequence of exploration activities was performed by an account with SID `S-1-5-21-561436748-3867387497-1732241745-3701`.",
+    "An internal phishing campaign was conducted by a user with email `Nina Sullivan@vnevado.alpineskihouse.co`."
+  ],
+  "metadata": {
+    "start_alert": 57,
+    "end_alert": 88,
+    "start_entities": [
+      4,
+      59,
+      15,
+      60,
+      9,
+      5,
+      10,
+      14,
+      54,
+      6
+    ],
+    "end_entities": [
+      76
+    ],
+    "shortest_alert_path": [
+      57,
+      2,
+      88
+    ]
+  }
+}

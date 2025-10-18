@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_55_train_q046",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A potentially malicious URL click was detected, involving user Lucas Grey who clicked on `http://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/`. The suspicious activity then led to hardware discovery on the target device, which seems to have been done by another account.",
+  "question": "What is the name of the account that was involved in the suspicious system hardware discovery incident?",
+  "gold_answer": "pwilson",
+  "solution_steps": [
+    "The user with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0` clicked on a potentially malicious URL.",
+    "The account `pwilson` was involved in suspicious system hardware discovery."
+  ],
+  "metadata": {
+    "start_alert": 104,
+    "end_alert": 0,
+    "start_entities": [
+      89,
+      90,
+      91,
+      93,
+      94
+    ],
+    "end_entities": [
+      9
+    ],
+    "shortest_alert_path": [
+      104,
+      3,
+      0
+    ]
+  }
+}

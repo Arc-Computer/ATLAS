@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_5_train_q038",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A suspicious WMI process creation incident was observed on a machine on 2024-07-04 at 22:35:03.825729+00:00, which indicates that malware might be using WMI to spawn new processes, breaking process trees and further infecting the machine. As part of this investigation, several processes were noted, including `vssblatemp.exe` and `get-userprttoken.ps1`. These processes might be related to a potential attempt to access Primary Refresh Token (PRT) as observed in the same timeframe.",
+  "question": "What is the name of the process involved in the possible attempt to access the Primary Refresh Token (PRT)?",
+  "gold_answer": "browsercore.exe",
+  "solution_steps": [
+    "There was a suspicious WMI process creation associated with the account `dp5hn`.",
+    "There was a possible attempt to access the Primary Refresh Token (PRT) using the process `browsercore.exe`."
+  ],
+  "metadata": {
+    "start_alert": 155,
+    "end_alert": 71,
+    "start_entities": [
+      11,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63
+    ],
+    "end_entities": [
+      40
+    ],
+    "shortest_alert_path": [
+      155,
+      1,
+      71
+    ]
+  }
+}

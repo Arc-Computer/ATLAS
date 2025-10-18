@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_134_test_q037",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A significant security incident has been identified involving suspicious manipulation of inbox rules, where an attacker might have gained access to a user's inbox to potentially exfiltrate data.  Additionally, the IP address associated with this manipulation is 237.7.81.122 and it involved a cloud application with AppId 20893.",
+  "question": "A related alert indicated that one of the users clicked on a malicious URL. Can you identify the sender of the mail message that led to clicking on a potentially malicious URL?",
+  "gold_answer": "alyssat@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "The user with SID `S-1-5-21-1874151667-3554330288-105586563-1715` had their inbox rules manipulated suspiciously, indicating a potential attack and data exfiltration risk.",
+    "An email with a malicious URL was sent by `alyssat@vnevado.alpineskihouse.co` which was clicked by one of the users."
+  ],
+  "metadata": {
+    "start_alert": 14,
+    "end_alert": 0,
+    "start_entities": [
+      15,
+      16
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      14,
+      8,
+      0
+    ]
+  }
+}

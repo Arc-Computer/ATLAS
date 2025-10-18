@@ -1,0 +1,41 @@
+{
+  "task_id": "incident_55_train_q011",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "As part of an ongoing security incident, a hands-on-keyboard attack via Impacket toolkit was observed, indicating an attempt to move laterally across the network. During this attack, a command was suspiciously executed on the device named `mb-adfs`. The attack involved multiple stages and tactics, including credentials memory read and a phishing campaign originating from a compromised internal user account.",
+  "question": "Can you identify the sender's email address of the malicious email messages that were delivered and later removed as part of the phishing campaign?",
+  "gold_answer": "4qs6v9m@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "A command via Impacket was executed by the process `lsass.exe`.",
+    "A sensitive credential memory read was performed by a user with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0` on `lsass.exe`.",
+    "An internal phishing campaign was executed by a user with AadUserId `28058d92-fc24-4869-9231-6546a34b00f2`, indicating potential compromise.",
+    "Email messages containing a malicious URL were sent by `4qs6v9m@vnevado.alpineskihouse.co` and later removed after delivery."
+  ],
+  "metadata": {
+    "start_alert": 16,
+    "end_alert": 70,
+    "start_entities": [
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      25,
+      26
+    ],
+    "end_entities": [
+      74
+    ],
+    "shortest_alert_path": [
+      16,
+      24,
+      67,
+      3,
+      88,
+      78,
+      70
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_55_test_q027",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A suspected DCSync attack was detected on July 10, 2024, where Luciano Herrera (CIO) on host MB-WINCLIENT sent a replication request to MB-DC1. This is considered suspicious as it might indicate an attempt to replicate directory services. Moreover, a suspicious LDAP query execution on the same host was noted earlier on July 4, 2024. LDAP queries can be used for reconnaissance activities, potentially to map out the organization's structure.",
+  "question": "During the ongoing hands-on-keyboard attack via the Impacket toolkit observed on July 4, 2024, what user account name was the execution attributed to?",
+  "gold_answer": "LocalSystem",
+  "solution_steps": [
+    "The user account with SID `S-1-5-21-551436448-9871687716-9837441745-1903` (Luciano Herrera, CIO) on MB-WINCLIENT made a replication request to MB-DC1, suggesting a suspected DCSync attack.",
+    "A suspicious LDAP query was executed using `powershell.exe`, indicating potential reconnaissance activity.",
+    "A command was executed using the Impacket toolkit by the `LocalSystem` account, suggesting an ongoing hands-on-keyboard attack."
+  ],
+  "metadata": {
+    "start_alert": 98,
+    "end_alert": 16,
+    "start_entities": [
+      81,
+      82,
+      99,
+      100
+    ],
+    "end_entities": [
+      17
+    ],
+    "shortest_alert_path": [
+      98,
+      10,
+      64,
+      8,
+      16
+    ]
+  }
+}

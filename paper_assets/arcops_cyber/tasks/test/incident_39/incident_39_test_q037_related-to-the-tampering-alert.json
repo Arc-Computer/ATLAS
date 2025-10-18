@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_test_q037",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A process executed several suspicious commands which could allow an attacker to identify valuable assets and coordinate lateral movement after compromising a machine. This was detected on an unidentified host. Subsequently, another alert noted an attempt to disable the Microsoft Defender Antivirus service, which is a common evasion technique. For more information, read the Antivirus tampering technique profile Threat Analytics report.",
+  "question": "Related to the tampering alert, what script file was involved in the attempt to disable the Microsoft Defender Antivirus service?",
+  "gold_answer": "get-krbticket.ps1",
+  "solution_steps": [
+    "A suspicious sequence of exploration activities was detected on host `vnevado-win10v`.",
+    "An attempt to disable the Microsoft Defender Antivirus service was detected, possibly to evade detection. The detected file involved in this attempt is `get-krbticket.ps1`."
+  ],
+  "metadata": {
+    "start_alert": 77,
+    "end_alert": 35,
+    "start_entities": [
+      80,
+      83,
+      82,
+      49,
+      51,
+      50,
+      78,
+      79,
+      18,
+      84
+    ],
+    "end_entities": [
+      38
+    ],
+    "shortest_alert_path": [
+      77,
+      32,
+      35
+    ]
+  }
+}

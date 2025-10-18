@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_5_test_q053",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident involving suspicious 'GenRansom' behavior was detected on the host `vnevado-win11t` with AadDeviceId `e5799261-6720-4297-961e-bd9ca4275033`. Malware activity was found, necessitating precautionary measures. Additionally, there was an alert about system recovery setting tampering, where adversaries might be attempting to delete or remove built-in operating system data and turn off recovery services to prevent recovering a corrupted system.",
+  "question": "During this incident, what specific command line was observed that could indicate system recovery setting tampering on the device?",
+  "gold_answer": "4312__2024-06-20t09:10:48.0676225z__bcdedit /set recoveryenabled no",
+  "solution_steps": [
+    "There was suspicious 'GenRansom' behavior detected on the device with AadDeviceId `e5799261-6720-4297-961e-bd9ca4275033`.",
+    "Lateral movement using SMB remote file access was blocked for the user with SID `S-1-5-21-1840191660-8534830288-125585561-1522`.",
+    "System recovery setting tampering was observed with the process having ProcessId `4312`, created at `2024-06-20t09:10:48.0676225z`, and the command line `bcdedit /set recoveryenabled no`."
+  ],
+  "metadata": {
+    "start_alert": 148,
+    "end_alert": 120,
+    "start_entities": [
+      68,
+      69
+    ],
+    "end_entities": [
+      63
+    ],
+    "shortest_alert_path": [
+      148,
+      69,
+      171,
+      2,
+      120
+    ]
+  }
+}

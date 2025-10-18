@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_5_test_q005",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "During a recent investigation involving potentially compromised assets exhibiting ransomware-like behavior, it was observed that an attacker might be using the specified user account, IP, or device to move laterally across the network. Some of the files involved are `syncretic.7z.lockbit`, `earlap.doc`, `ponceau.7z`, and `unstreaming.xlsx.lockbit`. The suspicious activities were noted on the host `vnevado-win11u`, with associated account SID `S-0-6-5`. Automated remediation actions might be taken to disable the account or device being used by the attacker.",
+  "question": "Can you identify the hostname of the device where system recovery setting tampering was observed?",
+  "gold_answer": "vnevado-win10s",
+  "solution_steps": [
+    "The user with SID `S-1-5-21-1840191660-8534830288-125585561-1522` is potentially compromised and exhibiting ransomware-like behavior, affecting multiple devices.",
+    "System recovery settings have been tampered with on the device with hostname `vnevado-win10s`, which could indicate an attempt by adversaries to disable system recovery features and prevent system recovery."
+  ],
+  "metadata": {
+    "start_alert": 100,
+    "end_alert": 96,
+    "start_entities": [
+      42,
+      46,
+      45,
+      51,
+      8,
+      49,
+      7,
+      54,
+      48,
+      47
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      100,
+      2,
+      96
+    ]
+  }
+}

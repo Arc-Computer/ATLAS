@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_5_test_q006",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "On 2024-07-04, a suspicious WMI process creation was observed on the machine named `vnevado-win10r`. Various processes including `vssblatemp.exe` and `get-userprttoken.ps1` were executed. This type of behavior is often associated with malware using WMI to spawn new processes, breaking process trees and further infecting a machine.",
+  "question": "As per the recent observation, what is the IP address identified in connection with the Manatee Tempest activity group?",
+  "gold_answer": "198.43.121.209",
+  "solution_steps": [
+    "Suspicious WMI process creation was observed on the machine by an account with SID `S-1-5-21-1840191660-8534830288-125585561-1522`.",
+    "Manatee Tempest, a Russia-based cybercriminal group, conducted suspicious activities. One of the IP addresses used by the group is `198.43.121.209`."
+  ],
+  "metadata": {
+    "start_alert": 155,
+    "end_alert": 136,
+    "start_entities": [
+      11,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      155,
+      2,
+      136
+    ]
+  }
+}

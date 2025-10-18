@@ -1,0 +1,38 @@
+{
+  "task_id": "incident_55_test_q053",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "On July 10, 2024, an unusual addition of credentials to an OAuth application was detected. This behavior suggests a potential compromise of the app, which could be utilized for malicious activities such as spreading phishing, data exfiltration, or unauthorized access to other accounts and devices. The added credential was of type Password, typically used when an application is authenticated using a password.",
+  "question": "During the final alert of this incident, whose credentials were suspiciously added to the OAuth application?",
+  "gold_answer": "Luciano Herrera",
+  "solution_steps": [
+    "The account `gsmith` was observed using a known public tool under an unexpected filename, possibly to hide its usage for malicious purposes.",
+    "A suspicious execution of a command via Impacket toolkit was observed with the process `powershell.exe`, indicating potential lateral movement.",
+    "The account with SID `S-1-5-21-551436448-9871687716-9837441745-1903` executed a suspicious LDAP query, hinting at potential reconnaissance activity.",
+    "The user `Luciano Herrera` (pwilson@niseko.alpineskihouse.co) performed an unusual addition of credentials to the application SimulandApp, indicating potential compromise."
+  ],
+  "metadata": {
+    "start_alert": 32,
+    "end_alert": 108,
+    "start_entities": [
+      18,
+      19,
+      20,
+      26,
+      28,
+      29
+    ],
+    "end_entities": [
+      81
+    ],
+    "shortest_alert_path": [
+      32,
+      18,
+      16,
+      8,
+      64,
+      10,
+      108
+    ]
+  }
+}

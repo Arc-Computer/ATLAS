@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_test_q002",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A multi-stage security incident occurred where a sign-in was detected from a malicious IP address `170.54.121.63`. This IP address is known to be malicious and the sign-in occurred during or around that time. As part of the same incident, suspicious emails were sent by a potentially compromised user account, indicating a possible BEC (business email compromise) fraud attempt. The alert for the BEC-related user was triggered based on a known BEC-related incident.",
+  "question": "What is the IP address associated with the user sending suspicious emails related to the BEC fraud attempt?",
+  "gold_answer": "237.7.81.122",
+  "solution_steps": [
+    "There was a sign-in from a malicious IP address for the user with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1` on 2024-07-18 13:48:02.042756+00:00.",
+    "Suspicious emails were sent by a possibly compromised user account related to an ongoing BEC fraud attempt from the IP address `237.7.81.122` on 2024-07-17 11:55:04.449509+00:00."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 18,
+    "start_entities": [
+      12
+    ],
+    "end_entities": [
+      16
+    ],
+    "shortest_alert_path": [
+      23,
+      9,
+      18
+    ]
+  }
+}

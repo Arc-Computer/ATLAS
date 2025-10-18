@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_train_q026",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "As part of a security incident, a process executed PowerShell to download a file or run an encoded command. PowerShell is often used by attackers to bypass security protection mechanisms by executing their payload in memory without leaving a trace or touching the disk. This particular instance was flagged as a suspicious PowerShell download or encoded command execution with Process ID 8604. This activity may indicate an attacker trying to download external payloads or execute commands on the device.",
+  "question": "Can you find the IP address associated with the anomaly detected in the ASEP registry for this security incident?",
+  "gold_answer": "72.5.72.208",
+  "solution_steps": [
+    "A process executed PowerShell to download a file or run an encoded command by a user with AadUserId `16320fec-8d90-403b-b7fe-78f715d4728d`.",
+    "A process registered a suspicious command or file in ASEP registry key from IP address `72.5.72.208`."
+  ],
+  "metadata": {
+    "start_alert": 22,
+    "end_alert": 17,
+    "start_entities": [
+      7,
+      8
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      22,
+      6,
+      17
+    ]
+  }
+}

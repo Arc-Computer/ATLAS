@@ -1,0 +1,41 @@
+{
+  "task_id": "incident_55_train_q081",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A multi-stage security incident involving various malicious activities was observed. Initially, a suspicious file named `iy2orr1e.rrg.exe` was launched on the host `mb-adfs` by the account `gsmith`. This might have been an attempt to hide the use of a dual-purpose tool for malicious activities. Following this, there were signs of a system executable being renamed and possibly used for malicious purposes, code injection into processes, and an account sending phishing emails. The incident eventually led to malicious URL-containing emails being delivered and then removed.",
+  "question": "Can you identify the recipient of the email messages containing the malicious URL that were removed after delivery?",
+  "gold_answer": "santiago@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "The host `mb-adfs` saw an attempt to hide the use of a dual-purpose tool.",
+    "A renamed Windows executable `powershell.exe` was launched, potentially for malicious activities.",
+    "Code injection was detected in a process belonging to an account with SID `S-1-5-21-561436748-3867387497-1732241745-3701`.",
+    "An internal user account `Nina Sullivan@vnevado.alpineskihouse.co` sent phishing emails within the organization, indicating possible account compromise.",
+    "Emails containing malicious URLs and sent to `santiago@vnevado.alpineskihouse.co` were removed after delivery."
+  ],
+  "metadata": {
+    "start_alert": 32,
+    "end_alert": 70,
+    "start_entities": [
+      18,
+      19,
+      20,
+      26,
+      28,
+      29
+    ],
+    "end_entities": [
+      72
+    ],
+    "shortest_alert_path": [
+      32,
+      26,
+      27,
+      8,
+      41,
+      2,
+      88,
+      76,
+      70
+    ]
+  }
+}

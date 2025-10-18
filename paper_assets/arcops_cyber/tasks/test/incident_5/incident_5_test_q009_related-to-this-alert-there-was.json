@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_5_test_q009",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A possible attempt to access Primary Refresh Token (PRT) was detected on the host `vnevado-win10s` involving user with username `dp5hn`. The PRT is a key artifact of Azure AD authentication used to enable single sign-on (SSO) across applications on supported devices, and attackers attempting to access this resource could be aiming for lateral movement or credential theft. The attempt was carried out by the process `browsercore.exe` as observed from the process ID `2676`.",
+  "question": "Related to this alert, there was an active malware detected subsequently. Can you identify the name of the malware file detected on the machine?",
+  "gold_answer": "mimikatz.exe",
+  "solution_steps": [
+    "There was a possible attempt to access Primary Refresh Token (PRT) through the process `browsercore.exe` detected on 2024-07-04.",
+    "Another possible attempt to access Primary Refresh Token (PRT) was detected involving the account with SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "Active unknown malware, specifically `mimikatz.exe`, was detected and running on the machine."
+  ],
+  "metadata": {
+    "start_alert": 113,
+    "end_alert": 150,
+    "start_entities": [
+      1,
+      2,
+      3,
+      12,
+      13,
+      114
+    ],
+    "end_entities": [
+      19
+    ],
+    "shortest_alert_path": [
+      113,
+      40,
+      36,
+      17,
+      150
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_5_test_q028",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A significant security incident involved potentially compromised assets exhibiting ransomware-like behavior. This impacted several devices where an attacker might be operating using a specific user account, IP, or device to move laterally across the network and infect as many devices as possible with ransomware. The automated remediation action might be taken to disable the account or device used by the attacker. One of the detected entities was IP address `99.83.111.100`, associated with the script `get-userprttoken.ps1` on the host `vnevado-win11t`.",
+  "question": "Can you identify the URL associated with the blocked command and control behavior related to the malware infection?",
+  "gold_answer": "http://vectorsandarrows.com/",
+  "solution_steps": [
+    "There are potentially compromised assets exhibiting ransomware-like behavior associated with the user account having SID `S-1-5-21-1840191660-8534830288-125585561-1522`.",
+    "Command and Control (C2) behavior was blocked, linked to the URL `http://vectorsandarrows.com/`."
+  ],
+  "metadata": {
+    "start_alert": 138,
+    "end_alert": 137,
+    "start_entities": [
+      42,
+      47,
+      48,
+      68,
+      69,
+      94,
+      95
+    ],
+    "end_entities": [
+      74
+    ],
+    "shortest_alert_path": [
+      138,
+      2,
+      137
+    ]
+  }
+}

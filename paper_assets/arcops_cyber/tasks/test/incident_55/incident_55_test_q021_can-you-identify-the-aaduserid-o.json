@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_55_test_q021",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "In a security incident involving a suspected DCSync attack where the CIO Luciano Herrera sent a replication request from the host MB-WINCLIENT to the domain controller MB-DC1, we need to further investigate the details. This incident occurred on 2024-07-10. It is a part of an overall security incident which involves multiple malicious activities.",
+  "question": "Can you identify the AadUserId of the account linked to the incident where a malicious PowerShell Cmdlet was invoked on the machine?",
+  "gold_answer": "a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0",
+  "solution_steps": [
+    "Luciano Herrera (CIO) with SID `S-1-5-21-551436448-9871687716-9837441745-1903` on MB-WINCLIENT sent 1 replication request to MB-DC1, indicating a suspected DCSync attack.",
+    "A user with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0` invoked a malicious PowerShell Cmdlet on the machine, which may be associated with credential theft, exploitation, network reconnaissance, or code injection."
+  ],
+  "metadata": {
+    "start_alert": 98,
+    "end_alert": 51,
+    "start_entities": [
+      81,
+      82,
+      99,
+      100
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      98,
+      10,
+      51
+    ]
+  }
+}

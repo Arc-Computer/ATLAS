@@ -1,0 +1,39 @@
+{
+  "task_id": "incident_55_train_q023",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "",
+  "question": "Which user (AadUserId) was potentially trying to hide the usage of a dual-purpose tool under an unexpected filename?",
+  "gold_answer": "ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5",
+  "solution_steps": [
+    "Suspicious access to LSASS service was attempted using the process `powershell.exe`.",
+    "There were suspicious exploration activities on host `mb-adfs`.",
+    "An attempt to hide the use of a dual-purpose tool was detected for the user with AadUserId `ec3ec68b-fdeb-4fe4-9a29-acd445e1ccc5`."
+  ],
+  "metadata": {
+    "start_alert": 45,
+    "end_alert": 32,
+    "start_entities": [
+      15,
+      2,
+      50,
+      7,
+      14,
+      48,
+      1,
+      3,
+      46,
+      47
+    ],
+    "end_entities": [
+      20
+    ],
+    "shortest_alert_path": [
+      45,
+      8,
+      52,
+      26,
+      32
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_39_train_q058",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A recent security incident indicated an attempt to tamper with Microsoft Defender Antivirus, detected on 2024-07-04. This activity might suggest an attempt to evade detection. The process `powershell.exe` was seen executing the script `get-krbticket.ps1`. Note: Tampering techniques are typically used by attackers to disable or interfere with security tools and processes.",
+  "question": "Related to this incident, there was a sign-in attempt with a deceptive user account. Can you identify the name of the user account used in this suspicious sign-in attempt?",
+  "gold_answer": "kyleg",
+  "solution_steps": [
+    "An attempt was detected to disable the Microsoft Defender Antivirus service by the account `tgs2z`.",
+    "A sign-in attempt was detected using a deceptive user account `kyleg` that might be used by an attacker to perform various attack activities, including lateral movement and accessing sensitive data."
+  ],
+  "metadata": {
+    "start_alert": 35,
+    "end_alert": 41,
+    "start_entities": [
+      17,
+      36,
+      37,
+      38
+    ],
+    "end_entities": [
+      42
+    ],
+    "shortest_alert_path": [
+      35,
+      27,
+      41
+    ]
+  }
+}

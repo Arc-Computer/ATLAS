@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_55_test_q057",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "On host `mb-adfs`, there was a security incident where a renamed Windows executable, `iy2orr1e.rrg.exe`, was launched with the process ID 3116 and command line `iy2orr1e.rrg.exe -windowstyle hidden -encodedcommand qwa6afwauwbjahiaaqbwahqacwbcaeuaeabwag8acgb0aeearabgafmavabvagsazqbuafmaaqbnag4aaqbuaemazqbyahqalgbwahmamqa=`. The account associated with this activity is `SYSTEM` with Sid `S-2-2-78`. This behavior might indicate an attempt by attackers to run malicious activities, connect to an attacker-controlled network address, or bypass behavior-based detection technologies.",
+  "question": "For the suspicious sequence of exploration activities detected, can you identify the AadUserId related to this activity?",
+  "gold_answer": "a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0",
+  "solution_steps": [
+    "The executable file `powershell.exe` was renamed and launched, indicating possible malicious activity as seen at the time 2024-07-04 22:35:01.543723+00:00.",
+    "A suspicious sequence of exploration activities was performed by the user with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0` at the time 2024-07-04 22:35:03.197761+00:00."
+  ],
+  "metadata": {
+    "start_alert": 27,
+    "end_alert": 57,
+    "start_entities": [
+      25,
+      26,
+      28,
+      29,
+      30,
+      31
+    ],
+    "end_entities": [
+      3
+    ],
+    "shortest_alert_path": [
+      27,
+      8,
+      57
+    ]
+  }
+}

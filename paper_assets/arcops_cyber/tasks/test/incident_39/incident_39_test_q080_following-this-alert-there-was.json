@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_39_test_q080",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "An alert about a suspicious service launch was reported on a device. Attackers might use services to launch malicious commands or programs to maintain persistence or elevate privileges on the target device. The process involved in this was `psexesvc.exe` with Process ID `7668` indicating the suspicious activity. This occurs within a broader security incident.",
+  "question": "Following this alert, there was a suspicious sequence of exploration activities. Can you identify the Security Identifier (SID) associated with these activities?",
+  "gold_answer": "S-5-7-21-1843151660-3234030288-105586167-1422",
+  "solution_steps": [
+    "A suspicious service was launched on the host `vnevado-dc`.",
+    "A SID history injection was detected in the process `net.exe`.",
+    "A suspicious sequence of exploration activities was initiated by the user with SID `S-5-7-21-1843151660-3234030288-105586167-1422`."
+  ],
+  "metadata": {
+    "start_alert": 86,
+    "end_alert": 77,
+    "start_entities": [
+      5,
+      61,
+      87,
+      88
+    ],
+    "end_entities": [
+      28
+    ],
+    "shortest_alert_path": [
+      86,
+      20,
+      93,
+      18,
+      77
+    ]
+  }
+}

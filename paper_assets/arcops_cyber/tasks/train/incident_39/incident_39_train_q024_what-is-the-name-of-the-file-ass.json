@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_39_train_q024",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A recent security incident was identified involving suspected identity theft of Julian Burke's Kerberos ticket from VNEVADO-Win10B and used on another host to access resources. Earlier in the timeline, there was a sign-in attempt using a deceptive user account, indicating potential lateral movement and accessing sensitive data.",
+  "question": "What is the name of the file associated with the potential human-operated malicious activity on the device?",
+  "gold_answer": "rubeus.exe",
+  "solution_steps": [
+    "An actor took Julian Burke's (IT director) Kerberos ticket from IP address `35.202.74.47` and used it on VNEVADO-Win10V to access 4 resources.",
+    "A sign-in attempt using a deceptive user account `kyleg` was detected on this device, indicating a potential attacker's activity.",
+    "The presence of the file `rubeus.exe` suggests that there might be human-operated malicious activity on this device, potentially leading to ransomware or other harmful payloads."
+  ],
+  "metadata": {
+    "start_alert": 130,
+    "end_alert": 105,
+    "start_entities": [
+      123,
+      124,
+      131,
+      132,
+      133
+    ],
+    "end_entities": [
+      65
+    ],
+    "shortest_alert_path": [
+      130,
+      43,
+      41,
+      42,
+      105
+    ]
+  }
+}

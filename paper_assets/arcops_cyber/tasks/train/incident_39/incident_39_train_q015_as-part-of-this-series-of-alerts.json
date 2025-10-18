@@ -1,0 +1,37 @@
+{
+  "task_id": "incident_39_train_q015",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A suspicious sequence of exploration activities was detected which involved a process executing a set of windows commands that could be used by attackers to identify valuable assets and coordinate lateral movement after compromising a machine. The commands executed suggest attempts to add users, query domain groups, and manipulate domain accounts. Following this, activity indicating the use of the Rubeus tool for actions such as kerberoasting and pass-the-ticket techniques was observed on the same endpoint. This suggests further steps in credential harvesting were being performed.",
+  "question": "As part of this series of alerts, a remote session was seen dropping and executing a file. What is the IP address associated with this remote session?",
+  "gold_answer": "141.216.110.153",
+  "solution_steps": [
+    "Suspicious sequence of exploration activities was observed involving the account with SID `S-5-7-21-1843151660-3234030288-105586167-1422`.",
+    "The use of the Rubeus kerberoasting tool was detected, with the tool being identified as `rubeus.exe`.",
+    "A file was dropped and launched from the remote IP address `141.216.110.153` indicating a possible lateral movement or malware propagation attempt."
+  ],
+  "metadata": {
+    "start_alert": 77,
+    "end_alert": 34,
+    "start_entities": [
+      51,
+      78,
+      79,
+      80,
+      81,
+      82,
+      83,
+      84
+    ],
+    "end_entities": [
+      25
+    ],
+    "shortest_alert_path": [
+      77,
+      28,
+      107,
+      7,
+      34
+    ]
+  }
+}

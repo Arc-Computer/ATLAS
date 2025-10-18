@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_55_train_q062",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A suspicious sequence of exploration activities involving certain windows commands was detected, which can be used by attackers to identify assets and coordinate lateral movement after compromising a machine. One of the processes involved was `whoami.exe` and it was executed on a device with AadDeviceId `7661dfd4-218f-4016-8a87-66d68a7f098e`.",
+  "question": "In a subsequent related alert, it was detected that one of the users clicked on a malicious URL. Can you retrieve the primary email address of the user's mailbox involved in this suspicious activity?",
+  "gold_answer": "bjenkins@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "The user with SID `S-1-5-21-561436748-3867387497-1732241745-3701` initiated a suspicious sequence of exploration activities.",
+    "The email account `bjenkins@niseko.alpineskihouse.co` clicked on a potentially malicious URL."
+  ],
+  "metadata": {
+    "start_alert": 57,
+    "end_alert": 104,
+    "start_entities": [
+      60,
+      15,
+      8,
+      59,
+      54,
+      13,
+      10,
+      5,
+      11
+    ],
+    "end_entities": [
+      93
+    ],
+    "shortest_alert_path": [
+      57,
+      2,
+      104
+    ]
+  }
+}

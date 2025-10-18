@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_39_train_q004",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A recent multi-stage security incident detected the dropping of multiple known dual-purpose tools, such as `mimikatz.exe` and various PowerShell scripts, on a device associated with the account `tgs2z`. These tools could have been used for credential theft, escalation of privileges, or lateral movement by attackers.",
+  "question": "What is the malicious URL that was delivered in the email messages and later removed?",
+  "gold_answer": "https://ac27145722.livelygrass-8d4c4013.eastus2.azurecontainerapps.io/",
+  "solution_steps": [
+    "Multiple dual-purpose tools were dropped on the device by a user with AadUserId `1d94aaf6-efe6-4e76-ad56-ffd7d1257bc1`.",
+    "An email containing a malicious URL `https://ac27145722.livelygrass-8d4c4013.eastus2.azurecontainerapps.io/` was delivered and later removed."
+  ],
+  "metadata": {
+    "start_alert": 62,
+    "end_alert": 138,
+    "start_entities": [
+      27,
+      67,
+      63,
+      33,
+      71,
+      24,
+      65,
+      31,
+      36,
+      49
+    ],
+    "end_entities": [
+      137
+    ],
+    "shortest_alert_path": [
+      62,
+      29,
+      138
+    ]
+  }
+}

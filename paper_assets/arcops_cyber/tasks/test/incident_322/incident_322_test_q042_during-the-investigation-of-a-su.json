@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_322_test_q042",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "A security incident involved an Azure Resource Manager operation from a suspicious proxy IP address, reported by Microsoft Defender for Resource Manager. The operation was linked to the Azure subscription with SubscriptionId `7e838342-601f-4552-9baf-0dfb300cf555`. The suspicious IP address involved was `253.1.244.215`, which is associated with proxy services like TOR. This behavior, while sometimes legitimate, is frequently seen in malicious activities by threat actors attempting to obfuscate their IP.",
+  "question": "During the investigation of a suspicious credential dump from NTDS.dit, what is the process ID and the command line used for the dump operation?",
+  "gold_answer": "Process Id: 6748, Command Line: \"ntdsutil.exe\" \"ac i ntds\" ifm \"create full c:\\temp\" q q",
+  "solution_steps": [
+    "There was an Azure Resource Manager operation from a suspicious proxy IP address associated with the host `vnevado-dc` at `2024-08-01 13:09:13.222398+00:00`.",
+    "Attackers used the process `ntdsutil.exe` with the command line `ac i ntds ifm create full c:\\temp q q` and Process ID `6748` on `2024-08-01t12:37:30.2769191z` to dump NTDS.dit in order to obtain user credentials."
+  ],
+  "metadata": {
+    "start_alert": 25,
+    "end_alert": 16,
+    "start_entities": [
+      30,
+      28,
+      31,
+      26,
+      7,
+      8,
+      29,
+      6,
+      9,
+      27
+    ],
+    "end_entities": [
+      19
+    ],
+    "shortest_alert_path": [
+      25,
+      21,
+      16
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_134_test_q036",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "A Password spray attack was detected originating from IP address `170.54.121.63` at 2024-07-18 14:36:59.143748+00:00. This type of attack involves attempting a single password against multiple accounts, which suggests a potential credential abuse attempt. A related detection was of a user clicking on a potentially malicious URL on 2024-07-17 10:59:14.787387+00:00.",
+  "question": "Can you find the Security Identifier (SID) of the account that was involved in the malicious URL click incident?",
+  "gold_answer": "S-1-5-21-1874151667-3554330288-105586563-1715",
+  "solution_steps": [
+    "A password spray attack was detected on the account with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1`.",
+    "The user with SID `S-1-5-21-1874151667-3554330288-105586563-1715` clicked on a link that was found to be malicious."
+  ],
+  "metadata": {
+    "start_alert": 24,
+    "end_alert": 0,
+    "start_entities": [
+      12
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      24,
+      9,
+      0
+    ]
+  }
+}

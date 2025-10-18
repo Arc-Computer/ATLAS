@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_train_q071",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A security incident involving unusual addition of credentials to an OAuth app was reported. The user Luciano Herrera (pwilson@niseko.alpineskihouse.co) performed the unusual addition of credentials to the application SimulandApp. This action may indicate a compromised app being used for malicious purposes such as spreading phishing, exfiltrating data, or gaining unauthorized access. Following this, there was a detection of a malicious PowerShell Cmdlet invoked on the machine. As part of these events, it was also detected that a user clicked on a potentially malicious URL.",
+  "question": "Can you provide the mailbox primary address of the user who clicked on the detected malicious URL?",
+  "gold_answer": "bjenkins@niseko.alpineskihouse.co",
+  "solution_steps": [
+    "The user with SID `S-1-5-21-551436448-9871687716-9837441745-1903` (Luciano Herrera) performed an unusual addition of credentials to the application SimulandApp. The credential type added was Password. This may indicate potential compromise of the app or Luciano Herrera's account.",
+    "A malicious PowerShell Cmdlet was invoked by the user with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0` on a machine. This could be associated with various malicious activities such as credential theft or exploitation.",
+    "A potentially malicious URL was clicked by the user with mailbox address `bjenkins@niseko.alpineskihouse.co`. This indicates that the user might have been targeted by a phishing attack."
+  ],
+  "metadata": {
+    "start_alert": 80,
+    "end_alert": 104,
+    "start_entities": [
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87
+    ],
+    "end_entities": [
+      93
+    ],
+    "shortest_alert_path": [
+      80,
+      10,
+      51,
+      3,
+      104
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_test_q033",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "As part of the investigation, we noticed that a suspicious SAP authentication involving a user with a risky sign-in alert occurred. An attacker might have taken control of this user account to interact with SAP in a potentially malicious way. This was triggered based on a Microsoft Entra ID alert.",
+  "question": "On what date and time did the suspicious SAP authentication from the IP address `107.253.5.27` occur?",
+  "gold_answer": "2024-07-22 12:59:26.126190+00:00",
+  "solution_steps": [
+    "A password spray attack was detected on the account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82` on `2024-07-23T14:23:51.925093+00:00`.",
+    "A suspicious SAP authentication was made from IP address `107.253.5.27` to sign in to SAP with a user account that had a risky sign-in alert on `2024-07-22T12:59:26.126190+00:00`."
+  ],
+  "metadata": {
+    "start_alert": 28,
+    "end_alert": 23,
+    "start_entities": [
+      2
+    ],
+    "end_entities": [
+      25
+    ],
+    "shortest_alert_path": [
+      28,
+      1,
+      23
+    ]
+  }
+}

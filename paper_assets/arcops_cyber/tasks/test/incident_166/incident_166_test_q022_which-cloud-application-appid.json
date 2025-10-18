@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_166_test_q022",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "An alert was generated indicating that an inbound rule was created to hide incoming emails potentially as part of a business email compromise (BEC) fraud attempt. The account involved was Jordan P associated with email `Jordan P@vnevado.alpineskihouse.co` and originating from IP `255.246.85.58`. The incident took place during a risky Azure Active Directory session.",
+  "question": "Which cloud application (AppId) was involved in the incident where the user Jordan P had a suspicious inbox manipulation rule?",
+  "gold_answer": "11161",
+  "solution_steps": [
+    "A suspicious inbox manipulation rule was set on the inbox of the user Jordan P (laylaw@vnevado.alpineskihouse.co), indicating a potential compromise. A MoveToFolder rule named ITCleanup was created to move messages to a folder named RSS Feeds.",
+    "A suspicious inbox rule that hides incoming email messages was created in a risky Azure Active Directory session. It indicates a potential attempt at business email compromise (BEC) targeting the email account Jordan P@vnevado.alpineskihouse.co."
+  ],
+  "metadata": {
+    "start_alert": 17,
+    "end_alert": 5,
+    "start_entities": [
+      1,
+      6,
+      7,
+      8,
+      15
+    ],
+    "end_entities": [
+      13
+    ],
+    "shortest_alert_path": [
+      17,
+      7,
+      5
+    ]
+  }
+}

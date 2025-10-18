@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_train_q032",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "On 2024-07-04 at 22:35:02, a security incident involving potentially compromised assets exhibiting ransomware-like behavior was detected. Multiple devices, including host `vnevado-win11t`, appear to be infected by files such as `characterical.zip` and `characterical.zip.lockbit`. An attacker potentially used the specified user account, IP, or device to move laterally across the network and infect other devices with ransomware.",
+  "question": "Based on this incident, can you determine the name of another file that is exhibiting ransomware-like behavior, found at the same time as the compromised assets on host `vnevado-win11t`?",
+  "gold_answer": "unstreaming.xlsx.lockbit",
+  "solution_steps": [
+    "The user account with SID `S-0-6-5` is exhibiting ransomware-like behavior.",
+    "The file `unstreaming.xlsx.lockbit` suggests ransomware-like activity."
+  ],
+  "metadata": {
+    "start_alert": 138,
+    "end_alert": 100,
+    "start_entities": [
+      68,
+      69,
+      94,
+      95
+    ],
+    "end_entities": [
+      54
+    ],
+    "shortest_alert_path": [
+      138,
+      47,
+      100
+    ]
+  }
+}

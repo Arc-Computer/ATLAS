@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_34_train_q019",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "On July 4, 2024, at 22:35:03, a suspicious file named `winatp-intro-backdoor.exe` was dropped and executed on the machine by a PowerShell command. This is part of an ongoing investigation into potential malicious activities involving PowerShell being used to download files or run encoded commands. Attackers often use PowerShell to bypass security mechanisms by executing payloads in memory.",
+  "question": "Can you identify the SID of the account associated with the suspicious PowerShell download or encoded command execution?",
+  "gold_answer": "S-1-5-21-1870156660-7534030218-135086563-1193",
+  "solution_steps": [
+    "Powershell dropped and executed a suspicious file on the machine with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f`.",
+    "A process executed PowerShell to download a file or run an encoded command using the user account with SID `S-1-5-21-1870156660-7534030218-135086563-1193`."
+  ],
+  "metadata": {
+    "start_alert": 25,
+    "end_alert": 22,
+    "start_entities": [
+      16
+    ],
+    "end_entities": [
+      5
+    ],
+    "shortest_alert_path": [
+      25,
+      2,
+      22
+    ]
+  }
+}

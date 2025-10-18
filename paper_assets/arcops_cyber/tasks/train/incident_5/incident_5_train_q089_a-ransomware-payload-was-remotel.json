@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_5_train_q089",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A security incident involving a possible compromised user account delivering ransomware-related files was reported. The user account dropped a ransomware-related file on several devices, including the host `vnevado-win11t`. The file names involved were `get-userprttoken.ps1`, `characterical.zip`, and `characterical.zip.lockbit`. Automated remediation actions may be taken to disable the compromised account.",
+  "question": "A ransomware payload was remotely launched on another device. Can you identify the host name of this second device where the ransomware payload was launched?",
+  "gold_answer": "vnevado-win11u",
+  "solution_steps": [
+    "A user account with SID `S-1-5-21-1840191660-8534830288-125585561-1522` was observed dropping ransomware-related files on several devices.",
+    "A ransomware payload was remotely launched on the host `vnevado-win11u`."
+  ],
+  "metadata": {
+    "start_alert": 93,
+    "end_alert": 139,
+    "start_entities": [
+      47,
+      48,
+      68,
+      69,
+      94,
+      95
+    ],
+    "end_entities": [
+      7
+    ],
+    "shortest_alert_path": [
+      93,
+      2,
+      139
+    ]
+  }
+}

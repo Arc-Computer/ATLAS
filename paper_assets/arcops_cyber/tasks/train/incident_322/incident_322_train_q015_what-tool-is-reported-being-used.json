@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_322_train_q015",
+  "incident": "incident_322",
+  "split": "train",
+  "context": "A suspicious credential dump from NTDS.dit occurred on host `vnevado-dc`, potentially indicating an attempt to obtain user's credentials stored in the domain controller. The process identifier was associated with the file `powershell.exe`. Attackers often use this in conjunction with other tools to gather information or persist in their access.",
+  "question": "What tool is reported being used to collect Active Directory information in this incident?",
+  "gold_answer": "ntdsutil.exe",
+  "solution_steps": [
+    "An attacker used `ntdsutil.exe` to dump NTDS.dit, which could be used to obtain user credentials from the domain controller.",
+    "The same `ntdsutil.exe` process was used to collect Active Directory information, which may help attackers in persistence or lateral movement within the network."
+  ],
+  "metadata": {
+    "start_alert": 16,
+    "end_alert": 22,
+    "start_entities": [
+      17,
+      18,
+      20,
+      21
+    ],
+    "end_entities": [
+      20
+    ],
+    "shortest_alert_path": [
+      16,
+      20,
+      22
+    ]
+  }
+}

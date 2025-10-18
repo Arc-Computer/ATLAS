@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_55_train_q088",
+  "incident": "incident_55",
+  "split": "train",
+  "context": "A security incident involving an internal phishing campaign was reported where a user named Nina Sullivan sent phishing emails from her device to other users inside the organization, indicating that her account might have been compromised. The alert was triggered based on a Microsoft Defender for Office 365 alert. The phishing email contained a malicious URL: `http://ym018491661.wittytree-b6f239d6.northeurope.azurecontainerapps.io/`.",
+  "question": "As part of this incident, emails with malicious URLs were delivered and later removed. What was the IP address of the sender for these malicious emails?",
+  "gold_answer": "119.36.50.193",
+  "solution_steps": [
+    "A user with AadUserId `a2d0f7c2-b0a0-43bd-bce0-27d8ae3be4d0` sent phishing emails within the organization, indicating a potential compromise of the user account.",
+    "Emails containing malicious URLs, which were sent from the sender IP `119.36.50.193`, were delivered and later removed."
+  ],
+  "metadata": {
+    "start_alert": 88,
+    "end_alert": 92,
+    "start_entities": [
+      75,
+      76,
+      77,
+      78,
+      91
+    ],
+    "end_entities": [
+      95
+    ],
+    "shortest_alert_path": [
+      88,
+      3,
+      92
+    ]
+  }
+}

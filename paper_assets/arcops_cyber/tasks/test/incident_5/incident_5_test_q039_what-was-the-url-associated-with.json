@@ -1,0 +1,35 @@
+{
+  "task_id": "incident_5_test_q039",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "A security incident involving multiple malicious activities was detected. It started with a known credential theft tool, `mimikatz.exe`, being executed at two different times, indicating an attempt to dump users' credentials. This activity led to lateral movement attempts to the jump server and suspicious remote activities on the machine. Subsequent analysis revealed command and control behavior of malware which was blocked.",
+  "question": "What was the URL associated with the command and control behavior detected in the end alert?",
+  "gold_answer": "http://vectorsandarrows.com/",
+  "solution_steps": [
+    "A known credential theft tool execution was detected on the host with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`.",
+    "There was lateral movement to the jump server from the IP address `99.83.111.100` using PSExec.",
+    "Suspicious remote activity was observed on the account `dp5hn`.",
+    "Command and Control behavior was blocked for the URL `http://vectorsandarrows.com/`."
+  ],
+  "metadata": {
+    "start_alert": 91,
+    "end_alert": 73,
+    "start_entities": [
+      23,
+      24,
+      92
+    ],
+    "end_entities": [
+      74
+    ],
+    "shortest_alert_path": [
+      91,
+      35,
+      174,
+      42,
+      107,
+      1,
+      73
+    ]
+  }
+}

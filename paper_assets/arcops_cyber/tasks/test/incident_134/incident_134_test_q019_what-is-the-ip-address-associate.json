@@ -1,0 +1,34 @@
+{
+  "task_id": "incident_134_test_q019",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "During a security incident involving business email compromise (BEC), suspicious emails were sent by a potentially compromised user account. The emails were sent to the mailbox `Nathan@avoriaz.alpineskihouse.co`. The sender's email address was `raphaelt@vnevado.alpineskihouse.co`.  As part of this incident, there was a sign-in attempt from an anonymous IP address which might be related to the ongoing BEC fraud attempt.",
+  "question": "What is the IP address associated with the anonymous sign-in attempt?",
+  "gold_answer": "170.54.121.63",
+  "solution_steps": [
+    "There are suspicious emails sent by a potentially compromised user account with AadUserId `e036dee7-fa23-42ef-a019-468c8d3401f1`, which may be related to an ongoing business email compromise fraud attempt.",
+    "A sign-in was detected from an anonymous IP address `170.54.121.63`."
+  ],
+  "metadata": {
+    "start_alert": 18,
+    "end_alert": 11,
+    "start_entities": [
+      6,
+      7,
+      8,
+      16,
+      19,
+      20,
+      21,
+      22
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      18,
+      9,
+      11
+    ]
+  }
+}

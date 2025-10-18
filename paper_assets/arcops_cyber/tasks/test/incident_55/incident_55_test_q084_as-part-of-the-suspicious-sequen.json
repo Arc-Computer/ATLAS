@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_55_test_q084",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "An internal phishing campaign was observed to have been carried out by sending phishing emails from a compromised device. The user account involved could have possibly been compromised by an attacker for lateral movement within the organization. This alert was initially triggered based on a Microsoft Defender for Office 365 alert. One of the connected entities has an unspecified SID.",
+  "question": "As part of the suspicious sequence of exploration activities, which IP address was used by the attacker?",
+  "gold_answer": "72.5.72.208",
+  "solution_steps": [
+    "A user with SID `S-1-5-21-561436748-3867387497-1732241745-3701` was observed sending phishing emails within the organization, indicating a potential account compromise.",
+    "Suspicious exploration activities originating from the IP address `72.5.72.208` were identified, potentially indicating reconnaissance or lateral movement efforts post-compromise."
+  ],
+  "metadata": {
+    "start_alert": 88,
+    "end_alert": 57,
+    "start_entities": [
+      75,
+      76,
+      77,
+      78,
+      89,
+      90,
+      91
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      88,
+      2,
+      57
+    ]
+  }
+}

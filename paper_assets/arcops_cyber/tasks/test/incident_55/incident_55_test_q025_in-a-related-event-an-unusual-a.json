@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q025",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A security incident involving Suspicious System Hardware Discovery was observed on hostname `mb-winclient`. On this device, a suspicious process `powershell.exe` with ProcessId `12412` was launched. Attackers might be trying to gather information about the target device or network for later attacks.",
+  "question": "In a related event, an unusual addition of credentials was observed in an OAuth app. Can you provide the IP address involved in this unusual event?",
+  "gold_answer": "2801:e0a:1eb:dea0:642e:5bb6:d315:fbb3",
+  "solution_steps": [
+    "There was a suspicious system hardware discovery associated with the user having AadUserId `2de70991-2799-4a95-b734-8e3df3a50118`.",
+    "The user Luciano Herrera (pwilson@niseko.alpineskihouse.co) performed an unusual addition of credentials to the OAuth app SimulandApp from IP address `2801:e0a:1eb:dea0:642e:5bb6:d315:fbb3`."
+  ],
+  "metadata": {
+    "start_alert": 0,
+    "end_alert": 108,
+    "start_entities": [
+      15,
+      6,
+      7,
+      4,
+      2,
+      13,
+      14,
+      3,
+      8,
+      5
+    ],
+    "end_entities": [
+      109
+    ],
+    "shortest_alert_path": [
+      0,
+      11,
+      108
+    ]
+  }
+}

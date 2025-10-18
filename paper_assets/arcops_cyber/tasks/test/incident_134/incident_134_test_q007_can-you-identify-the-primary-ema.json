@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_134_test_q007",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "In our investigation of a security incident involving suspicious emails related to a potential business email compromise (BEC) fraud attempt, we observed that emails were sent from `nathan@avoriaz.alpineskihouse.co` with the sender IP `237.7.81.122`. The incident was triggered by an alert for suspicious emails sent by a BEC-related user.",
+  "question": "Can you identify the primary email address of the mailbox which had email messages containing malicious URLs that were removed after delivery?",
+  "gold_answer": "raphaelt@vnevado.alpineskihouse.co",
+  "solution_steps": [
+    "The user with SID `S-1-5-21-1874151667-3554330288-105586563-1715` sent suspicious emails related to a BEC fraud attempt.",
+    "The mailbox with primary address `raphaelt@vnevado.alpineskihouse.co` received emails containing malicious URLs which were later removed."
+  ],
+  "metadata": {
+    "start_alert": 18,
+    "end_alert": 13,
+    "start_entities": [
+      16,
+      19,
+      20,
+      21
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      18,
+      8,
+      13
+    ]
+  }
+}

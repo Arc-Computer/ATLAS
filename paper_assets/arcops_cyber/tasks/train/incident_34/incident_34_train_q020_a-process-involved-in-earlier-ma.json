@@ -1,0 +1,28 @@
+{
+  "task_id": "incident_34_train_q020",
+  "incident": "incident_34",
+  "split": "train",
+  "context": "As part of a recent security incident, an uncommon file named `winatp-intro-backdoor.exe` was created on a machine and added to a Registry Key where it will run after a reboot. This is often done by attackers to ensure they retain access to the machine even if it is turned off. The incident involved the IP address `72.5.72.208`, and the process ID `10208` was associated with the command line `reg add hkcu\\software\\microsoft\\windows\\currentversion\\runonce /f /v yrei /t reg_expand_sz /d %userprofile%\\desktop\\winatp-intro-backdoor.exe`. For more information, you may refer to the Simulated threat Threat Analytics report.",
+  "question": "A process involved in earlier malicious activity used Task Scheduler to create, modify, or delete a task, likely to establish persistence. Can you identify the file name of the suspicious process that was involved?",
+  "gold_answer": "powershell.exe",
+  "solution_steps": [
+    "An uncommon file was created on the machine with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f` and added to a Run Key, which may indicate an attempt by an attacker to establish persistence.",
+    "A process identified as `powershell.exe` involved in earlier malicious activity used Task Scheduler to potentially automate the launch of malicious code and establish persistence."
+  ],
+  "metadata": {
+    "start_alert": 23,
+    "end_alert": 21,
+    "start_entities": [
+      18,
+      19
+    ],
+    "end_entities": [
+      8
+    ],
+    "shortest_alert_path": [
+      23,
+      2,
+      21
+    ]
+  }
+}

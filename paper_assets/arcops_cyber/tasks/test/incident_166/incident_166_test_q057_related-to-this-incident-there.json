@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_166_test_q057",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "Based on an alert triggered by Microsoft Entra ID, a suspicious activity involved a sign-in to SAP from a user account with a risky session. The attacker might have recorded or modified sensitive financial information in SAP, a critical enterprise application software.",
+  "question": "Related to this incident, there was also a suspicious SAP authentication attempt. Can you find the AppId of the cloud application that was involved in this suspicious SAP authentication?",
+  "gold_answer": "100",
+  "solution_steps": [
+    "A suspicious inbox rule that hides incoming email messages was created in a risky Azure Active Directory session for the account `89e933b9-5b2e-4bd6-bcdf-033db707ef82`, indicating a potential business email compromise (BEC) for financial fraud.",
+    "The user account with AadUserId `89e933b9-5b2e-4bd6-bcdf-033db707ef82` and a risky sign-in alert in Microsoft Entra ID signed in to the SAP application with AppId `100`, indicating that an attacker might be attempting to gather or modify sensitive financial information."
+  ],
+  "metadata": {
+    "start_alert": 17,
+    "end_alert": 23,
+    "start_entities": [
+      15
+    ],
+    "end_entities": [
+      24
+    ],
+    "shortest_alert_path": [
+      17,
+      1,
+      23
+    ]
+  }
+}

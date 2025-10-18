@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_34_test_q061",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "As part of a security incident reported on 2024-07-04, it was detected that Powershell executed a file named `winatp-intro-backdoor.exe` on a machine. This action was flagged as a suspicious activity as it involved dropping and executing a potentially malicious file.",
+  "question": "Can you identify the IP address associated with the process that registered a suspicious command or file in the ASEP registry key?",
+  "gold_answer": "72.5.72.208",
+  "solution_steps": [
+    "A Powershell script dropped and executed a suspicious file on the machine with AadDeviceId `02b8f519-1123-4228-b32a-ccb78af3449f`.",
+    "An anomaly was detected in the ASEP registry indicating a process registered a suspicious command or file from the IP address `72.5.72.208`."
+  ],
+  "metadata": {
+    "start_alert": 25,
+    "end_alert": 17,
+    "start_entities": [
+      7,
+      8,
+      16
+    ],
+    "end_entities": [
+      18
+    ],
+    "shortest_alert_path": [
+      25,
+      2,
+      17
+    ]
+  }
+}

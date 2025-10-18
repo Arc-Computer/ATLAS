@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_134_test_q043",
+  "incident": "incident_134",
+  "split": "test",
+  "context": "An email message containing a malicious URL `https://ms175052280.orangecliff-f53f26fd.eastus.azurecontainerapps.io/` was sent from `alyssat@vnevado.alpineskihouse.co` to `raphaelt@vnevado.alpineskihouse.co`. The email was flagged and removed after delivery. This was part of a broader security incident involving potentially compromised accounts.",
+  "question": "During the investigation, an account was compromised following a password spray attack. Can you identify the IP address associated with the compromised account's suspicious sign-in?",
+  "gold_answer": "170.54.121.63",
+  "solution_steps": [
+    "The email account `Nina Park@vnevado.alpineskihouse.co` received emails containing a malicious URL which were removed after delivery.",
+    "A password-spray attack compromised an account with a sign-in from the IP address `170.54.121.63`."
+  ],
+  "metadata": {
+    "start_alert": 13,
+    "end_alert": 25,
+    "start_entities": [
+      1,
+      2,
+      3,
+      4,
+      10
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      13,
+      7,
+      25
+    ]
+  }
+}

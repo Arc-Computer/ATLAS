@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_39_test_q041",
+  "incident": "incident_39",
+  "split": "test",
+  "context": "A suspicious service was started on the device `vnevado-dc`, which might allow attackers to maintain persistence or elevate privileges. The service was launched by the user `lucasb` using a PowerShell command to stop and start the `ntds` service while adding a specific SID history for the account `bdadmin`. The file involved in the process was `net.exe`.",
+  "question": "Besides the suspicious service activity observed, there were multiple dual-purpose tools dropped on the device. Can you identify one of the tools that were dropped?",
+  "gold_answer": "mimikatz.exe",
+  "solution_steps": [
+    "A suspicious service was launched using the process `powershell.exe`.",
+    "Multiple dual-purpose tools, including `mimikatz.exe`, were dropped on this device."
+  ],
+  "metadata": {
+    "start_alert": 12,
+    "end_alert": 76,
+    "start_entities": [
+      13,
+      14,
+      15,
+      16,
+      18,
+      19,
+      20
+    ],
+    "end_entities": [
+      64
+    ],
+    "shortest_alert_path": [
+      12,
+      17,
+      76
+    ]
+  }
+}

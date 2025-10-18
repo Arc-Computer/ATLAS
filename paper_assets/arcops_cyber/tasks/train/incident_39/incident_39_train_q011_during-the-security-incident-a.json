@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_39_train_q011",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A 'Kekeo' malware was detected on host `vnevado-win10v` with AadDeviceId `4d8d23e9-a77d-4e33-9435-b8c457e57ca1`, and file `rubeus.exe` is associated with this alert. Since the detection might indicate that the malware was stopped from delivering its payload, it is prudent to check the machine for signs of infection. Further investigation revealed that multiple known public tools, which could also be used for malicious reasons, were dropped on this device to perform various attack stages.",
+  "question": "During the security incident, a suspicious service was launched on the device. Can you get the SID of the account associated with this suspicious service launch?",
+  "gold_answer": "S-1-5-21-1440151660-4837038288-105596163-1120",
+  "solution_steps": [
+    "The host `vnevado-win10v` was detected with 'Kekeo' malware.",
+    "A process named `powershell.exe`, which is a dual-purpose tool, was dropped on the device.",
+    "A suspicious service was launched associated with the account having SID `S-1-5-21-1440151660-4837038288-105596163-1120`."
+  ],
+  "metadata": {
+    "start_alert": 92,
+    "end_alert": 12,
+    "start_entities": [
+      32,
+      33,
+      65
+    ],
+    "end_entities": [
+      14
+    ],
+    "shortest_alert_path": [
+      92,
+      32,
+      76,
+      17,
+      12
+    ]
+  }
+}

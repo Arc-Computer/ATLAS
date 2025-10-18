@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_166_test_q018",
+  "incident": "incident_166",
+  "split": "test",
+  "context": "A suspicious inbox rule was created in the mailbox of Jordan P under the name 'ITCleanup' . Multiple IP addresses have been associated, one of them is flagged as potentially malicious.",
+  "question": "Identify the flagged IP address related to the suspicious inbox rule?",
+  "gold_answer": "192.238.237.190",
+  "solution_steps": [
+    "A suspicious inbox manipulation rule was set by the user Jordan P (laylaw@vnevado.alpineskihouse.co) from the IP address `192.238.237.190`. The rule named ITCleanup moves messages to a folder named RSS Feeds."
+  ],
+  "metadata": {
+    "start_alert": 5,
+    "end_alert": 5,
+    "start_entities": [
+      10,
+      8,
+      13,
+      15,
+      2,
+      11,
+      7,
+      12,
+      6,
+      14
+    ],
+    "end_entities": [
+      4
+    ],
+    "shortest_alert_path": [
+      5
+    ]
+  }
+}

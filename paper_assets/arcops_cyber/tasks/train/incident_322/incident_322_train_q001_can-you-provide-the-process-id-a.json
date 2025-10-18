@@ -1,0 +1,26 @@
+{
+  "task_id": "incident_322_train_q001",
+  "incident": "incident_322",
+  "split": "train",
+  "context": "In a related incident, an alert on 2024-08-01 at 12:49:26 UTC indicated a suspicious credential dump from NTDS.dit, which occurred on host `vnevado-dc`. Attackers dump NTDS.dit in order to obtain user's credentials which are stored in the domain controller.",
+  "question": "Can you provide the Process ID and the full command line used in the suspicious credential dump from NTDS.dit related to this incident?",
+  "gold_answer": "Process ID: 6748, Command Line: \"ntdsutil.exe\" \"ac i ntds\" ifm \"create full c:\\temp\" q q",
+  "solution_steps": [
+    "An attacker used the process with Process ID `6748`, which was created at `2024-08-01t12:37:30.2769191z`, to dump NTDS.dit using the command line `ntdsutil.exe ac i ntds ifm create full c:\\temp q q`."
+  ],
+  "metadata": {
+    "start_alert": 16,
+    "end_alert": 16,
+    "start_entities": [
+      18,
+      17,
+      21
+    ],
+    "end_entities": [
+      19
+    ],
+    "shortest_alert_path": [
+      16
+    ]
+  }
+}

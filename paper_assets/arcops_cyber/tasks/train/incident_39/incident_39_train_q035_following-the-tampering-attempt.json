@@ -1,0 +1,33 @@
+{
+  "task_id": "incident_39_train_q035",
+  "incident": "incident_39",
+  "split": "train",
+  "context": "A security incident occurred where an attempt to disable the Microsoft Defender Antivirus service was detected, indicating a possible evasion attempt. Alongside this, malware detection indicated potential infection.",
+  "question": "Following the tampering attempt with Microsoft Defender Antivirus, malware was detected. Can you find the name of the malware file that was identified?",
+  "gold_answer": "rubeus.exe",
+  "solution_steps": [
+    "An attempt to disable the Microsoft Defender Antivirus service was detected on the host `vnevado-win10v`.",
+    "'Kekeo' malware was detected, specifically associated with the file `rubeus.exe`."
+  ],
+  "metadata": {
+    "start_alert": 35,
+    "end_alert": 92,
+    "start_entities": [
+      17,
+      27,
+      28,
+      29,
+      36,
+      37,
+      38
+    ],
+    "end_entities": [
+      65
+    ],
+    "shortest_alert_path": [
+      35,
+      32,
+      92
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "task_id": "incident_55_test_q026",
+  "incident": "incident_55",
+  "split": "test",
+  "context": "A security incident was reported involving suspicious remote activity on a machine. This activity could involve attempts to initiate interactive sessions, modify files, pass WMI commands, create scheduled tasks, and other potentially malicious activities from a remote machine. The start of this incident is characterized by several processes such as `cmd.exe`, `powershell.exe`, and `lsass.exe` associated with unusual commands and activities.",
+  "question": "What is the suspicious file name extracted as part of the attempt to steal ADFS private keys or move laterally on the network?",
+  "gold_answer": "iy2orr1e.rrg.exe",
+  "solution_steps": [
+    "Suspicious remote activity was observed on the host `mb-adfs`.",
+    "An attempt to steal Active Directory Federation Service (ADFS) private keys was detected through a suspicious LDAP query using the process `iy2orr1e.rrg.exe`."
+  ],
+  "metadata": {
+    "start_alert": 37,
+    "end_alert": 43,
+    "start_entities": [
+      39,
+      8,
+      24,
+      17,
+      21,
+      38,
+      25,
+      22,
+      40,
+      23
+    ],
+    "end_entities": [
+      29
+    ],
+    "shortest_alert_path": [
+      37,
+      26,
+      43
+    ]
+  }
+}

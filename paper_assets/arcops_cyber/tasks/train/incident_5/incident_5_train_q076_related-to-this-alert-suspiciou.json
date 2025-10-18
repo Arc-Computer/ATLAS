@@ -1,0 +1,30 @@
+{
+  "task_id": "incident_5_train_q076",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "A security incident involving file backups being deleted was reported. On host `vnevado-win11u`, a process `vssblatemp.exe` with ProcessId `1900` was run to delete all shadow copies at 2024-06-20t09:32:02.4640548z. This is a common tactic during ransomware infection.",
+  "question": "Related to this alert, suspicious hands-on keyboard behavior was observed. Can you find the hostname of the device where the suspicious user behavior was detected?",
+  "gold_answer": "vnevado-win11t",
+  "solution_steps": [
+    "The account `dp5hn` deleted all file snapshots and shadow copies, which is a common action during a Ransomware infection.",
+    "Suspicious hands on keyboard behavior was observed on host `vnevado-win11t`, indicating a possible human-operated attack."
+  ],
+  "metadata": {
+    "start_alert": 121,
+    "end_alert": 66,
+    "start_entities": [
+      7,
+      8,
+      11,
+      77
+    ],
+    "end_entities": [
+      68
+    ],
+    "shortest_alert_path": [
+      121,
+      1,
+      66
+    ]
+  }
+}

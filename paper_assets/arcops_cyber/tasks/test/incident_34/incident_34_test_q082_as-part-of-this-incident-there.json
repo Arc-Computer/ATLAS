@@ -1,0 +1,29 @@
+{
+  "task_id": "incident_34_test_q082",
+  "incident": "incident_34",
+  "split": "test",
+  "context": "A recent security incident involved a process executing PowerShell on 2024-07-04 at 22:35:01.807662+00:00. The encoded command executed by `powershell.exe` and resulted in the download of `winatp-intro-backdoor.exe`. This activity was flagged as it might indicate an attacker attempting to download external payloads or execute commands undetected on the device.",
+  "question": "As part of this incident, there was also a suspicious LDAP query, likely indicating reconnaissance activity. Can you identify the file name of the process that was used to execute the LDAP query?",
+  "gold_answer": "winword.exe",
+  "solution_steps": [
+    "There was a suspicious PowerShell command execution on host `vnevado-win10e`.",
+    "A suspicious LDAP query was executed by the process `winword.exe`."
+  ],
+  "metadata": {
+    "start_alert": 22,
+    "end_alert": 24,
+    "start_entities": [
+      7,
+      8,
+      9
+    ],
+    "end_entities": [
+      12
+    ],
+    "shortest_alert_path": [
+      22,
+      1,
+      24
+    ]
+  }
+}

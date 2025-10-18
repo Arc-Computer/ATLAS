@@ -1,0 +1,32 @@
+{
+  "task_id": "incident_5_train_q098",
+  "incident": "incident_5",
+  "split": "train",
+  "context": "As part of a multi-stage investigation, a command `curl http://vectorsandarrows.com` was executed on the host `vnevado-win10r` which raised a Manatee Tempest activity group alert. Please note that Manatee Tempest is a known Russia-based cybercriminal group active since June 2014, notorious for their malvertising campaigns and use of Cobalt Strike beacons. The subsequent alert indicated a block due to command and control behavior on malware detected on the same machine.",
+  "question": "What is the URL that was blocked due to command and control behavior in the subsequent alert?",
+  "gold_answer": "http://vectorsandarrows.com/",
+  "solution_steps": [
+    "Manatee Tempest, a Russia-based cybercriminal group active since 2014, utilizes methods such as drive-by download, malvertising, and FakeUpdates infections to obtain initial access.",
+    "The actor uses BLISTER loader to deliver Cobalt Strike beacons for lateral movement and ransomware deployment, with domain fronting to establish command-and-control channels for the beacons.",
+    "An account with SID `S-1-5-21-1840191660-8534830288-125585561-1522` is associated with Manatee Tempest activity.",
+    "A command and control behavior originating from the URL `http://vectorsandarrows.com/` was detected and blocked."
+  ],
+  "metadata": {
+    "start_alert": 135,
+    "end_alert": 73,
+    "start_entities": [
+      5,
+      61,
+      64,
+      65
+    ],
+    "end_entities": [
+      74
+    ],
+    "shortest_alert_path": [
+      135,
+      2,
+      73
+    ]
+  }
+}
