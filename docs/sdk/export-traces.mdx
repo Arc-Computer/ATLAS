@@ -13,7 +13,7 @@ Add a `storage` block to your SDK config:
 
 ```yaml
 storage:
-  database_url: postgresql://atlas:atlas@localhost:5432/atlas
+  database_url: postgresql://atlas:atlas@localhost:5433/atlas
   min_connections: 1
   max_connections: 5
   statement_timeout_seconds: 30
@@ -25,7 +25,7 @@ Run your tasks with `atlas.core.run(..., stream_progress=True)` as usual. Each s
 
 ```bash
 arc-atlas \
-  --database-url postgresql://atlas:atlas@localhost:5432/atlas \
+  --database-url postgresql://atlas:atlas@localhost:5433/atlas \
   --output traces/my-session.jsonl \
   --trajectory-event-limit 500 \
   --status succeeded \
@@ -46,7 +46,6 @@ If another tool owns the `atlas` command on your system, run the exporter with `
 - `--limit 25` / `--offset 25` page through recent sessions.
 - `--status succeeded --status failed` filters on runtime completion state.
 - `--trajectory-event-limit 200` caps the number of intermediate telemetry events embedded per session.
-- `--batch-size 20` controls how many sessions are fetched per query when walking large tables.
 
 The exporter writes one JSON object per line. Each record aligns with `AtlasSessionTrace`:
 

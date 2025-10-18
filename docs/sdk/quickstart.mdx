@@ -79,7 +79,7 @@ python -c "from atlas.core import run; result = run(task='Summarize the latest A
 
 You should see an adaptive summary headline in the console stream (for example, `Adaptive: mode=coach confidence=0.58 certification=True`) followed by the usual plan-reason-synthesize loop. The runtime triages the request, runs a capability probe, chooses one of four lanes (`auto`, `paired`, `coach`, `escalate`), and then executes the dual-agent loop—your student plus the verifying teacher—with lane-specific supervision. `atlas.runtime.telemetry.ConsoleTelemetryStreamer` auto-enables when stdout is a TTY; force it on/off with `stream_progress=True/False` in the `run` call.
 
-Need a local Postgres instance? The CLI ships with `atlas storage up`, which writes `atlas-postgres.yaml` and starts the database via Docker. Skip it (or tear it down) if you’re running without persistence.
+Need a local Postgres instance? Run `atlas init` to write `atlas-postgres.yaml` and start the database via Docker. Skip it (or tear it down) if you’re running without persistence.
 
 ### BYOA in 5 Minutes
 
