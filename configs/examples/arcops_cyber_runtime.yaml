@@ -1,16 +1,78 @@
 agent:
-  type: openai
+  type: python
   name: arcops-cyber-student
   system_prompt: |
-    You are the ArcOps-Cyber Student. Answer the investigator's question using only the information provided in context. Prefer concise responses and cite exact indicators when relevant.
-  tools: []
+    You are the ArcOps-Cyber Student. Investigators provide an incident identifier (e.g., incident_5) with each question.
+    Use the `secrl_sql` tool to query Microsoft SecRL ArcOps-Cyber telemetry when the context is insufficient. When you must identify the owner of a specific process, call `secrl_process_owner` instead of writing the query yourself.
+    Requirements:
+      • Every tool call must pass the correct incident database name (incident_{id}) and a SELECT-only statement. Use `%(param)s` placeholders with the `params` object instead of string interpolation.
+      • Cite precise evidence from SQL results (table, row identifiers, key columns) in your answers. Mention when data is filtered or limited.
+      • Never issue mutating statements (INSERT, UPDATE, DELETE, DROP, ALTER, etc.) or join across incidents.
+      • If the context alone resolves the question, answer directly but confirm whether SQL verification was necessary.
+    ArcOps-Cyber telemetry mirrors Microsoft Sentinel tables. Use `SHOW TABLES` / `DESCRIBE <table>` whenever you are unsure which schema to target.
+    Device identifiers often appear as fully qualified hostnames (e.g., `vnevado-win11a.vnevado.alpineskihouse.co`). When filtering, use `DeviceName LIKE CONCAT(%(host)s, '.%')` (or equivalent) so you do not miss events tied to the host.
+    The process-owner helper already applies the canonical filter (`DeviceName LIKE '<host>.%'`) and orders by `TimeGenerated DESC LIMIT 1`. Do not duplicate that query manually.
+    If a query returns zero rows, report that outcome and request guidance—never fabricate an indicator. Your final answer must quote the exact `AccountName` value returned by SQL.
+    Keep answers concise, investigator-facing, and reference all supporting indicators.
+  import_path: atlas_core.tools.secrl_sql_adapter
+  attribute: student_adapter
+  tools:
+    - name: secrl_sql
+      description: Execute read-only SQL queries against the SecRL ArcOps-Cyber incident database to retrieve investigative evidence.
+      parameters:
+        type: object
+        properties:
+          incident_id:
+            type: string
+            description: Incident database name such as incident_5.
+          sql:
+            type: string
+            description: SELECT statement scoped to the incident database. Use %(param)s placeholders where appropriate.
+          params:
+            type: object
+            description: Optional mapping of placeholder names to values for the SQL query.
+          limit:
+            type: integer
+            description: Maximum number of rows to retrieve (defaults to 200; capped at 500).
+        required: ["incident_id", "sql"]
+        additionalProperties: false
+    - name: secrl_process_owner
+      description: Retrieve the most recent `DeviceProcessEvents` row for a host/process combination to identify the process owner as defined by SecRL.
+      parameters:
+        type: object
+        properties:
+          incident_id:
+            type: string
+            description: Incident database name such as incident_5.
+          device:
+            type: string
+            description: Short Windows hostname (e.g., vnevado-win11a). The tool expands this to `DeviceName LIKE '<host>.%'`.
+          process_id:
+            anyOf:
+              - type: integer
+              - type: string
+            description: Process identifier whose owner should be retrieved.
+          file_name:
+            type: string
+            description: Optional executable name (e.g., notepad.exe) to further scope the lookup.
+          command_contains:
+            type: string
+            description: Optional substring that must appear in `ProcessCommandLine`.
+          initiating_process_name:
+            type: string
+            description: Optional initiating process file name to match.
+          limit:
+            type: integer
+            description: Number of rows to return (defaults to 1; capped at 20).
+        required: ["incident_id", "device", "process_id"]
+        additionalProperties: false
   llm:
     provider: openai
     model: gpt-5-mini
     api_key_env: OPENAI_API_KEY
     temperature: 0.0
-    max_output_tokens: 768
-  response_format: null
+    max_output_tokens: 1536
+    reasoning_effort: low
 
 teacher:
   llm:
@@ -18,7 +80,8 @@ teacher:
     model: gpt-5
     api_key_env: OPENAI_API_KEY
     temperature: 0.1
-    max_output_tokens: 1024
+    max_output_tokens: 3072
+    reasoning_effort: medium
 
 rim:
   small_model:
@@ -38,6 +101,22 @@ rim:
 adaptive_teaching:
   enabled: true
   certify_first_run: true
+  probe:
+    fallback_mode: paired
+    timeout_seconds: 30.0
+    llm:
+      provider: google
+      model: gemini/gemini-2.5-flash
+      api_key_env: GEMINI_API_KEY
+      temperature: 0.2
+      timeout_seconds: 30.0
+  reward:
+    type: python
+    import_path: atlas_core.reward.secrl_arcops
+    attribute: build_reward
+    parameters:
+      step_check: true
+      discount_factor: 0.4
 
 storage:
   database_url: postgresql://atlas:atlas@localhost:5433/atlas
