@@ -12,3 +12,4 @@ matplotlib
 wandb
 tensorboard==2.18.0
 fire==0.7.0
+pymysql==1.1.0

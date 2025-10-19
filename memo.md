@@ -146,6 +146,8 @@ This methodology is the mechanism for **cross-domain skill transfer**, which has
 
 This entire learning loop is fueled by our proprietary Reward System, which recently achieved state-of-the-art on RewardBench V2. It translates complex, messy feedback from the live environment into a precise reward signal. This signal is critical for teaching the World Model to accurately simulate the consequences of different actions, forming the foundation of trustworthy, independent learning.
 
+**Day 1 integration note:** The ArcOps-Cyber runtime now layers the Microsoft SecRL ArcOps evaluator atop our RIM telemetry. Student runs issue parameterised queries through the secured `secrl_sql` adapter (read-only MySQL on `localhost:3307`), and the SecRL reward is logged in-line with our J-curve diagnostics. This lets us claim apples-to-apples performance while keeping ATLAS’s pedagogical insight channels intact.
+
 ![reward-leaderboard (1).png](Arc%20Pre-Seed%20Investment%20Memo%20271778a1210a80b69da5d1954987f68a/reward-leaderboard_(1).png)
 
 ### **4. Learning Engine: Hybrid Offline and Online Training**

@@ -63,8 +63,9 @@ agent:
         additionalProperties: false
   llm:
     provider: openai
-    model: gpt-5-mini
-    api_key_env: OPENAI_API_KEY
+    model: xai/grok-4-fast-non-reasoning
+    api_key_env: XAI_API_KEY
+    api_base: https://api.x.ai/v1
     temperature: 0.0
     max_output_tokens: 1536
     reasoning_effort: low
@@ -85,10 +86,10 @@ rim:
     api_key_env: GEMINI_API_KEY
     max_output_tokens: 4096
   large_model:
-    provider: openai
-    model: gpt-5
-    api_key_env: OPENAI_API_KEY
-    max_output_tokens: 1024
+    provider: gemini
+    model: gemini/gemini-2.5-pro
+    api_key_env: GEMINI_API_KEY
+    max_output_tokens: 2048
   judge_prompt: "Reward the agent for identifying the correct indicator based on the provided incident context."
   variance_threshold: 0.15
   uncertainty_threshold: 0.3
@@ -100,9 +101,10 @@ adaptive_teaching:
     fallback_mode: paired
     timeout_seconds: 30.0
     llm:
-      provider: google
-      model: gemini/gemini-2.5-flash
-      api_key_env: GEMINI_API_KEY
+      provider: openai
+      model: xai/grok-4-fast-non-reasoning
+      api_key_env: XAI_API_KEY
+      api_base: https://api.x.ai/v1
       temperature: 0.2
       timeout_seconds: 30.0
   reward:
@@ -110,6 +112,16 @@ adaptive_teaching:
     import_path: atlas_core.reward.secrl_arcops
     attribute: build_reward
     parameters:
+      llm:
+        provider: gemini
+        model: gemini/gemini-2.5-flash
+        api_key_env: GEMINI_API_KEY
+        max_output_tokens: 2048
+      step_llm:
+        provider: gemini
+        model: gemini/gemini-2.5-pro
+        api_key_env: GEMINI_API_KEY
+        max_output_tokens: 4096
       step_check: true
       discount_factor: 0.4
 

@@ -55,3 +55,9 @@ The file `scenario_splits.json` enumerates the exact task IDs for reproducibilit
 - Start Postgres once via `python -m atlas.cli.main init --compose-file paper_assets/atlas-postgres.yaml` (writes the compose file and boots the container on port 5433).
 - Both `configs/examples/arcops_cyber_student.yaml` and `configs/examples/arcops_cyber_runtime.yaml` point at this database so Student-only and Teacher runs persist traces for GRPO.
 - Batch runs: `python scripts/arcops_cyber/run_batch.py student --scenarios scenario_1 --limit 10 --output paper_assets/arcops_cyber/student_run.json` (switch `student` to `teacher` for guided runs). The output now includes per-scenario averages (success rate, latency, tokens).
+
+## Day 1 Integration Updates
+
+- **SecRL SQL Tooling** – The Student now routes read-only MySQL queries through `atlas_core.tools.secrl_sql_adapter`. Tool calls must include the exact incident database (e.g., `incident_55`) and parameterised `SELECT` statements, ensuring apples-to-apples evidence gathering against the SecRL ArcOps-Cyber logs running on `localhost:3307`.
+- **Benchmark-Aligned Reward** – `adaptive_teaching.reward` loads `atlas_core.reward.secrl_arcops.SecRLArcOpsReward`, replicating the Microsoft SecRL evaluator prompts to score answers and provide partial credit for solution steps. The runtime records this score in `session_reward`, alongside RIM telemetry for pedagogical analysis.
+- **Batch Pipeline** – `scripts/arcops_cyber/run_batch.py` now forwards incident/task metadata into the runtime, captures the SecRL reward, aggregates RIM breakdowns, and exports them with latency/token metrics for the J-curve and iso-success plots.

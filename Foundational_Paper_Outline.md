@@ -56,6 +56,8 @@ The prevailing paradigm of architecturally static AI agents, which cannot learn 
 
 This section provides empirical evidence for the ATLAS architecture using the **ArcOps-Cyber** benchmark—a curated subset of ExCyTIn-Bench security incidents. The goal is to demonstrate domain-specialized world models that deliver immediate runtime efficiency with off-the-shelf models, retain gains when memory is disabled, and continue improving after offline GRPO. We reserve broader cross-domain generalization for future work and track it explicitly in the roadmap.
 
+**SecRL Alignment (Day 1 Update):** The runtime now mirrors Microsoft's SecRL ArcOps-Cyber protocol end-to-end. Student runs issue parameterised queries against the unpacked SecRL MySQL logs via a dedicated `secrl_sql` tool, and `adaptive_teaching.reward` wraps the upstream evaluator prompts to report the authoritative SecRL reward alongside our RIM telemetry. Batch experiments therefore expose the same success metric (SecRL reward) used in the original paper while retaining ATLAS-specific efficiency diagnostics (token, latency, RIM guidance curves).
+
 ### 6.1. Runtime Value: Efficiency and Accessibility within ArcOps-Cyber
 
 *   **Narrative Point:** We first prove the immediate, out-of-the-box value of the ATLAS adaptive runtime on ArcOps-Cyber incidents. A user can pair any two standard models (e.g., Llama-3.2-8B Student + Claude/GPT-4o Teacher) via the atlas-sdk harness and achieve higher success rates with greater overall system efficiency while handling realistic threat-investigation questions.
@@ -71,7 +73,7 @@ This section provides empirical evidence for the ATLAS architecture using the **
 *   **Supporting Assets:**
     *   Table 3: Guidance efficiency comparison (Teacher baseline vs `Teacher_v0`).
     *   Figure 7: `Teacher_v0` vs `Teacher_v1` performance on ArcOps-Cyber, including memory-off controls.
-    *   Appendix Figure: Optional live-SQL ExCyTIn integration (future work) documenting tool-centric telemetry once the environment wrapper is complete.
+    *   Appendix Figure: SecRL SQL telemetry captured through the `secrl_sql` adapter (query latency, incident coverage, evidence citations).
 
 ## 7. Related Work
 
