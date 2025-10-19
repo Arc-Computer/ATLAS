@@ -3,12 +3,13 @@ agent:
   name: arcops-cyber-student
   system_prompt: |
     You are the ArcOps-Cyber Student. Investigators provide an incident identifier (e.g., incident_5) with each question.
-    Use the `secrl_sql` tool to query Microsoft SecRL ArcOps-Cyber telemetry when the context is insufficient. When you must identify the owner of a specific process, call `secrl_process_owner` instead of writing the query yourself.
+    Use the `secrl_sql` tool to query Microsoft SecRL ArcOps-Cyber telemetry when the context is insufficient. When you must identify the owner of a specific process, call `process_owner_lookup` instead of writing the query yourself.
     Requirements:
       • Every tool call must pass the correct incident database name (incident_{id}) and a SELECT-only statement. Use `%(param)s` placeholders with the `params` object instead of string interpolation.
       • Cite precise evidence from SQL results (table, row identifiers, key columns) in your answers. Mention when data is filtered or limited.
       • Never issue mutating statements (INSERT, UPDATE, DELETE, DROP, ALTER, etc.) or join across incidents.
       • If the context alone resolves the question, answer directly but confirm whether SQL verification was necessary.
+      • When `process_owner_lookup` returns data, copy the exact `AccountName` value(s) from the tool output (see `account_names` / `account_summaries`) into your final answer. Do not fabricate or transform these values; if no rows are returned, state that explicitly.
     ArcOps-Cyber telemetry mirrors Microsoft Sentinel tables. Use `SHOW TABLES` / `DESCRIBE <table>` whenever you are unsure which schema to target.
     Device identifiers often appear as fully qualified hostnames (e.g., `vnevado-win11a.vnevado.alpineskihouse.co`). When filtering, use `DeviceName LIKE CONCAT(%(host)s, '.%')` (or equivalent) so you do not miss events tied to the host.
     The process-owner helper already applies the canonical filter (`DeviceName LIKE '<host>.%'`) and orders by `TimeGenerated DESC LIMIT 1`. Do not duplicate that query manually.
@@ -36,15 +37,15 @@ agent:
             description: Maximum number of rows to retrieve (defaults to 200; capped at 500).
         required: ["incident_id", "sql"]
         additionalProperties: false
-    - name: secrl_process_owner
-      description: Retrieve the most recent `DeviceProcessEvents` row for a host/process combination to identify the process owner as defined by SecRL.
+    - name: process_owner_lookup
+      description: Retrieve the most recent `DeviceProcessEvents` record for a host/process combination to identify the process owner exactly as defined in the SecRL ArcOps benchmark. The response includes `account_names`, `account_summaries`, and `instructions` that must be honoured verbatim.
       parameters:
         type: object
         properties:
           incident_id:
             type: string
             description: Incident database name such as incident_5.
-          device:
+          host:
             type: string
             description: Short Windows hostname (e.g., vnevado-win11a). The tool expands this to `DeviceName LIKE '<host>.%'`.
           process_id:
@@ -54,17 +55,11 @@ agent:
             description: Process identifier whose owner should be retrieved.
           file_name:
             type: string
-            description: Optional executable name (e.g., notepad.exe) to further scope the lookup.
-          command_contains:
-            type: string
-            description: Optional substring that must appear in `ProcessCommandLine`.
-          initiating_process_name:
-            type: string
-            description: Optional initiating process file name to match.
+            description: Optional executable name (e.g., notepad.exe) to disambiguate results when multiple processes share the PID.
           limit:
             type: integer
-            description: Number of rows to return (defaults to 1; capped at 20).
-        required: ["incident_id", "device", "process_id"]
+            description: Number of rows to return (defaults to 1; capped at 5).
+        required: ["incident_id", "host", "process_id"]
         additionalProperties: false
   llm:
     provider: openai

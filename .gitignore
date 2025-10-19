@@ -76,3 +76,10 @@ wandb/
 
 # External dependencies
 external/
+# ArcOps-Cyber regenerated assets
+paper_assets/arcops_cyber/data/
+paper_assets/arcops_cyber/incident_reports/
+paper_assets/arcops_cyber/sqlite/
+paper_assets/arcops_cyber/results.json
+paper_assets/arcops_cyber/smoke_student.json
+paper_assets/arcops_cyber/smoke_teacher.json

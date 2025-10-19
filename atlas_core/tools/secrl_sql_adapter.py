@@ -51,8 +51,8 @@ async def _handle_tool_call(payload: Dict[str, Any]) -> str:
     name = payload.get("name")
     if name == "secrl_sql":
         return await _execute_sql_tool(payload)
-    if name == "secrl_process_owner":
-        return await _execute_process_owner_tool(payload)
+    if name in {"process_owner_lookup", "secrl_process_owner"}:
+        return await _execute_process_owner_lookup(payload)
     raise AdapterError(f"Unsupported tool '{name}'")
 
 
@@ -90,67 +90,80 @@ async def _execute_sql_tool(payload: Dict[str, Any]) -> str:
     return json.dumps(payload, ensure_ascii=False)
 
 
-async def _execute_process_owner_tool(payload: Dict[str, Any]) -> str:
+async def _execute_process_owner_lookup(payload: Dict[str, Any]) -> str:
     arguments = payload.get("arguments") or {}
     if not isinstance(arguments, dict):
         raise AdapterError("Tool arguments must be an object")
     incident = arguments.get("incident_id") or arguments.get("incident")
     if incident is None:
         raise AdapterError("incident_id is required for SecRL process owner lookup")
-    device = arguments.get("device") or arguments.get("host") or arguments.get("device_name")
-    if not isinstance(device, str) or not device.strip():
-        raise AdapterError("device is required for SecRL process owner lookup")
+    host = arguments.get("host") or arguments.get("device") or arguments.get("device_name")
+    if not isinstance(host, str) or not host.strip():
+        raise AdapterError("host is required for SecRL process owner lookup")
     process_id = arguments.get("process_id") or arguments.get("pid")
     if process_id is None:
         raise AdapterError("process_id is required for SecRL process owner lookup")
-    file_name = arguments.get("file_name") or arguments.get("image") or arguments.get("process_name")
-    command_like = (
-        arguments.get("command_contains")
-        or arguments.get("process_command_contains")
-        or arguments.get("command_like")
-        or arguments.get("process_command_like")
-    )
-    initiating_file = (
-        arguments.get("initiating_process_name")
-        or arguments.get("initiating_file_name")
-        or arguments.get("initiating_process_file")
-    )
+    file_name = arguments.get("file_name") or arguments.get("process_name") or arguments.get("image")
     limit = arguments.get("limit") or 1
     try:
-        limit_int = max(1, min(int(limit), 20))
+        limit_int = max(1, min(int(limit), 5))
     except (TypeError, ValueError):
         limit_int = 1
     client = _ensure_sql_client()
-    rows, statement, query_params = await asyncio.to_thread(
+    rows, statement, query_params, account_names, account_summaries = await asyncio.to_thread(
         client.lookup_process_owner,
         incident,
-        device,
+        host,
         process_id,
-        file_name,
         limit_int,
-        command_like,
-        initiating_file,
+        file_name,
     )
     columns = list(rows[0].keys()) if rows else []
     parameter_snapshot = {
-        "device": device,
+        "host": host,
         "process_id": process_id,
         "file_name": file_name,
-        "command_contains": command_like,
-        "initiating_process_name": initiating_file,
     }
+    serialised_parameters = {key: value for key, value in parameter_snapshot.items() if value is not None}
+    instructions = None
+    if account_names:
+        formatted_accounts = ", ".join(account_names)
+        instructions = (
+            "Mandatory: quote the exact AccountName value(s) listed below in your final answer. "
+            "Do not invent or transform these values."
+        )
+
     payload = {
         "incident": client.database_name(incident),
         "row_count": len(rows),
         "columns": columns,
         "rows": rows,
         "limit_applied": limit_int,
-        "parameters": {key: value for key, value in parameter_snapshot.items() if value is not None},
+        "parameters": serialised_parameters,
         "table": "DeviceProcessEvents",
         "sql": statement,
         "sql_parameters": query_params,
     }
-    return json.dumps(payload, ensure_ascii=False)
+    if account_names:
+        payload["account_names"] = account_names
+    if account_summaries:
+        payload["account_summaries"] = account_summaries
+    if instructions:
+        payload["instructions"] = {
+            "summary": instructions,
+            "account_names": account_names,
+        }
+    json_blob = json.dumps(payload, ensure_ascii=False)
+    if account_names:
+        header_lines = [
+            f"REQUIRED_ACCOUNT_NAME: {account_names[0]}",
+            "ACCOUNT_SUMMARIES:",
+            *account_summaries,
+            "ACTION: Include the REQUIRED_ACCOUNT_NAME string verbatim in your final answer.",
+            "RAW_PAYLOAD:",
+        ]
+        return "\n".join(header_lines) + "\n" + json_blob
+    return json_blob
 
 
 def _ensure_openai_adapter(llm_config: Dict[str, Any] | None) -> OpenAIAdapter:
@@ -270,72 +283,57 @@ class SecRLSqlClient:
     def lookup_process_owner(
         self,
         incident: Any,
-        device: str,
+        host: str,
         process_id: Any,
-        file_name: Optional[str],
         limit: int,
-        command_like: Optional[str] = None,
-        initiating_file: Optional[str] = None,
+        file_name: Optional[str] = None,
     ) -> tuple[list[dict[str, Any]], str, dict[str, Any]]:
         if limit <= 0:
             raise AdapterError("limit must be greater than zero")
 
-        device_norm = device.strip().lower()
-        if not device_norm:
-            raise AdapterError("device must be a non-empty string")
+        host_clean = host.strip()
+        if not host_clean:
+            raise AdapterError("host must be a non-empty string")
 
-        short_name = device_norm.split(".", 1)[0]
-        like_pattern = f"{short_name}.%"
-
-        where_clauses = [
-            "(LOWER(DeviceName) = %(device_exact)s OR LOWER(DeviceName) LIKE %(device_like)s)"
-        ]
-        params: Dict[str, Any] = {
-            "device_exact": device_norm,
-            "device_like": like_pattern,
-        }
-
+        host_short = host_clean.split(".", 1)[0]
         process_id_str = str(process_id).strip()
         if not process_id_str:
             raise AdapterError("process_id must be a non-empty value")
-        where_clauses.append("CAST(ProcessId AS CHAR) = %(process_id)s")
-        params["process_id"] = process_id_str
+
+        where_clauses = [
+            "(LOWER(DeviceName) LIKE %(host_like)s OR LOWER(DeviceName) = %(host_exact)s)",
+            "CAST(ProcessId AS CHAR) = %(process_id)s",
+        ]
+        params: Dict[str, Any] = {
+            "host_like": f"{host_short.lower()}.%",
+            "host_exact": host_clean.lower(),
+            "process_id": process_id_str,
+            "row_limit": int(limit),
+        }
 
         if file_name:
             params["file_name"] = file_name.strip().lower()
             where_clauses.append("LOWER(FileName) = %(file_name)s")
 
-        if command_like:
-            params["command_like"] = f"%{command_like.strip().lower()}%"
-            where_clauses.append("LOWER(ProcessCommandLine) LIKE %(command_like)s")
-
-        if initiating_file:
-            params["initiating_file"] = initiating_file.strip().lower()
-            where_clauses.append("LOWER(InitiatingProcessFileName) = %(initiating_file)s")
-
-        params["row_limit"] = int(limit)
-
         statement = f"""
             SELECT
                 TimeGenerated,
                 DeviceName,
+                ProcessId,
                 FileName,
                 FolderPath,
-                ProcessId,
                 ProcessCommandLine,
                 AccountDomain,
                 AccountName,
                 AccountUpn,
                 AccountSid,
-                AccountObjectId,
+                ReportId,
                 InitiatingProcessFileName,
                 InitiatingProcessCommandLine,
                 InitiatingProcessAccountDomain,
                 InitiatingProcessAccountName,
                 InitiatingProcessAccountUpn,
-                InitiatingProcessAccountSid,
-                InitiatingProcessAccountObjectId,
-                ReportId
+                InitiatingProcessAccountSid
             FROM DeviceProcessEvents
             WHERE {" AND ".join(where_clauses)}
             ORDER BY TimeGenerated DESC
@@ -344,47 +342,22 @@ class SecRLSqlClient:
 
         rows = self.query(incident, statement, params, int(limit))
         serialised_params = {key: self._coerce_param(value) for key, value in params.items()}
-
-        enhanced_rows: list[dict[str, Any]] = []
+        account_names: list[str] = []
+        account_summaries: list[str] = []
         for row in rows:
-            enriched = dict(row)
-            raw_account_name = enriched.get("AccountName")
-            if raw_account_name is not None:
-                enriched["RawAccountName"] = raw_account_name
-            candidates: list[tuple[str, Any]] = [
-                ("AccountUpn", enriched.get("AccountUpn")),
-                ("AccountName", enriched.get("AccountName")),
-                ("InitiatingProcessAccountUpn", enriched.get("InitiatingProcessAccountUpn")),
-                ("InitiatingProcessAccountName", enriched.get("InitiatingProcessAccountName")),
-            ]
-            primary_value = next((value for _, value in candidates if value), None)
-            primary_source = next((key for key, value in candidates if value), None)
-            enriched["PrimaryAccount"] = primary_value
-            enriched["PrimaryAccountSource"] = primary_source
-            primary_display = None
-            if primary_value:
-                if isinstance(primary_value, str):
-                    if "@" in primary_value:
-                        primary_display = primary_value.split("@", 1)[0]
-                        enriched["PrimaryAccountQualified"] = primary_value
-                    elif "\\" in primary_value:
-                        primary_display = primary_value.split("\\")[-1]
-                        enriched["PrimaryAccountQualified"] = primary_value
-                    else:
-                        primary_display = primary_value
-                        enriched["PrimaryAccountQualified"] = primary_value
-                else:
-                    primary_display = primary_value
+            account = row.get("AccountName") or row.get("AccountUpn") or row.get("AccountSid")
+            if isinstance(account, str):
+                if account not in account_names:
+                    account_names.append(account)
+                account_display = account
             else:
-                enriched["PrimaryAccountQualified"] = None
-            enriched["PrimaryAccountDisplay"] = primary_display
-            if primary_display is not None:
-                enriched["AccountName"] = primary_display
-            else:
-                enriched.setdefault("AccountName", raw_account_name)
-            enhanced_rows.append(enriched)
-
-        return enhanced_rows, statement.strip(), serialised_params
+                account_display = str(account) if account is not None else "UNKNOWN"
+            device = row.get("DeviceName") or "UNKNOWN_DEVICE"
+            pid = row.get("ProcessId") or process_id_str
+            timestamp = row.get("TimeGenerated") or row.get("Timestamp")
+            summary = f"Device={device}, ProcessId={pid}, AccountName={account_display}, TimeGenerated={timestamp}"
+            account_summaries.append(summary)
+        return rows, statement.strip(), serialised_params, account_names, account_summaries
 
 
 __all__ = ["student_adapter"]

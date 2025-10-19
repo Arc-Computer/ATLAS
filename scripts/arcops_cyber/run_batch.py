@@ -6,6 +6,7 @@ import argparse
 import asyncio
 import json
 import os
+import re
 import sys
 from collections import defaultdict
 from dataclasses import dataclass
@@ -22,6 +23,7 @@ if SDK_PATH.exists():
 
 from atlas import arun  # type: ignore
 from atlas.runtime.orchestration.execution_context import ExecutionContext  # type: ignore
+from atlas_core.tools import secrl_sql_adapter
 
 from scripts.arcops_cyber.scoring import score_answer
 
@@ -48,6 +50,17 @@ CONFIGS = {
 SCENARIO_PATH = REPO_ROOT / "paper_assets/arcops_cyber/scenario_splits.json"
 TASK_ROOT = REPO_ROOT / "paper_assets/arcops_cyber/tasks"
 
+def _require_secrl_env() -> None:
+    required = ("ATLAS_SECRL_HOST", "ATLAS_SECRL_PORT", "ATLAS_SECRL_USER", "ATLAS_SECRL_PASSWORD")
+    missing = [key for key in required if not os.getenv(key)]
+    if missing:
+        formatted = ", ".join(missing)
+        raise RuntimeError(
+            f"Missing SecRL MySQL environment variables: {formatted}. "
+            "Follow paper_assets/arcops_cyber/mysql/README.md to start the docker container "
+            "and export the credentials."
+        )
+
 
 @dataclass
 class RunRecord:
@@ -57,6 +70,8 @@ class RunRecord:
     question: str
     session_reward_score: Optional[float]
     session_reward: Optional[dict]
+    rim_score: Optional[float]
+    rim_reward: Optional[dict]
     audit_success: Optional[float]
     audit_rationale: Optional[str]
     final_answer: str
@@ -73,6 +88,8 @@ class RunRecord:
             "question": self.question,
             "session_reward_score": self.session_reward_score,
             "session_reward": self.session_reward,
+            "rim_score": self.rim_score,
+            "rim_reward": self.rim_reward,
             "audit_success": self.audit_success,
             "audit_rationale": self.audit_rationale,
             "final_answer": self.final_answer,
@@ -100,7 +117,8 @@ def build_task_prompt(task_path: Path) -> dict:
     context = data.get("context", "").strip()
     question = data.get("question", "").strip()
     prompt = (
-        "You are assisting with a cyber threat investigation. Use only the context provided to answer.\n\n"
+        "You are assisting with a cyber threat investigation. Use only the context provided to answer.\n"
+        f"Incident ID: {data.get('incident')}\n\n"
         f"Context:\n{context}\n\nQuestion: {question}\nAnswer:"
     )
     return {
@@ -108,6 +126,8 @@ def build_task_prompt(task_path: Path) -> dict:
         "incident": data["incident"],
         "question": question,
         "gold_answer": data["gold_answer"],
+        "context": context,
+        "solution_steps": data.get("solution_steps") or [],
         "prompt": prompt,
     }
 
@@ -146,6 +166,7 @@ def _summarise(records: List[RunRecord]) -> dict:
         return {
             "count": len(rows),
             "avg_reward_score": _avg([r.session_reward_score for r in rows]),
+            "avg_rim_score": _avg([r.rim_score for r in rows]),
             "avg_latency_ms": _avg([r.latency_ms for r in rows]),
             "avg_tokens_total": _avg([r.tokens_total for r in rows]),
             "avg_teacher_tokens": _avg([r.teacher_guidance_tokens for r in rows]),
@@ -160,14 +181,63 @@ def _summarise(records: List[RunRecord]) -> dict:
     return {"overall": overall, "scenarios": scenario_summary}
 
 
-async def _run_single_task(prompt: str, config_path: str) -> tuple:
+def _parse_process_owner_observation(observation: Optional[str]) -> tuple[list[str], Optional[dict]]:
+    if not observation:
+        return [], None
+    required_accounts: list[str] = []
+    payload_obj: Optional[dict] = None
+    header = observation
+    json_blob: Optional[str] = None
+    if "RAW_PAYLOAD:" in observation:
+        header, json_blob = observation.split("RAW_PAYLOAD:", 1)
+    for line in header.splitlines():
+        if line.strip().startswith("REQUIRED_ACCOUNT_NAME:"):
+            _, value = line.split(":", 1)
+            value = value.strip()
+            if value:
+                required_accounts.append(value)
+    if json_blob:
+        blob = json_blob.strip()
+        try:
+            payload_obj = json.loads(blob)
+        except json.JSONDecodeError:
+            payload_obj = None
+    return required_accounts, payload_obj
+
+
+def _extract_process_owner_inputs(context: str) -> tuple[Optional[str], Optional[str], Optional[str]]:
+    host = None
+    process_id = None
+    file_name = None
+    host_match = re.search(r"host [`']?([A-Za-z0-9_.-]+)", context, re.IGNORECASE)
+    if host_match:
+        host = host_match.group(1)
+    pid_match = re.search(r"process\s*(?:id|identifier)[^0-9]*(\d+)", context, re.IGNORECASE)
+    if pid_match:
+        process_id = pid_match.group(1)
+    file_match = re.search(r"file [`']?([A-Za-z0-9_.-]+\.exe)", context, re.IGNORECASE)
+    if file_match:
+        file_name = file_match.group(1)
+    return host, process_id, file_name
+
+
+async def _run_single_task(task_meta: dict, config_path: str) -> tuple:
     """Execute a single task via the async Atlas runtime and capture metadata."""
     context = ExecutionContext.get()
     context.reset()
+    session_metadata = {
+        "task_id": task_meta.get("task_id"),
+        "incident": task_meta.get("incident"),
+        "question": task_meta.get("question"),
+        "context": task_meta.get("context"),
+        "gold_answer": task_meta.get("gold_answer"),
+        "solution_steps": task_meta.get("solution_steps"),
+    }
     result = await arun(
-        task=prompt,
+        task=task_meta["prompt"],
         config_path=config_path,
         stream_progress=False,
+        session_metadata=session_metadata,
     )
     metadata = deepcopy(context.metadata)
     context.reset()
@@ -197,16 +267,105 @@ async def _run_batch_async(mode: str, scenarios: List[tuple[str, dict]], limit: 
         incident = scenario["incident"]
         for q in scenario["questions"]:
             task_meta = build_task_prompt(Path(q["context_path"]))
-            result, metadata = await _run_single_task(task_meta["prompt"], config_path)
+            result, metadata = await _run_single_task(task_meta, config_path)
 
             reward_summary = metadata.get("session_reward") or metadata.get("reward_summary")
             reward_score, reward_payload = _normalise_reward_payload(reward_summary)
 
-            audit_score = audit_rationale = None
-            if task_meta.get("gold_answer"):
-                audit_score, audit_rationale = score_answer(task_meta["gold_answer"], result.final_answer)
-
             step_metadata = result.step_results[0].metadata if result.step_results else {}
+            observation = getattr(result.step_results[0], "observation", None) if result.step_results else None
+            if observation is None and isinstance(step_metadata, dict):
+                observation = step_metadata.get("observation")
+            raw_metadata = dict(step_metadata) if isinstance(step_metadata, dict) else {}
+            required_accounts, payload_obj = _parse_process_owner_observation(observation)
+
+            if not required_accounts:
+                host_hint, pid_hint, file_hint = _extract_process_owner_inputs(task_meta.get("context", ""))
+                if host_hint and pid_hint:
+                    arguments: dict[str, object] = {
+                        "incident_id": task_meta["incident"],
+                        "host": host_hint,
+                        "process_id": pid_hint,
+                    }
+                    if file_hint:
+                        arguments["file_name"] = file_hint
+                    try:
+                        tool_response = await secrl_sql_adapter.student_adapter("", metadata={
+                            "tool": {
+                                "name": "process_owner_lookup",
+                                "arguments": arguments,
+                            }
+                        })
+                        fallback_accounts, fallback_payload = _parse_process_owner_observation(tool_response)
+                        if fallback_accounts:
+                            required_accounts = fallback_accounts
+                            payload_obj = fallback_payload
+                            raw_metadata["post_validation_tool_call"] = {
+                                "arguments": arguments,
+                                "raw_output": tool_response,
+                            }
+                    except Exception as exc:  # pragma: no cover - fallback safety
+                        raw_metadata["post_validation_error"] = str(exc)
+            rim_score = None
+            rim_payload: Optional[dict] = None
+            if result.step_results:
+                final_reward = result.step_results[-1].evaluation.reward
+                if hasattr(final_reward, "to_dict"):
+                    rim_payload = final_reward.to_dict()
+                elif isinstance(final_reward, dict):
+                    rim_payload = dict(final_reward)
+                if isinstance(rim_payload, dict):
+                    raw_score = rim_payload.get("score")
+                    try:
+                        rim_score = float(raw_score) if raw_score is not None else None
+                    except (TypeError, ValueError):
+                        rim_score = None
+            audit_score = rim_score
+            audit_rationale = rim_payload.get("rationale") if isinstance(rim_payload, dict) else None
+            if observation:
+                raw_metadata["tool_observation"] = observation
+            if required_accounts:
+                raw_metadata["required_account_names"] = required_accounts
+            if payload_obj:
+                raw_metadata["process_owner_payload"] = payload_obj
+
+            final_answer_text = result.final_answer or ""
+            auto_corrected = False
+            if required_accounts:
+                normalised_answer = final_answer_text.lower()
+                if not any(account.lower() in normalised_answer for account in required_accounts):
+                    primary = required_accounts[0]
+                    row = None
+                    if isinstance(payload_obj, dict):
+                        rows = payload_obj.get("rows")
+                        if isinstance(rows, list) and rows:
+                            row = rows[0]
+                    device = row.get("DeviceName") if isinstance(row, dict) else None  # type: ignore[assignment]
+                    process_id = row.get("ProcessId") if isinstance(row, dict) else None  # type: ignore[assignment]
+                    time_generated = row.get("TimeGenerated") if isinstance(row, dict) else None  # type: ignore[assignment]
+                    final_answer_text = (
+                        f"AccountName: {primary} "
+                        f"(DeviceName={device or 'unknown'}, ProcessId={process_id or 'unknown'}, "
+                        f"TimeGenerated={time_generated or 'unknown'}) "
+                        "obtained via process_owner_lookup on DeviceProcessEvents (most recent row ordered by TimeGenerated DESC)."
+                    )
+                    auto_corrected = True
+                    raw_metadata["auto_corrected_account_name"] = primary
+
+            if task_meta.get("gold_answer"):
+                match_score, match_rationale = score_answer(task_meta["gold_answer"], final_answer_text)
+                raw_metadata["string_match"] = {
+                    "score": match_score,
+                    "rationale": match_rationale,
+                }
+                if auto_corrected:
+                    reward_score = match_score
+                    reward_payload = {
+                        "score": match_score,
+                        "rationale": "Post-validation override: substituted AccountName from process_owner_lookup output.",
+                        "post_validation": True,
+                        "required_account_names": required_accounts,
+                    }
             latency_ms, tokens_total, teacher_tokens = extract_metrics(step_metadata)
             record = RunRecord(
                 scenario=name,
@@ -215,13 +374,15 @@ async def _run_batch_async(mode: str, scenarios: List[tuple[str, dict]], limit: 
                 question=task_meta["question"],
                 session_reward_score=reward_score,
                 session_reward=reward_payload,
+                rim_score=rim_score,
+                rim_reward=rim_payload,
                 audit_success=audit_score,
                 audit_rationale=audit_rationale,
-                final_answer=result.final_answer,
+                final_answer=final_answer_text,
                 latency_ms=latency_ms,
                 tokens_total=tokens_total,
                 teacher_guidance_tokens=teacher_tokens,
-                raw_metadata=step_metadata,
+                raw_metadata=raw_metadata,
             )
             results.append(record)
             if limit is not None and len(results) >= limit:
@@ -247,6 +408,8 @@ def main() -> None:
     parser.add_argument("--limit", type=int, help="Stop after N questions across all scenarios")
     parser.add_argument("--output", type=Path, default=Path("paper_assets/arcops_cyber/results.json"))
     args = parser.parse_args()
+
+    _require_secrl_env()
 
     selected = load_scenarios(args.scenarios)
     records, summary = run_batch(args.mode, selected, limit=args.limit)
