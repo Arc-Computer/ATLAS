@@ -67,8 +67,9 @@ agent:
     api_key_env: XAI_API_KEY
     api_base: https://api.x.ai/v1
     temperature: 0.0
-    max_output_tokens: 1536
+    max_output_tokens: 4096
     reasoning_effort: low
+    timeout_seconds: 120
 
 teacher:
   llm:
@@ -76,20 +77,23 @@ teacher:
     model: gpt-5
     api_key_env: OPENAI_API_KEY
     temperature: 0.1
-    max_output_tokens: 2048
+    max_output_tokens: 8192
     reasoning_effort: medium
+    timeout_seconds: 180
 
 rim:
   small_model:
     provider: gemini
     model: gemini/gemini-2.5-flash
     api_key_env: GEMINI_API_KEY
-    max_output_tokens: 4096
+    max_output_tokens: 8192
+    timeout_seconds: 120
   large_model:
     provider: gemini
     model: gemini/gemini-2.5-pro
     api_key_env: GEMINI_API_KEY
-    max_output_tokens: 2048
+    max_output_tokens: 8192
+    timeout_seconds: 120
   judge_prompt: "Reward the agent for identifying the correct indicator based on the provided incident context."
   variance_threshold: 0.15
   uncertainty_threshold: 0.3
@@ -117,12 +121,14 @@ adaptive_teaching:
         provider: gemini
         model: gemini/gemini-2.5-flash
         api_key_env: GEMINI_API_KEY
-        max_output_tokens: 2048
+        max_output_tokens: 8192
+        timeout_seconds: 120
       step_llm:
         provider: gemini
         model: gemini/gemini-2.5-pro
         api_key_env: GEMINI_API_KEY
-        max_output_tokens: 4096
+        max_output_tokens: 8192
+        timeout_seconds: 120
       step_check: true
       discount_factor: 0.4
 

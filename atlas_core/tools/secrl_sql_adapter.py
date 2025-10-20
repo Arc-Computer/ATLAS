@@ -8,20 +8,175 @@ import os
 from dataclasses import dataclass
 from datetime import date, datetime, time
 from decimal import Decimal
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Sequence
 from uuid import UUID
 
 import pymysql
 from pymysql.cursors import DictCursor
 
+try:
+    from litellm import acompletion as litellm_acompletion
+    _LITELLM_ERROR = None
+except ModuleNotFoundError as exc:  # pragma: no cover - optional dependency
+    litellm_acompletion = None
+    _LITELLM_ERROR = exc
+
 from atlas.connectors.openai import OpenAIAdapter
-from atlas.connectors.registry import AdapterError
-from atlas.config.models import LLMParameters, OpenAIAdapterConfig
+from atlas.connectors.registry import AdapterError, AgentAdapter
+from atlas.connectors.utils import AdapterResponse, normalise_usage_payload
+from atlas.config.models import LLMParameters, LLMProvider, OpenAIAdapterConfig
 
 
 _SQL_CLIENT: "SecRLSqlClient | None" = None
-_OPENAI_ADAPTER: OpenAIAdapter | None = None
-_OPENAI_SIGNATURE: str | None = None
+_LLM_ADAPTER: AgentAdapter | None = None
+_LLM_SIGNATURE: str | None = None
+
+
+class _LiteLLMAdapter(AgentAdapter):
+    """Lightweight adapter that proxies arbitrary LiteLLM providers."""
+
+    def __init__(self, params: LLMParameters) -> None:
+        if litellm_acompletion is None:
+            raise AdapterError("litellm is required to call non-OpenAI providers") from _LITELLM_ERROR
+        self._params = params
+
+    async def ainvoke(self, prompt: str, metadata: Dict[str, Any] | None = None) -> AdapterResponse:
+        messages = self._build_messages(prompt, metadata or {})
+        kwargs = self._build_kwargs()
+        kwargs["messages"] = messages
+        try:
+            response = await litellm_acompletion(**kwargs)
+        except Exception as exc:  # pragma: no cover - network/runtime failures
+            raise AdapterError("litellm request failed") from exc
+        return self._parse_response(response)
+
+    def _build_messages(self, prompt: str, metadata: Dict[str, Any]) -> list[Dict[str, Any]]:
+        messages: list[Dict[str, Any]] = []
+        entries = metadata.get("messages")
+        if isinstance(entries, Sequence):
+            for entry in entries:
+                converted = self._convert_metadata_entry(entry)
+                if converted:
+                    messages.append(converted)
+        elif metadata:
+            messages.append({"role": "system", "content": json.dumps(metadata)})
+        messages.append({"role": "user", "content": prompt})
+        return messages
+
+    def _convert_metadata_entry(self, entry: Any) -> Dict[str, Any] | None:
+        if not isinstance(entry, dict):
+            return None
+        role = entry.get("role") or self._map_entry_type(entry.get("type"))
+        if not role:
+            return None
+        content = self._stringify_content(entry.get("content"))
+        message: Dict[str, Any] = {"role": role, "content": content}
+        tool_calls = entry.get("tool_calls")
+        if role == "assistant" and tool_calls:
+            message["tool_calls"] = self._normalise_tool_calls(tool_calls)
+        if role == "tool" and entry.get("tool_call_id"):
+            message["tool_call_id"] = entry["tool_call_id"]
+        return message
+
+    @staticmethod
+    def _map_entry_type(entry_type: Any) -> str | None:
+        mapping = {
+            "system": "system",
+            "human": "user",
+            "ai": "assistant",
+            "tool": "tool",
+        }
+        return mapping.get(str(entry_type or ""))
+
+    @staticmethod
+    def _stringify_content(content: Any) -> str:
+        if content is None:
+            return ""
+        if isinstance(content, list):
+            parts: list[str] = []
+            for item in content:
+                if isinstance(item, dict) and "text" in item:
+                    parts.append(str(item.get("text", "")))
+                else:
+                    parts.append(json.dumps(item) if isinstance(item, (dict, list)) else str(item))
+            return "".join(parts)
+        if isinstance(content, (dict, list)):
+            return json.dumps(content)
+        return str(content)
+
+    @staticmethod
+    def _normalise_tool_calls(raw_tool_calls: Any) -> list[Dict[str, Any]]:
+        if raw_tool_calls is None:
+            return []
+        if isinstance(raw_tool_calls, str):
+            try:
+                raw_tool_calls = json.loads(raw_tool_calls)
+            except json.JSONDecodeError:
+                return []
+        if isinstance(raw_tool_calls, dict):
+            raw_tool_calls = [raw_tool_calls]
+        cleaned: list[Dict[str, Any]] = []
+        for call in raw_tool_calls:
+            if isinstance(call, str):
+                try:
+                    call = json.loads(call)
+                except json.JSONDecodeError:
+                    continue
+            if not isinstance(call, dict):
+                continue
+            name = call.get("name")
+            if not name:
+                continue
+            arguments = call.get("arguments") or {}
+            if isinstance(arguments, str):
+                try:
+                    arguments = json.loads(arguments)
+                except json.JSONDecodeError:
+                    pass
+            entry: Dict[str, Any] = {"name": name, "arguments": arguments}
+            if call.get("id"):
+                entry["id"] = call["id"]
+            if call.get("type"):
+                entry["type"] = call["type"]
+            cleaned.append(entry)
+        return cleaned
+
+    def _build_kwargs(self) -> Dict[str, Any]:
+        params = self._params
+        api_key = os.getenv(params.api_key_env)
+        if not api_key:
+            raise AdapterError(f"environment variable '{params.api_key_env}' is not set")
+        kwargs: Dict[str, Any] = {
+            "model": params.model,
+            "api_key": api_key,
+            "temperature": params.temperature,
+            "timeout": params.timeout_seconds,
+        }
+        if params.api_base:
+            kwargs["api_base"] = params.api_base
+        if params.max_output_tokens is not None:
+            kwargs["max_tokens"] = params.max_output_tokens
+        if params.top_p is not None:
+            kwargs["top_p"] = params.top_p
+        if params.additional_headers:
+            kwargs["extra_headers"] = params.additional_headers
+        if params.retry and params.retry.attempts > 1:
+            # LiteLLM interprets max_retries as additional attempts.
+            kwargs["max_retries"] = max(0, params.retry.attempts - 1)
+        return kwargs
+
+    def _parse_response(self, response: Any) -> AdapterResponse:
+        try:
+            choice = response["choices"][0]
+            message = choice["message"]
+            content = message.get("content")
+            tool_calls_raw = message.get("tool_calls")
+            tool_calls = self._normalise_tool_calls(tool_calls_raw) if tool_calls_raw is not None else None
+            normalised_content = self._stringify_content(content) if content is not None else ""
+            usage = normalise_usage_payload(response.get("usage"))
+            return AdapterResponse(normalised_content, tool_calls=tool_calls, usage=usage)
+        except (KeyError, IndexError, TypeError) as exc:
+            raise AdapterError("unexpected response format from litellm adapter") from exc
 
 
 async def student_adapter(prompt: str, metadata: Dict[str, Any] | None = None) -> Any:
@@ -39,7 +194,7 @@ async def _invoke_llm(prompt: str, metadata: Dict[str, Any]) -> Any:
     """Delegate language-model requests to the OpenAI adapter."""
 
     llm_config = metadata.pop("llm_config", None)
-    adapter = _ensure_openai_adapter(llm_config)
+    adapter = _ensure_llm_adapter(llm_config)
     if metadata:
         response = await adapter.ainvoke(prompt, metadata=metadata)
     else:
@@ -166,22 +321,27 @@ async def _execute_process_owner_lookup(payload: Dict[str, Any]) -> str:
     return json_blob
 
 
-def _ensure_openai_adapter(llm_config: Dict[str, Any] | None) -> OpenAIAdapter:
-    global _OPENAI_ADAPTER, _OPENAI_SIGNATURE
+def _ensure_llm_adapter(llm_config: Dict[str, Any] | None) -> AgentAdapter:
+    global _LLM_ADAPTER, _LLM_SIGNATURE
     if llm_config is None:
         raise AdapterError("llm_config missing from metadata")
     signature = json.dumps(llm_config, sort_keys=True)
-    if _OPENAI_ADAPTER is not None and signature == _OPENAI_SIGNATURE:
-        return _OPENAI_ADAPTER
+    if _LLM_ADAPTER is not None and signature == _LLM_SIGNATURE:
+        return _LLM_ADAPTER
     params = LLMParameters.model_validate(llm_config)
-    adapter_config = OpenAIAdapterConfig(
-        name="arcops-cyber-student-llm",
-        system_prompt="",
-        llm=params,
-    )
-    _OPENAI_ADAPTER = OpenAIAdapter(adapter_config)
-    _OPENAI_SIGNATURE = signature
-    return _OPENAI_ADAPTER
+    if params.provider in {LLMProvider.OPENAI, LLMProvider.AZURE_OPENAI}:
+        adapter = OpenAIAdapter(
+            OpenAIAdapterConfig(
+                name="arcops-cyber-student-llm",
+                system_prompt="",
+                llm=params,
+            )
+        )
+    else:
+        adapter = _LiteLLMAdapter(params)
+    _LLM_ADAPTER = adapter
+    _LLM_SIGNATURE = signature
+    return adapter
 
 
 def _ensure_sql_client() -> "SecRLSqlClient":

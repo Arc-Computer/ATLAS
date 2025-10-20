@@ -42,9 +42,15 @@ def _load_env_file():
 
 _load_env_file()
 
-CONFIGS = {
-    "student": "configs/examples/arcops_cyber_student.yaml",
-    "teacher": "configs/examples/arcops_cyber_runtime.yaml",
+CONFIG_VARIANTS = {
+    "baseline": {
+        "student": "configs/examples/arcops_cyber_student.yaml",
+        "teacher": "configs/examples/arcops_cyber_runtime.yaml",
+    },
+    "system": {
+        "student": "configs/examples/arcops_cyber_student_claude_grok.yaml",
+        "teacher": "configs/examples/arcops_cyber_runtime_claude_grok.yaml",
+    },
 }
 
 SCENARIO_PATH = REPO_ROOT / "paper_assets/arcops_cyber/scenario_splits.json"
@@ -259,8 +265,7 @@ def _normalise_reward_payload(payload: object) -> tuple[Optional[float], Optiona
     return None, None
 
 
-async def _run_batch_async(mode: str, scenarios: List[tuple[str, dict]], limit: Optional[int] = None) -> Tuple[List[RunRecord], dict]:
-    config_path = CONFIGS[mode]
+async def _run_batch_async(config_path: str, scenarios: List[tuple[str, dict]], limit: Optional[int] = None) -> Tuple[List[RunRecord], dict]:
     results: List[RunRecord] = []
     for label, scenario in scenarios:
         name = scenario.get("label", label)
@@ -392,13 +397,19 @@ async def _run_batch_async(mode: str, scenarios: List[tuple[str, dict]], limit: 
     return results, summary
 
 
-def run_batch(mode: str, scenarios: List[tuple[str, dict]], limit: Optional[int] = None) -> Tuple[List[RunRecord], dict]:
-    return asyncio.run(_run_batch_async(mode, scenarios, limit))
+def run_batch(config_path: str, scenarios: List[tuple[str, dict]], limit: Optional[int] = None) -> Tuple[List[RunRecord], dict]:
+    return asyncio.run(_run_batch_async(config_path, scenarios, limit))
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run ArcOps-Cyber batches")
-    parser.add_argument("mode", choices=CONFIGS.keys(), help="Execution mode: student or teacher")
+    parser.add_argument("mode", choices=("student", "teacher"), help="Execution mode: student or teacher")
+    parser.add_argument(
+        "--variant",
+        choices=tuple(CONFIG_VARIANTS.keys()),
+        default="baseline",
+        help="Model configuration variant to use (default: baseline)",
+    )
     parser.add_argument(
         "--scenarios",
         nargs="*",
@@ -411,10 +422,21 @@ def main() -> None:
 
     _require_secrl_env()
 
+    variant_configs = CONFIG_VARIANTS[args.variant]
+    config_path = variant_configs[args.mode]
+
+    print(f"Running {args.mode} mode with '{args.variant}' config: {config_path}")
+
     selected = load_scenarios(args.scenarios)
-    records, summary = run_batch(args.mode, selected, limit=args.limit)
+    records, summary = run_batch(config_path, selected, limit=args.limit)
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    payload = {"mode": args.mode, "records": [r.to_dict() for r in records], "summary": summary}
+    payload = {
+        "mode": args.mode,
+        "variant": args.variant,
+        "config_path": config_path,
+        "records": [r.to_dict() for r in records],
+        "summary": summary,
+    }
     args.output.write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
     print(f"Wrote {len(records)} records to {args.output}")

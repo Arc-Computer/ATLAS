@@ -18,68 +18,77 @@ agent:
   import_path: atlas_core.tools.secrl_sql_adapter
   attribute: student_adapter
   tools:
-    - name: secrl_sql
-      description: Execute read-only SQL queries against the SecRL ArcOps-Cyber incident database to retrieve investigative evidence.
-      parameters:
-        type: object
-        properties:
-          incident_id:
-            type: string
-            description: Incident database name such as incident_5.
-          sql:
-            type: string
-            description: SELECT statement scoped to the incident database. Use %(param)s placeholders where appropriate.
-          params:
-            type: object
-            description: Optional mapping of placeholder names to values for the SQL query.
-          limit:
-            type: integer
-            description: Maximum number of rows to retrieve (defaults to 200; capped at 500).
-        required: ["incident_id", "sql"]
-        additionalProperties: false
-    - name: process_owner_lookup
-      description: Retrieve the most recent `DeviceProcessEvents` record for a host/process combination to identify the process owner exactly as defined in the SecRL ArcOps benchmark. The response includes `account_names`, `account_summaries`, and `instructions` that must be honoured verbatim.
-      parameters:
-        type: object
-        properties:
-          incident_id:
-            type: string
-            description: Incident database name such as incident_5.
-          host:
-            type: string
-            description: Short Windows hostname (e.g., vnevado-win11a). The tool expands this to `DeviceName LIKE '<host>.%'`.
-          process_id:
-            anyOf:
-              - type: integer
-              - type: string
-            description: Process identifier whose owner should be retrieved.
-          file_name:
-            type: string
-            description: Optional executable name (e.g., notepad.exe) to disambiguate results when multiple processes share the PID.
-          limit:
-            type: integer
-            description: Number of rows to return (defaults to 1; capped at 5).
-        required: ["incident_id", "host", "process_id"]
-        additionalProperties: false
+  - name: secrl_sql
+    description: Execute read-only SQL queries against the SecRL ArcOps-Cyber incident
+      database to retrieve investigative evidence.
+    parameters:
+      type: object
+      properties:
+        incident_id:
+          type: string
+          description: Incident database name such as incident_5.
+        sql:
+          type: string
+          description: SELECT statement scoped to the incident database. Use %(param)s
+            placeholders where appropriate.
+        params:
+          type: object
+          description: Optional mapping of placeholder names to values for the SQL
+            query.
+        limit:
+          type: integer
+          description: Maximum number of rows to retrieve (defaults to 200; capped
+            at 500).
+      required: [incident_id, sql]
+      additionalProperties: false
+  - name: process_owner_lookup
+    description: Retrieve the most recent `DeviceProcessEvents` record for a host/process
+      combination to identify the process owner exactly as defined in the SecRL ArcOps
+      benchmark. The response includes `account_names`, `account_summaries`, and `instructions`
+      that must be honoured verbatim.
+    parameters:
+      type: object
+      properties:
+        incident_id:
+          type: string
+          description: Incident database name such as incident_5.
+        host:
+          type: string
+          description: Short Windows hostname (e.g., vnevado-win11a). The tool expands
+            this to `DeviceName LIKE '<host>.%'`.
+        process_id:
+          anyOf:
+          - type: integer
+          - type: string
+          description: Process identifier whose owner should be retrieved.
+        file_name:
+          type: string
+          description: Optional executable name (e.g., notepad.exe) to disambiguate
+            results when multiple processes share the PID.
+        limit:
+          type: integer
+          description: Number of rows to return (defaults to 1; capped at 5).
+      required: [incident_id, host, process_id]
+      additionalProperties: false
   llm:
-    provider: openai
-    model: xai/grok-4-fast-non-reasoning
-    api_key_env: XAI_API_KEY
-    api_base: https://api.x.ai/v1
+    provider: anthropic
+    model: anthropic/claude-haiku-4-5
+    api_key_env: ANTHROPIC_API_KEY
     temperature: 0.0
     max_output_tokens: 4096
-    reasoning_effort: low
+    reasoning_effort:
     timeout_seconds: 120
 
 teacher:
   llm:
     provider: openai
-    model: gpt-5
-    api_key_env: OPENAI_API_KEY
-    temperature: 0.1
-    max_output_tokens: 8192
-    reasoning_effort: medium
-    timeout_seconds: 180
+    model: xai/grok-4-fast
+    api_key_env: XAI_API_KEY
+    api_base: https://api.x.ai/v1
+    temperature: 0.2
+    max_output_tokens: 4096
+    reasoning_effort:
+    timeout_seconds: 360
 
 rim:
   small_model:
@@ -94,7 +103,8 @@ rim:
     api_key_env: GEMINI_API_KEY
     max_output_tokens: 8192
     timeout_seconds: 120
-  judge_prompt: "Reward the agent for identifying the correct indicator based on the provided incident context."
+  judge_prompt: Reward the agent for identifying the correct indicator based on the
+    provided incident context.
   variance_threshold: 0.15
   uncertainty_threshold: 0.3
 
