@@ -37,17 +37,13 @@ Together, these components form a closed-loop system: interaction traces flow in
 
 ## Runtime for ML Engineers
 
-The Atlas SDK wraps any agent and turns every task into a structured learning episode. Install it to get started:
+- **Autodiscovery CLI** – Install the SDK (`pip install arc-atlas`), run `atlas env init` to discover your agent/environment pair, and execute tasks with `atlas run`. The CLI loads `.env`, scaffolds configs when needed, and records metadata under `.atlas/`.
+- **Orchestrator loop** – Each run triages a task, probes capability, and routes into `auto`, `paired`, `coach`, or `escalate`. The student agent works alongside a verifying teacher while telemetry streams through `atlas.runtime.telemetry`.
+- **Telemetry & exports** – Persist sessions to Postgres (`storage` block) and export reviewed traces with the CLI (`arc-atlas … --include-status approved --output traces.jsonl`). Review gating keeps production datasets safe before they feed training.
+- **Learning playbooks** – The runtime synthesizes student/teacher playbooks and stores them in `learning_registry`; see [`Learning System Architecture`](/sdk/learning-system) for how playbooks influence future prompts.
+- **Offline training** – Feed exported traces into the [`Runtime Traces dataset config`](/training/configuration#dataset-presets) and GRPO trainers to ship bespoke teachers without hand-labeling.
 
-```bash
-pip install arc-atlas
-```
-
-Clone the [`atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) repository if you want the ready-made configs and examples.
-
-- **Runtime orchestrator** – `atlas.core.run` triages every task, runs a capability probe, routes it into `auto`, `paired`, `coach`, or `escalate`, and then wraps your agent in an adaptive dual-agent reasoning loop guided by reward signals: your agent (the student) collaborates with a verifying teacher that reviews every decision while telemetry streams through `atlas.runtime.telemetry`.
-- **Runtime exports** – every run streams structured traces and reward signals into Postgres (`storage` block) and exports JSONL via the SDK CLI (`arc-atlas --database-url ... --output traces.jsonl`). You own the dataset that reflects how your production agent actually behaves.
-- **Training pipeline** – feed those traces straight into the offline stack via the [`Runtime Traces dataset config`](/training/configuration#dataset-presets) and the GRPO trainers to ship bespoke teachers or policy checkpoints without hand-labeling.
+For CLI details and flags, read the [`Atlas CLI Reference`](/sdk/cli-reference).
 
 <Note>
 **Data Ownership**: Atlas never modifies model weights during runtime—only RL training (which you control) updates weights. Trace storage is optional and self-hosted. You own all data.
@@ -64,7 +60,7 @@ The runtime provides immediate quality improvements through dual-agent orchestra
 | Stage | Run This | Output | Typical Effort |
 |-------|-----------|--------|----------------|
 | Runtime quality control | [`atlas.core.run(..., stream_progress=True)`](/sdk/quickstart) | Reviewed plan, per-step traces, live reward scores | Minutes |
-| Persist + export | [`storage:` block](/sdk/configuration) + [`arc-atlas --database-url … --output traces.jsonl`](/sdk/export-traces) | JSONL dataset mirroring production behaviour | Minutes |
+| Persist + export | [`storage:` block](/sdk/configuration) + [`arc-atlas --database-url … --include-status approved --output traces.jsonl`](/sdk/export-traces) | JSONL dataset mirroring production behaviour | Minutes |
 | Export + train workflow | [`scripts/run_offline_pipeline.py`](https://github.com/Arc-Computer/ATLAS/blob/main/scripts/run_offline_pipeline.py) | Convert runtime traces into a new teacher checkpoint | Minutes to launch (training time depends on compute) |
 | Custom training | [GRPO pipeline](/training/offline/grpo-training) | Bespoke teacher checkpoint, ready to deploy | Multi-hour job on GPUs |
 
@@ -117,3 +113,4 @@ Learn more about the methodology and science behind ATLAS:
 - [Arc Research](https://www.arc.computer/research) - Our latest research advancing continual learning systems
 - [GitHub Repository](https://github.com/Arc-Computer/ATLAS) - Source code, examples, and issue tracking
 - [HuggingFace Models](https://huggingface.co/Arc-Intelligence) - Pre-trained models
+- [Evaluation Harnesses](/benchmarks/evaluation-harnesses) – Scripts for measuring runtime, reward, and learning performance
