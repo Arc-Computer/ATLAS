@@ -1,0 +1,97 @@
+---
+title: Runtime Safety & Review
+description: Configure Atlas drift guardrails and session review gating to protect production learning.
+sidebarTitle: Runtime Safety
+icon: shield-check
+---
+
+Runtime learning is only valuable when it is trustworthy. Atlas combines automated drift detection with a manual review
+queue so you can halt regressions before they reach training pipelines. This page explains how to configure those
+guardrails and operate the review workflow.
+
+## Safety Controls in the Runtime Config
+
+Add or refine the `runtime_safety` block in your SDK YAML:
+
+```yaml
+runtime_safety:
+  drift:
+    enabled: true
+    window: 50
+    z_threshold: 3.0
+    min_baseline: 5
+  review:
+    require_approval: true
+    default_export_statuses:
+      - approved
+```
+
+| Parameter | Default | Effect |
+| --- | --- | --- |
+| `drift.enabled` | `true` | Toggle statistical drift detection based on reward deltas. |
+| `drift.window` | `50` | Samples used for baseline statistics (increase for noisy domains). |
+| `drift.z_threshold` | `3.0` | Standard deviations required to raise a drift alert. |
+| `drift.min_baseline` | `5` | Minimum samples before alerts trigger. |
+| `review.require_approval` | `true` | Gate exports and learning updates on reviewer approval. |
+| `review.default_export_statuses` | `["approved"]` | Review states included when tooling omits explicit filters. |
+
+Drift alerts surface in `sessions.metadata["drift"]` and trigger flags in the review CLI. Review settings feed directly
+into `arc-atlas export` / `atlas train`, so production pipelines default to approved sessions only.
+
+## Review Workflow
+
+1. **Approve or quarantine sessions**
+   ```bash
+   arc-atlas review sessions --database-url postgresql://atlas:atlas@localhost:5433/atlas --status pending
+   arc-atlas review approve 123 --database-url postgresql://atlas:atlas@localhost:5433/atlas --note "Clean reward delta"
+   arc-atlas review quarantine 456 --database-url postgresql://atlas:atlas@localhost:5433/atlas --note "Investigate drift"
+   ```
+   The listing groups sessions by review status and highlights drift alerts, reward deltas, and uncertainty changes so
+   reviewers can triage quickly.
+
+2. **Export only the data you trust**
+   ```bash
+   arc-atlas export \
+     --database-url postgresql://atlas:atlas@localhost:5433/atlas \
+     --output traces/approved.jsonl \
+     --include-status approved
+   ```
+   Omit `--include-status` to inherit `runtime_safety.review.default_export_statuses`. For local testing, set
+   `ATLAS_REVIEW_REQUIRE_APPROVAL=0` to bypass the gate—never disable it in production.
+
+3. **Feed the evaluation harnesses**
+   The learning evaluation harness counts review statuses in its summaries. Pending sessions are a signal that human
+   review is still in progress; include or exclude them deliberately when comparing runs.
+
+## Responding to Drift
+
+- **Alert inspection** – Review the `drift` object in `arc-atlas review sessions` output. It contains z-scores, deltas,
+  and reason strings pointing at the underlying metric.
+- **Pause updates** – Temporarily disable playbook persistence by setting `learning.update_enabled=false`; this keeps
+  existing guidance in place while you investigate.
+- **Re-run evaluation** – Use `scripts/eval_learning.py --learning-key <key>` to confirm the issue and gather context for
+  root-cause analysis.
+- **Rollback** – If a playbook caused the regression, reset it by deleting the entry from `learning_registry` or
+  restoring a previously exported pamphlet, then re-enable updates.
+
+## Database Signals to Monitor
+
+- `sessions.review_status` & `sessions.review_notes` – authoritative state for approval.
+- `sessions.metadata.drift` – contains drift z-scores and explanations.
+- `learning_registry.updated_at` – spot stale playbooks that may indicate paused updates.
+- `trajectory_events.event.event_type` – inspect underlying telemetry (e.g., `reward`, `guidance`, `validation`) when
+  diagnosing regressions.
+
+See the [`Database Schema`](/reference/database-schema) reference for column details and index coverage.
+
+## Best Practices
+
+- **Automate reviews** – Alert on pending sessions that exceed a time threshold or have drift alerts; build lightweight
+  dashboards from the `sessions` table.
+- **Document decisions** – Use `--note` when approving/quarantining so investigators have context later.
+- **Audited exports** – Store export manifests alongside training jobs (timestamp, review statuses included, CLI flags).
+- **CI safeties** – Keep `review.require_approval=true` in checked-in configs. Only override via env vars inside isolated
+  dev environments.
+
+Safeguards are only effective when enforced consistently. Use the runtime safety hooks together—drift detection signals
+the problem, review gating ensures only vetted data leaves the system, and evaluation harnesses quantify recovery.

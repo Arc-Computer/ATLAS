@@ -154,6 +154,7 @@ Controls retry semantics and telemetry.
 | `step_timeout_seconds` | `float` (default `900.0`) | No | Lengthen for slow tools or external APIs. |
 | `rim_guidance_tag` | `str` (default `"rim_feedback"`) | No | Change when your prompts expect a different insertion tag. |
 | `emit_intermediate_steps` | `bool` (default `true`) | No | Toggle console/storage streaming of intermediate events. |
+| `forced_mode` | `AdaptiveMode \| null` | No | Lock the runtime to `auto`, `paired`, `coach`, or `escalate` (useful for deterministic evaluation). |
 
 Example override (pairing with the prompts above):
 
@@ -254,6 +255,37 @@ Controls Postgres persistence (`atlas-sdk/atlas/config/models.py:299-307`). Omit
 
 Tip: `atlas init` scaffolds a Docker Compose file with sensible defaults and exposes Postgres on `localhost:5433`.
 
+## Learning Block (`learning`)
+
+Controls the runtime synthesizer that generates and applies student/teacher playbooks.
+
+| Parameter | Type / Default | Required? | Why adjust |
+| --- | --- | --- | --- |
+| `enabled` | `bool` (default `true`) | No | Disable to run without loading or updating playbooks. |
+| `update_enabled` | `bool` (default `true`) | No | Freeze updates while keeping existing playbooks active. |
+| `llm` | `LLMParameters \| null` | No | Override the synthesizer model; falls back to runtime defaults otherwise. |
+| `prompts` | `LearningPrompts \| null` | No | Supply custom prompts for the synthesizer LLM. |
+| `history_limit` | `int` (default `10`) | No | Cap historical sessions fed into each update. |
+| `session_note_enabled` | `bool` (default `true`) | No | Persist per-session learning notes alongside the registry. |
+| `apply_to_prompts` | `bool` (default `true`) | No | Toggle playbook injection into persona prompts and validation payloads. |
+
+Pair this section with [`Learning System Architecture`](/sdk/learning-system) for deeper context.
+
+## Runtime Safety Block (`runtime_safety`)
+
+Defines production guardrails for drift detection and export review policies.
+
+| Parameter | Type / Default | Required? | Why adjust |
+| --- | --- | --- | --- |
+| `drift.enabled` | `bool` (default `true`) | No | Disable statistical drift alerts (rarely recommended). |
+| `drift.window` | `int` (default `50`) | No | Increase for noisy telemetry; decrease for faster alerts. |
+| `drift.z_threshold` | `float` (default `3.0`) | No | Lower to make alerts more sensitive. |
+| `drift.min_baseline` | `int` (default `5`) | No | Require more samples before alerts fire. |
+| `review.require_approval` | `bool` (default `true`) | No | Keep true in production to gate exports on human review. |
+| `review.default_export_statuses` | `List[str]` (default `["approved"]`) | No | Adjust when automation needs additional review states. |
+
+See [`Runtime Safety & Review`](/sdk/runtime-safety) for operational guidance.
+
 ## Metadata
 
 | Parameter | Type / Default | Required? | Why adjust |
@@ -274,6 +306,8 @@ Legacy configs may still include a `prompt_rewrite` block, but the runtime now r
 | Force a supervision lane | `adaptive_teaching` | Set `mode_override` to `auto`, `paired`, `coach`, or `escalate`. |
 | Personalise prompts | `student.prompts` / `teacher.prompts` | Override templates or reuse `prompt_guidance`. |
 | Enforce JSON output | `agent` (`response_format`) | Provide OpenAI-compatible schemas or swap to `http_api` with custom validation. |
+| Freeze playbook updates | `learning.update_enabled` | Pause runtime learning while investigating regressions. |
+| Require approvals for exports | `runtime_safety.review` | Keep `require_approval=true` and document review notes. |
 
 ## Validated Example (Quickstart)
 
@@ -323,6 +357,20 @@ storage:
   max_connections: 5
   statement_timeout_seconds: 30
 ```
+
+## Parameter Index (Alphabetical)
+
+- `adaptive_teaching.default_tags` – Tag sessions and learning updates with deployment metadata.
+- `adaptive_teaching.mode_override` – Force the runtime into a specific lane for deterministic evaluation.
+- `agent.response_format` – Request JSON-mode enforcement from OpenAI-compatible providers.
+- `learning.apply_to_prompts` – Enable/disable playbook injection into persona prompts.
+- `learning.update_enabled` – Gate persistence of new playbooks after each session.
+- `orchestration.forced_mode` – Hard-set the execution mode regardless of probe results.
+- `runtime_safety.drift.z_threshold` – Sensitivity of automatic drift alerts.
+- `runtime_safety.review.default_export_statuses` – Review states included when tooling omits filters.
+- `storage.database_url` – Connection string for the Postgres telemetry store.
+- `student.tool_choice` – Force tool invocation on each step when governance demands it.
+- `teacher.plan_cache_seconds` – Duration to reuse previously approved plans.
 
 ## Related Guides
 

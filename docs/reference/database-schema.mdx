@@ -1,0 +1,123 @@
+---
+title: Telemetry Schema
+description: Understand the core Atlas SDK tables used for discovery, runtime telemetry, and learning persistence.
+sidebarTitle: Database Schema
+icon: table
+---
+
+Atlas persists runtime activity to Postgres so you can replay discovery runs, audit sessions, and power evaluation
+reports. This reference summarizes the tables the SDK creates by default and how they relate to each other.
+
+## Overview
+
+```
+discovery_runs ─┐
+                │
+                ▼
+            sessions ── plans / step_results / guidance_notes
+                │
+                ├─ trajectory_events
+                │
+                └─ learning_registry
+```
+
+- `discovery_runs` captures onboarding metadata produced by `atlas env init`.
+- `sessions` stores per-request telemetry, review status, reward stats, and learning notes.
+- `trajectory_events` holds fine-grained telemetry (plan approvals, guidance, validations, tool calls).
+- `learning_registry` caches the latest playbooks per `learning_key`.
+
+A complete schema is defined in `atlas-sdk/atlas/runtime/storage/schema.sql`. The sections below call out the columns you
+are most likely to query.
+
+## discovery_runs
+
+| Column | Type | Notes |
+| --- | --- | --- |
+| `id` | `SERIAL` | Primary key. |
+| `project_root` | `TEXT` | Absolute path recorded during discovery; use it to group runs by repository. |
+| `task` | `TEXT` | Sample task executed during discovery (`--task`). |
+| `source` | `TEXT` | Defaults to `"discovery"`; other tooling can reuse the table by setting custom sources. |
+| `payload` | `JSONB` | The discovery artefact (`.atlas/discover.json` equivalent). |
+| `metadata` | `JSONB` | Additional notes (preflight, scaffold results, template info). |
+| `created_at` | `TIMESTAMPTZ` | Ingestion timestamp. |
+
+Link discovery runs back to runtime sessions through shared metadata (for example, `metadata.learning_key` or
+`metadata.discovery.environment_factory` entries).
+
+## sessions
+
+| Column | Type | Notes |
+| --- | --- | --- |
+| `id` | `SERIAL` | Primary key referenced by all child tables. |
+| `task` | `TEXT` | User task prompt. |
+| `status` | `TEXT` | Runtime status (`running`, `succeeded`, `failed`). |
+| `metadata` | `JSONB` | Rich telemetry (adaptive summary, triage dossier, drift info, etc.). |
+| `final_answer` | `TEXT` | Student output persisted at completion. |
+| `reward` / `reward_stats` / `reward_audit` | `JSONB` | Judge outputs and aggregate statistics. |
+| `student_learning` / `teacher_learning` | `TEXT` | Per-session learning notes (pre-registry). |
+| `review_status` | `TEXT` | `pending`, `approved`, or `quarantined`. Defaults to `pending`. |
+| `review_notes` | `TEXT` | Reviewer-supplied context. |
+| `created_at` / `completed_at` | `TIMESTAMPTZ` | Run timing. |
+
+An index exists on `metadata->>'learning_key'` so you can quickly pivot by learning thread. Use `review_status` to filter
+exports and harness runs, and join the `metadata` hash to inspect `adaptive_summary`, `execution_mode`, or drift alerts.
+
+### Related tables
+
+- `plans` – JSON plan snapshot keyed by `session_id`.
+- `step_results` / `step_attempts` – per-step traces and validation payloads.
+- `guidance_notes` – ordered teacher guidance emitted during execution.
+
+## trajectory_events
+
+| Column | Type | Notes |
+| --- | --- | --- |
+| `id` | `SERIAL` | Primary key. |
+| `session_id` | `INTEGER` | Foreign key to `sessions`. |
+| `event` | `JSONB` | Envelope containing `event_type`, `actor`, timestamps, payload, etc. |
+| `created_at` | `TIMESTAMPTZ` | Event timestamp. |
+
+The learning evaluation harness samples these events to count validations, guidance injections, and reward updates. Filter
+by `event->>'event_type'` to narrow to specific telemetry (e.g., `reward`, `learning_playbook`, `tool_call`).
+
+## learning_registry
+
+| Column | Type | Notes |
+| --- | --- | --- |
+| `learning_key` | `TEXT` | Primary identifier (task, project, or domain). |
+| `student_learning` | `TEXT` | Latest student playbook body. |
+| `teacher_learning` | `TEXT` | Latest teacher playbook body. |
+| `metadata` | `JSONB` | Optional synthesizer audit info or hashes. |
+| `updated_at` | `TIMESTAMPTZ` | Last update timestamp. |
+
+The runtime loads this table at session start and updates it after successful learning synthesis (subject to
+`learning.update_enabled`). Join back to `sessions` via `metadata.learning_key` to reconstruct the history that produced
+the current pamphlet.
+
+## Query Examples
+
+```sql
+-- Sessions awaiting review with drift alerts.
+SELECT id, task, metadata->'drift' AS drift
+FROM sessions
+WHERE review_status = 'pending'
+  AND metadata ? 'drift';
+
+-- Latest playbooks for a service.
+SELECT learning_key, updated_at, student_learning
+FROM learning_registry
+WHERE learning_key LIKE 'service:%'
+ORDER BY updated_at DESC;
+
+-- Count validation events per session.
+SELECT session_id, COUNT(*) AS validation_events
+FROM trajectory_events
+WHERE event ->> 'event_type' = 'validation'
+GROUP BY session_id;
+```
+
+## Related Pages
+
+- [`Export Runtime Traces`](/sdk/export-traces) – CLI usage and JSON schema for session exports.
+- [`Runtime Safety & Review`](/sdk/runtime-safety) – how review gating and drift detection interact with these tables.
+- [`Evaluation Harnesses`](/benchmarks/evaluation-harnesses) – harnesses that query the schema for analytics.
