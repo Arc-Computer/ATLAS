@@ -91,6 +91,7 @@ python scripts/eval_reward_models.py \
   --dataset atlas/data/reward_eval_trajectories.jsonl \
   --judge-combos gemini_pair claude_stack grok_stack \
   --baseline gemini_pair \
+  --collect-audit \
   --output results/reward/latest.json
 ```
 
@@ -99,6 +100,8 @@ python scripts/eval_reward_models.py \
 - `--repeats` – multiple passes to quantify variance.
 - `--concurrency` – concurrent judge evaluations per combo.
 - `--baseline` – reference stack used for deltas and correlation metrics.
+- `--collect-audit` – include serialized judge responses and Markdown summaries alongside the JSON artifact.
+- `--config configs/eval/reward_system.yaml` – point at the editable preset file if you customise judge combos without changing code (falls back to in-repo defaults).
 
 **Metrics reported**
 
@@ -106,6 +109,10 @@ python scripts/eval_reward_models.py \
 - Escalation rate and failure count (helps spot brittle judge stacks).
 - Latency statistics (average, median, p95).
 - Agreement signals: delta vs baseline and Pearson correlation.
+
+The harness now emits both JSON and Markdown reports when `--collect-audit` is supplied. The Markdown files highlight
+per-judge behaviour and link directly to captured audit payloads, making it easier to review outliers during incident
+postmortems.
 
 ## Operational Tips
 
@@ -115,6 +122,9 @@ python scripts/eval_reward_models.py \
   your pipeline should mimic the `arc-atlas export` filters you plan to use for training.
 - **Automation** – add these scripts to nightly jobs. Make the output directory configurable via `--output-dir` (learning)
   so each pipeline run lands in its own folder.
+- **Judge preset config** – copy or edit `configs/eval/reward_system.yaml` to curate judge combos, latency budgets, or
+  model overrides without touching `scripts/eval_reward_models.py`. The CLI will pick up your file automatically when
+  passed via `--config`.
 
 ## Related Reading
 
