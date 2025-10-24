@@ -1,0 +1,176 @@
+---
+title: Atlas CLI Reference
+description: Command catalogue for discovery, configuration scaffolding, and runtime execution in the Atlas SDK.
+sidebarTitle: CLI Reference
+icon: terminal
+---
+
+The Atlas CLI packages everything ML engineers need to onboard a new environment, validate a stack, and ship telemetry
+into the learning pipeline—without writing glue code. Commands are grouped under the `atlas` executable (installed with
+`arc-atlas`) and the `arc-atlas` helper for export/review automation. The CLI automatically loads `.env` files from the
+project root, extends `PYTHONPATH` with `src`/root directories, and respects feature flags such as `ATLAS_FAKE_LLM=1`
+for offline smoke tests.
+
+| Workflow | Command(s) | Summary |
+| --- | --- | --- |
+| Autodiscovery onboarding | `atlas env init`, `atlas env scaffold` | Detect agent/environment pairs, synthesize factories, and cache metadata. |
+| Runtime execution | `atlas run`, `atlas run --config` | Replay discovery output or run a full orchestrator config. |
+| Persistence bootstrap | `atlas init`, `atlas storage up` | Provision Postgres via Docker (optional). |
+| Review & export | `arc-atlas review …`, `arc-atlas export …` | Gate traces behind human review and export approved sessions. |
+| Training handoff | `atlas train` | Reuse exporter filters and launch Atlas Core pipelines. |
+
+## Environment Discovery
+
+### `atlas env init`
+
+Discovers Atlas-compatible agents and environments, populates `.atlas/`, and optionally runs a sample task.
+
+- **Project root** – defaults to the current directory; override with `--path`.
+- **Sample task** – `--task "Investigate production incident"` seeds discovery telemetry and generated prompts.
+- **Factories** – pass explicit constructor callables with `--env-fn module:callable` / `--agent-fn module:callable`.
+- **Runtime args** – supply per-factory keyword args via `--env-arg key=value` (repeatable) or `--env-config config.yaml`.
+- **Config scaffolding** – `--scaffold-config-full` merges discovery metadata into the OpenAI template to produce a runnable orchestrator config (mirrors PR #75).
+- **Execution control** – `--no-run` performs static analysis only; `--validate` forces a full run even if diagnostics recommend skipping; `--timeout` (default 240 s) bounds discovery.
+- **Environment** – `--env KEY=value` injects secrets for discovery; the CLI also auto-loads `.env` and adjusts `PYTHONPATH`.
+
+Outputs are written under `.atlas/`:
+
+- `.atlas/discover.json` – module hashes, handshake metadata, telemetry samples, and reward summaries.
+- `.atlas/generated_factories.py` – auto-generated factories when discovery synthesizes wrappers.
+- `.atlas/generated_config.yaml` – optional orchestrator config created when `--scaffold-config-full` is enabled.
+- `.atlas/runs/` – runtime telemetry snapshots from validation passes.
+
+Re-run `atlas env init` whenever code or dependencies change; hashes protect against stale factories.
+
+### `atlas env scaffold`
+
+Seeds a project with reference factories (currently LangGraph) or other adapters before running discovery.
+
+- `--template langgraph` – default template. Extendable as additional templates ship.
+- `--output` – destination file (defaults to the template name).
+- `--path` – project root for the scaffold (defaults to CWD).
+- `--force` – overwrite existing files.
+
+Use scaffold when your stack needs custom constructors or multi-service wiring; follow it with `atlas env init` to
+validate the generated factories.
+
+## Runtime Execution
+
+### `atlas run`
+
+Executes a discovered agent/environment pair using cached metadata.
+
+- `--task` (required) – prompt to execute.
+- `--path` – project root containing `.atlas/discover.json`.
+- `--env KEY=value` – additional environment variables surfaced to the runtime worker.
+- `--mode` – experimental execution-mode override (`auto`, `paired`, etc.) used for deterministic tests.
+- `--max-steps` – informational cap for orchestration steps (helpful during debugging).
+- `--timeout` – worker timeout (default 300 s).
+
+Before launching, the CLI verifies module hashes, loads the latest learning playbooks (when enabled), and streams
+metadata snapshots to `.atlas/runs/`. Set `ATLAS_FAKE_LLM=1` to stub the LLM layer for offline validation; telemetry
+still records the fake responses so you can exercise downstream tooling.
+
+### `atlas run --config`
+
+When you provide `--config path/to/runtime.yaml`, the CLI bypasses discovery metadata and spins up the full orchestrator
+stack defined in the YAML. This mode:
+
+- loads the config via `atlas.config.loader`,
+- enables validation caching and telemetry instrumentation from PR #74,
+- respects the same environment-variable injection and task prompt flags,
+- captures the full `ExecutionContext` metadata (steps, learning state, reward payloads) and writes it to `.atlas/runs/`
+  alongside the config path, letting you correlate later exports with the exact settings that produced them.
+
+Use this path when running orchestrator smoke tests, CI checks, or scripted experiments against a fixed configuration.
+
+## Review & Safety Workflow
+
+Atlas gates trace exports behind review status to keep production learning safe. Review utilities live behind the
+`arc-atlas` entrypoint (same binary as `python -m atlas.cli.export`).
+
+### `arc-atlas review`
+
+Manage session approvals stored in Postgres:
+
+- **List sessions**  
+  ```bash
+  arc-atlas review sessions --database-url postgresql://atlas:atlas@localhost:5433/atlas --status pending --limit 50
+  ```  
+  Groups by review status (defaults to pending/quarantined/approved). Use `--limit`/`--offset` to page through results.
+
+- **Approve**  
+  ```bash
+  arc-atlas review approve 123 --database-url ... --note "Validated in staging"
+  ```
+
+- **Quarantine**  
+  ```bash
+  arc-atlas review quarantine 456 --database-url ... --note "Reward regression"
+  ```
+
+All review commands honour `--quiet` to suppress info logs. For local development you can bypass the gate with
+`ATLAS_REVIEW_REQUIRE_APPROVAL=0`, but production exports should always run through the review queue.
+
+### Drift & Safety Flags
+
+- `runtime_safety.drift` in the config enables z-score based drift detection; alerts surface in the review output.
+- `runtime_safety.review.require_approval` (default `true`) controls export gating; changing it requires a config update
+  or environment override (`ATLAS_REVIEW_REQUIRE_APPROVAL=0`).
+
+## Exporting & Training
+
+### `arc-atlas export`
+
+Exports approved sessions to JSONL for training or offline analysis.
+
+- `--database-url` – required Postgres connection.
+- `--output` – destination file (default: `<atlas-core-path>/exports/<timestamp>.jsonl` when `atlas-core-path` is known).
+- `--session-id` – explicit session IDs (repeatable).
+- `--limit`/`--offset` – pagination for recent sessions.
+- `--status` – runtime completion status filter (`succeeded`, `failed`, etc.).
+- `--trajectory-event-limit` – cap telemetry per session.
+- `--include-status approved` – allow additional review statuses; `--include-all-statuses` bypasses the gate entirely.
+- `--batch-size` – database fetch chunk size.
+
+If no sessions are exported, the CLI reminds you to approve pending sessions first. Output JSON matches the schema
+documented in [`Export Runtime Traces`](/sdk/export-traces).
+
+### `atlas train`
+
+Bridges exports into Atlas Core’s offline pipeline. It reuses the exporter filters above and then launches
+`scripts/run_offline_pipeline.py` with Hydra overrides.
+
+- Filters: `--session-id`, `--limit`, `--status`, `--include-status`, `--trajectory-event-limit`.
+- Atlas Core overrides: `--atlas-core-path`, `--config-name`, `--data-config`, `--trainer-config`, `--model-config`.
+- Dataset sampling: `--eval-ratio`, `--max-samples`, `--use-sample-dataset`.
+- Execution control: `--dry-run` prints the derived command without launching.
+- Tracking: `--wandb-project`, `--wandb-run-name`, and repeatable `--override` flags.
+
+Run `atlas train` once Postgres contains a critical mass of approved sessions. For ad-hoc exports, stick with
+`arc-atlas export`.
+
+## Storage & Bootstrap Utilities
+
+- **`atlas init`** – writes `atlas-postgres.yaml` (Docker Compose) to spin up the recommended Postgres instance. Use
+  `--force` to overwrite or `--skip-docker-install` if Docker is already available.
+- **`atlas storage up`** – deprecated alias for `atlas init`; prints a notice but still provisions storage for backwards compatibility.
+- **`atlas quit`** – tears down storage resources created by `atlas init`.
+
+## Environment & Troubleshooting Tips
+
+- **`.env` loading** – All CLI entrypoints call `load_dotenv_if_available()`; keep provider keys, database URLs, and
+  custom environment variables there.
+- **PYTHONPATH** – `atlas env init` adds the project root and `src/` directory to `PYTHONPATH`, making local packages
+  importable without manual exports.
+- **Fake LLM** – Set `ATLAS_FAKE_LLM=1` to stub responses (useful for CI or air-gapped environments). Discovery and run
+  metadata flag the session as synthetic so you don’t accidentally mix it with production traces.
+- **Timeouts** – Adjust `--timeout` per command when hitting slower providers or complex factory initialization.
+- **Logging** – Most commands support `--quiet`; otherwise logs stream to stdout with timestamps.
+
+## Related Guides
+
+- [`SDK Quickstart`](/sdk/quickstart) – end-to-end walkthrough using these commands.
+- [`Learning System Architecture`](/sdk/learning-system) – how CLI telemetry feeds runtime learning.
+- [`Installation`](/installation) – environment prerequisites and GPU-aware setup.
+- [`Export Runtime Traces`](/sdk/export-traces) – JSON schema and downstream training integration.

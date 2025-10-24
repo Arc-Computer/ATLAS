@@ -50,14 +50,33 @@ We recommend keeping credentials in a `.env` file and loading them with `dotenv`
 
 ## Step 1 – Run the Quickstart Task
 
-The `configs/examples/openai_agent.yaml` configuration (in the [`atlas-sdk` repository](https://github.com/Arc-Computer/atlas-sdk/tree/main/configs/examples)) enables the adaptive runtime out of the box. Clone that repo—or download the file directly—so the `config_path` below resolves. It includes a small `storage` block so you can persist sessions immediately; set `storage: null` if you prefer purely in-memory runs.
+Atlas now ships with an autodiscovery CLI so you can validate your environment before touching Python.
 
 <div align="center">
   <img src="/images/adaptive-runtime.png" alt="Atlas SDK adaptive runtime flow diagram showing triage, probe, and lane routing" width="900" />
   <p><em>The adaptive runtime probes capability and routes every task into the right lane before the dual-agent loop (student + verifying teacher) executes.</em></p>
 </div>
 
-Save the following snippet to a file (e.g., `run_atlas.py`).
+### Option A – CLI Autodiscovery (recommended for new stacks)
+
+```bash
+pip install arc-atlas
+atlas env init --task "Summarize the latest AI news"
+atlas run --task "Summarize the latest AI news"
+```
+
+- `atlas env init` scans for `@atlas.environment` / `@atlas.agent` decorators or factory functions, loads `.env`, and writes `.atlas/discover.json`, `.atlas/generated_factories.py`, and optional configs.
+- Re-run `atlas env init --scaffold-config-full` if you want the CLI to merge discovery metadata into a runnable config template—the output lands at `.atlas/generated_config.yaml`.
+- `atlas run` reuses the cached metadata, verifies module hashes, streams telemetry into `.atlas/runs/`, and injects learning playbooks when available.
+- Need to exercise the full orchestrator? Point `atlas run --config configs/examples/openai_agent.yaml --task "..."` at a config file to bypass discovery entirely.
+
+<Tip>
+Set `ATLAS_FAKE_LLM=1` before calling `atlas run` to smoke-test your pipelines without hitting live LLMs. The CLI annotates the run metadata so you never confuse fake runs with production traces.
+</Tip>
+
+### Option B – Python API (direct invocation)
+
+If you already have a config checked into source control, the standard `atlas.core.run` entry point still works:
 
 ```python
 from atlas.core import run
@@ -71,19 +90,28 @@ print(result.final_answer)
 ```
 
 <Info>
-Alternatively, you can run the snippet directly in your terminal:
+Run it inline if you prefer to avoid creating a file:
 ```bash
 python -c "from atlas.core import run; result = run(task='Summarize the latest AI news', config_path='configs/examples/openai_agent.yaml', stream_progress=True); print(result.final_answer)"
 ```
 </Info>
 
-You should see an adaptive summary headline in the console stream (for example, `Adaptive: mode=coach confidence=0.58 certification=True`) followed by the usual plan-reason-synthesize loop. The runtime triages the request, runs a capability probe, chooses one of four lanes (`auto`, `paired`, `coach`, `escalate`), and then executes the dual-agent loop—your student plus the verifying teacher—with lane-specific supervision. `atlas.runtime.telemetry.ConsoleTelemetryStreamer` auto-enables when stdout is a TTY; force it on/off with `stream_progress=True/False` in the `run` call.
+In both flows you should see an adaptive summary headline in the console stream (for example, `Adaptive: mode=coach confidence=0.58 certification=True`) followed by the plan–execute–synthesize loop. `atlas.runtime.telemetry.ConsoleTelemetryStreamer` auto-enables when stdout is a TTY; override with `stream_progress=True/False`.
 
-Need a local Postgres instance? The CLI ships with `atlas init`, which writes `atlas-postgres.yaml` and starts the database via Docker. Skip it (or tear it down) if you’re running without persistence.
+Need a local Postgres instance? Run `atlas init` to scaffold `atlas-postgres.yaml` and then `atlas storage up` to launch Docker. Skip this step if you prefer ephemeral runs.
 
 ### BYOA in 5 Minutes
 
-Atlas wraps any agent that can expose either an OpenAI-compatible API, an HTTP endpoint, or a Python callable. Copy one of the starter configs in `configs/examples/` and adjust the `agent` block. For example, to target a local HTTP service:
+Atlas wraps any agent that can expose either an OpenAI-compatible API, an HTTP endpoint, or a Python callable.
+
+**Autodiscovery path** – Keep your agent decorated with `@atlas.agent` / `@atlas.environment`, then run:
+
+```bash
+atlas env init --task "Investigate production incident" --scaffold-config-full
+atlas run --config .atlas/generated_config.yaml --task "Investigate production incident"
+```
+
+**Manual config path** – Copy one of the starter configs in `configs/examples/` and adjust the `agent` block. For example, to target a local HTTP service:
 
 ```yaml
 agent:
@@ -98,6 +126,10 @@ agent:
 ```
 
 Run it with the same snippet as above, swapping the `config_path`. Atlas will stream the plan, tool calls, and reward breakdowns as it executes your agent.
+
+<Tip>
+Discovery now auto-loads `.env` values (including `PYTHONPATH` adjustments) and captures provider/model metadata from your factories. You can inspect `.atlas/discover.json` to confirm which adapters were selected before promoting the config to production.
+</Tip>
 
 ## What Just Happened?
 
@@ -133,7 +165,8 @@ To add tools, enable persistence, or use a different agent, switch the `config_p
 ## Next Steps
 
 - Persist sessions and build datasets with [`Export Runtime Traces`](/sdk/export-traces), then follow the training loop in [`Quickstart`](/quickstart).
-- Dive into [`SDK Configuration`](/sdk/configuration) to customize each YAML block and the [`Adaptive Runtime Guide`](/runtime_adaptive_flow) to understand the triage → probe → lane controller.
+- Dive into [`Atlas CLI Reference`](/sdk/cli-reference) for the complete autodiscovery and review workflows, then read [`SDK Configuration`](/sdk/configuration) to fine-tune each YAML block.
+- Explore the [`Adaptive Runtime Guide`](/runtime_adaptive_flow) to understand the triage → probe → lane controller.
 - Learn how the planner, reviewer, and evaluator cooperate in [`How Orchestration Works`](/sdk/orchestration).
 - Wrap your own agent with the adapters in [`Bring Your Own Agent`](/sdk/adapters).
 - Compare runtime vs training expectations in [`Student & Verifying Teacher Roles`](/sdk/student-verifying-teacher-roles).
