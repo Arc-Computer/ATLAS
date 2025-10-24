@@ -28,6 +28,9 @@
             "pages": [
               "sdk/quickstart",
               "sdk/configuration",
+              "sdk/learning-system",
+              "sdk/runtime-safety",
+              "sdk/cli-reference",
               "sdk/adapters",
               "sdk/export-traces",
               "sdk/orchestration",
@@ -61,6 +64,7 @@
               "reference/technical-report",
               "reference/models",
               "reference/datasets",
+              "reference/database-schema",
               "reference/glossary",
               "reference/troubleshooting",
               "reference/faq"
@@ -71,6 +75,7 @@
             "icon": "chart-bar",
             "pages": [
               "benchmarks/evaluation-methodology",
+              "benchmarks/evaluation-harnesses",
               "benchmarks/reproduction"
             ]
           }

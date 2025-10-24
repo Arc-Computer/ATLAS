@@ -73,6 +73,17 @@ This guide covers installing ATLAS with Python 3.11/3.12, PyTorch 2.6.0, and vLL
     <Tip>
     Keep credentials such as `OPENAI_API_KEY` in a `.env` file and load them before orchestrating runs.
     </Tip>
+
+    After the package installs, bootstrap your project with autodiscovery:
+
+    ```bash
+    atlas env init --task "Summarize the latest AI news"
+    atlas run --task "Summarize the latest AI news"
+    ```
+
+    The CLI writes `.atlas/discover.json`, optional factory scaffolds, and metadata snapshots while automatically loading
+    `.env` and extending `PYTHONPATH`. Re-run `atlas env init --scaffold-config-full` whenever you want a fresh runtime
+    configuration derived from discovery output.
   </Tab>
   <Tab title="Automated Training Setup (Recommended)">
     Use our validated installation scripts for the smoothest setup:
@@ -154,6 +165,10 @@ export GEMINI_API_KEY="your-gemini-key"
   The training script automatically sets `HF_HUB_ENABLE_HF_TRANSFER=1` to speed up model downloads.
 </Note>
 
+<Tip>
+Keep provider keys, `DATABASE_URL`, and other secrets in `.env`. The Atlas CLI family (`atlas env`, `atlas run`, `atlas train`, `arc-atlas export`) loads `.env` automatically and adds your project root plus `src/` to `PYTHONPATH`, so custom adapters resolve without manual `sys.path` tweaks.
+</Tip>
+
 ### Disable Tracking
 
 To disable Weights & Biases tracking:
@@ -198,6 +213,20 @@ print("Model device:", next(teacher.parameters()).device)
 PY
 # Expected output: CUDA available: True, GPU count: 2+ (for RL training), model type shown
 ```
+
+### CLI Smoke Test
+
+Verify autodiscovery and fake-LLM workflows without GPUs:
+
+```bash
+ATLAS_FAKE_LLM=1 atlas env init --task "Summarize the latest Atlas SDK updates" --no-run
+ATLAS_FAKE_LLM=1 atlas run --task "Summarize the latest Atlas SDK updates"
+```
+
+- `ATLAS_FAKE_LLM=1` swaps in a deterministic mock model so CI pipelines stay offline-friendly.
+- The CLI writes `.atlas/discover.json` and `.atlas/runs/*.json`; inspect these to confirm metadata snapshots and cache
+  hashes were recorded.
+- Use `atlas init` / `atlas storage up` if you want Postgres persistence for the next steps (learning harness, exports).
 
 <CodeGroup>
   ```python "Quick Test"

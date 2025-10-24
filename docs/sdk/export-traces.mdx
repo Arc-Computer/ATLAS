@@ -27,6 +27,7 @@ Run your tasks with `atlas.core.run(..., stream_progress=True)` as usual. Each s
 arc-atlas \
   --database-url postgresql://atlas:atlas@localhost:5433/atlas \
   --output traces/my-session.jsonl \
+  --include-status approved \
   --trajectory-event-limit 500 \
   --status succeeded \
   --limit 50
@@ -45,6 +46,7 @@ If another tool owns the `atlas` command on your system, run the exporter with `
 - `--session-id 42` (repeatable) exports specific sessions.
 - `--limit 25` / `--offset 25` page through recent sessions.
 - `--status succeeded --status failed` filters on runtime completion state.
+- `--include-status approved` (repeatable) restricts review statuses; omit to inherit `runtime_safety.review.default_export_statuses`. Use `--include-all-statuses` for exploratory exports.
 - `--trajectory-event-limit 200` caps the number of intermediate telemetry events embedded per session.
 
 The exporter writes one JSON object per line. Each record aligns with `AtlasSessionTrace`:
@@ -103,6 +105,7 @@ The exporter writes one JSON object per line. Each record aligns with `AtlasSess
     ]
   },
   "reward_summary": {"score": 0.88},
+  "review_status": "approved",
   "personas_used": [
     {"persona": "planner", "instruction": "Focus on customer tone", "source": "memory"}
   ],
@@ -118,6 +121,11 @@ The exporter writes one JSON object per line. Each record aligns with `AtlasSess
 > **Tip:** Compress large exports with `xz` or `gzip`—the loader streams line-by-line, so you can decompress on the fly if desired.
 
 Use `adaptive_summary` to audit routing choices, probe evidence, and certification status; `triage_dossier` captures the structured context that informed the decision (see [`triage dossier`](/reference/glossary#triage-dossier)); `personas_used` and `persona_updates` highlight which [`personas`](/reference/glossary#persona) were active and how memory evolved during the run. Each step also carries structured `artifacts` captured during execution and a `deliverable` payload that mirrors what the Student hands back to downstream systems.
+
+<Note>
+  Review gating defaults to approved sessions. Set `ATLAS_REVIEW_REQUIRE_APPROVAL=0` only for local experiments and
+  always note which review statuses were exported alongside your artifacts.
+</Note>
 
 ## 3. Feed the training stack
 
