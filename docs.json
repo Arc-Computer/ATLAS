@@ -1,0 +1,127 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "ATLAS",
+  "colors": {
+    "primary": "#2563EB",
+    "light": "#60A5FA",
+    "dark": "#1E40AF"
+  },
+  "favicon": "/images/Arc-Icon.png",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "icon": "rocket",
+            "pages": [
+              "introduction",
+              "installation"
+            ]
+          },
+          {
+            "group": "SDK Guides",
+            "icon": "code",
+            "pages": [
+              "sdk/quickstart",
+              "sdk/configuration",
+              "sdk/learning-system",
+              "sdk/runtime-safety",
+              "sdk/cli-reference",
+              "sdk/adapters",
+              "sdk/export-traces",
+              "sdk/orchestration",
+              "sdk/student-verifying-teacher-roles"
+            ]
+          },
+          {
+            "group": "Training",
+            "icon": "brain",
+            "pages": [
+              "training/configuration",
+              "training/offline/grpo-training",
+              "training/online/continuous-learning"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "icon": "lightbulb",
+            "pages": [
+              "concepts/adaptive-dual-agent-reasoning",
+              "concepts/hybrid-learning",
+              "concepts/reward-design"
+            ]
+          },
+          {
+            "group": "Reference",
+            "icon": "book",
+            "pages": [
+              "reference/technical-report",
+              "reference/models",
+              "reference/datasets",
+              "reference/database-schema",
+              "reference/glossary",
+              "reference/troubleshooting",
+              "reference/faq"
+            ]
+          },
+          {
+            "group": "Benchmarks",
+            "icon": "chart-bar",
+            "pages": [
+              "benchmarks/evaluation-methodology",
+              "benchmarks/evaluation-harnesses",
+              "benchmarks/reproduction"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "icon": "terminal",
+        "groups": [
+          {
+            "group": "Training API",
+            "pages": [
+              "api-reference/trainers"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "logo": {
+    "light": "/images/Arc-Icon.png",
+    "dark": "/images/Arc-Icon.png"
+  },
+  "appearance": {
+    "default": "light"
+  },
+  "background": {
+    "color": {
+      "light": "#FFFFFF",
+      "dark": "#0F0F0F"
+    }
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "GitHub",
+        "href": "https://github.com/Arc-Computer/ATLAS"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Models",
+      "href": "https://huggingface.co/Arc-Intelligence"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/Arc-Computer/ATLAS",
+      "linkedin": "https://www.linkedin.com/company/arc-intelligence"
+    }
+  }
+}
