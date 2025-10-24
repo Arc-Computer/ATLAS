@@ -15,7 +15,7 @@ for offline smoke tests.
 | --- | --- | --- |
 | Autodiscovery onboarding | `atlas env init`, `atlas env scaffold` | Detect agent/environment pairs, synthesize factories, and cache metadata. |
 | Runtime execution | `atlas run`, `atlas run --config` | Replay discovery output or run a full orchestrator config. |
-| Persistence bootstrap | `atlas init`, `atlas storage up` | Provision Postgres via Docker (optional). |
+| Persistence bootstrap | `atlas init` | Provision Postgres via Docker (optional). |
 | Review & export | `arc-atlas review …`, `arc-atlas export …` | Gate traces behind human review and export approved sessions. |
 | Training handoff | `atlas train` | Reuse exporter filters and launch Atlas Core pipelines. |
 
@@ -154,7 +154,6 @@ Run `atlas train` once Postgres contains a critical mass of approved sessions. F
 
 - **`atlas init`** – writes `atlas-postgres.yaml` (Docker Compose) to spin up the recommended Postgres instance. Use
   `--force` to overwrite or `--skip-docker-install` if Docker is already available.
-- **`atlas storage up`** – deprecated alias for `atlas init`; prints a notice but still provisions storage for backwards compatibility.
 - **`atlas quit`** – tears down storage resources created by `atlas init`.
 
 ## Environment & Troubleshooting Tips
