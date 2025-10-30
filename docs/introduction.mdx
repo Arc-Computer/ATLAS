@@ -13,9 +13,17 @@ icon: home
 
 ## What is ATLAS?
 
-Atlas enables continual learning for production agents. The runtime SDK wraps any agent in an adaptive dual-agent reasoning loop (student + teacher) guided by reward signals that triages tasks, probes capability, and routes to the right supervision lane. Atlas Core turns those runtime episodes into optimized teacher checkpoints with offline reinforcement learning (RL) training.
+A continual learning framework for agents in production.
 
-You get an agent that compounds knowledge over time, building a durable library of domain expertise instead of treating deployment as a static endpoint that needs constant retraining—while driving down the cost of reasoning models through improved efficiency.
+ATLAS gives your agents the ability to learn from every task they run in production, improving reliability, reducing token costs, and building domain expertise over time through persistent memory.
+
+ATLAS turns your production environment into a training ground allowing for learning at inference time and preventing your agent's performance from plateauing. Every interaction feeds a continuous loop: feedback, improvement, and redeployment ensuring that deployment is not the end of learning,
+
+How it works: You wrap your agent within your current stack and environment and we handle the complexity of continual learning at scale.
+
+The result: Higher task success rates, lower token usage, and increased reliability for mission-critical workflows.
+
+ATLAS gives you full observability and control over the learning process. The framework handles the orchestration complexity while you retain ownership of your data, models, and training decisions.
 
 ## How It Works: Closed-Loop Learning System
 
