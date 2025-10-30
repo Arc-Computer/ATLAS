@@ -62,17 +62,12 @@ Atlas now ships with an autodiscovery CLI so you can validate your environment b
 ```bash
 pip install arc-atlas
 atlas env init --task "Summarize the latest AI news"
-atlas run --task "Summarize the latest AI news"
+atlas run --config .atlas/generated_config.yaml --task "Summarize the latest AI news"
 ```
 
-- `atlas env init` scans for `@atlas.environment` / `@atlas.agent` decorators or factory functions, loads `.env`, and writes `.atlas/discover.json`, `.atlas/generated_factories.py`, and optional configs.
-- Re-run `atlas env init --scaffold-config-full` if you want the CLI to merge discovery metadata into a runnable config template—the output lands at `.atlas/generated_config.yaml`.
-- `atlas run` reuses the cached metadata, verifies module hashes, streams telemetry into `.atlas/runs/`, and injects learning playbooks when available.
+- `atlas env init` scans for `@atlas.environment` / `@atlas.agent` decorators or factory functions, loads `.env`, and writes `.atlas/discover.json`, `.atlas/generated_factories.py`, and `.atlas/generated_config.yaml`.
+- `atlas run --config` loads the generated config, verifies module hashes, streams telemetry into `.atlas/runs/`, and injects learning playbooks when available.
 - Need to exercise the full orchestrator? Point `atlas run --config configs/examples/openai_agent.yaml --task "..."` at a config file to bypass discovery entirely.
-
-<Tip>
-Set `ATLAS_FAKE_LLM=1` before calling `atlas run` to smoke-test your pipelines without hitting live LLMs. The CLI annotates the run metadata so you never confuse fake runs with production traces.
-</Tip>
 
 ### Option B – Python API (direct invocation)
 

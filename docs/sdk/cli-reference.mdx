@@ -8,8 +8,7 @@ icon: terminal
 The Atlas CLI packages everything ML engineers need to onboard a new environment, validate a stack, and ship telemetry
 into the learning pipeline—without writing glue code. Commands are grouped under the `atlas` executable (installed with
 `arc-atlas`) and the `arc-atlas` helper for export/review automation. The CLI automatically loads `.env` files from the
-project root, extends `PYTHONPATH` with `src`/root directories, and respects feature flags such as `ATLAS_FAKE_LLM=1`
-for offline smoke tests.
+project root and extends `PYTHONPATH` with `src`/root directories.
 
 | Workflow | Command(s) | Summary |
 | --- | --- | --- |
@@ -68,8 +67,7 @@ Executes a discovered agent/environment pair using cached metadata.
 - `--timeout` – worker timeout (default 300 s).
 
 Before launching, the CLI verifies module hashes, loads the latest learning playbooks (when enabled), and streams
-metadata snapshots to `.atlas/runs/`. Set `ATLAS_FAKE_LLM=1` to stub the LLM layer for offline validation; telemetry
-still records the fake responses so you can exercise downstream tooling.
+metadata snapshots to `.atlas/runs/`.
 
 ### `atlas run --config`
 
@@ -162,8 +160,6 @@ Run `atlas train` once Postgres contains a critical mass of approved sessions. F
   custom environment variables there.
 - **PYTHONPATH** – `atlas env init` adds the project root and `src/` directory to `PYTHONPATH`, making local packages
   importable without manual exports.
-- **Fake LLM** – Set `ATLAS_FAKE_LLM=1` to stub responses (useful for CI or air-gapped environments). Discovery and run
-  metadata flag the session as synthetic so you don’t accidentally mix it with production traces.
 - **Timeouts** – Adjust `--timeout` per command when hitting slower providers or complex factory initialization.
 - **Logging** – Most commands support `--quiet`; otherwise logs stream to stdout with timestamps.
 

@@ -17,7 +17,7 @@ python -m pip install --upgrade arc-atlas
 
 That gives you the orchestrator, telemetry streaming, and the exporter CLI. Use the sections below when you need the full training stack (PyTorch, vLLM, Flash Attention) for SFT/GRPO.
 
-This guide covers installing ATLAS with Python 3.11/3.12, PyTorch 2.6.0, and vLLM 0.8.3 (the high-throughput inference engine).
+This guide covers installing ATLAS with Python 3.10+, PyTorch 2.6.0, and vLLM 0.8.3 (the high-throughput inference engine).
 
 ## System Requirements
 
@@ -27,7 +27,7 @@ This guide covers installing ATLAS with Python 3.11/3.12, PyTorch 2.6.0, and vLL
     - 1× GPU minimum for inference only
     - 32GB+ system RAM
     - 100GB+ disk space
-    - Python 3.11 or 3.12
+    - Python 3.10 or newer
   </Card>
   <Card title="Recommended Setup" icon="server">
     - 4×H100 or 8×H100 GPUs (40GB+ VRAM each)
@@ -48,7 +48,7 @@ This guide covers installing ATLAS with Python 3.11/3.12, PyTorch 2.6.0, and vLL
   </Step>
 
   <Step title="Python Environment">
-    Verify Python version (3.11 or 3.12 required):
+    Verify Python version (3.10 or newer required):
     ```bash
     python --version
     ```
@@ -78,7 +78,7 @@ This guide covers installing ATLAS with Python 3.11/3.12, PyTorch 2.6.0, and vLL
 
     ```bash
     atlas env init --task "Summarize the latest AI news"
-    atlas run --task "Summarize the latest AI news"
+    atlas run --config .atlas/generated_config.yaml --task "Summarize the latest AI news"
     ```
 
     The CLI writes `.atlas/discover.json`, optional factory scaffolds, and metadata snapshots while automatically loading
@@ -213,20 +213,6 @@ print("Model device:", next(teacher.parameters()).device)
 PY
 # Expected output: CUDA available: True, GPU count: 2+ (for RL training), model type shown
 ```
-
-### CLI Smoke Test
-
-Verify autodiscovery and fake-LLM workflows without GPUs:
-
-```bash
-ATLAS_FAKE_LLM=1 atlas env init --task "Summarize the latest Atlas SDK updates" --no-run
-ATLAS_FAKE_LLM=1 atlas run --task "Summarize the latest Atlas SDK updates"
-```
-
-- `ATLAS_FAKE_LLM=1` swaps in a deterministic mock model so CI pipelines stay offline-friendly.
-- The CLI writes `.atlas/discover.json` and `.atlas/runs/*.json`; inspect these to confirm metadata snapshots and cache
-  hashes were recorded.
-- Use `atlas init` / `atlas storage up` if you want Postgres persistence for the next steps (learning harness, exports).
 
 <CodeGroup>
   ```python "Quick Test"
