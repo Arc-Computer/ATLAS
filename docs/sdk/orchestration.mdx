@@ -34,7 +34,7 @@ flowchart TD
    - `escalate` – keeps the full stepwise plan with guidance, retries, and granular telemetry.
 4. **Execution loop** – Depending on the lane, the Student either executes a single combined step or walks through the reviewed plan. Teacher interventions (validation, guidance, retries) are lane-aware.
 5. **Reward & learning** – The Reward System aggregates judges, emits `session_reward`, and captures learning notes. Certification verdicts are reused as the reward signal when possible.
-6. **Memory & telemetry** – Persona memories are refreshed, adaptive summaries are stored, and exporters/streamers consume the structured metadata. See the [Adaptive Runtime Guide](/runtime_adaptive_flow) for a deeper dive.
+6. **Memory & telemetry** – Persona memories are refreshed, adaptive summaries are stored, and exporters/streamers consume the structured metadata.
 
 ## Lane Cheatsheet
 
@@ -97,6 +97,6 @@ At a high level the public API (`atlas.core.run` / `atlas.core.arun`) performs t
 
 ## Next Steps
 
-- Configure each YAML block in detail with the [`SDK Configuration Reference`](/sdk/configuration) and keep the [Adaptive Runtime Guide](/runtime_adaptive_flow) handy for controller specifics.
+- Configure each YAML block in detail with the [`SDK Configuration Reference`](/sdk/configuration).
 - Bring your own agent with the [`Bring Your Own Agent`](/sdk/adapters) guide.
 - See how runtime roles compare to training in [`Student & Verifying Teacher Roles`](/sdk/student-verifying-teacher-roles).

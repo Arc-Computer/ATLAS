@@ -49,11 +49,9 @@
             "group": "Core Concepts",
             "icon": "lightbulb",
             "pages": [
-              "runtime_adaptive_flow",
               "concepts/adaptive-dual-agent-reasoning",
               "concepts/hybrid-learning",
-              "concepts/reward-design",
-              "architecture/system-overview"
+              "concepts/reward-design"
             ]
           },
           {
@@ -87,8 +85,7 @@
           {
             "group": "Training API",
             "pages": [
-              "api-reference/trainers",
-              "api-reference/training-configs"
+              "api-reference/trainers"
             ]
           }
         ]
