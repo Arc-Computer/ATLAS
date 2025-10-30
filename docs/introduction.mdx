@@ -23,6 +23,16 @@ ATLAS turns your production environment into a training ground allowing for lear
 
 ATLAS gives you full observability and control over the learning process. The framework handles the orchestration complexity while you retain ownership of your data, models, and training decisions.
 
+## The Value Proposition
+
+**Reduced token costs:** ATLAS uses adaptive supervision lanes to allocate expensive reasoning only when needed, and improves policy efficiency over time via reward-guided optimization and teacher checkpoint updates.
+
+**Increased task success rate:** the student and teacher architecture performs real-time coaching and escalation, correcting errors before they impact production workflows.
+
+**Compounded & transferable knowledge:** persistent memory and offline RL turns production traces into learning traces, updating the teacher model so the agent continuously improves post-deployment. Your agent builds a durable library of domain expertise rather than treating deployment as a static endpoint.
+
+This results in agents that become cheaper, more accurate, and more reliable the longer they run.
+
 ## How It Works: Closed-Loop Learning System
 
 ATLAS wraps any base model (GPT, Claude, Gemini, open source checkpoints, or your own) with an inference-time closed-loop learning system that observes the agent's action space in its live environment. The system executes tasks with built-in quality control that reviews every decision, and the Reward System scores the outcome. That signal can immediately trigger retries or feed downstream training jobs. The same loop powers both the runtime SDK (real-time quality control) and the training stack (offline optimization).
