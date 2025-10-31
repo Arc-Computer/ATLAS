@@ -5,7 +5,7 @@ sidebarTitle: Configuration
 icon: sliders
 ---
 
-Atlas SDK configs are the control tower for runtime orchestration. Every key is validated by a Pydantic schema (`atlas-sdk/atlas/config/models.py`), so mistakes surface before the adaptive dual-agent reasoning loop—your agent paired with a verifying teacher—spins up.
+Atlas SDK configs are the control tower for runtime orchestration. Every key is validated by a Pydantic schema (`atlas-sdk/atlas/config/models.py`), so mistakes surface before the adaptive dual-agent reasoning loop—your agent paired with a verifying teacher—spins up. Atlas uses [LiteLLM](https://github.com/BerriAI/litellm) as its backend, making the system model-agnostic and compatible with 100+ LLM providers including OpenAI, Anthropic, local models (Ollama, vLLM), and custom endpoints.
 
 <Note>
 This page is a configuration reference. For adapter walkthroughs and orchestration concepts, see [`Bring Your Own Agent`](/sdk/adapters) and [`How Orchestration Works`](/sdk/orchestration).
@@ -70,6 +70,7 @@ This block wires the orchestrator to your agent. The schema is defined by `Adapt
 | `llm.provider` | `'openai'` or `'azure-openai'` | Yes | Adapter enforces OpenAI-compatible providers. |
 | `llm.model` | `str` | Yes | Choose the underlying chat model. |
 | `llm.api_key_env` | `str` (default `"OPENAI_API_KEY"`) | No | Point to a different environment variable. |
+| `llm.api_base` | `str \| null` | No | Override the base URL for local models (e.g., `http://localhost:11434` for Ollama) or custom endpoints. |
 | `llm.temperature` | `float` (default `0.0`, range `0..2`) | No | Increase for more exploratory generations. |
 | `llm.top_p` | `float \| null` | No | Apply nucleus sampling if desired. |
 | `llm.max_output_tokens` | `int \| null` | No | Cap response length. |
@@ -93,6 +94,10 @@ agent:
     temperature: 0.2
     max_output_tokens: 2048
 ```
+
+<Tip>
+**Using local models:** Set `api_base` to point to your local inference server. For Ollama: `api_base: http://localhost:11434`, `provider: openai`, `model: ollama/llama3.1` (LiteLLM uses the `ollama/` prefix). For vLLM or other OpenAI-compatible servers, use the same pattern with your server's URL.
+</Tip>
 
 ## Student Block (`student`)
 
@@ -136,7 +141,7 @@ Defines the verifying teacher persona that validates plans, emits guidance, and 
 
 | Parameter | Type / Default | Required? | Why adjust |
 | --- | --- | --- | --- |
-| `llm` | `LLMParameters` | Yes | Choose the verifying teacher model (often stronger than the student agent). |
+| `llm` | `LLMParameters` | Yes | Choose the verifying teacher model (often stronger than the student agent). Supports all LiteLLM providers; use `api_base` for local models. |
 | `max_review_tokens` | `int \| null` (default `null`) | No | Cap plan-review responses. |
 | `plan_cache_seconds` | `int` (default `300`) | No | Reuse approved plans for repeated task IDs. |
 | `guidance_max_tokens` | `int \| null` | No | Limit per-step feedback length. |
@@ -172,8 +177,8 @@ The Reward System evaluates each trajectory to decide whether to retry or accept
 
 | Parameter | Type / Default | Required? | Why adjust |
 | --- | --- | --- | --- |
-| `small_model` | `LLMParameters` | Yes | Fast path judge; keep lightweight for latency-sensitive checks. |
-| `large_model` | `LLMParameters` | Yes | Escalation judge invoked on disagreement. |
+| `small_model` | `LLMParameters` | Yes | Fast path judge; keep lightweight for latency-sensitive checks. Supports all LiteLLM providers including local models. |
+| `large_model` | `LLMParameters` | Yes | Escalation judge invoked on disagreement. Supports all LiteLLM providers including local models. |
 | `active_judges` | `Dict[str, bool]` (default `{"process": true, "helpfulness": true}`) | No | Toggle built-in dimensions or add custom judges. |
 | `variance_threshold` | `float` (default `0.15`) | No | Lower to escalate disagreements sooner. |
 | `uncertainty_threshold` | `float` (default `0.3`) | No | Raise to reduce escalations on ambiguous scores. |
