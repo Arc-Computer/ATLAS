@@ -93,7 +93,7 @@ python -c "from atlas.core import run; result = run(task='Summarize the latest A
 
 In both flows you should see an adaptive summary headline in the console stream (for example, `Adaptive: mode=coach confidence=0.58 certification=True`) followed by the plan–execute–synthesize loop. `atlas.runtime.telemetry.ConsoleTelemetryStreamer` auto-enables when stdout is a TTY; override with `stream_progress=True/False`.
 
-Need a local Postgres instance? Run `atlas init` to scaffold `atlas-postgres.yaml` and then `atlas storage up` to launch Docker. Skip this step if you prefer ephemeral runs.
+Need a local Postgres instance? Run `atlas init` to scaffold and launch the Docker Postgres stack. Skip this step if you prefer ephemeral runs.
 
 ### BYOA in 5 Minutes
 

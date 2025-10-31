@@ -96,7 +96,7 @@ agent:
 ```
 
 <Tip>
-**Using local models:** Set `api_base` to point to your local inference server. For Ollama: `api_base: http://localhost:11434`, `provider: openai`, `model: ollama/llama3.1` (LiteLLM uses the `ollama/` prefix). For vLLM or other OpenAI-compatible servers, use the same pattern with your server's URL.
+**Using local models:** Set `api_base` to point to your local inference server. For Ollama: `api_base: http://localhost:11434`, `provider: openai`, `model: ollama/llama3.1` (LiteLLM uses the `ollama/` prefix). For vLLM or other OpenAI-compatible servers, use the same pattern with your server's URL. Note: Some Ollama features may also require setting the `OLLAMA_API_BASE` environment variable.
 </Tip>
 
 ## Student Block (`student`)
