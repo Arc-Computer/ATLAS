@@ -74,6 +74,135 @@ def test_load_runtime_traces_round_trip(tmp_path: Path):
     assert record["reward_breakdown"]["judges"][0]["identifier"] == "accuracy"
 
 
+def test_load_traces_preserves_sdk_fields(tmp_path: Path):
+    """Verify all atlas-sdk fields are preserved during JSONL loading."""
+    payload = {
+        "task": "Test task",
+        "final_answer": "Test answer",
+        "plan": {"steps": [{"id": 1, "description": "step 1"}]},
+        "session_metadata": {
+            "learning_key": "task-1",
+            "teacher_notes": ["note1", "note2"],
+            "reward_summary": {"avg": 0.8},
+        },
+        # Essential session fields from atlas-sdk
+        "session_reward": {"score": 0.9, "rationale": "excellent"},
+        "trajectory_events": [{"event": "step_completed", "step_id": 1}],
+        "student_learning": "student cue text",
+        "teacher_learning": "teacher guidance text",
+        "learning_history": {"previous_attempts": 2, "improvement": 0.15},
+        "adaptive_summary": {"mode": "coach", "intensity": "medium"},
+        "steps": [
+            {
+                "step_id": 1,
+                "description": "Execute step",
+                "trace": "HUMAN: execute",
+                "output": "result",
+                "evaluation": {
+                    "score": 0.9,
+                    "rationale": "Good",
+                    "judges": [],
+                },
+                "validation": {"valid": True},
+                "attempts": 1,
+                "guidance": [],
+                # Essential step fields from atlas-sdk
+                "runtime": {"duration_ms": 1500, "tokens": 250},
+                "depends_on": [0],
+                "artifacts": {"file": "output.txt", "size": 1024},
+                "deliverable": "final output",
+                "metadata": {
+                    "attempt_history": [
+                        {"attempt": 1, "score": 0.9}
+                    ]
+                },
+            }
+        ],
+    }
+    path = tmp_path / "sdk_export.jsonl"
+    path.write_text(json.dumps(payload) + "\n", encoding="utf-8")
+
+    sessions = load_runtime_traces(path)
+    assert len(sessions) == 1
+    session = sessions[0]
+
+    # Verify essential session fields preserved
+    assert session.task == "Test task"
+    assert session.session_reward is not None
+    assert session.session_reward["score"] == 0.9
+    assert session.trajectory_events is not None
+    assert len(session.trajectory_events) == 1
+    assert session.student_learning == "student cue text"
+    assert session.teacher_learning == "teacher guidance text"
+    assert session.learning_history is not None
+    assert session.learning_history["improvement"] == 0.15
+    assert session.adaptive_summary is not None
+    assert session.adaptive_summary["mode"] == "coach"
+
+    # Verify property accessors work
+    assert session.learning_key == "task-1"
+    assert session.teacher_notes == ["note1", "note2"]
+    assert session.reward_summary == {"avg": 0.8}
+
+    # Verify essential step fields preserved
+    step = session.steps[0]
+    assert step.runtime is not None
+    assert step.runtime["duration_ms"] == 1500
+    assert step.depends_on == [0]
+    assert step.artifacts is not None
+    assert step.artifacts["file"] == "output.txt"
+    assert step.deliverable == "final output"
+
+    # Verify step property accessor works
+    assert step.attempt_history is not None
+    assert len(step.attempt_history) == 1
+
+    # Verify to_dict() round-trip
+    session_dict = session.to_dict()
+    assert session_dict["session_reward"]["score"] == 0.9
+    assert session_dict["student_learning"] == "student cue text"
+    assert session_dict["steps"][0]["runtime"]["duration_ms"] == 1500
+
+
+def test_backward_compatibility_missing_fields(tmp_path: Path):
+    """Verify old JSONL exports without new fields still load correctly."""
+    # Old SDK export format (no session_reward, learning fields, etc.)
+    payload = {
+        "task": "Old task",
+        "final_answer": "Old answer",
+        "plan": {"steps": [{"id": 1, "description": "step"}]},
+        "session_metadata": {},
+        "steps": [
+            {
+                "step_id": 1,
+                "description": "step",
+                "trace": "trace",
+                "output": "output",
+                "evaluation": {"score": 0.8, "judges": []},
+            }
+        ],
+    }
+    path = tmp_path / "old_export.jsonl"
+    path.write_text(json.dumps(payload) + "\n", encoding="utf-8")
+
+    sessions = load_runtime_traces(path)
+    assert len(sessions) == 1
+    session = sessions[0]
+
+    # Old fields still work
+    assert session.task == "Old task"
+    assert session.final_answer == "Old answer"
+
+    # New fields are None (graceful handling)
+    assert session.session_reward is None
+    assert session.trajectory_events is None
+    assert session.student_learning is None
+    assert session.teacher_learning is None
+    step = session.steps[0]
+    assert step.runtime is None
+    assert step.depends_on is None
+
+
 def test_sessions_to_rl_records_builds_prompt():
     from atlas_core.runtime import AtlasSessionTrace, AtlasStepTrace, AtlasRewardBreakdown
 
