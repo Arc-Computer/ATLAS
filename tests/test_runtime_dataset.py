@@ -203,6 +203,66 @@ def test_backward_compatibility_missing_fields(tmp_path: Path):
     assert step.depends_on is None
 
 
+def test_drift_alert_fallback_logic(tmp_path: Path):
+    """Verify drift_alert property checks both nested and top-level locations."""
+    # Test case 1: drift_alert nested inside drift dict (SDK format)
+    payload_nested = {
+        "task": "Test task",
+        "final_answer": "Test answer",
+        "plan": {"steps": []},
+        "session_metadata": {
+            "drift": {
+                "drift_alert": "nested_alert_value",
+                "score": 0.5,
+            }
+        },
+        "steps": [],
+    }
+
+    # Test case 2: drift_alert at top-level (legacy format)
+    payload_top_level = {
+        "task": "Test task 2",
+        "final_answer": "Test answer 2",
+        "plan": {"steps": []},
+        "session_metadata": {
+            "drift_alert": "top_level_alert_value",
+        },
+        "steps": [],
+    }
+
+    # Test case 3: drift_alert in both locations (nested takes precedence)
+    payload_both = {
+        "task": "Test task 3",
+        "final_answer": "Test answer 3",
+        "plan": {"steps": []},
+        "session_metadata": {
+            "drift": {
+                "drift_alert": "nested_priority",
+            },
+            "drift_alert": "top_level_fallback",
+        },
+        "steps": [],
+    }
+
+    path = tmp_path / "drift_test.jsonl"
+    with path.open("w", encoding="utf-8") as f:
+        f.write(json.dumps(payload_nested) + "\n")
+        f.write(json.dumps(payload_top_level) + "\n")
+        f.write(json.dumps(payload_both) + "\n")
+
+    sessions = load_runtime_traces(path)
+    assert len(sessions) == 3
+
+    # Verify nested location works
+    assert sessions[0].drift_alert == "nested_alert_value"
+
+    # Verify top-level fallback works
+    assert sessions[1].drift_alert == "top_level_alert_value"
+
+    # Verify nested takes precedence when both exist
+    assert sessions[2].drift_alert == "nested_priority"
+
+
 def test_sessions_to_rl_records_builds_prompt():
     from atlas_core.runtime import AtlasSessionTrace, AtlasStepTrace, AtlasRewardBreakdown
 

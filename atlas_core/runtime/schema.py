@@ -160,7 +160,16 @@ class AtlasSessionTrace:
 
     @property
     def drift_alert(self) -> Optional[Any]:
-        """Property accessor for drift_alert from session_metadata."""
+        """Get drift alert flag from session metadata.
+
+        Checks both drift.drift_alert (nested) and session_metadata.drift_alert
+        (top-level) for backward compatibility with different export formats.
+        """
+        drift_payload = self.session_metadata.get("drift")
+        if drift_payload is None:
+            return self.session_metadata.get("drift_alert")
+        if isinstance(drift_payload, dict):
+            return drift_payload.get("drift_alert") or self.session_metadata.get("drift_alert")
         return self.session_metadata.get("drift_alert")
 
     @property
