@@ -110,8 +110,8 @@ def _coerce_step(step: Dict[str, Any]) -> AtlasStepTrace:
         for key, value in step.items()
         if key not in excluded_keys
     }
-    # Merge explicit metadata with extra fields
-    merged_metadata = {**explicit_metadata, **extra_metadata}
+    # Merge extra fields with explicit metadata, so explicit_metadata takes precedence
+    merged_metadata = {**extra_metadata, **explicit_metadata}
     return AtlasStepTrace(
         step_id=step.get("step_id", step.get("id", 0)),
         description=step.get("description", ""),
