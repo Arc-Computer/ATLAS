@@ -78,6 +78,40 @@ def _coerce_step(step: Dict[str, Any]) -> AtlasStepTrace:
         tool_params = raw_tool_params or {}
 
     tool_name = step.get("tool") or tool_params.get("name")
+    # Collect metadata: merge explicit metadata dict with any remaining unknown fields
+    explicit_metadata = step.get("metadata", {}) or {}
+    if not isinstance(explicit_metadata, dict):
+        explicit_metadata = {}
+    # Exclude known fields to avoid duplication
+    excluded_keys = {
+        "step_id",
+        "id",
+        "description",
+        "trace",
+        "output",
+        "evaluation",
+        "reward",
+        "validation",
+        "attempts",
+        "guidance",
+        "context",
+        "context_outputs",
+        "prior_results",
+        "tool",
+        "tool_params",
+        "runtime",
+        "depends_on",
+        "artifacts",
+        "deliverable",
+        "metadata",  # Exclude metadata key itself
+    }
+    extra_metadata = {
+        key: value
+        for key, value in step.items()
+        if key not in excluded_keys
+    }
+    # Merge extra fields with explicit metadata, so explicit_metadata takes precedence
+    merged_metadata = {**extra_metadata, **explicit_metadata}
     return AtlasStepTrace(
         step_id=step.get("step_id", step.get("id", 0)),
         description=step.get("description", ""),
@@ -90,40 +124,42 @@ def _coerce_step(step: Dict[str, Any]) -> AtlasStepTrace:
         validation=step.get("validation", {}),
         attempts=step.get("attempts", 1),
         guidance=step.get("guidance", []) or [],
-        metadata={
-            key: value
-            for key, value in step.items()
-            if key
-            not in {
-                "step_id",
-                "id",
-                "description",
-                "trace",
-                "output",
-                "evaluation",
-                "reward",
-                "validation",
-                "attempts",
-                "guidance",
-                "context",
-                "context_outputs",
-                "prior_results",
-                "tool",
-                "tool_params",
-            }
-        },
+        # Essential step fields (match atlas-sdk PR #121)
+        runtime=step.get("runtime"),
+        depends_on=step.get("depends_on"),
+        artifacts=step.get("artifacts"),
+        deliverable=step.get("deliverable"),
+        metadata=merged_metadata,
     )
 
 
 def _coerce_session(record: Dict[str, Any]) -> AtlasSessionTrace:
+    """Convert JSONL dict to AtlasSessionTrace, preserving all fields."""
     steps_field = record.get("steps") or []
     steps = [_coerce_step(step) for step in steps_field]
+
+    # Helper to safely parse JSON strings
+    def parse_json_field(value):
+        if isinstance(value, str):
+            try:
+                return json.loads(value)
+            except json.JSONDecodeError:
+                return None
+        return value
+
     return AtlasSessionTrace(
         task=record.get("task", ""),
         final_answer=record.get("final_answer", ""),
         plan=record.get("plan", {}),
         steps=steps,
         session_metadata=record.get("session_metadata", {}) or {},
+        # Essential training fields (match atlas-sdk PR #121)
+        session_reward=parse_json_field(record.get("session_reward")) or parse_json_field(record.get("reward")),
+        trajectory_events=record.get("trajectory_events"),
+        student_learning=record.get("student_learning"),
+        teacher_learning=record.get("teacher_learning"),
+        learning_history=record.get("learning_history"),
+        adaptive_summary=record.get("adaptive_summary"),
     )
 
 
@@ -202,7 +238,7 @@ def build_executor_prompt(step: AtlasStepTrace, session: AtlasSessionTrace) -> s
 def sessions_to_rl_records(
     sessions: Iterable[AtlasSessionTrace],
 ) -> List[Dict[str, Any]]:
-    """Convert runtime sessions into RL-ready dataset records."""
+    """Convert runtime sessions into RL-ready dataset records with essential fields."""
 
     records: List[Dict[str, Any]] = []
     for session in sessions:
@@ -224,6 +260,17 @@ def sessions_to_rl_records(
                 "step_output": step.output,
                 "step_trace": step.trace,
                 "session_metadata": session.session_metadata,
+                # Essential training fields for GRPO/distillation
+                "session_reward": session.session_reward,
+                "learning_history": session.learning_history,
+                "student_learning": session.student_learning,
+                "teacher_learning": session.teacher_learning,
+                "trajectory_events": session.trajectory_events,
+                "adaptive_summary": session.adaptive_summary,
+                # Step-level metadata
+                "runtime": step.runtime,
+                "artifacts": step.artifacts,
+                "attempt_history": step.attempt_history,
             }
             ground_truth = step.metadata.get("ground_truth") or session.session_metadata.get("ground_truth")
             if ground_truth:
