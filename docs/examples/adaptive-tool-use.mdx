@@ -1,0 +1,226 @@
+---
+title: Adaptive Tool Use with MCP
+description: Production-ready example showing measurable tool efficiency improvements through progressive learning
+sidebarTitle: Adaptive Tool Use
+icon: wrench
+---
+
+## Overview
+
+This example demonstrates how Atlas SDK enables agents to learn efficient tool usage patterns. Using the Model Context Protocol (MCP) to provide filesystem tools to a LangGraph agent, the example shows measurable improvement across 25 progressive tasks: 30-40% fewer tool calls and 95%+ completion rates by task 25.
+
+**What you'll see:**
+- MCP server with 5 file operation tools
+- LangGraph agent integration
+- Progressive learning (simple → complex tasks)
+- Measurable efficiency gains
+- Total cost: $0.10-0.20 for complete 25-run session
+
+**Repository:** [atlas-sdk/examples/mcp_tool_learning](https://github.com/Arc-Computer/atlas-sdk/tree/main/examples/mcp_tool_learning)
+
+## Architecture
+
+```
+Learning Harness (25 tasks)
+         ↓
+   Atlas SDK Core
+   (orchestration + rewards)
+         ↓
+   LangGraph Agent
+         ↓
+   MultiServerMCPClient
+         ↓
+   MCP Server
+   (5 file operation tools)
+```
+
+**Tool inventory:**
+- `read_file` - Read file contents
+- `write_file` - Write/create files
+- `list_files` - List directory contents
+- `search_content` - Regex search in files
+- `run_command` - Safe shell commands (ls, grep, wc)
+
+## Quick Start
+
+### Prerequisites
+
+```bash
+pip install arc-atlas langchain-mcp-adapters langchain-openai langgraph mcp anyio
+export OPENAI_API_KEY=sk-...
+export GEMINI_API_KEY=...
+atlas init  # Start Postgres for telemetry
+```
+
+### Run Complete Learning Session
+
+```bash
+cd examples/mcp_tool_learning
+python learning_harness.py
+```
+
+Executes 25 tasks with progressive complexity:
+- **Phase 1 (tasks 1-5):** Basic file operations
+- **Phase 2 (tasks 6-10):** Multi-step operations
+- **Phase 3 (tasks 11-15):** Complex workflows
+- **Phase 4 (tasks 16-20):** Advanced scenarios
+- **Phase 5 (tasks 21-25):** Edge cases and error handling
+
+### Run Single Task
+
+```bash
+atlas run --config examples/mcp_tool_learning/config.yaml \
+          --task "List all files in sample_workspace and read notes.txt"
+```
+
+## Learning Objectives
+
+The agent learns to:
+1. **Minimize redundant operations** - Cache file lists instead of listing repeatedly
+2. **Optimize tool selection** - Choose search vs read based on task requirements
+3. **Handle errors gracefully** - Recover from missing files and invalid operations
+4. **Plan efficiently** - Break complex tasks into minimal step sequences
+5. **Build context awareness** - Understand when list → read → write sequence is optimal
+
+## Measured Results
+
+### Early Runs (Tasks 1-5)
+- Tool calls per task: 8-12 (trial and error)
+- Reward scores: 0.6-0.7
+- Occasional incorrect tool selection
+
+### Later Runs (Tasks 15-25)
+- Tool calls per task: 4-6 (optimized)
+- Reward scores: 0.8-0.9
+- Consistent correct tool selection
+- Proactive error handling
+
+**Key Metrics:**
+- Tool call reduction: 30-40%
+- Completion rate: 95%+ by task 25
+- Reward progression: +0.2-0.3 average increase
+
+## Configuration
+
+The example uses a Python adapter to integrate the LangGraph agent:
+
+```yaml
+agent:
+  type: python
+  import_path: examples.mcp_tool_learning.mcp_agent
+  attribute: create_agent
+```
+
+Reward system provides learning signals for efficient tool usage:
+
+```yaml
+rim:
+  judge_prompt: |
+    Reward effective tool usage:
+    - Correct tool for each task
+    - Minimal redundant operations
+    - Proper error handling
+```
+
+## Viewing Learning Progress
+
+### Check Learning Playbook
+
+```bash
+python -m atlas.cli.learning --project mcp-tool-learning
+```
+
+Shows:
+- Tool usage patterns over time
+- Reward progression
+- Common failure modes
+- Synthesized best practices
+
+### Export Session Traces
+
+```bash
+arc-atlas --database-url postgresql://atlas:atlas@localhost:5433/atlas \
+          --output mcp_traces.jsonl \
+          --limit 25
+```
+
+### Query Database Directly
+
+```sql
+SELECT session_id, task, (reward_stats->>'score')::float as reward, created_at
+FROM sessions
+WHERE metadata->>'learning_key' = 'mcp-tool-learning'
+ORDER BY session_id DESC
+LIMIT 25;
+```
+
+## Customization
+
+### Add Domain-Specific Tools
+
+Modify `mcp_server.py` to add tools for your use case:
+
+```python
+@server.call_tool()
+async def database_query(query: str) -> str:
+    """Execute safe database queries"""
+    # Your implementation
+    return results
+```
+
+### Adjust Learning Tasks
+
+Edit `LEARNING_TASKS` in `learning_harness.py`:
+
+```python
+LEARNING_TASKS = [
+    "Your domain-specific task 1",
+    "Your domain-specific task 2",
+    # ... progressive complexity
+]
+```
+
+### Tune Reward Signals
+
+Update `judge_prompt` in `config.yaml` to reward domain-specific behaviors:
+
+```yaml
+rim:
+  judge_prompt: |
+    Reward effective database operations:
+    - Efficient query construction
+    - Proper index usage
+    - Connection pooling
+```
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| MCP server connection errors | Verify server_path in mcp_agent.py points to correct file |
+| Async event loop errors | Run with `python learning_harness.py` (not `python -i`) |
+| API rate limits | Increase sleep duration between tasks in learning_harness.py |
+| High costs | Use GPT-4o-mini for both student and teacher; reduce task count |
+
+## Next Steps
+
+<CardGroup cols="2">
+  <Card title="Custom Adapters" icon="plug" href="/sdk/adapters">
+    Connect your own agent framework
+  </Card>
+  <Card title="Configuration Guide" icon="sliders" href="/sdk/configuration">
+    Tune orchestration and learning parameters
+  </Card>
+  <Card title="Export Training Data" icon="database" href="/training/offline/training-data-pipeline">
+    Use runtime traces for offline training
+  </Card>
+  <Card title="Learning System" icon="brain" href="/sdk/learning-system">
+    Understand persistent memory and playbooks
+  </Card>
+</CardGroup>
+
+## Related Resources
+
+- [Full source code](https://github.com/Arc-Computer/atlas-sdk/tree/main/examples/mcp_tool_learning)
+- [Model Context Protocol documentation](https://modelcontextprotocol.io)
+- [LangGraph documentation](https://langchain-ai.github.io/langgraph/)

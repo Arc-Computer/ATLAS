@@ -95,36 +95,19 @@ In both flows you should see an adaptive summary headline in the console stream 
 
 Need a local Postgres instance? Run `atlas init` to scaffold and launch the Docker Postgres stack. Skip this step if you prefer ephemeral runs.
 
-### BYOA in 5 Minutes
+<Info>
+**Want to see adaptive learning in action?** Check out the [Adaptive Tool Use example](/examples/adaptive-tool-use) showing a LangGraph agent learning efficient MCP tool usage across 25 tasks, demonstrating 30-40% reduction in tool calls.
+</Info>
 
-Atlas wraps any agent that can expose either an OpenAI-compatible API, an HTTP endpoint, or a Python callable.
+### Bring Your Own Agent
 
-**Autodiscovery path** – Keep your agent decorated with `@atlas.agent` / `@atlas.environment`, then run:
+Atlas wraps any agent that exposes an OpenAI-compatible API, HTTP endpoint, or Python callable. Three adapter types are available:
 
-```bash
-atlas env init --task "Investigate production incident" --scaffold-config-full
-atlas run --config .atlas/generated_config.yaml --task "Investigate production incident"
-```
+- **OpenAI adapter** - For GPT, Claude via OpenAI-compatible APIs
+- **HTTP adapter** - For microservices, serverless functions
+- **Python adapter** - For LangGraph, local callables, custom agents
 
-**Manual config path** – Copy one of the starter configs in `configs/examples/` and adjust the `agent` block. For example, to target a local HTTP service:
-
-```yaml
-agent:
-  type: http_api
-  name: my-http-agent
-  system_prompt: |
-    You are the Atlas Student. Solve the task carefully and explain decisions.
-  tools: []
-  transport:
-    base_url: http://localhost:8080/agent
-    timeout_seconds: 60
-```
-
-Run it with the same snippet as above, swapping the `config_path`. Atlas will stream the plan, tool calls, and reward breakdowns as it executes your agent.
-
-<Tip>
-Discovery now auto-loads `.env` values (including `PYTHONPATH` adjustments) and captures provider/model metadata from your factories. You can inspect `.atlas/discover.json` to confirm which adapters were selected before promoting the config to production.
-</Tip>
+See the [Agent Adapters guide](/sdk/adapters) for complete configuration options and examples.
 
 ## What Just Happened?
 
@@ -159,9 +142,17 @@ To add tools, enable persistence, or use a different agent, switch the `config_p
 
 ## Next Steps
 
-- Persist sessions and build datasets with [`Export Runtime Traces`](/sdk/export-traces), then follow the training loop in [`Custom Teacher Training`](/training/offline/grpo-training).
-- Dive into [`Atlas CLI Reference`](/sdk/cli-reference) for the complete autodiscovery and review workflows, then read [`SDK Configuration`](/sdk/configuration) to fine-tune each YAML block.
-- Learn how the planner, reviewer, and evaluator cooperate in [`How Orchestration Works`](/sdk/orchestration).
-- Wrap your own agent with the adapters in [`Bring Your Own Agent`](/sdk/adapters).
-- Compare runtime vs training expectations in [`Student & Verifying Teacher Roles`](/sdk/student-verifying-teacher-roles).
-- Ready for the offline pipeline? Return to the [`Atlas Workflow Overview`](/sdk/quickstart) when you need to bridge exports into GRPO training.
+<CardGroup cols="2">
+  <Card title="Adaptive Tool Use" icon="wrench" href="/examples/adaptive-tool-use">
+    See measurable learning with MCP tool integration
+  </Card>
+  <Card title="Agent Adapters" icon="plug" href="/sdk/adapters">
+    Connect your own agent framework
+  </Card>
+  <Card title="Configuration Guide" icon="sliders" href="/sdk/configuration">
+    Fine-tune orchestration and learning parameters
+  </Card>
+  <Card title="Export Training Data" icon="database" href="/sdk/export-traces">
+    Persist sessions and build datasets for offline training
+  </Card>
+</CardGroup>

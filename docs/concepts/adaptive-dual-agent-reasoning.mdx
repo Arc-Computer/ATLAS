@@ -24,7 +24,7 @@ Think of it as pairing every agent run with an expert reviewer. The reviewer doe
 | Risk of regression | Preserves baseline capabilities |
 | Weeks to deploy updates | Hours to roll out new teacher checkpoints |
 
-For wiring details, see [`Student & Verifying Teacher Roles`](/sdk/student-verifying-teacher-roles) for the runtime [`personas`](/reference/glossary#persona) and [`Offline Training`](/training/offline/grpo-training) to learn how new teachers are trained.
+For runtime implementation details, see [`How Orchestration Works`](/sdk/orchestration) for the runtime [`personas`](/reference/glossary#persona) and [`Offline Training`](/training/offline/grpo-training) to learn how new teachers are trained.
 
 ## Why it works
 
@@ -159,7 +159,7 @@ Export runtime traces (`arc-atlas --output traces.jsonl`) and run `python script
   <Card title="Reward System" icon="trophy" href="/concepts/reward-design">
     Understand how guidance quality is quantified.
   </Card>
-  <Card title="Performance Benchmarks" icon="chart-line" href="/examples/sota-on-tau-squared-bench">
+  <Card title="Production Example" icon="wrench" href="/examples/adaptive-tool-use">
     Explore τ²-bench results in detail.
   </Card>
   <Card title="Offline Training" icon="dumbbell" href="/training/offline/grpo-training">
@@ -171,4 +171,4 @@ Export runtime traces (`arc-atlas --output traces.jsonl`) and run `python script
 
 - [ATLAS Technical Report](/reference/technical-report) — Architecture and evaluations
 - [Offline Training Guide](/training/offline/grpo-training) — Hands-on teacher training walkthrough
-- [SRE Case Study](/examples/sre-root-cause-analysis) — Applying the loop to incident management
+- [Adaptive Tool Use](/examples/adaptive-tool-use) — Production example with MCP integration

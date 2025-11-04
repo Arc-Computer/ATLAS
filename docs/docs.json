@@ -32,8 +32,14 @@
               "sdk/cli-reference",
               "sdk/adapters",
               "sdk/export-traces",
-              "sdk/orchestration",
-              "sdk/student-verifying-teacher-roles"
+              "sdk/orchestration"
+            ]
+          },
+          {
+            "group": "Examples",
+            "icon": "flask",
+            "pages": [
+              "examples/adaptive-tool-use"
             ]
           },
           {
