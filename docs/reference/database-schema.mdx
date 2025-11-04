@@ -51,7 +51,7 @@ Link discovery runs back to runtime sessions through shared metadata (for exampl
 | `id` | `SERIAL` | Primary key referenced by all child tables. |
 | `task` | `TEXT` | User task prompt. |
 | `status` | `TEXT` | Runtime status (`running`, `succeeded`, `failed`). |
-| `metadata` | `JSONB` | Rich telemetry (adaptive summary, triage dossier, drift info, etc.). |
+| `metadata` | `JSONB` | Rich telemetry (adaptive summary, triage dossier, drift info, learning history, etc.). |
 | `final_answer` | `TEXT` | Student output persisted at completion. |
 | `reward` / `reward_stats` / `reward_audit` | `JSONB` | Judge outputs and aggregate statistics. |
 | `student_learning` / `teacher_learning` | `TEXT` | Per-session learning notes (pre-registry). |
@@ -59,14 +59,63 @@ Link discovery runs back to runtime sessions through shared metadata (for exampl
 | `review_notes` | `TEXT` | Reviewer-supplied context. |
 | `created_at` / `completed_at` | `TIMESTAMPTZ` | Run timing. |
 
-An index exists on `metadata->>'learning_key'` so you can quickly pivot by learning thread. Use `review_status` to filter
-exports and harness runs, and join the `metadata` hash to inspect `adaptive_summary`, `execution_mode`, or drift alerts.
+Three performance indexes optimize training data queries:
+- `sessions_reward_score_idx`: Functional index on `(reward_stats->>'score')::float` for 10-100x faster reward filtering
+- `sessions_created_at_idx`: Index on `created_at DESC` for 50-100x faster date range queries
+- `sessions_metadata_gin_idx`: GIN index on `metadata` JSONB for learning key queries
+
+Use `review_status` to filter exports and harness runs, and join the `metadata` hash to inspect `adaptive_summary`, `execution_mode`, `learning_history`, or drift alerts.
+
+### Metadata Schema Fields (v0.1.13+)
+
+The `metadata` JSONB column contains structured telemetry. Key fields accessible via `AtlasSessionTrace` dataclass:
+
+**Essential fields:**
+- `session_reward`: Aggregate reward with score and uncertainty
+- `trajectory_events`: Ordered list of runtime events
+- `student_learning`: Student persona learning notes
+- `teacher_learning`: Teacher persona learning notes
+- `learning_history`: Historical learning data
+- `adaptive_summary`: Mode selection (auto/paired/coach) and probe evidence
+
+**Property accessors** (loaded on demand):
+- `learning_key`: Task identifier for grouping sessions
+- `teacher_notes`: Guidance provided during execution
+- `reward_summary`: Simplified reward statistics
+- `drift`: Detected schema or behavior drift
+- `drift_alert`: Critical drift warnings requiring review
+- `triage_dossier`: Pre-execution risk assessment
+- `reward_audit`: Detailed judge breakdowns
 
 ### Related tables
 
 - `plans` – JSON plan snapshot keyed by `session_id`.
 - `step_results` / `step_attempts` – per-step traces and validation payloads.
 - `guidance_notes` – ordered teacher guidance emitted during execution.
+
+### step_results Schema Fields (v0.1.13+)
+
+Step-level telemetry accessible via `AtlasStepTrace` dataclass:
+
+**Essential fields:**
+- `runtime`: Step execution time in milliseconds
+- `depends_on`: Array of step IDs this step depends on (dependency graph)
+
+**Property accessors:**
+- `attempt_history`: Previous attempt records if step was retried
+
+Query step execution times and dependencies for performance analysis:
+
+```sql
+-- Average step runtime by tool
+SELECT
+  metadata->>'tool' AS tool_name,
+  AVG((metadata->>'runtime')::float) AS avg_runtime_ms
+FROM step_results
+WHERE metadata->>'runtime' IS NOT NULL
+GROUP BY tool_name
+ORDER BY avg_runtime_ms DESC;
+```
 
 ## trajectory_events
 
@@ -97,27 +146,58 @@ the current pamphlet.
 ## Query Examples
 
 ```sql
--- Sessions awaiting review with drift alerts.
-SELECT id, task, metadata->'drift' AS drift
+-- High-reward sessions for training (using performance index)
+SELECT id, task, (reward_stats->>'score')::float AS reward
+FROM sessions
+WHERE (reward_stats->>'score')::float >= 0.8
+  AND status = 'succeeded'
+ORDER BY created_at DESC
+LIMIT 1000;
+
+-- Sessions awaiting review with drift alerts
+SELECT id, task, metadata->'drift_alert' AS drift_alert
 FROM sessions
 WHERE review_status = 'pending'
-  AND metadata ? 'drift';
+  AND metadata ? 'drift_alert';
 
--- Latest playbooks for a service.
+-- Latest playbooks for a service
 SELECT learning_key, updated_at, student_learning
 FROM learning_registry
 WHERE learning_key LIKE 'service:%'
 ORDER BY updated_at DESC;
 
--- Count validation events per session.
+-- Count validation events per session
 SELECT session_id, COUNT(*) AS validation_events
 FROM trajectory_events
 WHERE event ->> 'event_type' = 'validation'
 GROUP BY session_id;
+
+-- Learning history for a task (using GIN index)
+SELECT
+  id,
+  task,
+  metadata->'learning_history' AS learning_history,
+  (reward_stats->>'score')::float AS reward
+FROM sessions
+WHERE metadata @> '{"learning_key": "security-review"}'
+ORDER BY created_at DESC;
+
+-- Step performance analysis
+SELECT
+  s.task,
+  sr.metadata->>'tool' AS tool,
+  AVG((sr.metadata->>'runtime')::float) AS avg_runtime_ms,
+  COUNT(*) AS step_count
+FROM step_results sr
+JOIN sessions s ON sr.session_id = s.id
+WHERE sr.metadata->>'runtime' IS NOT NULL
+GROUP BY s.task, sr.metadata->>'tool'
+ORDER BY avg_runtime_ms DESC;
 ```
 
 ## Related Pages
 
-- [`Export Runtime Traces`](/sdk/export-traces) – CLI usage and JSON schema for session exports.
-- [`Runtime Safety & Review`](/sdk/runtime-safety) – how review gating and drift detection interact with these tables.
-- [`Evaluation Harnesses`](/benchmarks/evaluation-harnesses) – harnesses that query the schema for analytics.
+- [`Training Data Pipeline`](/training/offline/training-data-pipeline) – Direct database access for training data extraction
+- [`Export Runtime Traces`](/sdk/export-traces) – CLI usage and JSON schema for session exports
+- [`Runtime Safety & Review`](/sdk/runtime-safety) – Review gating and drift detection
+- [`Evaluation Harnesses`](/benchmarks/evaluation-harnesses) – Harnesses that query the schema for analytics

@@ -42,6 +42,7 @@
             "pages": [
               "training/configuration",
               "training/offline/grpo-training",
+              "training/offline/training-data-pipeline",
               "training/online/continuous-learning"
             ]
           },
@@ -98,6 +99,14 @@
   },
   "appearance": {
     "default": "light"
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude"
+    ]
   },
   "background": {
     "color": {

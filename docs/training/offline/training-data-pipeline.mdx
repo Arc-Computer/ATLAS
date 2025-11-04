@@ -1,0 +1,344 @@
+---
+title: Training Data Pipeline
+description: Direct database access for training data extraction and preprocessing
+sidebarTitle: Training Data Pipeline
+icon: database
+---
+
+## Overview
+
+The Atlas SDK provides direct PostgreSQL access for training data extraction, eliminating JSONL export intermediates and preventing schema drift between SDK and ATLAS Core. Query training sessions with reward-based filtering, selective data loading, and pagination support for large datasets.
+
+## Prerequisites
+
+- Atlas SDK v0.1.13 or higher
+- PostgreSQL database with runtime traces (configured via `storage.database_url`)
+- Python 3.10+
+
+## Direct Database Access
+
+### Basic Usage
+
+Query training sessions directly from PostgreSQL:
+
+```python
+from atlas.training_data import get_training_sessions
+
+# Query sessions with filters
+sessions = get_training_sessions(
+    db_url="postgresql://atlas:atlas@localhost:5433/atlas",
+    min_reward=0.8,
+    learning_key="security-review",
+    status_filters=["succeeded"],
+    limit=1000
+)
+
+# Access essential fields
+for session in sessions:
+    reward_score = session.session_reward["score"]
+    trajectory = session.trajectory_events
+    learning_data = session.learning_history
+
+    # Optional fields via property accessors
+    task_id = session.learning_key
+    drift_status = session.drift_alert
+```
+
+### Async Queries
+
+For high-throughput training pipelines:
+
+```python
+from atlas.training_data import get_training_sessions_async
+
+sessions = await get_training_sessions_async(
+    db_url="postgresql://atlas:atlas@localhost:5433/atlas",
+    min_reward=0.7,
+    limit=5000
+)
+```
+
+## Query Filters
+
+### Reward-Based Filtering
+
+Filter sessions by reward score using JSONB operators:
+
+```python
+sessions = get_training_sessions(
+    db_url="postgresql://atlas:atlas@localhost:5433/atlas",
+    min_reward=0.8,  # Only sessions with reward ≥ 0.8
+    max_reward=1.0   # Sessions with reward ≤ 1.0
+)
+```
+
+### Status Filtering
+
+Filter by runtime completion status:
+
+```python
+sessions = get_training_sessions(
+    db_url="postgresql://atlas:atlas@localhost:5433/atlas",
+    status_filters=["succeeded", "failed"],  # Include both
+    learning_key="task-batch-1"
+)
+```
+
+### Date Range Filtering
+
+Query sessions within a specific time window:
+
+```python
+from datetime import datetime, timedelta
+
+start_date = datetime.now() - timedelta(days=7)
+end_date = datetime.now()
+
+sessions = get_training_sessions(
+    db_url="postgresql://atlas:atlas@localhost:5433/atlas",
+    start_date=start_date,
+    end_date=end_date
+)
+```
+
+## Selective Data Loading
+
+Control which data is loaded to optimize performance:
+
+```python
+sessions = get_training_sessions(
+    db_url="postgresql://atlas:atlas@localhost:5433/atlas",
+    include_trajectory_events=False,  # Skip trajectory events
+    include_learning_data=True,       # Load learning history
+    limit=1000
+)
+```
+
+**Performance impact:**
+- `include_trajectory_events=False`: 50-70% faster queries
+- `include_learning_data=False`: 30-40% faster queries
+
+## Pagination
+
+Process large datasets in batches using async iterators:
+
+```python
+from atlas.training_data import paginate_sessions
+
+async for batch in paginate_sessions(
+    db_url="postgresql://atlas:atlas@localhost:5433/atlas",
+    batch_size=100,
+    min_reward=0.7
+):
+    # Process batch of 100 sessions
+    for session in batch:
+        process_session(session)
+```
+
+## Session Count Queries
+
+Get session counts without loading full data:
+
+```python
+from atlas.training_data import count_training_sessions
+
+total = count_training_sessions(
+    db_url="postgresql://atlas:atlas@localhost:5433/atlas",
+    min_reward=0.8,
+    learning_key="task-1"
+)
+print(f"Found {total} sessions matching criteria")
+```
+
+## Fetch Individual Sessions
+
+Retrieve a specific session by ID:
+
+```python
+from atlas.training_data import get_session_by_id
+
+session = get_session_by_id(
+    db_url="postgresql://atlas:atlas@localhost:5433/atlas",
+    session_id=42
+)
+```
+
+## Schema Fields
+
+### AtlasSessionTrace
+
+**Essential fields** (always loaded):
+- `session_reward`: Aggregate reward with score and uncertainty
+- `trajectory_events`: Ordered list of runtime events
+- `student_learning`: Student persona learning notes
+- `teacher_learning`: Teacher persona learning notes
+- `learning_history`: Historical learning data
+- `adaptive_summary`: Mode selection and probe evidence
+
+**Property accessors** (loaded on demand):
+- `learning_key`: Task identifier for grouping sessions
+- `teacher_notes`: Guidance provided during execution
+- `reward_summary`: Simplified reward statistics
+- `drift`: Detected schema or behavior drift
+- `drift_alert`: Critical drift warnings
+- `triage_dossier`: Pre-execution risk assessment
+- `reward_audit`: Detailed judge breakdowns
+
+### AtlasStepTrace
+
+**Essential fields**:
+- `runtime`: Execution time in milliseconds
+- `depends_on`: Step dependency graph
+
+**Property accessors**:
+- `attempt_history`: Previous attempt records
+
+## Performance Optimization
+
+### Database Indexes
+
+The SDK automatically creates performance indexes:
+
+```sql
+-- Reward filtering (10-100x faster)
+CREATE INDEX sessions_reward_score_idx
+ON sessions ((reward_stats->>'score')::float);
+
+-- Date range queries (50-100x faster)
+CREATE INDEX sessions_created_at_idx
+ON sessions (created_at DESC);
+
+-- Learning key queries
+CREATE INDEX sessions_metadata_gin_idx
+ON sessions USING GIN (metadata);
+```
+
+### Query Optimization
+
+For training workloads with millions of sessions:
+
+```python
+# Use selective loading
+sessions = get_training_sessions(
+    db_url="postgresql://atlas:atlas@localhost:5433/atlas",
+    include_trajectory_events=False,  # Skip if not needed
+    limit=10000
+)
+
+# Use pagination for large datasets
+async for batch in paginate_sessions(
+    db_url="postgresql://atlas:atlas@localhost:5433/atlas",
+    batch_size=500,
+    min_reward=0.8
+):
+    process_batch(batch)
+```
+
+## Integration with Training Pipeline
+
+### Step 1: Query Training Data
+
+```python
+from atlas.training_data import get_training_sessions
+
+# Extract high-quality sessions
+sessions = get_training_sessions(
+    db_url="postgresql://atlas:atlas@localhost:5433/atlas",
+    min_reward=0.8,
+    status_filters=["succeeded"],
+    limit=10000
+)
+```
+
+### Step 2: Convert to Training Format
+
+```python
+from trainers.runtime_dataset import sessions_to_rl_records
+
+# Convert to RL training records
+records = sessions_to_rl_records(sessions)
+```
+
+### Step 3: Train with GRPO
+
+```bash
+# Launch training
+scripts/launch.sh 4 configs/run/teacher_rcl.yaml \
+  model_name_or_path=checkpoints/sft/final
+```
+
+See [GRPO Training Guide](/training/offline/grpo-training) for complete training pipeline.
+
+## Migration from JSONL Export
+
+### Legacy Approach
+
+```bash
+# Old: Export to JSONL first
+arc-atlas \
+  --database-url postgresql://localhost:5433/atlas \
+  --output traces.jsonl \
+  --limit 1000
+
+# Then load from JSONL
+sessions = load_runtime_traces("traces.jsonl")
+```
+
+### Direct Database Access
+
+```python
+# New: Query directly
+from atlas.training_data import get_training_sessions
+
+sessions = get_training_sessions(
+    db_url="postgresql://localhost:5433/atlas",
+    limit=1000
+)
+```
+
+**Benefits:**
+- No intermediate JSONL files
+- Filters applied at database level
+- 10-100x faster queries with indexes
+- No schema drift between SDK and training
+
+## Troubleshooting
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Connection refused | PostgreSQL not running | Start Postgres: `docker compose up -d postgres` |
+| Empty result set | No sessions match filters | Verify filters with `count_training_sessions()` |
+| Memory error | Loading too many sessions | Use pagination with smaller batch sizes |
+| Missing fields | SDK version mismatch | Upgrade to atlas-sdk ≥ 0.1.13 |
+
+## API Reference
+
+### Core Functions
+
+```python
+# Sync variants
+get_training_sessions(db_url, min_reward=None, max_reward=None, ...)
+get_session_by_id(db_url, session_id)
+count_training_sessions(db_url, min_reward=None, ...)
+
+# Async variants
+get_training_sessions_async(db_url, min_reward=None, ...)
+get_session_by_id_async(db_url, session_id)
+count_training_sessions_async(db_url, min_reward=None, ...)
+
+# Pagination
+paginate_sessions(db_url, batch_size=100, min_reward=None, ...)
+```
+
+### Converter Functions
+
+```python
+convert_session_dict_to_trace(session_dict)
+convert_step_dict_to_trace(step_dict)
+```
+
+## Related Documentation
+
+- [GRPO Training Guide](/training/offline/grpo-training) - Complete training pipeline
+- [Database Schema](/reference/database-schema) - PostgreSQL schema reference
+- [Runtime Export](/sdk/export-traces) - Legacy JSONL export (deprecated)

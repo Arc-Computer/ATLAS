@@ -38,17 +38,37 @@ You need custom training if you have:
 
 ### Runtime traces as the data source
 
-The exporter (`arc-atlas --database-url postgresql://... --output traces.jsonl`) produces records that align with `custom_data.runtime_trace_data.get_runtime_trace_dataset`. Reference the provided Hydra config:
+**Direct database access** (SDK v0.1.13+) queries training sessions from PostgreSQL with reward-based filtering and selective data loading. This eliminates JSONL export intermediates and prevents schema drift:
+
+```python
+from atlas.training_data import get_training_sessions
+
+# Query high-quality sessions directly
+sessions = get_training_sessions(
+    db_url="postgresql://atlas:atlas@localhost:5433/atlas",
+    min_reward=0.8,
+    status_filters=["succeeded"],
+    limit=10000
+)
+```
+
+**Legacy JSONL export** is still supported for backward compatibility:
+
+```bash
+arc-atlas --database-url postgresql://... --output traces.jsonl
+```
+
+Reference the provided Hydra config for dataset loading:
 
 ```yaml
 # configs/data/runtime_traces.yaml
 make_dataset_fn:
   _target_: custom_data.runtime_trace_data.get_runtime_trace_dataset
-  export_path: traces/aime-batch.jsonl
+  export_path: traces/aime-batch.jsonl  # Or use direct database access
   eval_split_ratio: 0.1
 ```
 
-Each record includes the triage dossier, adaptive summary (lane, confidence, certification flag, probe evidence), plan/step traces, persona usage/updates, reward breakdowns, and validation labels the runtime observed. When you adopt runtime exports, you can skip the manual data munging described in older guides because the learning context is embedded alongside every episode.
+Each session includes the triage dossier, adaptive summary (lane, confidence, certification flag, probe evidence), plan/step traces, persona usage/updates, reward breakdowns, and validation labels. See the [Training Data Pipeline Guide](/training/offline/training-data-pipeline) for complete API reference and filtering options.
 
 The training happens in three clear steps:
 
@@ -457,7 +477,9 @@ scripts/launch.sh 8 configs/run/teacher_rcl.yaml \
 
 ## References
 
+- [Training Data Pipeline](/training/offline/training-data-pipeline) - Direct database access for training data
 - [ATLAS Technical Report](/reference/technical-report) - Detailed methodology and ablations
 - [GRPO Paper](https://arxiv.org/abs/2402.03300) - Original algorithm
 - [vLLM Documentation](https://docs.vllm.ai) - Server configuration options
+- [Export Runtime Traces](/sdk/export-traces) - Legacy JSONL export and direct database access
 - [Quickstart](/sdk/quickstart) - Collect runtime traces before training

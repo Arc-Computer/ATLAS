@@ -1,13 +1,20 @@
 ---
 title: "Export Runtime Traces"
-description: Persist Atlas SDK sessions to JSONL so you can feed training pipelines without manual munging.
+description: Access Atlas SDK session data via direct database queries or JSONL export
 sidebarTitle: Export Traces
 icon: database
 ---
 
-The Atlas SDK can persist every orchestration session, including per-step rewards, guidance history, and tool usage. Use the `arc-atlas` CLI (or `python -m atlas.cli.export`) to convert those records into JSONL files that plug directly into the training stack (`load_runtime_traces`, `sessions_to_rl_records`).
+The Atlas SDK persists every orchestration session, including per-step rewards, guidance history, and tool usage. You can access this data through:
 
-## 1. Enable Postgres persistence
+1. **Direct Database Access** (Recommended) - Query PostgreSQL directly with the `atlas.training_data` module for filtered, high-performance access
+2. **JSONL Export** (Legacy) - Use the `arc-atlas` CLI to export sessions to JSONL files
+
+<Note>
+**For training pipelines:** Direct database access is recommended (SDK v0.1.13+). It eliminates schema drift, provides 10-100x faster queries with database indexes, and supports reward-based filtering at the database level.
+</Note>
+
+## 1. Enable Postgres Persistence
 
 Add a `storage` block to your SDK config:
 
@@ -21,7 +28,54 @@ storage:
 
 Run your tasks with `atlas.core.run(..., stream_progress=True)` as usual. Each session, step result, and intermediate event is written to Postgres.
 
-## 2. Export to JSONL
+## 2. Direct Database Access (Recommended)
+
+Query training sessions directly from PostgreSQL with reward-based filtering and selective data loading:
+
+```python
+from atlas.training_data import get_training_sessions
+
+# Query sessions with filters
+sessions = get_training_sessions(
+    db_url="postgresql://atlas:atlas@localhost:5433/atlas",
+    min_reward=0.8,
+    learning_key="security-review",
+    status_filters=["succeeded"],
+    limit=1000
+)
+
+# Access session data
+for session in sessions:
+    reward_score = session.session_reward["score"]
+    trajectory = session.trajectory_events
+    learning_data = session.learning_history
+```
+
+### Key Features
+
+- **No intermediate files**: Query directly from PostgreSQL
+- **Database-level filtering**: Reward, status, date range, and learning key filters
+- **Selective loading**: Control which fields are loaded (`include_trajectory_events`, `include_learning_data`)
+- **Pagination support**: Process large datasets in batches with async iterators
+- **10-100x faster**: Database indexes optimize reward and date range queries
+
+### Example: Pagination for Large Datasets
+
+```python
+from atlas.training_data import paginate_sessions
+
+async for batch in paginate_sessions(
+    db_url="postgresql://atlas:atlas@localhost:5433/atlas",
+    batch_size=100,
+    min_reward=0.7
+):
+    for session in batch:
+        process_session(session)
+```
+
+See the [Training Data Pipeline Guide](/training/offline/training-data-pipeline) for complete API reference and advanced usage.
+
+## 3. JSONL Export (Legacy)
 
 ```bash
 arc-atlas \
@@ -127,7 +181,27 @@ Use `adaptive_summary` to audit routing choices, probe evidence, and certificati
   always note which review statuses were exported alongside your artifacts.
 </Note>
 
-## 3. Feed the training stack
+## 4. Feed the Training Stack
+
+### Using Direct Database Access (Recommended)
+
+```python
+from atlas.training_data import get_training_sessions
+from trainers.runtime_dataset import sessions_to_rl_records
+
+# Query sessions directly
+sessions = get_training_sessions(
+    db_url="postgresql://atlas:atlas@localhost:5433/atlas",
+    min_reward=0.8,
+    status_filters=["succeeded"],
+    limit=10000
+)
+
+# Convert to RL training records
+records = sessions_to_rl_records(sessions)
+```
+
+### Using JSONL Export (Legacy)
 
 ```python
 from trainers.runtime_dataset import load_runtime_traces, sessions_to_rl_records
@@ -136,7 +210,7 @@ sessions = load_runtime_traces("traces/my-session.jsonl")
 records = sessions_to_rl_records(sessions)
 ```
 
-Or use the Hydra shortcut (`configs/data/runtime_traces.yaml`) described in the top-level quickstart. The exported schema matches the training adapters, so no custom glue code is required.
+Or use the Hydra shortcut (`configs/data/runtime_traces.yaml`) described in the top-level quickstart. The schema matches the training adapters, so no custom glue code is required.
 
 ## Troubleshooting
 
