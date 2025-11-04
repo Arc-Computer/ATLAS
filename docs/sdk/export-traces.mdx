@@ -8,7 +8,7 @@ icon: database
 The Atlas SDK persists every orchestration session, including per-step rewards, guidance history, and tool usage. You can access this data through:
 
 1. **Direct Database Access** (Recommended) - Query PostgreSQL directly with the `atlas.training_data` module for filtered, high-performance access
-2. **JSONL Export** (Legacy) - Use the `arc-atlas` CLI to export sessions to JSONL files
+2. **JSONL Export** (Alternative Method) - Use the `arc-atlas` CLI to export sessions to JSONL files
 
 <Note>
 **For training pipelines:** Direct database access is recommended (SDK v0.1.13+). It eliminates schema drift, provides 10-100x faster queries with database indexes, and supports reward-based filtering at the database level.
@@ -75,7 +75,7 @@ async for batch in paginate_sessions(
 
 See the [Training Data Pipeline Guide](/training/offline/training-data-pipeline) for complete API reference and advanced usage.
 
-## 3. JSONL Export (Legacy)
+## 3. JSONL Export (Alternative Method)
 
 ```bash
 arc-atlas \
@@ -201,7 +201,7 @@ sessions = get_training_sessions(
 records = sessions_to_rl_records(sessions)
 ```
 
-### Using JSONL Export (Legacy)
+### Using JSONL Export (Alternative Method)
 
 ```python
 from trainers.runtime_dataset import load_runtime_traces, sessions_to_rl_records

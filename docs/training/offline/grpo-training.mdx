@@ -52,7 +52,7 @@ sessions = get_training_sessions(
 )
 ```
 
-**Legacy JSONL export** is still supported for backward compatibility:
+**JSONL export** (alternative method) is still supported for backward compatibility:
 
 ```bash
 arc-atlas --database-url postgresql://... --output traces.jsonl
@@ -481,5 +481,5 @@ scripts/launch.sh 8 configs/run/teacher_rcl.yaml \
 - [ATLAS Technical Report](/reference/technical-report) - Detailed methodology and ablations
 - [GRPO Paper](https://arxiv.org/abs/2402.03300) - Original algorithm
 - [vLLM Documentation](https://docs.vllm.ai) - Server configuration options
-- [Export Runtime Traces](/sdk/export-traces) - Legacy JSONL export and direct database access
+- [Export Runtime Traces](/sdk/export-traces) - Direct database access and JSONL export methods
 - [Quickstart](/sdk/quickstart) - Collect runtime traces before training

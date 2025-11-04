@@ -21,8 +21,8 @@ how data persists in Postgres, and which configuration levers production teams c
 1. **Session executes** – the dual-agent runtime completes a task and logs telemetry into `sessions`, `trajectory_events`, and reward tables.
 2. **Reward judges score** – the RIM ensemble produces reward, uncertainty, and escalation data.
 3. **Learning synthesizer runs** – after reward evaluation, Atlas calls the `LearningSynthesizer` to summarize salient guidance for student and teacher personas.
-4. **Registry update** – `Database.upsert_learning_state` writes the new pamphlet to the `learning_registry` table (keyed by `learning_key`).
-5. **Playbook cached** – on the next run for the same key, `resolve_playbook` retrieves and hashes the pamphlet, then injects it into persona prompts.
+4. **Registry update** – `Database.upsert_learning_state` writes the new playbook to the `learning_registry` table (keyed by `learning_key`).
+5. **Playbook cached** – on the next run for the same key, `resolve_playbook` retrieves and hashes the playbook, then injects it into persona prompts.
 6. **Evaluation harness audits** – engineering teams run `scripts/eval_learning.py` to track reward deltas, mode shifts, and review status across learning keys.
 
 ## Pipeline Components
@@ -48,20 +48,20 @@ notes for auditing. This is useful for A/B testing new prompts before rolling th
 - caching the playbook on disk (per role) and computing a SHA256 hash,
 - returning both content and metadata so prompts, validation payloads, and cache keys include the hash.
 
-Set `learning.apply_to_prompts=false` to keep generating pamphlets without injecting them into runtime prompts—a common
+Set `learning.apply_to_prompts=false` to keep generating playbooks without injecting them into runtime prompts—a common
 pattern for staging and smoke tests. The hash still flows through telemetry so you can verify the correct playbook would
 have been used.
 
 ### Learning Registry (`atlas/runtime/storage/schema.sql`)
 
-`learning_registry` keeps the current pamphlets for each `learning_key`. The table stores a single row per key with:
+`learning_registry` keeps the current playbooks for each `learning_key`. The table stores a single row per key with:
 
 - `learning_key` – primary identifier (task or project scope).
-- `student_learning` / `teacher_learning` – latest pamphlet bodies (text).
+- `student_learning` / `teacher_learning` – latest playbook bodies (text).
 - `metadata` – optional JSON payload (e.g., synthesizer audit info, hashes you compute upstream).
 - `updated_at` – timestamp of the most recent update.
 
-Because both roles live in the same row, updates atomically replace the student and teacher pamphlets together. Historical
+Because both roles live in the same row, updates atomically replace the student and teacher playbooks together. Historical
 snapshots remain accessible via `sessions.student_learning` and `sessions.teacher_learning`, giving you a time-series view
 even as the registry is overwritten with fresher guidance.
 
@@ -99,7 +99,7 @@ Add a `learning` block to your runtime config to control behavior:
 | Parameter | Default | Purpose |
 | --- | --- | --- |
 | `enabled` | `true` | Master switch. Set `false` to run without playbooks or registry updates. |
-| `update_enabled` | `true` | Allow the synthesizer to write updated pamphlets. Disable for read-only playbook usage. |
+| `update_enabled` | `true` | Allow the synthesizer to write updated playbooks. Disable for read-only playbook usage. |
 | `llm` | `null` | Override synthesizer model; defaults to the runtime’s standard LLM if omitted. |
 | `prompts` | `null` | Custom prompt templates for the synthesizer LLM. |
 | `history_limit` | `10` | Max historical sessions considered when generating an update. |
@@ -129,10 +129,10 @@ learning:
 
 ## Operating the Learning System
 
-1. **Seed the registry** – run a curated set of tasks with `learning.update_enabled=true` to capture baseline pamphlets. Export these as JSON for code review if needed.
-2. **Stage changes** – toggle `apply_to_prompts=false` to generate candidate pamphlets without impacting prompts.
+1. **Seed the registry** – run a curated set of tasks with `learning.update_enabled=true` to capture baseline playbooks. Export these as JSON for code review if needed.
+2. **Stage changes** – toggle `apply_to_prompts=false` to generate candidate playbooks without impacting prompts.
 3. **Promote** – flip `apply_to_prompts` back to `true` once the evaluation harness shows improved reward/uncertainty metrics.
-4. **Monitor** – use the CLI and dashboards to track `pamphlet_hash` changes, reward drift, and review approvals per learning key.
+4. **Monitor** – use the CLI and dashboards to track `playbook_hash` changes, reward drift, and review approvals per learning key.
 5. **Rollback** – set `update_enabled=false` (to freeze) or `enabled=false` (to bypass entirely) if drift guardrails or reviewers flag an issue.
 
 Tip: store exported playbooks (from the evaluation harness) alongside release notes so you can diff guidance between deployments.
@@ -158,7 +158,7 @@ Key options:
 
 Outputs land under `results/learning/`:
 
-- `<slug>_summary.json` – structured payload with reward windows, execution-mode histograms, review status counts, and latest pamphlet metadata.
+- `<slug>_summary.json` – structured payload with reward windows, execution-mode histograms, review status counts, and latest playbook metadata.
 - `<slug>_summary.md` – business-friendly digest ready for incident reviews.
 - `index.json` – manifest that drives comparison mode.
 
