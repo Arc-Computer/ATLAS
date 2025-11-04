@@ -6,18 +6,27 @@ icon: download
 ---
 
 <Note>
-**Time required**: 10-15 minutes • **Difficulty**: Beginner
+**SDK Only**: 30 seconds • **Full Training Stack**: 10-15 minutes
 </Note>
 
-**TL;DR:** If you only need the SDK runtime, install the packaged release:
+## Choose Your Path
+
+**Most users only need the SDK:**
 
 ```bash
 python -m pip install --upgrade arc-atlas
 ```
 
-That gives you the orchestrator, telemetry streaming, and the exporter CLI. Use the sections below when you need the full training stack (PyTorch, vLLM, Flash Attention) for SFT/GRPO.
+This gives you adaptive dual-agent orchestration, telemetry streaming, and data export. Skip to the [Verification](#verification) section after installation.
 
-This guide covers installing ATLAS with Python 3.10+, PyTorch 2.6.0, and vLLM 0.8.3 (the high-throughput inference engine).
+<Warning>
+**Only install the full training stack if you need to:**
+- Train custom teacher models with GRPO
+- Run offline reinforcement learning
+- Fine-tune models on your own hardware
+
+The training stack requires CUDA-capable GPUs, PyTorch 2.6.0, and vLLM 0.8.3. Most teams use pre-trained teacher models and never need this setup.
+</Warning>
 
 ## System Requirements
 

@@ -75,9 +75,9 @@ Deep dives and override recipes live in the [Training Configuration guide](https
    ```bash
    # From the atlas-sdk repo after running adaptive episodes
    atlas init  # optional helper to launch Postgres
-   arc-atlas review sessions --database-url postgresql://atlas:atlas@localhost:5432/atlas --status pending
+   arc-atlas review sessions --database-url postgresql://atlas:atlas@localhost:5433/atlas --status pending
    # Approve or quarantine as needed, then export approved sessions
-   arc-atlas --database-url postgresql://atlas:atlas@localhost:5432/atlas \
+   arc-atlas --database-url postgresql://atlas:atlas@localhost:5433/atlas \
      --include-status approved \
      --output traces/runtime.jsonl
    ```

@@ -159,7 +159,7 @@ Controls retry semantics and telemetry.
 | `step_timeout_seconds` | `float` (default `900.0`) | No | Lengthen for slow tools or external APIs. |
 | `rim_guidance_tag` | `str` (default `"rim_feedback"`) | No | Change when your prompts expect a different insertion tag. |
 | `emit_intermediate_steps` | `bool` (default `true`) | No | Toggle console/storage streaming of intermediate events. |
-| `forced_mode` | `AdaptiveMode \| null` | No | Lock the runtime to `auto`, `paired`, `coach`, or `escalate` (useful for deterministic evaluation). |
+| `forced_mode` | `AdaptiveMode \| null` | No | Lock the runtime to `auto`, `paired`, or `coach` (useful for deterministic evaluation). |
 
 Example override (pairing with the prompts above):
 
@@ -218,7 +218,7 @@ Configures triage, probing, and lane routing for the adaptive dual-agent pair—
 | --- | --- | --- | --- |
 | `enabled` | `bool` (default `true`) | No | Disable to bypass adaptive routing entirely. |
 | `certify_first_run` | `bool` (default `true`) | No | Force first-time personas through `paired` certification. |
-| `mode_override` | Literal \| `null` | No | Pin execution to `auto`, `paired`, `coach`, or `escalate`. |
+| `mode_override` | Literal \| `null` | No | Pin execution to `auto`, `paired`, or `coach`. |
 | `triage_adapter` | `str \| null` | No | Reference a custom dossier builder. |
 | `default_tags` | `List[str]` (default `[]`) | No | Apply default metadata to persona memories. |
 | `probe.llm` | `LLMParameters \| null` | No | Override the capability probe model. |
@@ -308,7 +308,7 @@ Legacy configs may still include a `prompt_rewrite` block, but the runtime now r
 | Swap to Anthropic or Gemini | `agent` | Use the `http_api` adapter and supply the matching transport payload. |
 | Tighten or loosen retries | `orchestration` + `rim` | Adjust `max_retries`, `variance_threshold`, and `uncertainty_threshold`. |
 | Persist adaptive memories | `storage` | Add a Postgres URL or run `atlas init`. |
-| Force a supervision lane | `adaptive_teaching` | Set `mode_override` to `auto`, `paired`, `coach`, or `escalate`. |
+| Force a supervision lane | `adaptive_teaching` | Set `mode_override` to `auto`, `paired`, or `coach`. |
 | Personalise prompts | `student.prompts` / `teacher.prompts` | Override templates or reuse `prompt_guidance`. |
 | Enforce JSON output | `agent` (`response_format`) | Provide OpenAI-compatible schemas or swap to `http_api` with custom validation. |
 | Freeze playbook updates | `learning.update_enabled` | Pause runtime learning while investigating regressions. |

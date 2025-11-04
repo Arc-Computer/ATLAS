@@ -201,6 +201,9 @@ rim:
 | Async event loop errors | Run with `python learning_harness.py` (not `python -i`) |
 | API rate limits | Increase sleep duration between tasks in learning_harness.py |
 | High costs | Use GPT-4o-mini for both student and teacher; reduce task count |
+| Postgres connection refused | Start Postgres with `atlas init` or verify DATABASE_URL in .env |
+| No learning improvement seen | Ensure storage is enabled and check reward scores in database |
+| Tool calls not reducing | Verify learning.enabled=true in config and check playbook entries |
 
 ## Next Steps
 

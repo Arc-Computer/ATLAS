@@ -17,15 +17,11 @@ icon: home
 
 ## What is ATLAS?
 
-ATLAS gives your agents the ability to learn from every task they run in production, allowing your agents to truly evolve by improving reliability, reducing token costs, and building domain expertise over time through persistent memory.
+ATLAS is a continual learning framework for production LLM agents. It combines runtime quality control with offline reinforcement learning to improve agent reliability, reduce token costs, and build domain expertise through persistent memory.
 
-ATLAS turns your production environment into a training ground allowing for learning at inference time and preventing your agent's performance from plateauing. Every interaction feeds a continuous loop: feedback, improvement, and redeployment ensuring that deployment is not the end of learning.
+The system wraps any agent (GPT, Claude, Gemini, or custom models) with a dual-agent reasoning loop. A verifying teacher reviews the agent's work at runtime, providing guidance when needed. Production traces feed offline GRPO training to update the teacher model, creating a closed feedback loop.
 
-**How it works:** you wrap your agent within your current stack and environment and we handle the complexity of continual learning at scale.
-
-**The result:** higher task success rates, lower token usage, and increased reliability for mission-critical workflows.
-
-ATLAS gives you full observability and control over the learning process. The framework handles the orchestration complexity while you retain ownership of your data, models, and training decisions.
+ATLAS provides full observability and control. You own your data, models, and training decisions. The framework handles orchestration complexity while you configure supervision policies, reward functions, and deployment strategies.
 
 ## The Value Proposition
 
@@ -60,7 +56,7 @@ Together, these components form a closed-loop system: interaction traces flow in
 ## Runtime for ML Engineers
 
 - **Autodiscovery CLI** – Install the SDK (`pip install arc-atlas`), run `atlas env init` to discover your agent/environment pair, and execute tasks with `atlas run`. The CLI loads `.env`, scaffolds configs when needed, and records metadata under `.atlas/`.
-- **Orchestrator loop** – Each run triages a task, probes capability, and routes into `auto`, `paired`, `coach`, or `escalate`. The student agent works alongside a verifying teacher while telemetry streams through `atlas.runtime.telemetry`.
+- **Orchestrator loop** – Each run triages a task, probes capability, and routes into `auto`, `paired`, or `coach` mode. The student agent works alongside a verifying teacher while telemetry streams through `atlas.runtime.telemetry`.
 - **Telemetry & exports** – Persist sessions to Postgres (`storage` block) and export reviewed traces with the CLI (`arc-atlas … --include-status approved --output traces.jsonl`). Review gating keeps production datasets safe before they feed training.
 - **Learning playbooks** – The runtime synthesizes student/teacher playbooks and stores them in `learning_registry`; see [`Learning System Architecture`](/sdk/learning-system) for how playbooks influence future prompts.
 - **Offline training** – Feed exported traces into the [`Runtime Traces dataset config`](/training/configuration#dataset-presets) and GRPO trainers to ship bespoke teachers without hand-labeling.
