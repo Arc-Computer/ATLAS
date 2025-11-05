@@ -259,7 +259,21 @@ from trainers.runtime_dataset import sessions_to_rl_records
 records = sessions_to_rl_records(sessions)
 ```
 
-### Step 3: Train with GRPO
+### Step 3: Wire into Hydra configs
+
+Prefer to skip the manual Python glue? The repo now ships a Postgres-backed dataset preset. Override the global data config with `runtime_pg` and supply your connection details:
+
+```bash
+scripts/launch.sh 4 configs/run/teacher_rcl.yaml \
+  "+override /data@_global_: runtime_pg" \
+  "db_url=postgresql://atlas:atlas@localhost:5433/atlas" \
+  "min_reward=0.8" \
+  "status_filters=['succeeded']"
+```
+
+The helper streams sessions via `atlas.training_data`, converts trajectory events into chat-format messages, and produces Hugging Face datasets on the fly—no JSONL export required.
+
+### Step 4: Train with GRPO
 
 ```bash
 # Launch training

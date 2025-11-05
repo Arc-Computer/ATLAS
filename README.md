@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="public/ATLAS.png" alt="ATLAS Hero" width="900" style="border-radius: 12px;">
+<img src="public/ATLAS.png" alt="ATLAS Hero" width="900" style="border-radius: 12px;" />
 
 [![ATLAS-8B-Thinking](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-ATLAS--8B--Thinking-blue)](https://huggingface.co/Arc-Intelligence/ATLAS-8B-Thinking)
 [![ATLAS-8B-Instruct](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-ATLAS--8B--Instruct-blue)](https://huggingface.co/Arc-Intelligence/ATLAS-8B-Instruct)
@@ -29,7 +29,7 @@ Atlas is the learning layer for production agents, giving them a way to adapt an
 ## Architecture at a Glance
 
 <div align="center">
-  <img src="docs/images/system-architecture.png" alt="Atlas architecture showing reasoning core, reward system, learning engine, and persistent memory connected to agent frameworks" width="900" style="border-radius: 12px;">
+  <img src="docs/images/system-architecture.png" alt="Atlas architecture showing reasoning core, reward system, learning engine, and persistent memory connected to agent frameworks" width="900" style="border-radius: 12px;" />
   <p><em>Runtime episodes feed the reward system and persistent memory; Atlas Core consumes those exports to train new teachers with GRPO.</em></p>
 </div>
 

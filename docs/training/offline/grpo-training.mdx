@@ -12,7 +12,7 @@ icon: graduation-cap
 This is the advanced path. Most users should start with our [pre-trained models](/sdk/quickstart).
 
 <Info>
-Already collecting runtime traces? Point the loader at your exported JSONL (see [`Runtime Export Guide`](/sdk/export-traces)) and skip directly to GRPO—no manual dataset shaping required.
+Already collecting runtime traces? Stream them straight from Postgres with the `runtime_pg` data preset (`+override /data@_global_: runtime_pg db_url=...`) or stick with exported JSONL files (see [`Runtime Export Guide`](/sdk/export-traces)).
 
 Need to customise Hydra configs? See the [`Training Configuration`](/training/configuration) guide for directory structure and override patterns.
 </Info>

@@ -1,0 +1,37 @@
+defaults:
+  - base
+  - _self_
+
+data_log_name: runtime_pg
+
+dataset_id_or_path: null  # Not used; satisfies base config contract.
+
+db_url:
+min_reward: 0.0
+limit:
+offset: 0
+learning_key:
+status_filters:
+review_status_filters:
+eval_split_ratio: 0.1
+shuffle: true
+dataset_max_sessions:
+include_trajectory_events: true
+include_learning_data: true
+seed: 42
+
+make_dataset_fn:
+  _target_: custom_data.runtime_postgres_data.get_postgres_runtime_dataset
+  db_url: ${db_url}
+  min_reward: ${min_reward}
+  limit: ${limit}
+  offset: ${offset}
+  learning_key: ${learning_key}
+  status_filters: ${status_filters}
+  review_status_filters: ${review_status_filters}
+  eval_split_ratio: ${eval_split_ratio}
+  shuffle: ${shuffle}
+  dataset_max_sessions: ${dataset_max_sessions}
+  include_trajectory_events: ${include_trajectory_events}
+  include_learning_data: ${include_learning_data}
+  seed: ${seed}
