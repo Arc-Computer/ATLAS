@@ -10,17 +10,11 @@ JSONL export drift and enabling efficient filtering via PostgreSQL indexes.
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, List, Optional, Sequence, TYPE_CHECKING
+from typing import Any, Dict, List, Optional, Sequence
 
 from datasets import Dataset
 
-from trainers.postgres_runtime_dataset import (
-    stream_conversations_from_postgres,
-    session_to_conversation,
-)
-
-if TYPE_CHECKING:  # pragma: no cover - type checking only
-    from atlas.runtime.schema import AtlasSessionTrace
+from trainers.postgres_runtime_dataset import stream_conversations_from_postgres
 
 logger = logging.getLogger(__name__)
 

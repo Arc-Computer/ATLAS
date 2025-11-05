@@ -8,7 +8,7 @@ baseline comparison metrics tracking for evaluating distillation quality.
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, Optional
+from typing import Optional
 
 from transformers import (
     AutoModelForCausalLM,

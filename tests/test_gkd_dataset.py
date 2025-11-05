@@ -42,18 +42,6 @@ def _make_session(
 
 def test_load_gkd_conversations_basic(monkeypatch):
     """Test loading conversations from Postgres."""
-    events = [
-        {
-            "actor": "teacher",
-            "event": {"payload": {"message": "Teacher guidance here"}},
-        },
-        {
-            "actor": "student",
-            "event": {"payload": {"message": "Student attempt here"}},
-        },
-    ]
-    session = _make_session(trajectory_events=events, reward=0.85)
-
     def mock_stream_conversations(*args, **kwargs):
         return [
             {

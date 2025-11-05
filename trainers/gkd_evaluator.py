@@ -217,7 +217,7 @@ class BaselineMetricsCallback(TrainerCallback):
             **kwargs: Additional callback arguments
         """
         logger.info(
-            "Starting GKD training with baseline comparison baseline: success=%.2f%%, tokens=%s",
+            "Starting GKD training with baseline comparison metrics: success=%.2f%%, tokens=%s",
             self.baseline_success * 100,
             f"{self.baseline_tokens:.0f}" if self.baseline_tokens is not None else "N/A",
         )

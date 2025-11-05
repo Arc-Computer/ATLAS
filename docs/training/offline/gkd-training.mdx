@@ -323,7 +323,7 @@ python train.py --config-name teacher_gkd \\
   teacher_model_name_or_path=Qwen/Qwen2.5-14B-Instruct \\
   model.model_name_or_path=Qwen/Qwen2.5-7B-Instruct
 
-# baseline comparison: 7B → 3B
+# Stage 2: 7B → 3B
 python train.py --config-name teacher_gkd \\
   teacher_model_name_or_path=outputs/gkd_7b/final \\
   model.model_name_or_path=Qwen/Qwen2.5-3B-Instruct
