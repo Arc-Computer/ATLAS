@@ -17,62 +17,24 @@
 
 Atlas is the learning layer for production agents, enabling continual learning from complex, high-stakes workflows. For teams pushing beyond context engineering into reinforcement learning and adaptive systems, Atlas captures the causality data needed to improve models from real-world agent execution.
 
-The **Atlas SDK** wraps existing agent systems in a dual-agent reasoning loop without requiring codebase refactoring. It automatically discovers your agent configuration, routes supervision dynamically across lanes (auto, paired, coach, escalate), and captures causality traces (student attempt → teacher intervention → outcome) while streaming rich telemetry to Postgres.
+The **Atlas SDK** wraps existing agent systems in a dual-agent reasoning loop without requiring codebase refactoring. It automatically discovers your agent configuration, routes supervision dynamically across lanes (auto, paired, coach), and captures causality traces (student attempt → teacher intervention → outcome) while streaming rich telemetry to Postgres.
 
 **Atlas Core** (this repository) handles offline training with GRPO and on-policy distillation (GKD), sharing reward adapters with the runtime to train new teacher checkpoints from the causality data captured by the SDK. One-command model training that learns from your agent's actual execution patterns.
-
-| When you need… | Use | Highlights |
-|----------------|-----|------------|
-| Runtime continual learning with causality capture | [`Arc-Computer/atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) | Wraps existing agents without refactoring, auto-discovers config, dynamic supervision routing, captures student→teacher→outcome traces, Postgres telemetry |
-| Offline training from causality data | `Arc-Computer/ATLAS` (this repo) | GRPO/GKD trainers, shared reward adapters, one-command training, checkpoint management |
-
-<div align="center">
-  <img src="public/runtime-2.png" alt="Atlas SDK adaptive runtime flow diagram showing triage, capability probe, and lane routing (auto, paired, coach, escalate)" width="900" />
-  <p><em>The runtime SDK triages each task, probes capability, and routes it into the right supervision lane before your agent executes.</em></p>
-</div>
 
 ## Architecture at a Glance
 
 <div align="center">
   <img src="docs/images/system-architecture.png" alt="Atlas architecture showing reasoning core, reward system, learning engine, and persistent memory connected to agent frameworks" width="900" style="border-radius: 12px;" />
-  <p><em>Runtime episodes feed the reward system and persistent memory; Atlas Core consumes those exports to train new teachers with GRPO.</em></p>
+  <p><em>The SDK captures causality traces and feeds the reward system; Atlas Core trains new teacher checkpoints from this data.</em></p>
 </div>
-
-- **Reasoning Core** – Student and verifying teacher personas live in `atlas-sdk`, wrapping your agent with adaptive supervision in lanes (`auto`, `paired`, `coach`, `escalate`).
-- **Reward System (RIM)** – Shared reward adapters score every step and session; the same evaluators label both runtime telemetry and offline training data, ensuring consistency between online adaptation and offline optimization.
-- **Learning Engine** – GRPO and GKD trainers in this repo ingest causality traces to produce updated teacher checkpoints, closing the learning loop.
-- **Persistent Memory** – Postgres captures causality data (student attempts → teacher interventions → outcomes), triage dossiers, and reward breakdowns so the learning loop compounds over time.
 
 ## End-to-End Workflow
 
-1. **Wrap your agent with the runtime SDK** – Follow the [`SDK Quickstart`](https://docs.arc.computer/sdk/quickstart) to install `arc-atlas`, run discovery with `atlas env init`, and execute tasks via `atlas run` or `atlas.core.run`. Each task is triaged, probed, and routed into `auto`, `paired`, `coach`, or `escalate`, while adaptive summaries, persona updates, and rewards are recorded.
+1. **Wrap your agent with the runtime SDK** – Follow the [`SDK Quickstart`](https://docs.arc.computer/sdk/quickstart) to install `arc-atlas`, run discovery with `atlas env init`, and execute tasks via `atlas run` or `atlas.core.run`. Each task is triaged, probed, and routed into `auto`, `paired`, or `coach`, while adaptive summaries, persona updates, and rewards are recorded.
 2. **Persist and export telemetry** – Provision Postgres with `atlas init` (optional helper) and export sessions with `arc-atlas --database-url … --include-status approved --output traces.jsonl`. Before exporting new data, review and approve pending sessions using `arc-atlas review` so only trusted traces feed training. Every record carries the triage dossier, lane decision, probe confidence, guidance, reward breakdowns, and review status.
 3. **Train offline with Atlas Core** – Use this repository’s GRPO pipeline (`python scripts/run_offline_pipeline.py --export-path <traces.jsonl>`) to turn runtime traces into a new teacher checkpoint. Redeploy the checkpoint back through the SDK to close the loop.
 
 This hand-off keeps the learning flywheel tight: runtime captures adaptive behaviour, exports become training data, and Atlas Core ships the update back into production.
-
-## What's in this Repository
-
-- `scripts/run_offline_pipeline.py` – One-command launcher that composes Hydra configs, spins up GRPO training, and handles logging/output directories.
-- `configs/` – Hydra library for models, datasets (`runtime_traces.yaml`), trainers (`teacher_grpo.yaml`), and ready-to-run recipes (e.g., `configs/run/teacher_sft.yaml`, `configs/run/teacher_grpo.yaml`).
-- `RIM/` – Reward adapters and judge definitions shared between runtime evaluation and offline training.
-- `train.py` / `trainers/` – Core GRPO loop, data loaders, and evaluation utilities.
-- `docs/` – Mintlify docs (synced with [docs.arc.computer](https://docs.arc.computer)) covering runtime orchestration and training deep dives.
-
-## Configuration Overview
-
-Hydra bundles Atlas defaults into composable groups:
-
-- `model@_global_` → `configs/model/`
-- `data@_global_` → `configs/data/`
-- `trainer@_global_` → `configs/trainer/`
-
-Starter configs ship in:
-
-- `configs/examples/quickstart.yaml` (minimal overrides for the helper script)
-- `configs/run/teacher_rcl.yaml` (reward conditioned learning recipe for GRPO training)
-
-Deep dives and override recipes live in the [Training Configuration guide](https://docs.arc.computer/training/configuration).
 
 ## Offline Quickstart
 
