@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 import os
-from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple, TYPE_CHECKING
+from typing import Any, Dict, List, Optional, Sequence, Tuple, TYPE_CHECKING
 
 from datasets import Dataset
 
@@ -17,7 +17,7 @@ except ImportError as exc:  # pragma: no cover - surfaced during runtime, not te
     ) from exc
 
 if TYPE_CHECKING:  # pragma: no cover - type checking only
-    from atlas.runtime.schema import AtlasSessionTrace, AtlasStepTrace
+    from atlas.runtime.schema import AtlasSessionTrace
 
 logger = logging.getLogger(__name__)
 
@@ -204,7 +204,7 @@ def session_to_conversation(
                             plan_summary.append(f"{identifier}: {description}")
                         else:
                             plan_summary.append(str(description))
-        context_lines = [f"Task: {getattr(session, 'task', '').strip()}"]
+        context_lines = [f"Task: {(getattr(session, 'task', None) or '').strip()}"]
         if plan_summary:
             context_lines.append("Plan:")
             context_lines.extend(f"- {line}" for line in plan_summary)
@@ -270,11 +270,10 @@ def stream_conversations_from_postgres(
     """Load sessions from Postgres and convert them into conversation records."""
 
     # get_training_sessions applies a default limit of 1000; preserve behaviour unless overridden.
-    fetch_limit = limit if limit is not None else None
     sessions = get_training_sessions(
         db_url,
         min_reward=min_reward,
-        limit=fetch_limit if fetch_limit is not None else 1000,
+        limit=limit if limit is not None else 1000,
         offset=offset,
         learning_key=learning_key,
         status_filters=status_filters,
@@ -347,4 +346,3 @@ def build_conversation_dataset(
         return {"train_dataset": dataset_dict["train"], "eval_dataset": dataset_dict["test"]}
 
     return {"train_dataset": dataset, "eval_dataset": None}
-

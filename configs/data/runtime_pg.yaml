@@ -4,7 +4,7 @@ defaults:
 
 data_log_name: runtime_pg
 
-dataset_id_or_path:
+dataset_id_or_path: null  # Not used; satisfies base config contract.
 
 db_url:
 min_reward: 0.0
