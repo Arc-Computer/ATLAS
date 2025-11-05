@@ -94,6 +94,38 @@ Deep dives and override recipes live in the [Training Configuration guide](https
 3. **Redeploy the checkpoint**
    Point the runtime SDK at `results/teacher-grpo/rl_checkpoint/` (or your chosen output dir) to load the new teacher, then rerun `atlas.core.run` to close the loop.
 
+## GKD Distillation (On-Policy Knowledge Transfer)
+
+For faster, more compute-efficient training, use **Generalized Knowledge Distillation (GKD)** to distill Atlas runtime traces into smaller student models. GKD is 9-30× faster than GRPO while preserving learning quality.
+
+### Quick Start
+
+```bash
+# Train a 7B student model distilled from 14B teacher
+python train.py \
+  --config-name teacher_gkd \
+  teacher_model_name_or_path=Qwen/Qwen2.5-14B-Instruct \
+  model.model_name_or_path=Qwen/Qwen2.5-7B-Instruct \
+  trainer.min_reward=0.8
+```
+
+### Key Benefits
+
+- **9-30× faster** than GRPO training
+- **Direct Postgres access** (no JSONL export needed)
+- **baseline comparison metrics** built-in (success delta, token efficiency)
+- **Multi-turn native** for conversation workflows
+
+### When to Use GKD vs GRPO
+
+| Use GKD when... | Use GRPO when... |
+|----------------|------------------|
+| You have Atlas traces and want to distill into a smaller model | You need to train a new policy from scratch |
+| You need fast iteration (hours vs days) | You need interactive RL with environment feedback |
+| You want to deploy production-ready distilled models | You're exploring new reward structures |
+
+See the [GKD Training Guide](https://docs.arc.computer/training/offline/gkd-training) for configuration options, hyperparameter tuning, and troubleshooting.
+
 ## Rewards Only?
 
 Need scoring without training? Import `RIMReward` directly:

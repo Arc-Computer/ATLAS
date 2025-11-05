@@ -1,0 +1,78 @@
+defaults:
+  - override /model@_global_: qwen3_8b
+  - override /data@_global_: runtime_pg
+  - override /trainer@_global_: gkd
+  - _self_
+
+# Student model (being trained)
+model_name_or_path: Qwen/Qwen2.5-7B-Instruct
+
+# Teacher model (larger model to distill from)
+teacher_model_name_or_path: Qwen/Qwen2.5-14B-Instruct
+
+# Database configuration
+db_url: ${oc.env:ATLAS_DB_URL}
+min_reward: 0.8
+learning_key: null  # null = all tasks, or specify like "crm_workflows"
+
+# Baseline metrics (set from baseline evaluation)
+baseline_success: 0.75  # Override with actual baseline success rate
+baseline_tokens: null   # Override with actual baseline token count
+
+# GKD parameters (on-policy reverse-KL)
+lmbda: 1.0  # Fully on-policy
+beta: 0.5   # Balance forward/reverse KL
+temperature: 0.9
+
+# Training configuration
+num_train_epochs: 3
+max_steps: -1  # Use epochs instead
+per_device_train_batch_size: 4
+per_device_eval_batch_size: 4
+gradient_accumulation_steps: 8
+
+# Optimization
+learning_rate: 5e-6
+lr_scheduler_type: cosine
+warmup_ratio: 0.1
+weight_decay: 0.01
+
+# Precision
+bf16: true
+tf32: true
+
+# Evaluation
+eval_strategy: steps
+eval_steps: 100
+eval_on_start: true
+do_eval: true
+
+# Checkpointing
+save_strategy: steps
+save_steps: 100
+save_total_limit: 3
+save_final_model: true
+load_best_model_at_end: true
+metric_for_best_model: eval_loss
+
+# Logging
+logging_strategy: steps
+logging_steps: 10
+report_to: [wandb]
+wandb_project: atlas_gkd_distillation
+wandb_run_name: ${trainer_log_name}_${now:%Y%m%d_%H%M%S}
+
+# Output directory
+output_dir: ${results_dir}/gkd_teacher/${exp_name}
+
+# Model initialization
+model_init_kwargs:
+  torch_dtype: bfloat16
+  device_map: auto
+
+teacher_model_init_kwargs:
+  torch_dtype: bfloat16
+  device_map: auto
+
+# PEFT configuration (optional)
+peft_config: null
