@@ -78,7 +78,7 @@ GKD training uses two main config files:
 
 Controls the proportion of student-generated outputs vs teacher-generated outputs:
 
-- `lmbda=1.0` (default): **Fully on-policy**. Student generates outputs, teacher provides feedback. Most compute-efficient (9-30× speedup).
+- `lmbda=1.0`: **Fully on-policy**. Student generates outputs, teacher provides feedback. Most compute-efficient (9-30× speedup).
 - `lmbda=0.5`: **Mixed**. 50% student-generated, 50% teacher-generated.
 - `lmbda=0.0`: **Supervised**. Only teacher-generated outputs (traditional knowledge distillation).
 
