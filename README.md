@@ -83,8 +83,11 @@ Deep dives and override recipes live in the [Training Configuration guide](https
    ```
    Each record carries `triage_dossier`, `adaptive_summary`, persona usage/updates, plan/step traces, and reward payloads—the exact inputs Atlas Core expects.
 
-2. **Launch GRPO training**
+2. **Train your model**
+   Use this repository's training pipeline to update your teacher model from runtime traces. Atlas Core supports multiple training methods depending on your needs—see [Training Methods](https://docs.arc.computer/training) for detailed guidance.
+
    ```bash
+   # Example: GRPO training
    python scripts/run_offline_pipeline.py \
      --export-path traces/runtime.jsonl \
      output_dir=results/teacher-grpo
@@ -92,39 +95,19 @@ Deep dives and override recipes live in the [Training Configuration guide](https
    Override Hydra arguments (model, batch size, GPUs) as needed; the helper wires up `configs/run/teacher_rcl.yaml` by default.
 
 3. **Redeploy the checkpoint**
-   Point the runtime SDK at `results/teacher-grpo/rl_checkpoint/` (or your chosen output dir) to load the new teacher, then rerun `atlas.core.run` to close the loop.
+   Point the runtime SDK at your output directory (e.g., `results/teacher-grpo/rl_checkpoint/`) to load the new teacher, then rerun `atlas.core.run` to close the loop.
 
-## GKD Distillation (On-Policy Knowledge Transfer)
+## Training Methods
 
-For faster, more compute-efficient training, use **Generalized Knowledge Distillation (GKD)** to distill Atlas runtime traces into smaller student models. GKD is 9-30× faster than GRPO while preserving learning quality.
+Atlas Core provides flexible training capabilities for different scenarios:
 
-### Quick Start
+- **GRPO** – Reinforcement learning from reward signals in runtime traces. Updates teacher policies by optimizing for task success and efficiency.
+- **GKD** – Distill large models into smaller, deployment-optimized variants. 9-30× faster training than GRPO for creating compact production models.
+- **SFT** – Supervised fine-tuning on approved traces. Direct imitation learning from high-quality runtime episodes.
 
-```bash
-# Train a 7B student model distilled from 14B teacher
-python train.py \
-  --config-name teacher_gkd \
-  teacher_model_name_or_path=Qwen/Qwen2.5-14B-Instruct \
-  model.model_name_or_path=Qwen/Qwen2.5-7B-Instruct \
-  trainer.min_reward=0.8
-```
+Each method uses the same Postgres-backed dataset infrastructure and Hydra configuration system. All training methods support direct database access, reward filtering, and multi-turn conversation workflows.
 
-### Key Benefits
-
-- **9-30× faster** than GRPO training
-- **Direct Postgres access** (no JSONL export needed)
-- **baseline comparison metrics** built-in (success delta, token efficiency)
-- **Multi-turn native** for conversation workflows
-
-### When to Use GKD vs GRPO
-
-| Use GKD when... | Use GRPO when... |
-|----------------|------------------|
-| You have Atlas traces and want to distill into a smaller model | You need to train a new policy from scratch |
-| You need fast iteration (hours vs days) | You need interactive RL with environment feedback |
-| You want to deploy production-ready distilled models | You're exploring new reward structures |
-
-See the [GKD Training Guide](https://docs.arc.computer/training/offline/gkd-training) for configuration options, hyperparameter tuning, and troubleshooting.
+See the [Training Guide](https://docs.arc.computer/training) for detailed comparisons, configuration options, and when to use each method.
 
 ## Rewards Only?
 
