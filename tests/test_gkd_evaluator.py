@@ -88,7 +88,7 @@ def test_baseline_callback_target_not_met():
     )
 
     # Success target not met
-    assert metrics["metrics/success_delta"] == 0.03
+    assert pytest.approx(metrics["metrics/success_delta"], rel=1e-6) == 0.03
     assert metrics["metrics/meets_target"] is False
 
     # Token target not met
@@ -255,7 +255,7 @@ def test_compute_baseline_summary_negative_delta():
     )
 
     # Negative deltas
-    assert summary["success_delta"] == -0.05
+    assert pytest.approx(summary["success_delta"], rel=1e-6) == -0.05
     assert summary["token_reduction_pct"] == -25.0  # Negative = increase
 
     # Targets not met
