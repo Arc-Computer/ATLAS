@@ -2,6 +2,7 @@ try:
     from .grpo import GRPOTrainer
     from .grpo_config import GRPOConfig
     from .teacher_trainers import TeacherGRPOTrainer
+    from .gkd_trainer import AtlasGKDTrainer
     from .data_reward_scorer import (
         DataScorerArgs, DataTeacherRewardScorer,
         DataConcatenatorArgs, DataCompletionConcatenator)

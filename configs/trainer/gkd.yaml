@@ -1,0 +1,148 @@
+defaults:
+  - base
+  - _self_
+
+trainer_log_name: gkd
+
+# GKD-specific parameters (on-policy reverse-KL distillation)
+temperature: 0.9
+lmbda: 1.0          # Fully on-policy (Issue #40 recommendation: 9-30x more efficient)
+beta: 0.5           # Balance forward/reverse KL
+max_new_tokens: 512
+disable_dropout: true
+seq_kd: false
+
+# Database configuration
+db_url: ${oc.env:ATLAS_DB_URL}
+min_reward: 0.8
+learning_key: null
+
+# Baseline metrics (for delta calculation)
+baseline_success: 0.0    # Override with actual baseline
+baseline_tokens: null    # Override with actual baseline
+
+# Teacher model configuration
+teacher_model_name_or_path: null  # Must be specified via override
+teacher_model_init_kwargs: null
+
+# Training parameters (override base as needed)
+max_steps: -1
+num_train_epochs: 3
+per_device_train_batch_size: 4
+per_device_eval_batch_size: 4
+gradient_accumulation_steps: 8
+learning_rate: 5e-6
+lr_scheduler_type: cosine
+warmup_ratio: 0.1
+weight_decay: 0.01
+max_grad_norm: 1.0
+
+# Sequence length
+max_seq_length: 8192  # Support long multi-turn conversations
+
+# Evaluation
+eval_strategy: steps
+eval_steps: 100
+eval_on_start: true
+eval_accumulation_steps: null
+
+# Checkpointing
+save_strategy: steps
+save_steps: 100
+save_total_limit: 3
+load_best_model_at_end: true
+metric_for_best_model: eval_loss
+
+# Model initialization kwargs
+model_init_kwargs:
+  torch_dtype: bfloat16
+  device_map: auto
+
+# Teacher model initialization kwargs
+teacher_model_init_kwargs:
+  torch_dtype: bfloat16
+  device_map: auto
+
+# Logging
+logging_steps: 10
+report_to: [wandb]
+
+# PEFT configuration (optional)
+peft_config: null
+
+# Trainer args for TRL GKDConfig
+trainer_args:
+  _target_: trl.GKDConfig
+  output_dir: ${output_dir}
+
+  # GKD parameters
+  temperature: ${temperature}
+  lmbda: ${lmbda}
+  beta: ${beta}
+  max_new_tokens: ${max_new_tokens}
+  disable_dropout: ${disable_dropout}
+  seq_kd: ${seq_kd}
+  teacher_model_name_or_path: ${teacher_model_name_or_path}
+  teacher_model_init_kwargs: ${teacher_model_init_kwargs}
+
+  # Training parameters
+  max_steps: ${max_steps}
+  num_train_epochs: ${num_train_epochs}
+  per_device_train_batch_size: ${per_device_train_batch_size}
+  per_device_eval_batch_size: ${per_device_eval_batch_size}
+  gradient_accumulation_steps: ${gradient_accumulation_steps}
+  gradient_checkpointing: ${gradient_checkpointing}
+  gradient_checkpointing_kwargs: ${gradient_checkpointing_kwargs}
+
+  # Optimization
+  learning_rate: ${learning_rate}
+  weight_decay: ${weight_decay}
+  adam_beta1: ${adam_beta1}
+  adam_beta2: ${adam_beta2}
+  adam_epsilon: ${adam_epsilon}
+  max_grad_norm: ${max_grad_norm}
+  lr_scheduler_type: ${lr_scheduler_type}
+  lr_scheduler_kwargs: ${lr_scheduler_kwargs}
+  warmup_ratio: ${warmup_ratio}
+
+  # Precision
+  bf16: ${bf16}
+  tf32: ${tf32}
+
+  # Evaluation
+  eval_strategy: ${eval_strategy}
+  eval_steps: ${eval_steps}
+  eval_on_start: ${eval_on_start}
+  eval_accumulation_steps: ${eval_accumulation_steps}
+
+  # Checkpointing
+  save_strategy: ${save_strategy}
+  save_steps: ${save_steps}
+  save_total_limit: ${save_total_limit}
+  load_best_model_at_end: ${load_best_model_at_end}
+  metric_for_best_model: ${metric_for_best_model}
+
+  # Logging
+  logging_strategy: ${logging_strategy}
+  logging_steps: ${logging_steps}
+  report_to: ${report_to}
+  run_name: ${wandb_run_name}
+
+  # Other
+  seed: ${seed}
+  ddp_timeout: ${ddp_timeout}
+  model_init_kwargs: ${model_init_kwargs}
+
+# Trainer instantiation
+trainer:
+  _target_: trainers.AtlasGKDTrainer
+  model: null  # Will be instantiated by train.py
+  teacher_model: null  # Will be instantiated by train.py
+  args: ${trainer_args}
+  db_url: ${db_url}
+  min_reward: ${min_reward}
+  learning_key: ${learning_key}
+  baseline_success: ${baseline_success}
+  baseline_tokens: ${baseline_tokens}
+  processing_class: null  # Will be set by train.py
+  peft_config: ${peft_config}
