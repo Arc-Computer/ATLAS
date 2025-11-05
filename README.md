@@ -4,6 +4,7 @@
 
 <img src="public/ATLAS.png" alt="ATLAS Hero" width="900" style="border-radius: 12px;" />
 
+[![arXiv](https://img.shields.io/badge/arXiv-2511.01093-b31b1b.svg)](https://arxiv.org/abs/2511.01093)
 [![ATLAS-8B-Thinking](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-ATLAS--8B--Thinking-blue)](https://huggingface.co/Arc-Intelligence/ATLAS-8B-Thinking)
 [![ATLAS-8B-Instruct](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-ATLAS--8B--Instruct-blue)](https://huggingface.co/Arc-Intelligence/ATLAS-8B-Instruct)
 [![Arc-ATLAS-Teach Dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-Arc--ATLAS--Teach-green)](https://huggingface.co/datasets/Arc-Intelligence/Arc-ATLAS-Teach-v1)
@@ -14,12 +15,16 @@
 
 # What is Atlas?
 
-Atlas is the learning layer for production agents, giving them a way to adapt and learn in real time from every task. The runtime SDK (`atlas-sdk`) wraps any agent in an adaptive dual-agent reasoning loop (student + teacher) guided by reward signals that triages tasks, probes capability, and chooses the right supervision lane while streaming rich telemetry. This repository, **Atlas Core**, turns those adaptive episodes into new teacher checkpoints with offline GRPO training and provides the reward tooling that powers both halves.
+Atlas is the learning layer for production agents, enabling continual learning from complex, high-stakes workflows. For teams pushing beyond context engineering into reinforcement learning and adaptive systems, Atlas captures the causality data needed to improve models from real-world agent execution.
+
+The **Atlas SDK** wraps existing agent systems in a dual-agent reasoning loop without requiring codebase refactoring. It automatically discovers your agent configuration, routes supervision dynamically across lanes (auto, paired, coach, escalate), and captures causality traces (student attempt → teacher intervention → outcome) while streaming rich telemetry to Postgres.
+
+**Atlas Core** (this repository) handles offline training with GRPO and on-policy distillation (GKD), sharing reward adapters with the runtime to train new teacher checkpoints from the causality data captured by the SDK. One-command model training that learns from your agent's actual execution patterns.
 
 | When you need… | Use | Highlights |
 |----------------|-----|------------|
-| Runtime continual learning: triage → probe → lane routing, telemetry, JSONL export | [`Arc-Computer/atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) | Drop-in runtime harness with a verifying teacher, storage helpers (`atlas init`), export/review CLI (`arc-atlas`, `arc-atlas review`), persona telemetry |
-| Offline optimization: GRPO training, reward adapters, analysis utilities | `Arc-Computer/ATLAS` (this repo) | GRPO trainer, RIM reward system, data loaders, launch scripts |
+| Runtime continual learning with causality capture | [`Arc-Computer/atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) | Wraps existing agents without refactoring, auto-discovers config, dynamic supervision routing, captures student→teacher→outcome traces, Postgres telemetry |
+| Offline training from causality data | `Arc-Computer/ATLAS` (this repo) | GRPO/GKD trainers, shared reward adapters, one-command training, checkpoint management |
 
 <div align="center">
   <img src="public/runtime-2.png" alt="Atlas SDK adaptive runtime flow diagram showing triage, capability probe, and lane routing (auto, paired, coach, escalate)" width="900" />
@@ -34,9 +39,9 @@ Atlas is the learning layer for production agents, giving them a way to adapt an
 </div>
 
 - **Reasoning Core** – Student and verifying teacher personas live in `atlas-sdk`, wrapping your agent with adaptive supervision in lanes (`auto`, `paired`, `coach`, `escalate`).
-- **Reward System (RIM)** – Shared evaluators score every step and session; the same judges label runtime telemetry and training data.
-- **Learning Engine** – This repo’s GRPO trainer ingests exported traces (`arc-atlas`) to produce updated teacher checkpoints.
-- **Persistent Memory** – Postgres + JSONL exports capture triage dossiers, adaptive summaries, persona updates, and reward payloads so the learning loop compounds over time.
+- **Reward System (RIM)** – Shared reward adapters score every step and session; the same evaluators label both runtime telemetry and offline training data, ensuring consistency between online adaptation and offline optimization.
+- **Learning Engine** – GRPO and GKD trainers in this repo ingest causality traces to produce updated teacher checkpoints, closing the learning loop.
+- **Persistent Memory** – Postgres captures causality data (student attempts → teacher interventions → outcomes), triage dossiers, and reward breakdowns so the learning loop compounds over time.
 
 ## End-to-End Workflow
 
