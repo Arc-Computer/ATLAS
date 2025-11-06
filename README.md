@@ -15,11 +15,11 @@
 
 # What is Atlas?
 
-Atlas is the learning layer for production agents, enabling continual learning from complex, high-stakes workflows. For teams pushing beyond context engineering into reinforcement learning and adaptive systems, Atlas captures the causality data needed to improve models from real-world agent execution.
+Atlas is a system for continual learning from agent workflows, designed to close the loop between real-world agent execution and model improvement. The platform is composed of two main components:
 
-The **Atlas SDK** wraps existing agent systems in a dual-agent reasoning loop without requiring codebase refactoring. It automatically discovers your agent configuration, routes supervision dynamically across lanes (auto, paired, coach), and captures causality traces (student attempt → teacher intervention → outcome) while streaming rich telemetry to Postgres.
+The **Atlas SDK** is the runtime component that wraps existing agent systems in a dual-agent reasoning loop. It captures causality data (student attempt → teacher intervention → outcome) and streams rich telemetry to a database.
 
-**Atlas Core** (this repository) handles offline training with GRPO and on-policy distillation (GKD), sharing reward adapters with the runtime to train updated checkpoints for the teacher model from the causality data captured by the SDK. One-command model training that learns from your agent's actual execution patterns.
+**Atlas Core** (this repository) is the offline training engine that uses this data to train improved models via methods like on-policy distillation (GKD) and reinforcement learning (GRPO).
 
 ## Architecture at a Glance
 
