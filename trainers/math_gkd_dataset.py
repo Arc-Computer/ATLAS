@@ -51,7 +51,8 @@ def build_math_gkd_dataset(
     """
     cfg = config or MathGKDDatasetConfig()
     raw = _load_base_dataset(cfg)
-    prepared = raw.map(_format_example, remove_columns=raw.column_names)
+    filtered = _filter_missing_fields(raw)
+    prepared = filtered.map(_format_example, remove_columns=filtered.column_names)
 
     if cfg.limit:
         prepared = prepared.select(range(min(cfg.limit, len(prepared))))
@@ -104,19 +105,8 @@ def _load_base_dataset(cfg: MathGKDDatasetConfig) -> Dataset | DatasetDict:
 
 def _format_example(example: dict) -> dict:
     """Convert raw MetaMathQA entry into chat messages with metadata."""
-    question = (
-        example.get("question")
-        or example.get("problem")
-        or example.get("prompt")
-        or ""
-    )
-    solution = (
-        example.get("solution")
-        or example.get("cot_solution")
-        or example.get("rationale")
-        or example.get("answer")
-        or ""
-    )
+    question = _get_question_text(example)
+    solution = _get_solution_text(example)
     final_answer = _extract_final_answer(
         example.get("final_answer"),
         example.get("answer"),
@@ -168,6 +158,24 @@ def _iterate_candidates(*candidates: Optional[str]) -> Iterable[str]:
             yield candidate
 
 
+def _get_question_text(example: dict) -> str:
+    """Extract question text across known MetaMathQA schema variants."""
+    for key in ("question", "problem", "prompt", "query", "original_question"):
+        value = example.get(key)
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+    return ""
+
+
+def _get_solution_text(example: dict) -> str:
+    """Extract solution/rationale text across known MetaMathQA schema variants."""
+    for key in ("solution", "cot_solution", "rationale", "answer", "response"):
+        value = example.get(key)
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+    return ""
+
+
 _FINAL_ANSWER_PATTERN = re.compile(
     r"(Final Answer|####)\s*[:=]?\s*(?P<answer>[-+–]?[\d\w()./ ^]+)",
     flags=re.IGNORECASE,
@@ -192,3 +200,16 @@ def _normalize_answer(answer: str) -> str:
     # Remove trailing punctuation commonly added in solutions
     cleaned = cleaned.rstrip(".")
     return cleaned
+
+
+def _filter_missing_fields(dataset: Dataset | DatasetDict) -> Dataset | DatasetDict:
+    """Remove entries without question/problem or solution fields."""
+
+    def _has_required_fields(example: dict) -> bool:
+        question = _get_question_text(example)
+        solution = _get_solution_text(example)
+        return bool(question and solution)
+
+    if isinstance(dataset, DatasetDict):
+        return dataset.filter(_has_required_fields)
+    return dataset.filter(_has_required_fields)
