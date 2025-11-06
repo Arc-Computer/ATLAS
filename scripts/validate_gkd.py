@@ -19,6 +19,8 @@ import torch
 from datasets import Dataset
 from torch.nn import functional as F
 from transformers import AutoModelForCausalLM, AutoTokenizer
+os.environ.setdefault("TRANSFORMERS_NO_APEX", "1")
+
 from trl import GKDConfig
 
 from trainers.gkd_trainer import AtlasGKDTrainer
