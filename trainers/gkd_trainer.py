@@ -26,7 +26,6 @@ except ImportError as exc:  # pragma: no cover
         "Install with: pip install 'trl>=0.12.0'"
     ) from exc
 
-from trainers.gkd_dataset import build_gkd_dataset
 from trainers.gkd_evaluator import BaselineMetricsCallback
 
 logger = logging.getLogger(__name__)
@@ -110,6 +109,7 @@ class AtlasGKDTrainer(GKDTrainer):
             )
 
         if train_dataset is None:
+            from trainers.gkd_dataset import build_gkd_dataset
             # Load conversations from Postgres
             if db_url is None:
                 raise ValueError(

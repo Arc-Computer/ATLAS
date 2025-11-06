@@ -30,6 +30,17 @@ Generalized Knowledge Distillation (GKD) enables on-policy distillation of Atlas
 
 ### Prerequisites
 
+For local smoke tests (for example `scripts/validate_gkd.py`) you only need the following Python packages:
+
+- `torch>=2.0.0` with CUDA or BF16 support
+- `transformers==4.51.1`
+- `accelerate==1.4.0`
+- `trl==0.14.0`
+- `datasets==3.2.0`
+- `bitsandbytes>=0.48` *(optional, only when enabling 8-bit loading)*
+
+Everything else in `requirements-py312.txt` supports wider Atlas workflows (Hydra configs, serving, logging) and is not required for the math validation run.
+
 ```bash
 # Ensure TRL is installed
 pip install "trl>=0.12.0"
@@ -49,6 +60,8 @@ python train.py \
   model.model_name_or_path=Qwen/Qwen2.5-7B-Instruct \
   trainer.min_reward=0.8
 ```
+
+These same Qwen checkpoints (`Qwen/Qwen2.5-14B-Instruct` teacher and `Qwen/Qwen2.5-7B-Instruct` student) are used by `scripts/validate_gkd.py` to measure the MetaMathQA lift before scaling to customer traces.
 
 This will:
 1. Load Atlas runtime traces from Postgres (reward ≥ 0.8)
