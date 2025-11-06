@@ -6,7 +6,7 @@ This architecture allows our research team to rapidly test and compare different
 
 ### Experimental Design
 
-To create a controlled environment, we focused on the "Countdown" math reasoning task, a good proxy for structured, multi-step thinking. Our goal was to improve the performance of a student model on this task using two different on-policy methods, both orchestrated by Atlas.
+To create a controlled environment, we focused on MetaMathQA, a public math-reasoning benchmark that stresses structured, multi-step thinking. Our goal was to improve the performance of a student model on this dataset using two different on-policy methods, both orchestrated by Atlas.
 
 The student model in both experiments was `Qwen/Qwen2.5-7B-Instruct`.
 
@@ -16,7 +16,7 @@ In the first run, we used the `AtlasGKDTrainer` to distill knowledge from a larg
 
 **Method 2: Self-Improvement with GRPO**
 
-In the second run, we trained the same `Qwen/Qwen2.5-7B-Instruct` model using our `GRPOTrainer`. In this scenario, there is no teacher model. The student model learns from a sparse, binary reward signal: it receives a `+1.0` reward only if its final calculated answer is correct, and `0.0` otherwise. This setup tests the model's ability to improve by exploring on its own, guided only by the final outcome.
+In the second run, we trained the same `Qwen/Qwen2.5-7B-Instruct` model using our `GRPOTrainer` on the identical MetaMathQA split. In this scenario, there is no teacher model. The student model learns from a sparse, binary reward signal: it receives a `+1.0` reward only if its final calculated answer is correct, and `0.0` otherwise. This setup tests the model's ability to improve by exploring on its own, guided only by the final outcome.
 
 For evaluation, we measured task performance as the pass rate on a held-out test set of 1,000 problems, and we tracked compute efficiency by the total GPU hours required to reach peak performance.
 
