@@ -340,9 +340,402 @@ sudo ufw status
 vllm_url = "http://localhost:8000/v1"  # Not https
 ```
 
+## SDK Runtime Issues
+
+The following sections cover common issues when using the [Atlas SDK](https://github.com/Arc-Computer/atlas-sdk) for runtime orchestration and continual learning.
+
+### SDK Installation Issues
+
+#### Python Version Mismatch
+
+**Problem:** `ImportError` or crashes at import time
+
+**Solutions:**
+
+```bash
+# Check Python version
+python --version  # Should be 3.10+
+
+# Create virtual environment with correct version
+python3.12 -m venv .venv
+source .venv/bin/activate
+
+# Reinstall SDK
+pip install --upgrade arc-atlas
+```
+
+**Note:** Python 3.9 and earlier are not supported. Use 3.10+ (3.13 recommended).
+
+#### Package Import Errors
+
+**Problem:** `ModuleNotFoundError` after installation
+
+**Solutions:**
+
+```bash
+# Ensure you're in the correct environment
+which python
+which pip
+
+# Reinstall in current environment
+pip uninstall arc-atlas -y
+pip install arc-atlas
+
+# Verify installation
+python -c "import atlas; print(atlas.__version__)"
+```
+
+### API Configuration
+
+#### Missing API Keys
+
+**Problem:** `API key not found` or authentication errors
+
+**Solutions:**
+
+<AccordionGroup>
+  <Accordion title="Using Environment Variables">
+    ```bash
+    # Export directly
+    export OPENAI_API_KEY="sk-..."
+    export GEMINI_API_KEY="..."
+    export ANTHROPIC_API_KEY="..."
+
+    # Verify
+    echo $OPENAI_API_KEY
+    ```
+  </Accordion>
+
+  <Accordion title="Using .env File">
+    ```bash
+    # Create .env file in project root
+    cat > .env << EOF
+    OPENAI_API_KEY=sk-...
+    GEMINI_API_KEY=...
+    ANTHROPIC_API_KEY=...
+    EOF
+
+    # SDK auto-loads .env files
+    atlas run --config config.yaml --task "Your task"
+    ```
+  </Accordion>
+
+  <Accordion title="Config File Reference">
+    ```yaml
+    # config.yaml
+    agent:
+      llm:
+        provider: openai
+        api_key_env: OPENAI_API_KEY  # Must be set in environment
+    ```
+  </Accordion>
+</AccordionGroup>
+
+#### Multi-Provider Configuration
+
+**Problem:** Using multiple LLM providers in one config
+
+**Solution:**
+
+```yaml
+# Student uses OpenAI
+agent:
+  llm:
+    provider: openai
+    model: gpt-4.1-mini
+    api_key_env: OPENAI_API_KEY
+
+# Teacher uses OpenAI
+teacher:
+  llm:
+    provider: openai
+    model: gpt-4.1
+    api_key_env: OPENAI_API_KEY
+
+# Reward system uses Gemini
+rim:
+  small_model:
+    provider: gemini
+    model: gemini/gemini-2.5-flash
+    api_key_env: GEMINI_API_KEY
+  large_model:
+    provider: gemini
+    model: gemini/gemini-2.5-pro
+    api_key_env: GEMINI_API_KEY
+```
+
+### Storage & Database
+
+#### Docker Daemon Not Running
+
+**Problem:** `Cannot connect to Docker daemon`
+
+**Solutions:**
+
+```bash
+# macOS
+open -a Docker
+
+# Linux - check status
+sudo systemctl status docker
+
+# Linux - start Docker
+sudo systemctl start docker
+
+# Verify
+docker ps
+```
+
+#### Postgres Connection Failures
+
+**Problem:** `could not connect to server`
+
+**Diagnostic Steps:**
+
+```bash
+# Check if Postgres is running
+docker ps | grep postgres
+
+# Check if port is accessible
+lsof -i :5433
+
+# Test connection
+psql postgresql://atlas:atlas@localhost:5433/atlas -c "SELECT 1"
+```
+
+**Solutions:**
+
+<Steps>
+  <Step title="Start Postgres with atlas init">
+    ```bash
+    atlas init
+    # Starts bundled Docker + Postgres on localhost:5433
+    ```
+  </Step>
+
+  <Step title="Verify Connection">
+    ```bash
+    # Check container is running
+    docker ps --filter "name=atlas"
+
+    # Test connection
+    docker exec -it $(docker ps -q -f name=atlas) \
+      psql -U atlas -c "SELECT version()"
+    ```
+  </Step>
+
+  <Step title="Check Config">
+    ```yaml
+    # config.yaml
+    storage:
+      database_url: postgresql://atlas:atlas@localhost:5433/atlas
+    ```
+  </Step>
+</Steps>
+
+#### Port Conflicts
+
+**Problem:** `Port 5433 is already in use`
+
+**Solutions:**
+
+```bash
+# Find process using port
+lsof -i :5433
+
+# Kill process if needed
+kill -9 <PID>
+
+# Or use different port in config
+storage:
+  database_url: postgresql://atlas:atlas@localhost:5434/atlas
+```
+
+#### Running Without Storage
+
+**Problem:** Want to run SDK without Postgres
+
+**Solution:**
+
+Storage is optional. The SDK will run without persistent storage, but rewards and learning history won't be saved:
+
+```yaml
+# config.yaml - omit storage section entirely
+agent:
+  type: litellm
+  # ... rest of config
+
+# Storage section is optional
+# storage:
+#   database_url: postgresql://...
+```
+
+Sessions still save to `.atlas/runs/` as JSON files without database persistence.
+
+### Discovery Issues
+
+#### atlas env init Finds Nothing
+
+**Problem:** `No agent classes detected`
+
+**Solutions:**
+
+<AccordionGroup>
+  <Accordion title="Check Project Structure">
+    ```bash
+    # Discovery looks for:
+    # - LangChain agents (from langchain import *)
+    # - LangGraph graphs (@graph decorator)
+    # - Custom agent classes
+
+    # Ensure your code imports these libraries
+    grep -r "from langchain" .
+    grep -r "from langgraph" .
+    ```
+  </Accordion>
+
+  <Accordion title="Manually Specify Agent">
+    ```yaml
+    # config.yaml
+    agent:
+      type: python
+      import_path: your_module.agents
+      attribute: create_agent
+      # Or for LangGraph
+      type: langgraph
+      import_path: your_module.graph
+      attribute: workflow
+    ```
+  </Accordion>
+
+  <Accordion title="Check Virtual Environment">
+    ```bash
+    # Ensure correct environment is active
+    which python
+    pip list | grep langchain
+
+    # Discovery runs in your current environment
+    atlas env init --verbose
+    ```
+  </Accordion>
+</AccordionGroup>
+
+#### Wrong Class Detected
+
+**Problem:** Discovery picks the wrong agent
+
+**Solution:**
+
+Override auto-discovery with explicit config:
+
+```yaml
+# config.yaml
+agent:
+  type: python
+  name: my-specific-agent
+  import_path: my_package.agents
+  attribute: production_agent  # Specific function/class name
+  system_prompt: |
+    Custom prompt for this agent
+```
+
+#### Factory Synthesis Failures
+
+**Problem:** Generated factory code fails
+
+**Solutions:**
+
+```bash
+# Check generated factory
+cat .atlas/generated_factories.py
+
+# Validate it loads
+python -c "from .atlas.generated_factories import *"
+
+# Regenerate if needed
+rm -rf .atlas/
+atlas env init
+
+# Or skip auto-discovery and use explicit config
+```
+
+### Runtime Errors
+
+#### LLM Provider Authentication
+
+**Problem:** `401 Unauthorized` or `403 Forbidden`
+
+**Solutions:**
+
+```bash
+# Verify API key is valid
+curl https://api.openai.com/v1/models \
+  -H "Authorization: Bearer $OPENAI_API_KEY"
+
+# Check key format
+echo $OPENAI_API_KEY | grep -E "^sk-"  # OpenAI
+echo $GEMINI_API_KEY | grep -E "^AI"   # Gemini (often starts with AI)
+
+# Regenerate key if expired
+# - OpenAI: https://platform.openai.com/api-keys
+# - Anthropic: https://console.anthropic.com/keys
+# - Gemini: https://aistudio.google.com/apikey
+```
+
+#### Timeout Errors
+
+**Problem:** `Request timeout` during execution
+
+**Solutions:**
+
+```yaml
+# Increase timeouts in config
+agent:
+  llm:
+    timeout_seconds: 180  # Default is 60
+
+teacher:
+  llm:
+    timeout_seconds: 180
+
+# Or for specific steps
+orchestration:
+  step_timeout_seconds: 900  # 15 minutes
+```
+
+#### MCP Server Connection Issues
+
+**Problem:** MCP tools not available or connection refused
+
+**Diagnostic Steps:**
+
+```bash
+# Check MCP server is running
+ps aux | grep mcp
+
+# Test MCP endpoint
+curl http://localhost:3000/health  # Adjust port
+
+# Check logs
+tail -f ~/.mcp/logs/server.log
+```
+
+**Solutions:**
+
+```python
+# Ensure MCP server is started before agent
+import subprocess
+mcp_process = subprocess.Popen([
+    "python", "-m", "your_mcp_server"
+])
+
+# Then run atlas
+atlas run --config config.yaml --task "Your task"
+```
+
 ## Continual Learning Support
 
-Online continual learning and adaptive prompt optimization live in the [`atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) project. Refer to the SDK troubleshooting guide for help with the export CLI, runtime orchestration, or continual learning jobs.
+For issues specific to offline training, reward synthesis, or the learning engine, refer to the training-specific sections above. The Atlas SDK handles runtime orchestration and data collection, while Atlas Core handles offline model training from collected traces.
 
 ## Getting Help
 
