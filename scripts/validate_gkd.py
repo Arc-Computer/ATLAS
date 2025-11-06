@@ -16,9 +16,16 @@ from pathlib import Path
 from typing import Dict, List
 
 import torch
+import sys
+import types
 from transformers.utils import import_utils
 
 import_utils.is_apex_available = lambda: False
+
+if "apex" not in sys.modules:
+    apex_stub = types.ModuleType("apex")
+    apex_stub.amp = None
+    sys.modules["apex"] = apex_stub
 from datasets import Dataset
 from torch.nn import functional as F
 from transformers import AutoModelForCausalLM, AutoTokenizer
