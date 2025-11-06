@@ -1,0 +1,26 @@
+defaults:
+  - train
+  - override model@_global_: qwen25_7b
+  - override data@_global_: meta_math_grpo
+  - override trainer/reward@_global_: meta_math_binary
+
+wandb_project: meta_math_grpo
+wandb_run_name: meta-math-grpo
+wandb_group_name: gkd-vs-grpo
+
+train_batch_size: 64
+per_device_train_batch_size: 2
+max_steps: 300
+logging_steps: 10
+save_strategy: "no"
+
+gradient_accumulation_steps: null
+
+trainer_log_name: meta_math_grpo
+trainer:
+  train_batch_size: ${train_batch_size}
+  per_device_train_batch_size: ${per_device_train_batch_size}
+  max_steps: ${max_steps}
+  logging_steps: ${logging_steps}
+  gradient_accumulation_steps: ${gradient_accumulation_steps}
+  report_to: []

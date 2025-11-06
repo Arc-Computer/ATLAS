@@ -1,0 +1,14 @@
+defaults:
+  - base
+  - _self_
+
+model_log_name: qwen25_7b
+model_name_or_path: Qwen/Qwen2.5-7B-Instruct
+
+model_args:
+  model_revision: main
+  torch_dtype: bfloat16
+  attn_implementation: flash_attention_2
+
+tokenizer:
+  model_revision: ${model_args.model_revision}

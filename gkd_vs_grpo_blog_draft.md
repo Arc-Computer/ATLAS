@@ -6,6 +6,8 @@ This architecture allows our research team to rapidly test and compare different
 
 ### Experimental Design
 
+All runs were executed on a single NVIDIA DGX Spark node using the 25.09 release of NVIDIA's PyTorch container (`nvcr.io/nvidia/pytorch:25.09-py3`). We mounted the Atlas repo and a shared Hugging Face cache into the container, so both training scripts reused the same local downloads of `Qwen/Qwen2.5-7B-Instruct` and `Qwen/Qwen2.5-14B-Instruct`. Metrics (loss curves, pass rate, reward traces, token counts, reverse KL, and wall-clock / GPU hours) were streamed to Weights & Biases for easy comparison.
+
 To create a controlled environment, we focused on MetaMathQA, a public math-reasoning benchmark that stresses structured, multi-step thinking. Our goal was to improve the performance of a student model on this dataset using two different on-policy methods, both orchestrated by Atlas.
 
 The student model in both experiments was `Qwen/Qwen2.5-7B-Instruct`.
@@ -16,7 +18,7 @@ In the first run, we used the `AtlasGKDTrainer` to distill knowledge from a larg
 
 **Method 2: Self-Improvement with GRPO**
 
-In the second run, we trained the same `Qwen/Qwen2.5-7B-Instruct` model using our `GRPOTrainer` on the identical MetaMathQA split. In this scenario, there is no teacher model. The student model learns from a sparse, binary reward signal: it receives a `+1.0` reward only if its final calculated answer is correct, and `0.0` otherwise. This setup tests the model's ability to improve by exploring on its own, guided only by the final outcome.
+In the second run, we trained the same `Qwen/Qwen2.5-7B-Instruct` model using our `GRPOTrainer` on the identical MetaMathQA split. In this scenario, there is no teacher model. The student model learns from a sparse, binary reward signal: it receives a `+1.0` reward only if its final calculated answer is correct, and `0.0` otherwise. This setup tests the model's ability to improve by exploring on its own, guided only by the final outcome. We exported the same MetaMathQA prompts into Atlas's GRPO dataset schema so the reward function could normalize answers exactly as the distillation evaluator does.
 
 For evaluation, we measured task performance as the pass rate on a held-out test set of 1,000 problems, and we tracked compute efficiency by the total GPU hours required to reach peak performance.
 

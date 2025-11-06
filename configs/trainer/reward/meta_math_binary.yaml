@@ -1,0 +1,6 @@
+reward_log_name: meta_math_binary
+
+reward_fns:
+  _target_: hydra_utils.wrap_as_list
+  meta_math_exact_match_reward:
+    _target_: trainers.reward_functions.meta_math_exact_match_reward
