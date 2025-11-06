@@ -19,7 +19,7 @@ Atlas is the learning layer for production agents, enabling continual learning f
 
 The **Atlas SDK** wraps existing agent systems in a dual-agent reasoning loop without requiring codebase refactoring. It automatically discovers your agent configuration, routes supervision dynamically across lanes (auto, paired, coach), and captures causality traces (student attempt → teacher intervention → outcome) while streaming rich telemetry to Postgres.
 
-**Atlas Core** (this repository) handles offline training with GRPO and on-policy distillation (GKD), sharing reward adapters with the runtime to train new teacher checkpoints from the causality data captured by the SDK. One-command model training that learns from your agent's actual execution patterns.
+**Atlas Core** (this repository) handles offline training with GRPO and on-policy distillation (GKD), sharing reward adapters with the runtime to train updated checkpoints for the teacher model from the causality data captured by the SDK. One-command model training that learns from your agent's actual execution patterns.
 
 ## Architecture at a Glance
 
@@ -27,14 +27,6 @@ The **Atlas SDK** wraps existing agent systems in a dual-agent reasoning loop wi
   <img src="docs/images/system-architecture.png" alt="Atlas architecture showing reasoning core, reward system, learning engine, and persistent memory connected to agent frameworks" width="900" style="border-radius: 12px;" />
   <p><em>The SDK captures causality traces and feeds the reward system; Atlas Core trains new teacher checkpoints from this data.</em></p>
 </div>
-
-## End-to-End Workflow
-
-1. **Wrap your agent with the runtime SDK** – Follow the [`SDK Quickstart`](https://docs.arc.computer/sdk/quickstart) to install `arc-atlas`, run discovery with `atlas env init`, and execute tasks via `atlas run` or `atlas.core.run`. Each task is triaged, probed, and routed into `auto`, `paired`, or `coach`, while adaptive summaries, persona updates, and rewards are recorded.
-2. **Persist and export telemetry** – Provision Postgres with `atlas init` (optional helper) and export sessions with `arc-atlas --database-url … --include-status approved --output traces.jsonl`. Before exporting new data, review and approve pending sessions using `arc-atlas review` so only trusted traces feed training. Every record carries the triage dossier, lane decision, probe confidence, guidance, reward breakdowns, and review status.
-3. **Train offline with Atlas Core** – Use this repository’s GRPO pipeline (`python scripts/run_offline_pipeline.py --export-path <traces.jsonl>`) to turn runtime traces into a new teacher checkpoint. Redeploy the checkpoint back through the SDK to close the loop.
-
-This hand-off keeps the learning flywheel tight: runtime captures adaptive behaviour, exports become training data, and Atlas Core ships the update back into production.
 
 ## Offline Quickstart
 
