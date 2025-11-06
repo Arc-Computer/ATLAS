@@ -160,6 +160,8 @@ def main() -> None:
         device_map="auto",
     )
 
+    eval_subset = eval_dataset.select(range(min(args.eval_sample_size, len(eval_dataset))))
+
     metrics_summary: Dict[str, Dict] = {
         "dataset": {
             "train_size": len(train_dataset),
@@ -179,7 +181,6 @@ def main() -> None:
             "max_new_tokens": args.max_new_tokens,
         },
     }
-    eval_subset = eval_dataset.select(range(min(args.eval_sample_size, len(eval_dataset))))
 
     if not args.no_baseline_eval:
         print("Running baseline evaluation...")
