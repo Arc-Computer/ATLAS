@@ -51,6 +51,8 @@ From this analysis, one clear takeaway stands out: for improving a model on a ta
 
 More broadly, this study highlights the value of an integrated learning platform. The ability to run, measure, and compare these frontier methods side-by-side, without weeks of custom engineering for each one, is critical for research velocity. Atlas allowed us to move from a research question to a clean, comparative result in a single afternoon. We're always looking to connect with other teams working at the edge of continual learning and agentic systems. If you're exploring similar problems, we'd love to compare notes. You can find us on [Twitter](https://twitter.com/atlas) and [LinkedIn](https://www.linkedin.com/company/atlas).
 
+Ready to see the same workflow on your traces? Reach out at hello@atlas.ai or drop us a line on LinkedIn—happy to run the distillation vs. RLVR comparison with your models and datasets.
+
 ### Methods Appendix
 
 We ran both experiments on a single NVIDIA DGX Spark using NVIDIA’s PyTorch container (`nvcr.io/nvidia/pytorch:25.09-py3`). The Atlas repository and Hugging Face cache were bind-mounted into the container so the student (`Qwen/Qwen2.5-7B-Instruct`) and teacher (`Qwen/Qwen2.5-14B-Instruct`) checkpoints could be reused without re-downloading. Runs were logged to Weights & Biases to capture pass rate, token statistics, reverse KL, reward traces, and wall-clock GPU hours.
