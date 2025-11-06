@@ -16,6 +16,9 @@ from pathlib import Path
 from typing import Dict, List
 
 import torch
+from transformers.utils import import_utils
+
+import_utils.is_apex_available = lambda: False
 from datasets import Dataset
 from torch.nn import functional as F
 from transformers import AutoModelForCausalLM, AutoTokenizer
