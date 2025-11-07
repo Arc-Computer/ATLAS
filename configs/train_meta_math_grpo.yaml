@@ -27,3 +27,4 @@ trainer.args.gradient_accumulation_steps: ${gradient_accumulation_steps}
 trainer.args.use_vllm: false
 trainer.args.ds3_gather_for_generation: false
 trainer.args.max_completion_length: 1024
+trainer.gradient_accumulation_steps: ${gradient_accumulation_steps}
