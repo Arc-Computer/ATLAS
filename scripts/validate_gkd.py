@@ -110,13 +110,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--temperature",
         type=float,
-        default=0.9,
+        default=0.6,
         help="Sampling temperature for student rollouts during training.",
     )
     parser.add_argument(
         "--max-new-tokens",
         type=int,
-        default=256,
+        default=128,
         help="Maximum new tokens for student generation in evaluation.",
     )
     parser.add_argument(

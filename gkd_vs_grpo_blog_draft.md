@@ -39,6 +39,8 @@ We still have work to do: after 500 steps the distilled checkpoint trails the ba
 
 Once the GRPO numbers land we’ll add the second row of data and the accompanying charts. For now, the key takeaway is that Atlas let us stage and diagnose the full GKD pipeline on DGX Spark in ~13 hours, giving us concrete telemetry (accuracy, token counts, reverse KL, wall-clock) to tune against.
 
+We’ve already queued a follow-up distillation run that tightens the generation settings (`temperature=0.6`, `max_new_tokens=128`) while keeping the rest of the schedule identical. That should curb the overly long completions and translate the KL gains into reliability gains—we’ll fold those results into the table as soon as they’re finished.
+
 ### Special Case: Cross-Tokenizer Distillation
 
 A known challenge in knowledge distillation is a vocabulary mismatch between models. To test this boundary condition, we also ran an experiment distilling from the `Qwen/Qwen2.5-14B-Instruct` teacher to a `meta-llama/Llama-3.2-1B-Instruct` student. These models have entirely different tokenizers, which would historically require complex vocabulary mapping or fail entirely. However, we observed that our GKD implementation, which incorporates modern sequence and vocabulary alignment techniques, handled the discrepancy automatically. This confirms that distillation can be effectively applied even across different model families without bespoke engineering.
