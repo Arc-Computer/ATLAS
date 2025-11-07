@@ -3,7 +3,7 @@ defaults:
   - override model@_global_: qwen25_7b
   - override data@_global_: meta_math_grpo
   - override trainer@_global_: grpo
-  - override trainer/reward@trainer: meta_math_binary
+  - trainer/reward@trainer: meta_math_binary
   - _self_
 
 wandb_project: meta_math_grpo
