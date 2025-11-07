@@ -1,0 +1,13 @@
+defaults:
+  - base
+  - _self_
+
+trainer_log_name: rlvr
+
+trainer:
+  _target_: trainers.trl_rlvr_trainer.TrlRLVRTrainer
+  model: ${model_name_or_path}
+  args: ${trainer_args}
+  reward_funcs: ${reward_fns}
+  processing_class: ${tokenizer}
+  peft_config: ${peft_config}

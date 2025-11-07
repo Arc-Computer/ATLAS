@@ -3,7 +3,7 @@ defaults:
   - reward@_global_: meta_math_binary
   - override model@_global_: qwen25_7b
   - override data@_global_: meta_math_grpo
-  - override trainer@_global_: grpo
+  - override trainer@_global_: trl_rlvr
   - _self_
 
 wandb_project: meta_math_grpo
@@ -18,9 +18,11 @@ save_strategy: "no"
 
 gradient_accumulation_steps: null
 
-trainer_log_name: meta_math_grpo
+trainer_log_name: meta_math_rlvr
 trainer.args.train_batch_size: ${train_batch_size}
 trainer.args.per_device_train_batch_size: ${per_device_train_batch_size}
 trainer.args.max_steps: ${max_steps}
 trainer.args.logging_steps: ${logging_steps}
 trainer.args.gradient_accumulation_steps: ${gradient_accumulation_steps}
+trainer.args.use_vllm: false
+trainer.args.ds3_gather_for_generation: false
