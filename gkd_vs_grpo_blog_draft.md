@@ -20,6 +20,8 @@ In the first run, we used the `AtlasGKDTrainer` to distill knowledge from a larg
 
 In the second run, we trained the same `Qwen/Qwen2.5-7B-Instruct` model using our `GRPOTrainer` on the identical MetaMathQA split. This configuration mirrors a reinforcement learning with verifiable rewards (RLVR) setup: there is no teacher model, and the agent receives a deterministic, exact-match reward (`+1.0` for correct final answers, `0.0` otherwise). That framing is what many enterprise teams are experimenting with today, so it’s the natural comparison point. The student explores on its own, guided only by the verifiable outcome signal. We exported the same MetaMathQA prompts into Atlas's GRPO dataset schema so the reward function could normalize answers exactly as the distillation evaluator does.
 
+To keep the comparison grounded in “turnkey vs. turnkey” workflows, both trainers ran with their stock Atlas recipes. The GKD experiment simply sets `lambda=1.0` on `AtlasGKDTrainer`, leaving every other hyperparameter at the defaults we ship for MetaMathQA. The GRPO/RLVR baseline likewise uses the out-of-the-box configuration—exact-match reward only, a fixed `1e-6` learning rate, and a 300-step schedule—mirroring how most teams would spin up RLVR before any bespoke reward shaping or curriculum tuning. The results below should therefore be read as a head-to-head between the standard Atlas distillation stack and the standard Atlas RLVR stack, not a “best-possible” tuning sweep for either method.
+
 For evaluation, we measured task performance as the pass rate on a held-out test set of 1,000 problems, and we tracked compute efficiency by the total GPU hours required to reach peak performance.
 
 ### Performance and Efficiency Analysis
