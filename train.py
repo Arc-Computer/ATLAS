@@ -12,6 +12,17 @@ from omegaconf import DictConfig, OmegaConf, open_dict
 from datetime import datetime
 from transformers.trainer_utils import get_last_checkpoint
 from typing import Any, Dict, Optional, cast
+import sys
+import types
+
+try:
+    import apex as _apex  # type: ignore
+except ImportError:
+    _apex = types.ModuleType("apex")
+    sys.modules["apex"] = _apex
+
+if not hasattr(_apex, "amp"):
+    _apex.amp = types.SimpleNamespace()  # type: ignore[attr-defined]
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
