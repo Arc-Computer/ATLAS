@@ -1,5 +1,9 @@
 import logging
 import os
+
+os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
+os.environ.setdefault("TRANSFORMERS_NO_APEX", "1")
+
 import random
 import re
 import hydra
@@ -8,9 +12,6 @@ from omegaconf import DictConfig, OmegaConf, open_dict
 from datetime import datetime
 from transformers.trainer_utils import get_last_checkpoint
 from typing import Any, Dict, Optional, cast
-
-os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
-os.environ.setdefault("TRANSFORMERS_NO_APEX", "1")
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
