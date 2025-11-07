@@ -2,7 +2,9 @@ defaults:
   - train
   - override model@_global_: qwen25_7b
   - override data@_global_: meta_math_grpo
-  - override trainer/reward@_global_: meta_math_binary
+  - override trainer@_global_: grpo
+  - override trainer/reward@trainer: meta_math_binary
+  - _self_
 
 wandb_project: meta_math_grpo
 wandb_run_name: meta-math-grpo
@@ -10,7 +12,7 @@ wandb_group_name: gkd-vs-grpo
 
 train_batch_size: 64
 per_device_train_batch_size: 2
-max_steps: 300
+max_steps: 500
 logging_steps: 10
 save_strategy: "no"
 
