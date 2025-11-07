@@ -4,6 +4,7 @@ import torch
 import numpy
 import transformers
 import subprocess
+import importlib
 
 
 def spawn_bash_command(bash_command):
@@ -42,3 +43,9 @@ def wrap_as_list(*args, **kwargs):
     for element in kwargs.values():
         to_return.append(element)
     return to_return
+
+
+def load_function(path: str):
+    module_name, attr = path.rsplit(".", 1)
+    module = importlib.import_module(module_name)
+    return getattr(module, attr)
