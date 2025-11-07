@@ -22,8 +22,18 @@ class TrlRLVRTrainer:
         **kwargs: Any,
     ) -> None:
         from trl import GRPOTrainer
-
+        gradient_accumulation_steps = kwargs.pop(
+            "gradient_accumulation_steps", None
+        )
         processing_class = processing_class or tokenizer
+        if (
+            gradient_accumulation_steps is not None
+            and getattr(args, "gradient_accumulation_steps", None)
+            != gradient_accumulation_steps
+        ):
+            # Hydra's Atlas launcher infers accumulation on the trainer node,
+            # but GRPOTrainer expects the value nested under GRPOConfig.
+            args.gradient_accumulation_steps = gradient_accumulation_steps
         self._trainer = GRPOTrainer(
             model=model,
             reward_funcs=reward_funcs,
