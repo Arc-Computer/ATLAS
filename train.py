@@ -82,15 +82,23 @@ def main(cfg: DictConfig):
         if not OmegaConf.is_missing(target_cfg, "gradient_accumulation_steps"):
             return target_cfg.gradient_accumulation_steps
 
+        args_cfg = target_cfg.get("args") if isinstance(target_cfg.get("args"), DictConfig) else None
+        if args_cfg is not None and not OmegaConf.is_missing(args_cfg, "gradient_accumulation_steps"):
+            return args_cfg.gradient_accumulation_steps
+
         train_batch = None
         if not OmegaConf.is_missing(target_cfg, "train_batch_size"):
             train_batch = target_cfg.train_batch_size
+        elif args_cfg is not None and not OmegaConf.is_missing(args_cfg, "train_batch_size"):
+            train_batch = args_cfg.train_batch_size
         elif not OmegaConf.is_missing(cfg, "train_batch_size"):
             train_batch = cfg.train_batch_size
 
         per_device_batch = None
         if not OmegaConf.is_missing(target_cfg, "per_device_train_batch_size"):
             per_device_batch = target_cfg.per_device_train_batch_size
+        elif args_cfg is not None and not OmegaConf.is_missing(args_cfg, "per_device_train_batch_size"):
+            per_device_batch = args_cfg.per_device_train_batch_size
         elif not OmegaConf.is_missing(cfg, "per_device_train_batch_size"):
             per_device_batch = cfg.per_device_train_batch_size
 
