@@ -26,22 +26,18 @@ For evaluation, we measured task performance as the pass rate on a held-out test
 
 ### Performance and Efficiency Analysis
 
-The results of the comparison were definitive. The learning curve for the GKD student was a steep, rapid ascent, achieving 90% of the teacher's final score in under three hours. The dense, token-level guidance allowed the model to quickly correct its reasoning pathways.
+The first MetaMathQA distillation run produced the following summary:
 
-In contrast, the GRPO model's curve was a slow, noisy crawl upwards. Learning from only a sparse "correct/incorrect" signal, it struggled to assign credit and took much longer to discover effective strategies. While it did improve, its learning was far less efficient.
+| Model / Method | Accuracy (MetaMathQA subset) | Avg Generated Tokens | Mean Reverse KL | GPU Time |
+| :--- | :--- | :--- | :--- | :--- |
+| Student (pre-distillation) | 82.8% | 29.6 | 0.098 | N/A |
+| Teacher (Qwen2.5‑14B) | 85.9% | 17.6 | 0.000 | N/A |
+| **GKD Distilled Student** | **67.2%** | **96.5** | **0.032** | **13.1 hrs (500 steps)** |
+| GRPO / RLVR Baseline | _Running_ | _TBD_ | _TBD_ | _TBD_ |
 
-*(A chart comparing the pass rate vs. training time for GKD and GRPO would be placed here.)*
+We still have work to do: after 500 steps the distilled checkpoint trails the baseline student on exact-match accuracy, despite improving its reverse-KL alignment with the teacher. That’s a useful data point—running the same script with longer schedules, a smaller temperature, or a filtered training slice is now the next lever. In parallel, we’re running the RLVR baseline so the final table can contrast both strategies on identical metrics.
 
-The difference in efficiency was stark.
-
-*(A table comparing the final metrics would be placed here.)*
-
-| Method | Peak Performance (Pass Rate) | Time to Peak | Compute (GPU Hours) |
-| :--- | :--- | :--- | :--- |
-| GRPO | 38% | 22 hours | ~22 |
-| **GKD** | **55%** | **3 hours** | **~3** |
-
-The dense signal from GKD was approximately **7x more compute-efficient** and resulted in a **17 percentage point higher** final performance. For this knowledge transfer task, guiding the student's reasoning process token-by-token was demonstrably more effective than letting it search for a solution with only a simple "win/loss" signal.
+Once the GRPO numbers land we’ll add the second row of data and the accompanying charts. For now, the key takeaway is that Atlas let us stage and diagnose the full GKD pipeline on DGX Spark in ~13 hours, giving us concrete telemetry (accuracy, token counts, reverse KL, wall-clock) to tune against.
 
 ### Special Case: Cross-Tokenizer Distillation
 
