@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Callable, Dict, Optional
+from typing import Callable, Dict, Optional, Sequence
 
 from datasets import Dataset
 from transformers import PreTrainedTokenizerBase
@@ -38,6 +38,7 @@ def _format_with_prompt(
     split: Dataset,
     tokenizer: PreTrainedTokenizerBase,
     formatter: Callable[[dict, list[dict]], Dict],
+    remove_columns: Optional[Sequence[str]] = None,
 ) -> Dataset:
     def _map(example: dict) -> Dict:
         messages = example["messages"]
@@ -53,7 +54,7 @@ def _format_with_prompt(
         row.update(formatter(example, messages))
         return row
 
-    return split.map(_map)
+    return split.map(_map, remove_columns=remove_columns)
 
 
 def build_gsm8k_gkd_dataset(
@@ -121,8 +122,19 @@ def build_gsm8k_grpo_dataset(
             "ground_truth": example.get("final_answer", ""),
         }
 
-    formatted_train = _format_with_prompt(train_ds, tokenizer, _grpo_formatter)
-    formatted_eval = _format_with_prompt(eval_ds, tokenizer, _grpo_formatter)
+    remove_message_cols = ["messages"] if "messages" in train_ds.column_names else None
+    formatted_train = _format_with_prompt(
+        train_ds,
+        tokenizer,
+        _grpo_formatter,
+        remove_columns=remove_message_cols,
+    )
+    formatted_eval = _format_with_prompt(
+        eval_ds,
+        tokenizer,
+        _grpo_formatter,
+        remove_columns=remove_message_cols,
+    )
 
     return {
         "train_dataset": formatted_train,
