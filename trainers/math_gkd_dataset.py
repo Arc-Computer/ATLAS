@@ -25,6 +25,7 @@ class MathGKDDatasetConfig:
     """Configuration for building the math validation dataset."""
 
     dataset_name: str = "meta-math/MetaMathQA"
+    dataset_config: Optional[str] = None
     train_split: str = "train"
     eval_split: Optional[str] = None
     train_ratio: float = 0.9
@@ -92,13 +93,18 @@ def _load_base_dataset(cfg: MathGKDDatasetConfig) -> Dataset | DatasetDict:
     if cfg.eval_split:
         dataset = load_dataset(
             cfg.dataset_name,
+            cfg.dataset_config,
             split={
                 "train": cfg.train_split,
                 "eval": cfg.eval_split,
             },
         )
     else:
-        dataset = load_dataset(cfg.dataset_name, split=cfg.train_split)
+        dataset = load_dataset(
+            cfg.dataset_name,
+            cfg.dataset_config,
+            split=cfg.train_split,
+        )
 
     return dataset
 

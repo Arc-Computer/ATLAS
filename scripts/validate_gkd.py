@@ -141,6 +141,11 @@ def parse_args() -> argparse.Namespace:
         help="Hugging Face dataset name to load for validation.",
     )
     parser.add_argument(
+        "--dataset-config",
+        default=None,
+        help="Optional dataset config (e.g., subset) to load from Hugging Face hub.",
+    )
+    parser.add_argument(
         "--dataset-max-samples",
         type=int,
         default=None,
@@ -158,6 +163,7 @@ def main() -> None:
 
     dataset_cfg = MathGKDDatasetConfig(
         dataset_name=args.dataset_name,
+        dataset_config=args.dataset_config,
         limit=args.dataset_max_samples
         if args.dataset_max_samples is not None
         else args.train_limit + args.eval_limit,

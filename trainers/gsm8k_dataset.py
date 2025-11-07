@@ -27,8 +27,9 @@ def build_gsm8k_gkd_dataset(
 
     cfg = MathGKDDatasetConfig(
         dataset_name=dataset_name,
-        train_split=f"{train_split}[{subset}]" if subset else train_split,
-        eval_split=f"{eval_split}[{subset}]" if eval_split else None,
+        dataset_config=subset,
+        train_split=train_split,
+        eval_split=eval_split,
         train_ratio=train_ratio,
         seed=seed,
         limit=dataset_max_samples,
