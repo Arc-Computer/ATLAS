@@ -79,26 +79,29 @@ def main(cfg: DictConfig):
     def _resolve_grad_accum(target_cfg: DictConfig) -> int | None:
         if target_cfg is None or not isinstance(target_cfg, DictConfig):
             return None
-        if not OmegaConf.is_missing(target_cfg, "gradient_accumulation_steps"):
-            return target_cfg.gradient_accumulation_steps
+        grad_direct = target_cfg.get("gradient_accumulation_steps", None)
+        if grad_direct is not None and not OmegaConf.is_missing(target_cfg, "gradient_accumulation_steps"):
+            return grad_direct
 
         args_cfg = target_cfg.get("args") if isinstance(target_cfg.get("args"), DictConfig) else None
-        if args_cfg is not None and not OmegaConf.is_missing(args_cfg, "gradient_accumulation_steps"):
-            return args_cfg.gradient_accumulation_steps
+        if args_cfg is not None:
+            grad_args = args_cfg.get("gradient_accumulation_steps", None)
+            if grad_args is not None and not OmegaConf.is_missing(args_cfg, "gradient_accumulation_steps"):
+                return grad_args
 
         train_batch = None
         if not OmegaConf.is_missing(target_cfg, "train_batch_size"):
-            train_batch = target_cfg.train_batch_size
+            train_batch = target_cfg.get("train_batch_size")
         elif args_cfg is not None and not OmegaConf.is_missing(args_cfg, "train_batch_size"):
-            train_batch = args_cfg.train_batch_size
+            train_batch = args_cfg.get("train_batch_size")
         elif not OmegaConf.is_missing(cfg, "train_batch_size"):
             train_batch = cfg.train_batch_size
 
         per_device_batch = None
         if not OmegaConf.is_missing(target_cfg, "per_device_train_batch_size"):
-            per_device_batch = target_cfg.per_device_train_batch_size
+            per_device_batch = target_cfg.get("per_device_train_batch_size")
         elif args_cfg is not None and not OmegaConf.is_missing(args_cfg, "per_device_train_batch_size"):
-            per_device_batch = args_cfg.per_device_train_batch_size
+            per_device_batch = args_cfg.get("per_device_train_batch_size")
         elif not OmegaConf.is_missing(cfg, "per_device_train_batch_size"):
             per_device_batch = cfg.per_device_train_batch_size
 
