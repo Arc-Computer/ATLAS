@@ -119,7 +119,15 @@ def main(cfg: DictConfig):
 
     resolved_value: Optional[int] = None
     if trainer_accum is not None:
-        trainer_cfg.gradient_accumulation_steps = trainer_accum
+        if trainer_cfg is not None:
+            if not OmegaConf.is_missing(trainer_cfg, "gradient_accumulation_steps"):
+                trainer_cfg.gradient_accumulation_steps = trainer_accum
+            elif (
+                trainer_cfg.get("args") is not None
+                and isinstance(trainer_cfg.get("args"), DictConfig)
+                and not OmegaConf.is_missing(trainer_cfg.args, "gradient_accumulation_steps")
+            ):
+                trainer_cfg.args.gradient_accumulation_steps = trainer_accum
         resolved_value = trainer_accum
 
     if accumulation_steps is not None:
