@@ -1,8 +1,8 @@
 defaults:
   - train
-  - override model@_global_: qwen25_7b
-  - override data@_global_: meta_math_grpo
-  - override trainer@_global_: grpo
+  - model@_global_: qwen25_7b
+  - data@_global_: meta_math_grpo
+  - trainer@_global_: grpo
   - trainer/reward@trainer: meta_math_binary
   - _self_
 
