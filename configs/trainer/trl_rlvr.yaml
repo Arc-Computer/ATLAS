@@ -11,3 +11,6 @@ trainer:
   reward_funcs: ${reward_fns}
   processing_class: ${tokenizer}
   peft_config: ${peft_config}
+
+trainer_args:
+  _target_: trl.GRPOConfig
