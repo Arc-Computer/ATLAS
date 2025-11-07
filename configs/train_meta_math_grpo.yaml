@@ -19,10 +19,9 @@ save_strategy: "no"
 gradient_accumulation_steps: null
 
 trainer_log_name: meta_math_grpo
-trainer:
+trainer_args:
   train_batch_size: ${train_batch_size}
   per_device_train_batch_size: ${per_device_train_batch_size}
   max_steps: ${max_steps}
   logging_steps: ${logging_steps}
   gradient_accumulation_steps: ${gradient_accumulation_steps}
-  report_to: []
