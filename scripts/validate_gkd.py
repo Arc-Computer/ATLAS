@@ -135,6 +135,17 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Force bfloat16 inference when supported.",
     )
+    parser.add_argument(
+        "--dataset-name",
+        default="meta-math/MetaMathQA",
+        help="Hugging Face dataset name to load for validation.",
+    )
+    parser.add_argument(
+        "--dataset-max-samples",
+        type=int,
+        default=None,
+        help="Optional cap on total dataset records before splitting.",
+    )
     return parser.parse_args()
 
 
@@ -145,7 +156,12 @@ def main() -> None:
     device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
     torch_dtype = torch.bfloat16 if args.bf16 else torch.float16 if device == "cuda" else torch.float32
 
-    dataset_cfg = MathGKDDatasetConfig(limit=args.train_limit + args.eval_limit)
+    dataset_cfg = MathGKDDatasetConfig(
+        dataset_name=args.dataset_name,
+        limit=args.dataset_max_samples
+        if args.dataset_max_samples is not None
+        else args.train_limit + args.eval_limit,
+    )
     train_dataset, eval_dataset = build_math_gkd_dataset(dataset_cfg)
 
     if args.train_limit:
