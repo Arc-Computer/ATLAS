@@ -11,12 +11,12 @@ wandb_run_name: meta-math-grpo
 wandb_group_name: gkd-vs-grpo
 
 train_batch_size: 64
-per_device_train_batch_size: 2
+per_device_train_batch_size: 1
 max_steps: 500
 logging_steps: 10
 save_strategy: "no"
 
-gradient_accumulation_steps: null
+gradient_accumulation_steps: 64
 
 trainer_log_name: meta_math_rlvr
 trainer.args.train_batch_size: ${train_batch_size}
@@ -26,3 +26,4 @@ trainer.args.logging_steps: ${logging_steps}
 trainer.args.gradient_accumulation_steps: ${gradient_accumulation_steps}
 trainer.args.use_vllm: false
 trainer.args.ds3_gather_for_generation: false
+trainer.args.max_completion_length: 1024
