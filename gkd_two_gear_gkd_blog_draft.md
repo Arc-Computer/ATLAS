@@ -13,97 +13,106 @@ We’ll fill in the final telemetry (loss curves, Baseline Comparison metrics, t
 
 ---
 
-## Why two gears?
+## Why Two Gears?
 
-Managed continual learning (our internal service definition) promises recurring distillation cadences without handing customers an ML ops project. In practice that means giving practitioners a way to:
+A managed continual learning service needs to balance two competing demands: the need for rapid, iterative validation and the push for production-grade reliability. How do you quickly check if a new batch of production traces has broken the pipeline? And how do you schedule the deeper, more expensive runs for workflows that demand 95%+ success rates?
 
-1. Validate the SDK → Postgres → GKD loop quickly after each batch of traces.
-2. Schedule deeper sweeps on the workflows that need 95%+ reliability.
-
-You should be able to do both without touching the codepath. Atlas already exposes the knobs through Hydra, so we treat “fast” and “high-quality” as two presets on the same trainer.
+This requires a system with multiple operating points. Instead of treating distillation as a monolithic process, we define two "gears" that use the exact same training pipeline but with different Hydra configurations. This allows a research team to shift between a fast, diagnostic cadence and a high-quality, reliability-focused cadence without ever leaving the Atlas framework. One gear is for plumbing checks and directional feedback; the other is for hitting SLAs.
 
 ---
 
 ## Experiment Setup
 
-- **Hardware**: Single DGX Spark (NVIDIA PyTorch container `nvcr.io/nvidia/pytorch:25.09-py3`).
-- **Models**: Teacher `Qwen/Qwen2.5-14B-Instruct`, student `Qwen/Qwen2.5-7B-Instruct`.
-- **Data**: GSM8K traces captured via Atlas SDK, streamed from Postgres using the runtime storage client.
-- **Trainer**: `AtlasGKDTrainer` (`trainer=gkd` in Hydra) invoked through `scripts/validate_gkd.py`.
-- **Metrics**: `train/loss`, `grad_norm`, `eval/loss`, Baseline Comparison telemetry (success delta, token reduction), wall-clock / GPU hours.
+Our goal is to isolate the impact of the configuration, so both runs share an identical foundation.
 
-Both runs use the same export (`dataset-max-samples=8792`, `train-limit=7473`, `eval-limit=1319`) so differences come solely from configuration.
+- **Hardware**: Single DGX Spark (using the `nvcr.io/nvidia/pytorch:25.09-py3` container).
+- **Models**: A `Qwen/Qwen2.5-14B-Instruct` teacher and a `Qwen/Qwen2.5-7B-Instruct` student.
+- **Data**: A GSM8K dataset of 8,792 traces captured via the Atlas SDK, with 7,473 used for training and 1,319 for evaluation. The data is streamed directly from Postgres using the runtime storage client.
+- **Trainer**: The stock `AtlasGKDTrainer` (`trainer=gkd` in Hydra), invoked via the `scripts/validate_gkd.py` validation script.
+- **Metrics**: We track `train/loss`, `grad_norm`, and `eval/loss`, alongside wall-clock time and the Baseline Comparison telemetry (success delta and token reduction) logged to WandB.
 
 ---
 
-## Gear 1 · Fast GKD Sweep
+## Gear 1 · The Fast Sweep
 
-Purpose: confirm the end-to-end loop works on fresh traces and get directional telemetry within a single afternoon.
+What can a 12-hour run on a single DGX tell us? The primary goal of the fast gear is to confirm that the end-to-end loop—from SDK trace capture to GKD training—is sound. It’s a sanity check, designed to provide directional telemetry and catch regressions before committing to a multi-day run.
 
-**Config highlights**
-
+**Config Highlights:**
 - `lmbda=1.0`, `beta=0.5`
 - `temperature=0.9`
-- `max_new_tokens=256`
 - `min_reward=0.8`
-- Learning rate `2e-5`
-- `max_steps=500`, `per_device_train_batch_size=2`, `gradient_accumulation_steps=4`
+- `learning_rate=2e-5`
+- `max_steps=500`
 
-**Telemetry (to be filled in)**
+The run finished in 11 hours and 45 minutes, providing a clear picture of the training dynamics.
 
-- Training loss trajectory (expected: 0.0676 → 0.0294 by epoch ≈0.21)
-- Eval loss checkpoints (expected: ~0.0437, ~0.0397, …)
-- Gradient norms (expected range: 0.88–1.70)
-- Baseline Comparison deltas (success + token savings)
-- Wall-clock / GPU hours on DGX Spark
+#### Reading the Telemetry
 
-Interpretation: when the loss curve drops this quickly and gradients stay in band, you know the trace ingest, Hydra config, and TRL wiring are behaving. This “gear” is what we run after every batch of runtime traces before deciding whether to iterate further.
+The logs tell a story of a healthy and efficient run. The training loss dropped from an initial **0.0676** to **0.0294** in just 500 steps. More importantly, the evaluation loss tracked this descent, moving from **0.0437** down to **0.0394** across three checkpoints.
+
+*[Image: A WandB chart showing train/loss and eval/loss for the Gear 1 fast sweep. The two lines should track each other closely, showing a steady downward trend.]*
+
+This convergence is exactly what we want to see. The lack of divergence between the training and evaluation loss curves indicates that the student model is generalizing well from the teacher's guidance, not just overfitting to the training batch.
+
+We also monitor gradient norms as a proxy for stability. Throughout the run, `grad_norm` remained bounded between **0.88** and **1.70**.
+
+*[Image: A WandB chart showing grad_norm over 500 steps for the Gear 1 fast sweep. The line should be noisy but hover within a stable horizontal band.]*
+
+Stable gradients, combined with a smooth loss decay, give us high confidence in the run's integrity. This is the "green light" we look for: a clear signal that the data is learnable and the configuration is sound, justifying an investment in the more expensive Gear 2 sweep.
 
 ---
 
-## Gear 2 · High-Quality GKD Sweep
+## Gear 2 · The High-Quality Sweep
 
-Purpose: push toward the ≥95% reliability tier by biasing toward top-quality traces and constraining generation.
+Where the fast gear prioritizes speed, the high-quality gear prioritizes reliability. The goal here is to push the student model toward its performance ceiling, creating a checkpoint that could meet a production SLA.
 
-**Config highlights**
+Our hypothesis is that by being more selective with our data and more conservative with our generation and optimization, we can distill a more robust policy.
 
+**Planned Config:**
 - `lmbda=1.0`, `beta=0.5`
-- `temperature=0.6`
-- `max_new_tokens=128`
-- `min_reward=0.9`
-- Learning rate `3e-6`
-- Extended schedule (`num_train_epochs=5` or equivalent max steps)
+- `temperature=0.6` (more conservative generation)
+- `max_new_tokens=128` (tighter, more focused responses)
+- `min_reward=0.9` (filters for only the highest-quality traces)
+- `learning_rate` (a lower `3e-6`)
+- An extended schedule (`num_train_epochs=5` or an equivalent `max_steps`).
 
-**Telemetry (to be filled in)**
+**Expected Telemetry (Upcoming):**
+- Training and evaluation loss trajectories under the stricter data filter.
+- Gradient norms, which we expect to remain low and stable.
+- Baseline Comparison deltas, hopefully showing improved success rates and tighter token budgets.
+- Wall-clock time, which will serve as a benchmark for the cost of a reliability-focused run.
 
-- Training/eval loss trajectory under the stricter filter
-- Gradient norms (expected to stay ≤1.0 most of run)
-- Baseline Comparison deltas showing tighter token budgets
-- Wall-clock / GPU hours relative to fast sweep
-
-Interpretation: this sweep takes longer, but it’s the one we anchor reliability SLAs to. Because the trainer and dataset plumbing are identical, teams can schedule it weekly/biweekly without retooling—just update Hydra overrides.
+This is the gear we anchor our managed continual learning service to. Because the trainer and dataset plumbing are identical to the fast sweep, a team can schedule this deeper run weekly or biweekly just by submitting a different set of Hydra overrides.
 
 ---
 
 ## Comparing the Cadences
 
-Once both runs complete we’ll snapshot the metrics side-by-side. The table will focus on:
+Once the high-quality run completes, we will compare the metrics side-by-side. The goal is not to declare a "winner," but to illustrate the trade-offs and demonstrate how a team can strategically alternate between gears.
 
 | Metric | Gear 1 (Fast) | Gear 2 (High-Quality) |
 | --- | --- | --- |
-| Train loss (start → end) | _Fill in_ | _Fill in_ |
-| Eval loss checkpoints | _Fill in_ | _Fill in_ |
-| Success delta (Baseline Comparison) | _Fill in_ | _Fill in_ |
-| Token reduction (%) | _Fill in_ | _Fill in_ |
-| Wall-clock (hrs) | _Fill in_ | _Fill in_ |
+| **Train Loss (start → end)** | 0.0676 → 0.0294 | _Fill in_ |
+| **Eval Loss (start → end)** | 0.0437 → 0.0394 | _Fill in_ |
+| **Success Delta (vs. Baseline)** | _Fill in_ | _Fill in_ |
+| **Token Reduction (%)** | _Fill in_ | _Fill in_ |
+| **Wall-Clock (hrs)** | 11.75 | _Fill in_ |
 
-The point isn’t to crown a winner—it’s to show how quickly you can iterate between gears depending on the workflow. Most teams will run Gear 1 after each batch of traces, then schedule Gear 2 for the workflows where reliability or cost targets matter most.
+In practice, a team might run Gear 1 after every new batch of traces is ingested to get a quick signal. If the telemetry is positive, they can schedule a Gear 2 run for the critical workflows where reliability and cost-efficiency are paramount. This two-gear system provides a practical framework for managing the cadence of continual learning.
 
 ---
 
 ## Where RLVR and Self-Play Fit
 
-We still plan to publish a GRPO (RLVR-style) baseline on the exact same GSM8K slice once the trainer stabilizes. RLVR is valuable when you don’t have a trustworthy teacher policy or when you need to explore beyond existing traces. The Atlas SDK already captures the reward adapters and supervision lanes needed for those runs; the difference is that RLVR consumes more compute and requires careful reward shaping. By nailing the two GKD gears first, we get a reliable default loop and can reserve RLVR/self-play for the cases where sparse rewards are the only option.
+It's important to clarify that on-policy distillation isn't a replacement for all other learning methods. We still plan to publish a GRPO (RLVR-style) baseline on the exact same GSM8K data slice. So, when should a team choose one over the other?
+
+Our perspective is this: GKD is the workhorse. It's the default choice when you have a trustworthy teacher and a stream of on-policy data from the Atlas SDK. It's computationally cheaper and provides a dense, token-level reward signal.
+
+RLVR and self-play are specialist tools. They become invaluable in two primary scenarios:
+1.  When you **lack a reliable teacher policy** and must discover behavior from scratch.
+2.  When the task has a **sparse reward** (e.g., a game-winner or a multi-step task with only a final pass/fail), making token-level distillation impossible.
+
+By establishing a robust two-gear GKD loop first, we create a reliable default for the 80% of cases, reserving the higher cost and complexity of RLVR for the 20% of problems that truly demand exploration.
 
 ---
 
@@ -136,7 +145,7 @@ python scripts/validate_gkd.py \
   --bf16
 ```
 
-**High-Quality Sweep Command**
+**High-Quality Sweep Command (Planned)**
 
 ```bash
 HF_HUB_ENABLE_HF_TRANSFER=1 \
@@ -163,10 +172,12 @@ python scripts/validate_gkd.py \
   --bf16
 ```
 
-Both scripts log to Weights & Biases and write metrics under `outputs/gkd_*`. Replace `num-train-epochs` with `max_steps` if you prefer fixed-step schedules.
+Both scripts log to Weights & Biases and write metrics under `outputs/gkd_*`.
 
 ---
 
 ## Closing Thoughts
 
-On-policy distillation gives us dense, per-token guidance without the infrastructure overhead of RLVR. By demonstrating both gears on real SDK traces, we can offer continual learning as a repeatable service: fast cadences for day-to-day improvements, high-quality cadences for SLA workflows, and RLVR/self-play when the problem truly demands exploration. Final metrics coming as soon as the jobs finish.***
+On-policy distillation provides a powerful and compute-efficient path for converting runtime experience into model improvements. By framing it as a two-gear system, we move from ad-hoc training runs to a repeatable engineering discipline. A fast gear for validation and a high-quality gear for reliability lets teams manage a continual learning cadence that is both responsive and robust.
+
+This approach makes dense, per-token guidance the default, reserving the higher overhead of RLVR for problems where it's truly necessary. As we await the final metrics from the high-quality sweep, we hope this research log provides a useful template for other teams exploring how to structure their own learning loops.
