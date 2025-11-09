@@ -53,9 +53,18 @@ def build_math_gkd_dataset(
     cfg = config or MathGKDDatasetConfig()
     raw = _load_base_dataset(cfg)
     filtered = _filter_missing_fields(raw)
-    prepared = filtered.map(_format_example, remove_columns=filtered.column_names)
+    remove_columns = (
+        filtered["train"].column_names if isinstance(filtered, DatasetDict) else filtered.column_names
+    )
 
-    if cfg.limit:
+    prepared = filtered.map(
+        _format_example,
+        remove_columns=remove_columns,
+        load_from_cache_file=False,
+        desc="Formatting math dataset for GKD",
+    )
+
+    if cfg.limit and not isinstance(prepared, DatasetDict):
         prepared = prepared.select(range(min(cfg.limit, len(prepared))))
 
     if cfg.eval_split:
@@ -153,8 +162,14 @@ def _extract_final_answer(
         _parse_answer_from_solution(solution),
     ):
         normalized = _normalize_answer(candidate)
-        if normalized:
-            return normalized
+        if not normalized:
+            continue
+        parsed = _parse_answer_from_solution(normalized)
+        if parsed:
+            parsed_normalized = _normalize_answer(parsed)
+            if parsed_normalized:
+                return parsed_normalized
+        return normalized
     return ""
 
 

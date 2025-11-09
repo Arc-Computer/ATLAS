@@ -146,6 +146,22 @@ def parse_args() -> argparse.Namespace:
         help="Optional dataset config (e.g., subset) to load from Hugging Face hub.",
     )
     parser.add_argument(
+        "--dataset-train-split",
+        default="train",
+        help="Dataset split to use for training when loading from Hugging Face.",
+    )
+    parser.add_argument(
+        "--dataset-eval-split",
+        default=None,
+        help="Optional dataset split to use for evaluation (e.g., 'test').",
+    )
+    parser.add_argument(
+        "--dataset-train-ratio",
+        type=float,
+        default=0.9,
+        help="Train split ratio when no explicit eval split is provided.",
+    )
+    parser.add_argument(
         "--dataset-max-samples",
         type=int,
         default=None,
@@ -164,6 +180,9 @@ def main() -> None:
     dataset_cfg = MathGKDDatasetConfig(
         dataset_name=args.dataset_name,
         dataset_config=args.dataset_config,
+        train_split=args.dataset_train_split,
+        eval_split=args.dataset_eval_split,
+        train_ratio=args.dataset_train_ratio,
         limit=args.dataset_max_samples
         if args.dataset_max_samples is not None
         else args.train_limit + args.eval_limit,

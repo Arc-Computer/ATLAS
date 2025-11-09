@@ -37,7 +37,6 @@ The primary goal of the diagnostic gear is to serve as a sanity check, confirmin
 **Config Highlights:**
 - `lmbda=1.0`, `beta=0.5`
 - `temperature=0.9`
-- `min_reward=0.8`
 - `learning_rate=2e-5`
 - `max_steps=500`
 
@@ -69,7 +68,6 @@ Our hypothesis is that by being more selective with our data and more conservati
 - `lmbda=1.0`, `beta=0.5`
 - `temperature=0.6` (more conservative generation)
 - `max_new_tokens=128` (tighter, more focused responses)
-- `min_reward=0.9` (filters for only the highest-quality traces)
 - `learning_rate` (a lower `3e-6`)
 - An extended schedule (`num_train_epochs=5` or an equivalent `max_steps`).
 
@@ -140,6 +138,8 @@ python scripts/validate_gkd.py \
   --teacher Qwen/Qwen2.5-14B-Instruct \
   --dataset-name gsm8k \
   --dataset-config main \
+  --dataset-train-split train \
+  --dataset-eval-split test \
   --dataset-max-samples 8792 \
   --train-limit 7473 \
   --eval-limit 1319 \
@@ -152,7 +152,6 @@ python scripts/validate_gkd.py \
   --temperature 0.9 \
   --max-new-tokens 256 \
   --eval-sample-size 256 \
-  --min-reward 0.8 \
   --bf16
 ```
 
@@ -167,10 +166,12 @@ python scripts/validate_gkd.py \
   --teacher Qwen/Qwen2.5-14B-Instruct \
   --dataset-name gsm8k \
   --dataset-config main \
+  --dataset-train-split train \
+  --dataset-eval-split test \
   --dataset-max-samples 8792 \
   --train-limit 7473 \
   --eval-limit 1319 \
-  --num-train-epochs 5 \
+  --max-steps 2500 \
   --per-device-train-batch-size 2 \
   --gradient-accumulation-steps 4 \
   --learning-rate 3e-6 \
@@ -179,7 +180,6 @@ python scripts/validate_gkd.py \
   --temperature 0.6 \
   --max-new-tokens 128 \
   --eval-sample-size 256 \
-  --min-reward 0.9 \
   --bf16
 ```
 

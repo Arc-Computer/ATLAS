@@ -37,11 +37,20 @@ def build_meta_math_grpo_dataset(
     def _format_for_grpo(split: Dataset) -> Dataset:
         def _map_row(example):
             messages = example["messages"]
+            if not messages:
+                raise ValueError("GRPO dataset row is missing chat messages.")
+
+            # Drop the teacher/assistant rationale so GRPO only sees the system+user turns.
+            dialogue = list(messages)
+            if dialogue[-1]["role"] == "assistant":
+                dialogue = dialogue[:-1]
+
             prompt = tokenizer.apply_chat_template(
-                messages,
+                dialogue,
                 tokenize=False,
                 add_generation_prompt=True,
             )
+
             return {
                 "prompt": prompt,
                 "ground_truth": example.get("final_answer", ""),
