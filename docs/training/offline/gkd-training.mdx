@@ -57,11 +57,11 @@ python train.py \
   trainer.min_reward=0.8
 ```
 
-These same Qwen checkpoints (`Qwen/Qwen2.5-14B-Instruct` teacher and `Qwen/Qwen2.5-7B-Instruct` student) are used by `scripts/validate_gkd.py` to measure the MetaMathQA lift before scaling to customer traces.
+These same Qwen checkpoints (`Qwen/Qwen2.5-14B-Instruct` teacher and `Qwen/Qwen2.5-7B-Instruct` student) are used by `scripts/validate_gkd.py` to measure the GSM8K lift before scaling to customer traces.
 
 Hydra composes the trainer from `configs/run/teacher_gkd.yaml`, which overrides `_global_.trainer=gkd` and the shared data presets documented in [Training Configuration](../configuration.mdx). Override any field inline (for example `trainer.learning_key`) using the same syntax shown in the GRPO guide.
 
-Running the command loads Atlas runtime traces from Postgres with `reward ≥ 0.8`, fine-tunes the 7B student to mimic the 14B teacher, logs the Baseline Comparison metrics (success delta and token reduction) to WandB, and writes checkpoints into `outputs/gkd/`.
+Running the command streams Atlas runtime traces directly from Postgres (the same database you populate with `arc-atlas --database-url postgresql://... --include-status approved --output traces/runtime.jsonl`), fine-tunes the 7B student to mimic the 14B teacher, logs the Baseline Comparison metrics (success delta and token reduction) to WandB, and writes checkpoints into `outputs/gkd/`. If you prefer to operate on JSONL exports, point the dataset adapter at the CLI output; both paths preserve the SDK schema so Atlas Core sees identical conversation records.
 
 ### Configuration Files
 
@@ -73,7 +73,7 @@ GKD training uses two main config files. The trainer config (`configs/trainer/gk
 
 #### `lmbda` (On-Policy Fraction)
 
-Set `lmbda` to 1.0 when the student should generate every response and receive teacher guidance token by token; this setting keeps the run fully on-policy and matches the configuration we use for MetaMathQA and GSM8K validation. A mid-range value such as 0.5 mixes teacher- and student-generated continuations when you want to temper exploration, while 0.0 reverts to supervised distillation. Start with 1.0 and only back off when trace quality is noisy or you need consistency with earlier supervised checkpoints (Issue #40 recommendation).
+Set `lmbda` to 1.0 when the student should generate every response and receive teacher guidance token by token; this setting keeps the run fully on-policy and matches the configuration we use for the GSM8K validation sweeps. A mid-range value such as 0.5 mixes teacher- and student-generated continuations when you want to temper exploration, while 0.0 reverts to supervised distillation. Start with 1.0 and only back off when trace quality is noisy or you need consistency with earlier supervised checkpoints (Issue #40 recommendation).
 
 #### `beta` (KL Divergence Balance)
 
@@ -190,7 +190,7 @@ Epoch 2/3
 
 ### Training Telemetry Example
 
-The Nov 07–08 2025 GSM8K run illustrates a healthy convergence curve: training loss drops from 0.0395 at epoch 0.12 to 0.0290 by epoch 0.32 while gradient norms stay between 0.76 and 1.26. Evaluation loss follows, moving from 0.0397 to 0.0368 by epoch 0.36 without diverging learning rates (1.60e-5 → 8.04e-6). Use similar trends as a reference—if loss stalls above 0.04 with stable gradients, adjust temperature or tighten the `min_reward` filter before changing optimizer settings.
+Recent GSM8K validation runs illustrate what a healthy loop looks like. With the stock configuration (`lmbda=1.0`, `temperature=0.9`, `min_reward=0.8`, `learning_rate=2e-5`, `max_steps=500`), training loss fell from 0.0676 to 0.0294 within 500 steps (epoch ≈0.21) and evaluation loss followed closely (0.0437 → 0.0397 → 0.0394). Gradient norms stayed between 0.88 and 1.70 and the entire run finished in 11h 45m on a single DGX Spark. When we extended the same configuration across the full GSM8K export, evaluation loss continued drifting downward toward 0.0341 while gradients remained below 1.3 even as the learning rate decayed to 7e-6. Use those ranges as a reference point—if training loss stalls above ~0.04 with steady gradients, tighten `min_reward` or lower temperature before changing optimizer settings.
 
 ## Troubleshooting
 
@@ -335,7 +335,7 @@ Review the [Configuration Reference](../configuration.mdx) for override syntax, 
 
 ## Status and Contributions
 
-GKD support in Atlas Core remains beta. We're building expanded dataset filters, staged teacher → student schedules, and deeper telemetry hooks; track progress in [Issue #40](https://github.com/Arc-Computer/ATLAS/issues/40). Contributions are welcome—open a PR with trace snippets, Hydra overrides, or MCP-focused repro steps (the [MCP Tool Learning example](/examples/adaptive-tool-use) is the easiest shared workload) so we can iterate on the trainer together.
+GKD support in Atlas Core remains beta. We're building expanded dataset filters, staged teacher → student schedules, and deeper telemetry hooks; track progress in [Issue #40](https://github.com/Arc-Computer/ATLAS/issues/40). Contributions are welcome—open a PR with trace snippets, Hydra overrides, or MCP-focused repro steps (the [MCP Tool Learning example](/examples/adaptive-tool-use) is the easiest shared workload) so we can iterate on the trainer together. For a qualitative look at how teams alternate between fast validation runs and longer reliability sweeps, see the ongoing `gkd_two_gear_gkd_blog_draft.md` research note.
 
 ## References
 
