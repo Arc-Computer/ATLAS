@@ -177,44 +177,61 @@ Your dataset should follow this structure:
 }
 ```
 
-### Preprocessing Pipeline
+### Preprocessing Pipeline (JSONL exports)
+
+Use the runtime helpers that ship in this repository to turn SDK exports into trainer-ready splits:
 
 ```python
-from atlas_data import DataProcessor
+from transformers import AutoTokenizer
+from custom_data.runtime_trace_data import get_runtime_trace_dataset
 
-processor = DataProcessor()
-
-# Convert your data
-custom_data = processor.prepare_dataset(
-    raw_data=your_data,
-    task_type="reasoning",
-    validation_split=0.1
+tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-7B-Instruct")
+splits = get_runtime_trace_dataset(
+    tokenizer=tokenizer,
+    export_path="traces/runtime.jsonl",  # Generated via `arc-atlas export …`
+    eval_split_ratio=0.1,
+    dataset_max_samples=5000,
 )
 
-# Save in ATLAS format
-custom_data.save_to_disk("my_dataset")
+train_ds = splits["train_dataset"]
+eval_ds = splits["eval_dataset"]
 ```
+
+For Postgres-backed workflows, query the SDK database directly and convert records with `trainers.runtime_dataset`:
+
+```python
+from atlas.training_data import get_training_sessions
+from trainers.runtime_dataset import sessions_to_rl_records
+
+sessions = get_training_sessions(
+    db_url="postgresql://atlas:atlas@localhost:5433/atlas",
+    min_reward=0.8,
+    learning_key="security-review",
+)
+
+records = sessions_to_rl_records(sessions)
+```
+
+`records` is a list of dictionaries that any Hugging Face `Dataset` can ingest (the same structure Hydra configs consume via `custom_data.runtime_trace_data`). See the [Training Data Pipeline](/training/offline/training-data-pipeline) guide for additional filters and batching helpers.
 
 ### Quality Validation
 
+Inspect coverage with standard Python tooling—you already have `datasets` installed for training:
+
 ```python
-from atlas_data import DataValidator
+from collections import Counter
+from datasets import Dataset
 
-validator = DataValidator()
+dataset = Dataset.from_list(records)
+lengths = [len(example["step_trace"].split()) for example in dataset]
+domains = Counter(example["session_metadata"].get("domain", "unknown") for example in dataset)
 
-# Check data quality
-report = validator.validate(
-    dataset=custom_data,
-    checks=[
-        "completeness",
-        "diversity",
-        "difficulty_distribution",
-        "length_statistics"
-    ]
-)
-
-print(report.summary())
+print(f"Examples: {len(dataset)}")
+print(f"Avg step length: {sum(lengths)/len(lengths):.1f} tokens")
+print(f"Domains: {domains}")
 ```
+
+Pair these quick checks with any in-house validators your team already maintains. The key is to keep the format (`prompt`, `student_response`, guidance, rewards) identical to what the SDK emits so Atlas Core can reuse the traces without custom glue code.
 
 ## Contributing Data
 

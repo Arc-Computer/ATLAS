@@ -23,7 +23,7 @@ how data persists in Postgres, and which configuration levers production teams c
 3. **Learning synthesizer runs** – after reward evaluation, Atlas calls the `LearningSynthesizer` to summarize salient guidance for student and teacher personas.
 4. **Registry update** – `Database.upsert_learning_state` writes the new playbook to the `learning_registry` table (keyed by `learning_key`).
 5. **Playbook cached** – on the next run for the same key, `resolve_playbook` retrieves and hashes the playbook, then injects it into persona prompts.
-6. **Evaluation harness audits** – engineering teams run `scripts/eval_learning.py` to track reward deltas, mode shifts, and review status across learning keys.
+6. **Evaluation harness audits** – engineering teams query `atlas.training_data` (see the snippet below) to track reward deltas, mode shifts, and review status across learning keys.
 
 ## Pipeline Components
 
@@ -139,28 +139,31 @@ Tip: store exported playbooks (from the evaluation harness) alongside release no
 
 ## Verification & Tooling
 
-Run the learning evaluation harness to audit learning performance without enabling hints:
+Run a lightweight audit directly from Python—no extra script required:
 
 ```bash
-python scripts/eval_learning.py \
-  --database-url postgresql://atlas:atlas@localhost:5433/atlas \
-  --recent-window 10 \
-  --baseline-window 50 \
-  --summary-only
+python - <<'PY'
+from statistics import mean
+from atlas.training_data import get_training_sessions
+
+sessions = get_training_sessions(
+    db_url="postgresql://atlas:atlas@localhost:5433/atlas",
+    learning_key="mcp-tool-learning",
+    status_filters=["succeeded"],
+    limit=200,
+)
+
+recent_scores = [s.session_reward["score"] for s in sessions[:25] if s.session_reward]
+baseline_scores = [s.session_reward["score"] for s in sessions[25:] if s.session_reward]
+
+def pct_diff(a, b): return (a - b) / b * 100 if b else 0
+print(f"Recent avg reward: {mean(recent_scores):.3f}")
+print(f"Baseline avg reward: {mean(baseline_scores):.3f}")
+print(f"Delta: {pct_diff(mean(recent_scores), mean(baseline_scores)):.2f}%")
+PY
 ```
 
-Key options:
-
-- `--filter-project`, `--filter-task`, `--filter-tag` – focus on a specific service or task taxonomy.
-- `--learning-key` – target explicit keys.
-- `--compare-to results/learning/index.json` – compute deltas against a prior run (manifest generated automatically).
-- `--no-markdown` – suppress human-readable reports for CI pipelines.
-
-Outputs land under `results/learning/`:
-
-- `<slug>_summary.json` – structured payload with reward windows, execution-mode histograms, review status counts, and latest playbook metadata.
-- `<slug>_summary.md` – business-friendly digest ready for incident reviews.
-- `index.json` – manifest that drives comparison mode.
+Persist the JSON payloads under `results/learning/` (for example `results/learning/mcp-tool-learning.json`) so you can diff windows in CI. Many teams wrap the snippet above in a small script that also counts review statuses and execution modes before pushing the summary to dashboards.
 
 ## Troubleshooting
 

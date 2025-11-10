@@ -5,114 +5,141 @@ sidebarTitle: Evaluation Harnesses
 icon: chart-line
 ---
 
-Atlas ships three lightweight harnesses so you can quantify runtime performance and learning momentum without building
-custom analytics. Each harness reads directly from persisted telemetry, emits machine-readable artifacts, and mirrors the
-metrics the Atlas team uses internally.
+Atlas ships three lightweight workflows so you can quantify runtime performance and learning momentum without building
+custom analytics from scratch. They map directly onto the tooling in this repository, so every command below is ready to
+run after you enable Postgres persistence.
 
-| Harness | Script | Primary Questions | Key Artifacts |
+| Harness | Command | Primary Questions | Key Artifacts |
 | --- | --- | --- | --- |
-| Learning | `scripts/eval_learning.py` | Are playbooks improving reward and execution modes for each `learning_key`? | `results/learning/*.json`, `*.md`, `index.json` |
-| Runtime | `scripts/eval_dual_agent_models.py` | Which student/teacher pairings deliver the best reward vs latency? | `results/dual_agent_eval.json` |
-| Reward | `scripts/eval_reward_models.py` | How do judge stacks compare on reward, uncertainty, and escalation? | `results/reward/*.json` |
+| Learning snapshot | `python - <<'PY' …` (see below) | Are playbooks improving reward and execution modes for a `learning_key`? | `results/learning/*.json` plus console diff |
+| Math validation | `python scripts/validate_gkd.py …` | Does a distilled student match the teacher on GSM8K/MetaMath before touching customer traces? | `outputs/gkd_math_validation/math_validation_metrics.json` |
+| Two-gear sweep | `python scripts/examples/run_two_gear_gkd.py …` | How do the fast vs reliability configs compare for a given dataset? | `outputs/gkd_two_gear/*.json` |
+| Reward schema regression | `pytest tests/test_reward_schema.py` | Did RIM configs or schema assumptions drift? | Pytest results + `tests/.pytest_cache` |
 
 ## Before You Run the Harnesses
 
-- Ensure Postgres persistence is enabled (`storage.database_url`) so sessions, discovery runs, and learning registry
-  entries are available.
-- Seed your `.env` with the model API keys required by each harness. The scripts call
-  `load_dotenv_if_available()` before executing.
-- Review gating defaults to `approved` sessions only. Approve runs via `arc-atlas review` or override filters with the
-  CLI options documented below when you intentionally include pending data.
+- Enable Postgres persistence in your SDK config (`storage.database_url`) so sessions, discovery runs, and learning
+  registry entries are available for analysis.
+- Load `.env` (the scripts call `dotenv.load_dotenv` automatically) with the model API keys required by the harness
+  you’re about to run.
+- Review gating defaults to `approved` sessions only. Approve runs via `arc-atlas review` or override filters in the
+  snippet/command intentionally when you need to include pending data.
 
-## Learning Evaluation Snapshot
+## Learning Snapshot (Postgres)
 
-Use this harness to validate that runtime playbooks are trending in the right direction.
-
-```bash
-python scripts/eval_learning.py \
-  --database-url postgresql://atlas:atlas@localhost:5433/atlas \
-  --recent-window 10 \
-  --baseline-window 50 \
-  --limit 5
-```
-
-**Key options**
-- `--learning-key <id>` – focus on explicit learning keys instead of the most recent ones.
-- `--filter-project`, `--filter-task`, `--filter-tag tenant:demo` – scope by metadata saved in session telemetry.
-- `--summary-only` – skip per-session telemetry fetches for fast CI checks.
-- `--compare-to results/learning/index.json` – compute deltas against a previous run.
-- `--no-markdown` – emit JSON only for automation.
-
-**Metrics reported**
-
-- Reward momentum (recent vs baseline means, deltas, uncertainty).
-- Execution-mode distribution (`auto`, `paired`, `coach`) per window.
-- Review status counts so you can spot unreviewed spikes.
-- Model breakdown (student/teacher session counts and rewards) extracted from adapter telemetry.
-- Discovery references tying each learning key back to the onboarding metadata in `discovery_runs`.
-
-The harness produces per-key JSON + Markdown files and an `index.json` manifest you can check into CI artifacts or use as
-input for comparison runs.
-
-## Dual-Agent Runtime Evaluation
-
-Benchmark student/teacher combinations against the synthetic runtime dataset.
+Use this snippet to validate that runtime playbooks are trending in the right direction. It pulls telemetry via
+`atlas.training_data`, compares a fresh window of sessions against a baseline, and prints a JSON payload you can drop
+into `results/learning/<learning-key>.json`.
 
 ```bash
-python scripts/eval_dual_agent_models.py \
-  --dataset atlas/data/synthetic_runtime_tasks.jsonl \
-  --student-models claude-haiku-4-5 gemini-2.5-flash \
-  --teacher-models grok-4-fast gemini-2.5-pro \
-  --repeats 2 \
-  --output results/dual_agent_eval.json
+python - <<'PY'
+import json
+from pathlib import Path
+from statistics import mean
+from atlas.training_data import get_training_sessions
+
+KEY = "mcp-tool-learning"
+sessions = get_training_sessions(
+    db_url="postgresql://atlas:atlas@localhost:5433/atlas",
+    learning_key=KEY,
+    status_filters=["succeeded"],
+    limit=200,
+)
+
+recent = [s for s in sessions[:25] if s.session_reward]
+baseline = [s for s in sessions[25:] if s.session_reward]
+
+def avg(scores): return mean([s.session_reward["score"] for s in scores]) if scores else 0
+
+summary = {
+    "learning_key": KEY,
+    "recent_reward": avg(recent),
+    "baseline_reward": avg(baseline),
+    "delta_pct": ((avg(recent) - avg(baseline)) / avg(baseline) * 100) if baseline else 0,
+    "recent_size": len(recent),
+    "baseline_size": len(baseline),
+    "review_counts": {
+        "approved": sum(1 for s in sessions if s.review_status == "approved"),
+        "pending": sum(1 for s in sessions if s.review_status == "pending"),
+    },
+}
+
+print(json.dumps(summary, indent=2))
+Path("results/learning").mkdir(parents=True, exist_ok=True)
+Path(f"results/learning/{KEY}.json").write_text(json.dumps(summary, indent=2))
+PY
 ```
 
-**Key options**
-- `--base-config` – clone a different runtime config (default: `configs/examples/openai_agent.yaml`).
-- `--concurrency` – process pool fan-out for faster sweeps; keep to 1 when troubleshooting logging.
-- `--output` – JSON summary combining per-run records with aggregated stats.
-- `ATLAS_MODEL_OVERRIDE_<MODEL_ID>` – redirect presets to alternate endpoints (e.g., Azure-hosted GPT).
-- `ATLAS_MODEL_TIMEOUT` – raise/lower call timeouts globally during slow endpoints.
+Feed the resulting JSON into CI or dashboards to flag regressions, and keep the Markdown/reporting structure described in
+the [Learning System guide](/sdk/learning-system) if you want a narrative summary. Because the snippet is only standard
+Python, you can tweak the window sizes or add execution-mode histograms without modifying repository code.
 
-**Metrics reported**
+## Math Validation Harness (`scripts/validate_gkd.py`)
 
-- Per-task final answers, adaptive-mode history, reward, runtime, and failure flag.
-- Aggregated reward averages, latency means, failure counts, and mode distributions per model pair.
-- “Best pair” heuristic for quick default selection plus raw telemetry for deeper analysis.
-
-Use this harness whenever you refresh preferred providers or want evidence before promoting a new default to production.
-
-## Reward Judge Evaluation
-
-Replay captured session trajectories to compare judge stacks without disturbing the orchestrator.
+This harness validates the full GKD pipeline on MetaMathQA or GSM8K before you point Atlas Core at customer traces. It is
+the same script referenced in the [GKD developer example](/examples/gkd-dev-example).
 
 ```bash
-python scripts/eval_reward_models.py \
-  --dataset atlas/data/reward_eval_trajectories.jsonl \
-  --judge-combos gemini_pair claude_stack grok_stack \
-  --baseline gemini_pair \
-  --collect-audit \
-  --output results/reward/latest.json
+HF_HUB_ENABLE_HF_TRANSFER=1 \
+python scripts/validate_gkd.py \
+  --student Qwen/Qwen2.5-7B-Instruct \
+  --teacher Qwen/Qwen2.5-14B-Instruct \
+  --dataset-name gsm8k \
+  --dataset-config main \
+  --train-limit 7473 \
+  --eval-limit 1319 \
+  --max-steps 500 \
+  --per-device-train-batch-size 2 \
+  --gradient-accumulation-steps 4 \
+  --learning-rate 2e-5 \
+  --lmbda 1.0 \
+  --beta 0.5 \
+  --temperature 0.9 \
+  --eval-sample-size 256 \
+  --min-reward 0.8 \
+  --bf16
 ```
 
-**Key options**
-- `--dataset` – supply additional trajectories collected with `scripts.capture_reward_trajectories`.
-- `--repeats` – multiple passes to quantify variance.
-- `--concurrency` – concurrent judge evaluations per combo.
-- `--baseline` – reference stack used for deltas and correlation metrics.
-- `--collect-audit` – include serialized judge responses and Markdown summaries alongside the JSON artifact.
-- `--config configs/eval/reward_system.yaml` – point at the editable preset file if you customise judge combos without changing code (falls back to in-repo defaults).
+Inspect `outputs/gkd_math_validation/math_validation_metrics.json` for `success_delta`, `token_reduction_pct`, and the
+baseline/distilled accuracy splits. Those are the numbers you compare against internal targets before touching
+production datasets.
 
-**Metrics reported**
+## Two-Gear Sweep (`scripts/examples/run_two_gear_gkd.py`)
 
-- Reward mean, standard deviation, and uncertainty per combo.
-- Escalation rate and failure count (helps spot brittle judge stacks).
-- Latency statistics (average, median, p95).
-- Agreement signals: delta vs baseline and Pearson correlation.
+Need to compare fast smoke tests against reliability sweeps? Run the orchestration script that wires both configs
+back-to-back and prints the comparison table.
 
-The harness now emits both JSON and Markdown reports when `--collect-audit` is supplied. The Markdown files highlight
-per-judge behaviour and link directly to captured audit payloads, making it easier to review outliers during incident
-postmortems.
+```bash
+python scripts/examples/run_two_gear_gkd.py \
+  --teacher Qwen/Qwen2.5-14B-Instruct \
+  --student Qwen/Qwen2.5-7B-Instruct \
+  --dataset-name gsm8k \
+  --fast-max-steps 200 \
+  --reliability-max-steps 1600
+```
+
+The script shells out to `scripts/validate_gkd.py` twice (with the parameters defined in the file) and writes a merged
+report under `outputs/gkd_two_gear/`. Use it to sanity-check hyperparameters before a long run or to generate artifacts
+for PRs/incident reports—each run includes the exact Hydra overrides and math metrics.
+
+## Reward Schema Regression (`pytest tests/test_reward_schema.py`)
+
+The reward adapters (`RIM.reward_adapter.RIMReward`) encode assumptions about schema shape, judge prompts, and
+configuration defaults. Guard them with a quick pytest run:
+
+```bash
+pytest tests/test_reward_schema.py -q
+```
+
+The suite validates:
+
+- RIM configs defined in `configs/reward/` and `configs/trainer/reward/` (correct `_target_`, prompt paths, weight
+  bounds).
+- Reward schema compatibility with the latest SDK telemetry (field names, optional blocks, per-judge payloads).
+- Example reward adapters imported in `trainers/__init__.py`.
+
+Because the tests run in seconds, they fit easily into CI. Keep the cached artifacts around (or publish them via your CI
+provider) for audit trails when reward prompts change.
 
 ## Operational Tips
 
@@ -122,9 +149,8 @@ postmortems.
   your pipeline should mimic the `arc-atlas export` filters you plan to use for training.
 - **Automation** – add these scripts to nightly jobs. Make the output directory configurable via `--output-dir` (learning)
   so each pipeline run lands in its own folder.
-- **Judge preset config** – copy or edit `configs/eval/reward_system.yaml` to curate judge combos, latency budgets, or
-  model overrides without touching `scripts/eval_reward_models.py`. The CLI will pick up your file automatically when
-  passed via `--config`.
+- **Judge preset config** – keep reward prompt tweaks in `configs/reward/` and guard them with `pytest
+  tests/test_reward_schema.py` so accidental drifts are caught before training jobs run.
 
 ## Related Reading
 
