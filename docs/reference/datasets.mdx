@@ -214,6 +214,8 @@ records = sessions_to_rl_records(sessions)
 
 `records` is a list of dictionaries that any Hugging Face `Dataset` can ingest (the same structure Hydra configs consume via `custom_data.runtime_trace_data`). See the [Training Data Pipeline](/training/offline/training-data-pipeline) guide for additional filters and batching helpers.
 
+> **GKD alignment note:** Every conversation record now carries `prompt_text` (serialized messages excluding the final assistant turn) and `completion_text` (the assistant response the student learns to mimic). These fields let the distillation pipeline re-render prompts with both the student and teacher tokenizers so cross-tokenizer KL is computed in each model’s native chat template.
+
 ### Quality Validation
 
 Inspect coverage with standard Python tooling—you already have `datasets` installed for training:

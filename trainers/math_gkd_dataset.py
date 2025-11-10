@@ -142,11 +142,15 @@ def _format_example(example: dict) -> dict:
         {"role": "assistant", "content": assistant_content},
     ]
 
+    prompt_text = "\n".join(f"{msg['role']}: {msg['content']}" for msg in messages[:-1])
+
     return {
         "messages": messages,
         "final_answer": final_answer,
         "source_id": example.get("id") or example.get("question_id")
         or example.get("problem_id"),
+        "prompt_text": prompt_text,
+        "completion_text": assistant_content,
     }
 
 

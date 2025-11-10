@@ -67,6 +67,24 @@ Running the command streams Atlas runtime traces directly from Postgres (the sam
 
 GKD training uses two main config files. The trainer config (`configs/trainer/gkd.yaml`) houses the GKD-specific hyperparameters (lmbda, beta, temperature) plus database connectivity and general training settings. The run config (`configs/run/teacher_gkd.yaml`) specifies student and teacher checkpoints, the Baseline Comparison reference metrics, and the output/logging targets.
 
+### Cross-Tokenizer Alignment
+
+Issue #45 introduced native support for cross-tokenizer distillation. Two new trainer parameters control the behavior:
+
+- `align_teacher_template` (default: `true`) – when enabled, Atlas captures the raw prompt/completion text for every dataset row, re-renders the conversation with the teacher tokenizer, and computes teacher logprobs in the teacher’s chat template before applying the KL term. Disable it only when the student and teacher share identical tokenizers or when you need to reproduce legacy runs.
+- `teacher_tokenizer_name_or_path` (optional) – override when the tokenizer lives at a different path than `teacher_model_name_or_path` (for example, PEFT adapters or custom checkpoints).
+
+The same fields are exposed via `scripts/validate_gkd.py`:
+
+```bash
+python scripts/validate_gkd.py \
+  --teacher-tokenizer Qwen/Qwen2.5-14B-Instruct \
+  # ...other args...
+  # add --no-align-teacher-template to reproduce legacy behavior
+```
+
+By default the validation script aligns templates, so cross-model pairs (e.g., Qwen → Llama) train without the KL spikes caused by mismatched chat formats.
+
 ## Key Parameters
 
 ### GKD Parameters
