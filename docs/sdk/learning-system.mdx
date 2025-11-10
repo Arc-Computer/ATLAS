@@ -139,7 +139,19 @@ Tip: store exported playbooks (from the evaluation harness) alongside release no
 
 ## Verification & Tooling
 
-Run a lightweight audit directly from Python—no extra script required:
+Run the official learning-report harness from the SDK when you need the full telemetry diff:
+
+```bash
+cd ../atlas-sdk
+python scripts/report_learning.py \
+  --database-url postgresql://atlas:atlas@localhost:5433/atlas \
+  --recent-window 10 \
+  --baseline-window 50 \
+  --limit 5 \
+  --output-dir results/learning
+```
+
+For quick inline spot checks, you can also query `atlas.training_data` directly:
 
 ```bash
 python - <<'PY'

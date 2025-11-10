@@ -69,8 +69,9 @@ into `arc-atlas export` / `atlas train`, so production pipelines default to appr
   and reason strings pointing at the underlying metric.
 - **Pause updates** – Temporarily disable playbook persistence by setting `learning.update_enabled=false`; this keeps
   existing guidance in place while you investigate.
-- **Re-run evaluation** – Use the `atlas.training_data` snippet from the [Learning System guide](/sdk/learning-system) to
-  recompute recent vs baseline reward windows for the impacted `learning_key` and gather context for root-cause analysis.
+- **Re-run evaluation** – From `atlas-sdk/`, run `python scripts/report_learning.py --database-url … --learning-key <key>`
+  (or use the lightweight snippet in the [Learning System guide](/sdk/learning-system)) to recompute recent vs baseline
+  reward windows for the impacted `learning_key` and gather context for root-cause analysis.
 - **Rollback** – If a playbook caused the regression, reset it by deleting the entry from `learning_registry` or
   restoring a previously exported playbook, then re-enable updates.
 
