@@ -1,0 +1,88 @@
+---
+title: "Developer Example: Running GKD"
+description: "Step-by-step walkthrough for exporting traces and running AtlasGKDTrainer"
+icon: code
+---
+
+## Overview
+
+This guide shows how to take traces captured by the Atlas SDK, distill them with `scripts/validate_gkd.py`, and interpret the resulting metrics. The example uses GSM8K data, but the same steps apply to any dataset—Atlas traces in Postgres or a Hugging Face dataset loaded via `MathGKDDatasetConfig`.
+
+## Export traces from the SDK
+
+1. Run your agent with the Atlas SDK and persist sessions to Postgres via the `storage` block in `atlas.config`. Every approved session (teacher intervention, student attempt, rewards) lives in the same schema Atlas Core expects.
+2. Review sessions with `arc-atlas review sessions --database-url <postgres_url> --status pending` and approve the conversations you want to train on.
+3. (Optional) Export a JSONL snapshot with `arc-atlas --database-url <postgres_url> --include-status approved --output traces/runtime.jsonl` if you prefer file-based workflows. AtlasGKDTrainer can consume either the live Postgres DB or a JSONL file generated with the same schema.
+
+## Configure GKD (Postgres path)
+
+Ensure `ATLAS_DB_URL` points to the same Postgres instance the SDK writes to, then use the default Hydra config to run distillation:
+
+```bash
+export ATLAS_DB_URL="postgresql://user:pass@host:5432/atlas"
+python train.py \
+  --config-name teacher_gkd \
+  teacher_model_name_or_path=Qwen/Qwen2.5-14B-Instruct \
+  model.model_name_or_path=Qwen/Qwen2.5-7B-Instruct \
+  trainer.min_reward=0.8
+```
+
+This trains directly from the approved traces in Postgres. Override `trainer.learning_key`, `min_reward`, etc., as needed for your workflow.
+
+## Run the validation script (Hugging Face path)
+
+To validate end-to-end settings on public data, run:
+
+```bash
+HF_HUB_ENABLE_HF_TRANSFER=1 \
+PYTHONPATH=. \
+CUDA_VISIBLE_DEVICES=0 \
+python scripts/validate_gkd.py \
+  --student Qwen/Qwen2.5-7B-Instruct \
+  --teacher Qwen/Qwen2.5-14B-Instruct \
+  --dataset-name gsm8k \
+  --dataset-config main \
+  --dataset-train-split train \
+  --dataset-eval-split test \
+  --dataset-max-samples 8792 \
+  --train-limit 7473 \
+  --eval-limit 1319 \
+  --max-steps 500 \
+  --per-device-train-batch-size 2 \
+  --gradient-accumulation-steps 4 \
+  --learning-rate 2e-5 \
+  --lmbda 1.0 \
+  --beta 0.5 \
+  --temperature 0.9 \
+  --max-new-tokens 256 \
+  --eval-sample-size 256 \
+  --min-reward 0.8 \
+  --bf16
+```
+
+Set `--dataset-name` / `--dataset-config` to any Hugging Face dataset that contains math or reasoning conversations; the script formats it into the same chat schema the trainer expects. For your own traces, skip the HF flags and let the trainer load from Postgres via `ATLAS_DB_URL`.
+
+## Interpret `math_validation_metrics.json`
+
+After the script finishes, inspect `outputs/gkd_math_validation/math_validation_metrics.json`. It contains:
+
+- `training.train_loss`: final training loss (useful for comparing configs).
+- `baseline` and `distilled` blocks: eval accuracy, average generated tokens, etc.
+- `success_delta` and `token_reduction_pct` derived from the baseline/d distilled metrics so you can see how the distilled student improved.
+
+Example snippet:
+
+```json
+{
+  "training": {"train_loss": 0.0294},
+  "baseline": {"accuracy": 0.758, "avg_generated_tokens": 210},
+  "distilled": {"accuracy": 0.815, "avg_generated_tokens": 180}
+}
+```
+
+Compute success delta (`0.815 - 0.758 = +5.7 pp`) and token reduction (`1 - 180/210 ≈ 14.3%`) to judge whether the run met your targets.
+
+## Next steps
+
+- Use `scripts/examples/run_two_gear_gkd.py` to run the fast and reliability configs back-to-back and automatically print the comparison table.
+- Once you have Postgres traces from the Atlas runtime, re-run `train.py --config-name teacher_gkd` pointing at `ATLAS_DB_URL` to distill your own workflows instead of GSM8K.

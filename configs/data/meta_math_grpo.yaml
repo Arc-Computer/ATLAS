@@ -1,0 +1,15 @@
+dataset_name: meta-math/MetaMathQA
+train_split: train
+eval_split: null
+train_ratio: 0.9
+seed: 42
+dataset_max_samples: null
+
+make_dataset_fn:
+  _target_: custom_data.math_grpo_data.build_meta_math_grpo_dataset
+  dataset_name: ${dataset_name}
+  train_split: ${train_split}
+  eval_split: ${eval_split}
+  train_ratio: ${train_ratio}
+  seed: ${seed}
+  dataset_max_samples: ${dataset_max_samples}

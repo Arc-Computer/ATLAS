@@ -1,15 +1,28 @@
 import logging
 import os
+
+os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
+os.environ.setdefault("TRANSFORMERS_NO_APEX", "1")
+
 import random
 import re
 import hydra
 import torch
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import DictConfig, OmegaConf, open_dict
 from datetime import datetime
 from transformers.trainer_utils import get_last_checkpoint
 from typing import Any, Dict, Optional, cast
+import sys
+import types
 
-os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
+try:
+    import apex as _apex  # type: ignore
+except ImportError:
+    _apex = types.ModuleType("apex")
+    sys.modules["apex"] = _apex
+
+if not hasattr(_apex, "amp"):
+    _apex.amp = types.SimpleNamespace()  # type: ignore[attr-defined]
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -79,18 +92,29 @@ def main(cfg: DictConfig):
     def _resolve_grad_accum(target_cfg: DictConfig) -> int | None:
         if target_cfg is None or not isinstance(target_cfg, DictConfig):
             return None
-        if not OmegaConf.is_missing(target_cfg, "gradient_accumulation_steps"):
-            return target_cfg.gradient_accumulation_steps
+        grad_direct = target_cfg.get("gradient_accumulation_steps", None)
+        if grad_direct is not None and not OmegaConf.is_missing(target_cfg, "gradient_accumulation_steps"):
+            return grad_direct
+
+        args_cfg = target_cfg.get("args") if isinstance(target_cfg.get("args"), DictConfig) else None
+        if args_cfg is not None:
+            grad_args = args_cfg.get("gradient_accumulation_steps", None)
+            if grad_args is not None and not OmegaConf.is_missing(args_cfg, "gradient_accumulation_steps"):
+                return grad_args
 
         train_batch = None
         if not OmegaConf.is_missing(target_cfg, "train_batch_size"):
-            train_batch = target_cfg.train_batch_size
+            train_batch = target_cfg.get("train_batch_size")
+        elif args_cfg is not None and not OmegaConf.is_missing(args_cfg, "train_batch_size"):
+            train_batch = args_cfg.get("train_batch_size")
         elif not OmegaConf.is_missing(cfg, "train_batch_size"):
             train_batch = cfg.train_batch_size
 
         per_device_batch = None
         if not OmegaConf.is_missing(target_cfg, "per_device_train_batch_size"):
-            per_device_batch = target_cfg.per_device_train_batch_size
+            per_device_batch = target_cfg.get("per_device_train_batch_size")
+        elif args_cfg is not None and not OmegaConf.is_missing(args_cfg, "per_device_train_batch_size"):
+            per_device_batch = args_cfg.get("per_device_train_batch_size")
         elif not OmegaConf.is_missing(cfg, "per_device_train_batch_size"):
             per_device_batch = cfg.per_device_train_batch_size
 
@@ -107,12 +131,21 @@ def main(cfg: DictConfig):
     trainer_accum = _resolve_grad_accum(trainer_cfg)
 
     resolved_value: Optional[int] = None
-    if trainer_accum is not None:
-        trainer_cfg.gradient_accumulation_steps = trainer_accum
+    if trainer_accum is not None and trainer_cfg is not None:
+        with open_dict(trainer_cfg):
+            if not OmegaConf.is_missing(trainer_cfg, "gradient_accumulation_steps"):
+                trainer_cfg.gradient_accumulation_steps = trainer_accum
+            elif (
+                trainer_cfg.get("args") is not None
+                and isinstance(trainer_cfg.get("args"), DictConfig)
+            ):
+                with open_dict(trainer_cfg.args):
+                    trainer_cfg.args.gradient_accumulation_steps = trainer_accum
         resolved_value = trainer_accum
 
     if accumulation_steps is not None:
-        cfg.gradient_accumulation_steps = accumulation_steps
+        with open_dict(cfg):
+            cfg.gradient_accumulation_steps = accumulation_steps
         resolved_value = accumulation_steps
     elif resolved_value is not None and OmegaConf.is_missing(cfg, "gradient_accumulation_steps"):
         cfg.gradient_accumulation_steps = resolved_value

@@ -73,7 +73,7 @@ push_to_hub: false
 activate_debugging_logs: false
 
 trainer_args:
-  _target_: trainers.GRPOConfig
+  _target_: trainers.grpo_config.GRPOConfig
   model_init_kwargs: ${model_init_kwargs}
   remove_unused_columns: ${remove_unused_columns}
   max_prompt_length: ${max_prompt_length}
@@ -122,5 +122,5 @@ trainer_args:
   push_to_hub: ${push_to_hub}
 
 trainer:
-  _target_: trainers.GRPOTrainer
+  _target_: trainers.grpo.GRPOTrainer
   reward_funcs: ${reward_fns}

@@ -1,0 +1,19 @@
+# GRPO dataset configuration that sources GSM8K from Hugging Face.
+
+dataset_name: gsm8k
+subset: main
+train_split: train
+eval_split: null
+train_ratio: 0.9
+seed: 42
+dataset_max_samples: null
+
+make_dataset_fn:
+  _target_: trainers.gsm8k_dataset.build_gsm8k_grpo_dataset
+  dataset_name: ${dataset_name}
+  subset: ${subset}
+  train_split: ${train_split}
+  eval_split: ${eval_split}
+  train_ratio: ${train_ratio}
+  seed: ${seed}
+  dataset_max_samples: ${dataset_max_samples}

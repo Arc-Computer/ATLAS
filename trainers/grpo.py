@@ -58,8 +58,20 @@ if is_vllm_available():
 if is_wandb_available():
     import wandb
 
-from .custom_ray import RayGeneratorActor
-from .custom_ray.vllm_engine import get_resource_info, print_ram_utilization
+_VLLM_IMPORT_ERROR = None
+try:
+    from .custom_ray import RayGeneratorActor
+    from .custom_ray.vllm_engine import get_resource_info, print_ram_utilization
+except Exception as exc:  # pragma: no cover - optional dependency
+    RayGeneratorActor = None
+    _VLLM_IMPORT_ERROR = exc
+
+    def get_resource_info(*args, **kwargs):  # type: ignore
+        raise exc
+
+    def print_ram_utilization(*args, **kwargs):  # type: ignore
+        raise exc
+
 from .vllm_client import VLLMClient
 
 

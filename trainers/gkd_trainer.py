@@ -8,8 +8,9 @@ baseline comparison metrics tracking for evaluating distillation quality.
 from __future__ import annotations
 
 import logging
-from typing import Optional
+from typing import Optional, Sequence
 
+from datasets import Dataset
 from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
@@ -25,7 +26,6 @@ except ImportError as exc:  # pragma: no cover
         "Install with: pip install 'trl>=0.12.0'"
     ) from exc
 
-from trainers.gkd_dataset import build_gkd_dataset
 from trainers.gkd_evaluator import BaselineMetricsCallback
 
 logger = logging.getLogger(__name__)
@@ -94,30 +94,45 @@ class AtlasGKDTrainer(GKDTrainer):
         baseline_success: float = 0.0,
         baseline_tokens: Optional[float] = None,
         processing_class: Optional[PreTrainedTokenizerBase] = None,
+        train_dataset: Optional[Dataset] = None,
+        eval_dataset: Optional[Dataset] = None,
         **kwargs,
     ):
-        """Initialize AtlasGKDTrainer with Postgres dataset loading."""
+        """Initialize AtlasGKDTrainer with support for Postgres or pre-loaded datasets."""
 
-        # Load conversations from Postgres
-        if db_url is None:
+        if train_dataset is None and db_url is None:
+            raise ValueError("Either train_dataset or db_url must be provided.")
+
+        if train_dataset is not None and eval_dataset is None:
             raise ValueError(
-                "db_url is required for AtlasGKDTrainer. "
-                "Set db_url or ATLAS_DB_URL environment variable."
+                "eval_dataset must be provided when supplying train_dataset directly."
             )
 
-        logger.info(
-            "Loading GKD dataset from Postgres (min_reward=%.2f, learning_key=%s)",
-            min_reward,
-            learning_key,
-        )
+        if train_dataset is None:
+            from trainers.gkd_dataset import build_gkd_dataset
+            # Load conversations from Postgres
+            if db_url is None:
+                raise ValueError(
+                    "db_url is required for AtlasGKDTrainer when train_dataset is not provided. "
+                    "Set db_url or ATLAS_DB_URL environment variable."
+                )
 
-        train_dataset, eval_dataset = build_gkd_dataset(
-            db_url=db_url,
-            min_reward=min_reward,
-            learning_key=learning_key,
-            eval_split=args.eval_split if hasattr(args, "eval_split") else 0.1,
-            seed=args.seed if hasattr(args, "seed") else 42,
-        )
+            logger.info(
+                "Loading GKD dataset from Postgres (min_reward=%.2f, learning_key=%s)",
+                min_reward,
+                learning_key,
+            )
+
+            train_dataset, eval_dataset = build_gkd_dataset(
+                db_url=db_url,
+                min_reward=min_reward,
+                learning_key=learning_key,
+                eval_split=args.eval_split if hasattr(args, "eval_split") else 0.1,
+                seed=args.seed if hasattr(args, "seed") else 42,
+            )
+
+        self._validate_chat_dataset(train_dataset, "train_dataset")
+        self._validate_chat_dataset(eval_dataset, "eval_dataset")
 
         logger.info(
             "Loaded datasets: train=%d, eval=%d conversations",
@@ -160,6 +175,31 @@ class AtlasGKDTrainer(GKDTrainer):
             args.lmbda if hasattr(args, "lmbda") else 1.0,
             args.beta if hasattr(args, "beta") else 0.5,
         )
+
+    @staticmethod
+    def _validate_chat_dataset(dataset: Optional[Dataset], name: str) -> None:
+        """Ensure dataset matches TRL chat formatting expectations."""
+        if dataset is None:
+            raise ValueError(f"{name} cannot be None for AtlasGKDTrainer.")
+
+        required_columns: Sequence[str] = ("messages",)
+        missing = [col for col in required_columns if col not in dataset.column_names]
+        if missing:
+            raise ValueError(
+                f"{name} missing required columns: {', '.join(missing)}. "
+                "Datasets must include 'messages' formatted per TRL chat conventions."
+            )
+
+        sample = dataset[0]
+        messages = sample.get("messages")
+        if not isinstance(messages, list) or not messages:
+            raise ValueError(
+                f"{name}[0]['messages'] must be a non-empty list of role/content dicts."
+            )
+        if not isinstance(messages[0], dict) or "role" not in messages[0] or "content" not in messages[0]:
+            raise ValueError(
+                f"{name}[0]['messages'] entries must be dicts containing 'role' and 'content' keys."
+            )
 
 
 def create_gkd_trainer_from_config(

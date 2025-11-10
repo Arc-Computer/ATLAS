@@ -19,9 +19,9 @@ icon: home
 
 ATLAS is a continual learning framework for production LLM agents. It combines runtime quality control with offline reinforcement learning to improve agent reliability, reduce token costs, and build domain expertise through persistent memory.
 
-The system wraps any agent (GPT, Claude, Gemini, or custom models) with a dual-agent reasoning loop. A verifying teacher reviews the agent's work at runtime, providing guidance when needed. Production traces feed offline GRPO training to update the teacher model, creating a closed feedback loop.
+The system layers a dual-agent reasoning loop on top of any model (GPT, Claude, Gemini, or custom checkpoints). A verifying teacher reviews the agent's work at runtime, providing guidance when needed. The Atlas SDK streams those causality traces into Postgres, and Atlas Core reuses the exact data to run on-policy distillation (GKD) or GRPO depending on whether a trusted teacher exists. This keeps the SDK and trainer in lockstep: the conversations you inspect in the runtime viewer are the same ones the distillation or GRPO jobs ingest when you launch them from Atlas Core.
 
-ATLAS provides full observability and control. You own your data, models, and training decisions. The framework handles orchestration complexity while you configure supervision policies, reward functions, and deployment strategies.
+ATLAS provides full observability and control. You own your data, models, and training decisions. The framework handles orchestration complexity while you configure supervision policies, reward functions, and deployment strategies, and when you are ready to train you can either export a JSONL snapshot or point the GKD/GRPO trainers directly at the same Postgres instance the SDK uses—both paths preserve the schema emitted during runtime.
 
 ## The Value Proposition
 
@@ -39,14 +39,7 @@ ATLAS wraps any base model (GPT, Claude, Gemini, open source checkpoints, or you
 
 ## What ATLAS Provides
 
-ATLAS wraps your existing agent framework with four components that create a complete learning loop:
-
-1. **Reasoning Core**: Dual-agent reasoning loop (student + verifying teacher) that guides execution and captures learning signals
-2. **[Reward System](/concepts/reward-design)**: Turns user feedback into dense reward signals (achieves 93.7% accuracy on RewardBench V2)
-3. **Learning Engine**: Uses offline reinforcement learning (GRPO) to update models based on rewards
-4. **Persistent Memory**: Stores all interactions in structured trace files for analysis and retraining
-
-Together, these components form a closed-loop system: interaction traces flow into the reward system, the learning engine upgrades the reasoning core, and the refreshed models redeploy so your agent improves performance with each task.
+ATLAS combines four components to create a complete learning loop. The Reasoning Core handles the dual-agent orchestration (student plus verifying teacher) and the [Reward System](/concepts/reward-design) turns feedback into dense signals. The Learning Engine now runs either on-policy distillation (GKD) or GRPO depending on the workflow: if a strong teacher exists you run the distillation recipes against the SDK’s Postgres database to compress it, and when you need exploration you switch to the GRPO pipeline. Persistent Memory stores every interaction in structured trace files so both trainers see the same conversations. Together these components form a closed-loop system—interaction traces flow into the reward system, the learning engine upgrades the reasoning core, and the refreshed models redeploy so your agent improves performance with each task.
 
 <div align="center">
   <img src="/images/system-architecture.png" alt="ATLAS System Architecture" width="800" />
@@ -57,7 +50,7 @@ Together, these components form a closed-loop system: interaction traces flow in
 
 - **Autodiscovery CLI** – Install the SDK (`pip install arc-atlas`), run `atlas env init` to discover your agent/environment pair, and execute tasks with `atlas run`. The CLI loads `.env`, scaffolds configs when needed, and records metadata under `.atlas/`.
 - **Orchestrator loop** – Each run triages a task, probes capability, and routes into `auto`, `paired`, or `coach` mode. The student agent works alongside a verifying teacher while telemetry streams through `atlas.runtime.telemetry`.
-- **Telemetry & exports** – Persist sessions to Postgres (`storage` block) and export reviewed traces with the CLI (`arc-atlas … --include-status approved --output traces.jsonl`). Review gating keeps production datasets safe before they feed training.
+- **Telemetry & exports** – Persist sessions to Postgres (`storage` block) and export reviewed traces with the CLI (`arc-atlas … --include-status approved --output traces.jsonl`). Review gating keeps production datasets safe before they feed training, and both the GKD and GRPO trainers can attach to either the live Postgres instance or the exported JSONL file.
 - **Learning playbooks** – The runtime synthesizes student/teacher playbooks and stores them in `learning_registry`; see [`Learning System Architecture`](/sdk/learning-system) for how playbooks influence future prompts.
 - **Offline training** – Feed exported traces into the [`Runtime Traces dataset config`](/training/configuration#dataset-presets) and GRPO trainers to ship bespoke teachers without hand-labeling.
 
@@ -110,8 +103,8 @@ Choose your starting point based on your goal:
 |--------------|----------|--------------|
 | Orchestrate tasks with a structured runtime loop. | Atlas SDK | [`SDK Quickstart`](/sdk/quickstart) |
 | Wrap my existing agent in a quality-control loop. | Atlas SDK | [`BYOA Adapters`](/sdk/adapters) |
+| Distill runtime traces into a smaller teacher. | Atlas Core | [`GKD Training`](/training/offline/gkd-training) |
 | Convert runtime traces into GRPO training runs. | Atlas Core | [`Offline Training Guide`](/training/offline/grpo-training) |
-| Fine-tune a custom model with RL. | Training & Optimization | [`Offline Training Guide`](/training/offline/grpo-training) |
 
 Choose your starting point:
 

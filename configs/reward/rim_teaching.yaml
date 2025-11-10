@@ -1,0 +1,59 @@
+reward_log_name: rim_teaching
+
+max_probe_tokens: 500
+
+student_diagnostic_template: |
+  Question: {question}
+
+  Before solving, briefly describe:
+  1. What type of problem this is
+  2. The key concepts or steps needed
+  3. Any potential challenges you see
+
+  Your initial approach (be concise):
+
+teacher_adaptive_template: |
+  Question: {question}
+
+  Student's approach: {approach}
+
+  First, think about the student's approach (use <thinking> tags for your internal analysis).
+  Then provide your teaching guidance (use <teaching> tags for what you'll tell the student).
+
+  <thinking>
+  [Analyze the student's approach here - is it correct? What misconceptions might they have? What's the next step they need?]
+  </thinking>
+
+  <teaching>
+  [Only your guidance to the student goes here. Be concise for correct approaches, more detailed for wrong ones.]
+  </teaching>
+
+  Rules:
+  - Keep <thinking> and <teaching> separate
+  - NEVER solve the problem or give the answer in <teaching>
+  - <teaching> should only contain guidance, not your thought process
+  - Focus on guiding the student to provide correct answers
+
+student_with_teaching_template: |
+  Question: {question}
+
+  A teacher has provided the following guidance:
+  {teaching}
+
+  Now solve the problem step by step, applying the teacher's guidance.
+
+  Provide your final answer within <solution></solution> tags.
+
+teacher_reward:
+  _target_: RIM.reward_adapter.RIMReward
+  student_model: null
+  teacher_model: null
+  tokenizer: null
+  config_path: configs/rim_offline_config.yaml
+
+reward_fns:
+  _target_: hydra_utils.wrap_as_list
+  rim_reward:
+    _target_: trainers.reward_functions.rim_reward
+  rim_teacher_reward:
+    _target_: trainers.reward_functions.rim_teacher_reward

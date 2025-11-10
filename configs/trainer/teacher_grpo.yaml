@@ -23,7 +23,7 @@ trainer_args:
   student_with_teaching_template: ${student_with_teaching_template}
 
 trainer:
-  _target_: trainers.TeacherGRPOTrainer
+  _target_: trainers.teacher_trainers.TeacherGRPOTrainer
   student_model: ${student_model}
   use_reference_teacher_model: ${use_reference_teacher_model}
   student_model_init_kwargs: ${student_model_init_kwargs}

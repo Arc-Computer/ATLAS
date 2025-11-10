@@ -1,0 +1,31 @@
+defaults:
+  - train
+  - reward@_global_: meta_math_binary
+  - override model@_global_: qwen25_7b
+  - override data@_global_: gsm8k_grpo
+  - override trainer@_global_: trl_rlvr
+  - _self_
+
+wandb_project: gsm8k_grpo
+wandb_run_name: gsm8k-grpo
+wandb_group_name: gkd-vs-grpo
+
+train_batch_size: 32
+per_device_train_batch_size: 1
+max_steps: 500
+logging_steps: 10
+save_strategy: "no"
+
+gradient_accumulation_steps: 32
+max_completion_length: 768
+
+trainer_log_name: gsm8k_rlvr
+trainer.args.train_batch_size: ${train_batch_size}
+trainer.args.per_device_train_batch_size: ${per_device_train_batch_size}
+trainer.args.max_steps: ${max_steps}
+trainer.args.logging_steps: ${logging_steps}
+trainer.args.gradient_accumulation_steps: ${gradient_accumulation_steps}
+trainer.args.use_vllm: false
+trainer.args.ds3_gather_for_generation: false
+trainer.args.max_completion_length: ${max_completion_length}
+trainer.args.model_init_kwargs: null

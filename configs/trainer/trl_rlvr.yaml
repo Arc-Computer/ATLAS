@@ -1,0 +1,19 @@
+defaults:
+  - base
+  - _self_
+
+trainer_log_name: rlvr
+
+model_init_kwargs: null
+
+trainer:
+  _target_: trainers.trl_rlvr_trainer.TrlRLVRTrainer
+  model: ${model_name_or_path}
+  args: ${trainer_args}
+  reward_funcs: ${reward_fns}
+  processing_class: ${tokenizer}
+  peft_config: ${peft_config}
+
+trainer_args:
+  _target_: trl.GRPOConfig
+  model_init_kwargs: ${model_init_kwargs}
