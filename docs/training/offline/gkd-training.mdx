@@ -61,7 +61,7 @@ These same Qwen checkpoints (`Qwen/Qwen2.5-14B-Instruct` teacher and `Qwen/Qwen2
 
 Hydra composes the trainer from `configs/run/teacher_gkd.yaml`, which overrides `_global_.trainer=gkd` and the shared data presets documented in [Training Configuration](../configuration.mdx). Override any field inline (for example `trainer.learning_key`) using the same syntax shown in the GRPO guide.
 
-Running the command streams Atlas runtime traces directly from Postgres (the same database you populate with `arc-atlas --database-url postgresql://... --include-status approved --output traces/runtime.jsonl`), fine-tunes the 7B student to mimic the 14B teacher, logs the Baseline Comparison metrics (success delta and token reduction) to WandB, and writes checkpoints into `outputs/gkd/`. If you prefer to operate on JSONL exports, point the dataset adapter at the CLI output; both paths preserve the SDK schema so Atlas Core sees identical conversation records.
+Running the command streams Atlas runtime traces directly from Postgres (the same database you populate with `arc-atlas --database-url postgresql://... --include-status approved --output traces/runtime.jsonl`), fine-tunes the 7B student to mimic the 14B teacher, logs the Baseline Comparison metrics (success delta and token reduction) to WandB, and writes checkpoints into `outputs/gkd/`. If you prefer to operate on JSONL exports, point the dataset adapter at the CLI output; both paths preserve the SDK schema so Atlas Core sees identical conversation records. For a step-by-step walkthrough of exporting traces, running the validation script, and reading the metrics file, see the [Developer Example: Running GKD](/examples/gkd-dev-example).
 
 ### Configuration Files
 
