@@ -39,7 +39,8 @@
             "group": "Examples",
             "icon": "flask",
             "pages": [
-              "examples/adaptive-tool-use"
+              "examples/adaptive-tool-use",
+              "examples/gkd-dev-example"
             ]
           },
           {
@@ -47,6 +48,7 @@
             "icon": "brain",
             "pages": [
               "training/configuration",
+              "training/offline/gkd-training",
               "training/offline/grpo-training",
               "training/offline/training-data-pipeline",
               "training/online/continuous-learning"
