@@ -106,14 +106,33 @@ beta: 0.04
   </Step>
 
   <Step title="Phase 3: Evaluation">
-    Validate final performance:
+    Validate final performance with the lightweight Transformers snippet below (no additional repo files required):
 
     ```bash
-    python scripts/evaluate_model.py \
-      --model_path results/final_model \
-      --dataset Arc-Intelligence/Arc-ATLAS-Teach-v0 \
-      --num_samples 32 \
-      --seed 42
+    python - <<'PY'
+    from datasets import load_dataset
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+
+    MODEL_PATH = "results/final_model"
+    DATASET = "Arc-Intelligence/Arc-ATLAS-Teach-v0"
+    DATASET_CONFIG = "rl"
+    SAMPLES = 32
+
+    dataset = load_dataset(DATASET, DATASET_CONFIG, split="validation").shuffle(seed=42).select(range(SAMPLES))
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
+    model = AutoModelForCausalLM.from_pretrained(MODEL_PATH, device_map="auto")
+
+    correct = 0
+    for example in dataset:
+        inputs = tokenizer(example["prompt"], return_tensors="pt").to(model.device)
+        output = model.generate(**inputs, max_new_tokens=256)
+        prediction = tokenizer.decode(output[0], skip_special_tokens=True)
+        if example["ground_truth"].strip().lower() in prediction.lower():
+            correct += 1
+
+    accuracy = correct / SAMPLES
+    print(f"Accuracy over {SAMPLES} samples: {accuracy:.2%}")
+    PY
     ```
 
     **Expected results (closed-loop runtime + GRPO)**:
@@ -146,8 +165,30 @@ scripts/launch_with_server.sh 1 1 configs/run/teacher_rcl.yaml \
   eval_steps=1 \
   report_to=null
 
-# Verify performance
-python scripts/quick_eval.py --model checkpoints/teacher
+# Verify performance (reuse the evaluation snippet above with fewer samples)
+python - <<'PY'
+from datasets import load_dataset
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+MODEL_PATH = "checkpoints/teacher"
+DATASET = "Arc-Intelligence/Arc-ATLAS-Teach-v0"
+DATASET_CONFIG = "rl"
+SAMPLES = 16
+
+dataset = load_dataset(DATASET, DATASET_CONFIG, split="validation").shuffle(seed=7).select(range(SAMPLES))
+tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
+model = AutoModelForCausalLM.from_pretrained(MODEL_PATH, device_map="auto")
+
+correct = 0
+for example in dataset:
+    inputs = tokenizer(example["prompt"], return_tensors="pt").to(model.device)
+    prediction = model.generate(**inputs, max_new_tokens=256)
+    decoded = tokenizer.decode(prediction[0], skip_special_tokens=True)
+    if example["ground_truth"].strip().lower() in decoded.lower():
+        correct += 1
+
+print(f"Quick validation accuracy ({SAMPLES} samples): {correct / SAMPLES:.2%}")
+PY
 ```
 
 ## Expected Metrics
@@ -247,12 +288,13 @@ nvidia-smi dmon -s u -d 5
   </Accordion>
 </AccordionGroup>
 
-## Validation Scripts
+## Validation Snippets
 
 ### Statistical Significance Test
 
+Drop this snippet into any Python session (or save it as `tools/validate_significance.py`) to compare baseline vs enhanced runs:
+
 ```python
-# scripts/validate_significance.py
 import numpy as np
 from scipy import stats
 
@@ -260,24 +302,18 @@ def validate_improvement(baseline_file, enhanced_file):
     baseline = np.load(baseline_file)['accuracy']
     enhanced = np.load(enhanced_file)['accuracy']
 
-    # Paired t-test
     t_stat, p_value = stats.ttest_rel(enhanced, baseline)
-
     print(f"Improvement: {np.mean(enhanced - baseline):.3f}")
     print(f"P-value: {p_value:.6f}")
     print(f"Significant: {p_value < 0.001}")
-
-if __name__ == "__main__":
-    validate_improvement("baseline.npz", "enhanced.npz")
 ```
 
-### Performance Verification
+### Performance Verification Checklist
+
+Use this helper to confirm the reproduced metrics stay within tolerance bands before sharing results:
 
 ```python
-# scripts/verify_metrics.py
-def verify_benchmarks(results_dir):
-    metrics = load_metrics(results_dir)
-
+def verify_benchmarks(metrics):
     expected = {
         'accuracy_gain': (0.157, 0.012),  # mean, tolerance
         'completion_rate': (1.0, 0.02),
@@ -288,7 +324,8 @@ def verify_benchmarks(results_dir):
     for metric, (expected_val, tolerance) in expected.items():
         actual = metrics[metric]
         within_tolerance = abs(actual - expected_val) <= tolerance
-        print(f"{metric}: {actual:.3f} (expected {expected_val:.3f} ±{tolerance:.3f}) {'✓' if within_tolerance else '✗'}")
+        status = "PASS" if within_tolerance else "FAIL"
+        print(f"{metric}: {actual:.3f} (expected {expected_val:.3f} ±{tolerance:.3f}) [{status}]")
 ```
 
 ## Artifact Management

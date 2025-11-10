@@ -152,13 +152,18 @@ The vLLM server provides high-throughput generation during reinforcement learnin
 
 ### Run It
 
+Atlas Core ships a lightweight launcher so you can spin up the inference stack without third-party tooling:
+
 ```bash
-./scripts/launch_vllm_server.sh \
-  --model-path checkpoints/sft/final \
-  --tensor-parallel-size 4 \
-  --gpu-memory-utilization 0.9 \
-  --port 8000
+CUDA_VISIBLE_DEVICES=0,1 \
+python trainers/vllm_server.py \
+  --model checkpoints/sft/final \
+  --port 8765 \
+  --tensor-parallel-size 2 \
+  --gpu-memory-utilization 0.9
 ```
+
+If you prefer a single command that starts the vLLM servers and the GRPO job together, stick with `scripts/launch_with_server.sh <server_gpus> <training_gpus> configs/run/teacher_rcl.yaml ...`. That wrapper orchestrates `trainers/vllm_server.py` under the hood, waits for the health checks to pass, and then launches `scripts/launch.sh` for reinforcement learning.
 
 ### Success Looks Like
 

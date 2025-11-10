@@ -1,65 +1,71 @@
 ---
 title: Evaluation Harnesses
-description: Measure Atlas runtime, reward judges, and learning progress with the built-in harness scripts.
+description: Measure Atlas runtime, reward judges, and learning progress with the SDK benchmarking scripts.
 sidebarTitle: Evaluation Harnesses
 icon: chart-line
 ---
 
-Atlas ships three lightweight harnesses so you can quantify runtime performance and learning momentum without building
-custom analytics. Each harness reads directly from persisted telemetry, emits machine-readable artifacts, and mirrors the
-metrics the Atlas team uses internally.
+Atlas ships dedicated evaluation harnesses in the
+[atlas-sdk](https://github.com/Arc-Computer/atlas-sdk) repository. They operate directly on the SDK runtime (learning
+reports, synthetic runtime sweeps, and reward judge comparisons) while Atlas Core focuses on offline training. Clone or
+open the SDK repo alongside this project and run the scripts from the SDK root.
 
-| Harness | Script | Primary Questions | Key Artifacts |
+| Harness | SDK Script | Primary Questions | Key Artifacts |
 | --- | --- | --- | --- |
-| Learning | `scripts/eval_learning.py` | Are playbooks improving reward and execution modes for each `learning_key`? | `results/learning/*.json`, `*.md`, `index.json` |
-| Runtime | `scripts/eval_dual_agent_models.py` | Which student/teacher pairings deliver the best reward vs latency? | `results/dual_agent_eval.json` |
-| Reward | `scripts/eval_reward_models.py` | How do judge stacks compare on reward, uncertainty, and escalation? | `results/reward/*.json` |
+| Learning snapshot | `scripts/report_learning.py` | Are playbooks improving reward and execution modes for each `learning_key`? | `atlas-sdk/results/learning/*.json`, `*.md`, `index.json` |
+| Runtime benchmarking | `scripts/benchmark_dual_agent_models.py` | Which student/teacher pairings deliver the best reward vs latency? | `atlas-sdk/results/dual_agent_eval.json` |
+| Reward benchmarking | `scripts/benchmark_reward_models.py` | How do judge stacks compare on reward, uncertainty, and escalation? | `atlas-sdk/results/reward/*.json` (+ optional Markdown) |
 
 ## Before You Run the Harnesses
 
-- Ensure Postgres persistence is enabled (`storage.database_url`) so sessions, discovery runs, and learning registry
-  entries are available.
-- Seed your `.env` with the model API keys required by each harness. The scripts call
-  `load_dotenv_if_available()` before executing.
-- Review gating defaults to `approved` sessions only. Approve runs via `arc-atlas review` or override filters with the
-  CLI options documented below when you intentionally include pending data.
+- Enable Postgres persistence in your SDK config (`storage.database_url`) so the scripts can read sessions, discovery
+  runs, and learning registry entries.
+- Load `.env` with the provider API keys required by each harness—the SDK scripts call `load_dotenv_if_available()`
+  before executing.
+- Review gating defaults to `approved` sessions only. Approve runs via `arc-atlas review` or override filters explicitly
+  when you intend to include pending/quarantined data.
+- Run the commands from the `atlas-sdk` repo root (for example `cd ../atlas-sdk` if you keep both repos side-by-side).
 
-## Learning Evaluation Snapshot
+## Learning Snapshot (`atlas-sdk/scripts/report_learning.py`)
 
-Use this harness to validate that runtime playbooks are trending in the right direction.
+Use the reporting harness to evaluate playbook health without injecting hints:
 
 ```bash
-python scripts/eval_learning.py \
+cd ../atlas-sdk
+python scripts/report_learning.py \
   --database-url postgresql://atlas:atlas@localhost:5433/atlas \
   --recent-window 10 \
   --baseline-window 50 \
-  --limit 5
+  --limit 5 \
+  --output-dir results/learning
 ```
 
 **Key options**
-- `--learning-key <id>` – focus on explicit learning keys instead of the most recent ones.
-- `--filter-project`, `--filter-task`, `--filter-tag tenant:demo` – scope by metadata saved in session telemetry.
-- `--summary-only` – skip per-session telemetry fetches for fast CI checks.
+- `--learning-key <id>` – report on explicit keys rather than the most recent ones.
+- `--filter-project`, `--filter-task`, `--filter-tag tenant:demo` – scope by telemetry metadata.
+- `--summary-only` – skip trajectory fetches for CI.
 - `--compare-to results/learning/index.json` – compute deltas against a previous run.
-- `--no-markdown` – emit JSON only for automation.
+- `--no-markdown` – emit JSON only.
 
 **Metrics reported**
 
-- Reward momentum (recent vs baseline means, deltas, uncertainty).
-- Execution-mode distribution (`auto`, `paired`, `coach`) per window.
-- Review status counts so you can spot unreviewed spikes.
-- Model breakdown (student/teacher session counts and rewards) extracted from adapter telemetry.
-- Discovery references tying each learning key back to the onboarding metadata in `discovery_runs`.
+- Recent vs baseline reward means, deltas, and uncertainty.
+- Execution-mode distribution (auto/paired/coach) for each window.
+- Review status counts so pending/quarantined sessions surface immediately.
+- Model usage breakdown (student/teacher pairings drawn from adapter telemetry).
+- Discovery references tying each learning key back to `discovery_runs`.
 
-The harness produces per-key JSON + Markdown files and an `index.json` manifest you can check into CI artifacts or use as
-input for comparison runs.
+Outputs live under `atlas-sdk/results/learning/` (per-key JSON, optional Markdown, and a manifest). For lightweight spot
+checks inside Atlas Core you can still call `atlas.training_data.get_training_sessions` directly—see the snippet in the
+[Learning System guide](/sdk/learning-system)—but the SDK harness is the canonical workflow.
 
-## Dual-Agent Runtime Evaluation
+## Runtime Benchmarking (`atlas-sdk/scripts/benchmark_dual_agent_models.py`)
 
-Benchmark student/teacher combinations against the synthetic runtime dataset.
+Benchmark student/teacher combinations against the synthetic runtime dataset and capture latency + reward deltas:
 
 ```bash
-python scripts/eval_dual_agent_models.py \
+cd ../atlas-sdk
+python scripts/benchmark_dual_agent_models.py \
   --dataset atlas/data/synthetic_runtime_tasks.jsonl \
   --student-models claude-haiku-4-5 gemini-2.5-flash \
   --teacher-models grok-4-fast gemini-2.5-pro \
@@ -69,25 +75,23 @@ python scripts/eval_dual_agent_models.py \
 
 **Key options**
 - `--base-config` – clone a different runtime config (default: `configs/examples/openai_agent.yaml`).
-- `--concurrency` – process pool fan-out for faster sweeps; keep to 1 when troubleshooting logging.
-- `--output` – JSON summary combining per-run records with aggregated stats.
-- `ATLAS_MODEL_OVERRIDE_<MODEL_ID>` – redirect presets to alternate endpoints (e.g., Azure-hosted GPT).
-- `ATLAS_MODEL_TIMEOUT` – raise/lower call timeouts globally during slow endpoints.
+- `--concurrency` – process-pool fan-out for faster sweeps (set to 1 while debugging logging).
+- `ATLAS_MODEL_OVERRIDE_<MODEL>` – redirect presets to hosted checkpoints (Azure OpenAI, self-hosted vLLM, etc.).
+- `ATLAS_MODEL_TIMEOUT` – raise/lower call timeouts globally when exercising slow providers.
 
 **Metrics reported**
 
-- Per-task final answers, adaptive-mode history, reward, runtime, and failure flag.
+- Per-task final answers, adaptive-mode history, reward, runtime, and failure status.
 - Aggregated reward averages, latency means, failure counts, and mode distributions per model pair.
 - “Best pair” heuristic for quick default selection plus raw telemetry for deeper analysis.
 
-Use this harness whenever you refresh preferred providers or want evidence before promoting a new default to production.
+## Reward Benchmarking (`atlas-sdk/scripts/benchmark_reward_models.py`)
 
-## Reward Judge Evaluation
-
-Replay captured session trajectories to compare judge stacks without disturbing the orchestrator.
+Replay captured session trajectories to compare reward judge stacks without disturbing the orchestrator:
 
 ```bash
-python scripts/eval_reward_models.py \
+cd ../atlas-sdk
+python scripts/benchmark_reward_models.py \
   --dataset atlas/data/reward_eval_trajectories.jsonl \
   --judge-combos gemini_pair claude_stack grok_stack \
   --baseline gemini_pair \
@@ -96,35 +100,37 @@ python scripts/eval_reward_models.py \
 ```
 
 **Key options**
-- `--dataset` – supply additional trajectories collected with `scripts.capture_reward_trajectories`.
+- `--dataset` – supply datasets collected with `scripts/collect_reward_trajectories.py`.
 - `--repeats` – multiple passes to quantify variance.
 - `--concurrency` – concurrent judge evaluations per combo.
-- `--baseline` – reference stack used for deltas and correlation metrics.
-- `--collect-audit` – include serialized judge responses and Markdown summaries alongside the JSON artifact.
-- `--config configs/eval/reward_system.yaml` – point at the editable preset file if you customise judge combos without changing code (falls back to in-repo defaults).
+- `--markdown-output` – write Markdown summaries alongside JSON artifacts.
+- `--collect-audit` – include serialized prompts/responses for debugging reward prompts.
 
 **Metrics reported**
 
 - Reward mean, standard deviation, and uncertainty per combo.
-- Escalation rate and failure count (helps spot brittle judge stacks).
+- Escalation rates, failure counts, and agreement vs the baseline stack.
 - Latency statistics (average, median, p95).
-- Agreement signals: delta vs baseline and Pearson correlation.
 
-The harness now emits both JSON and Markdown reports when `--collect-audit` is supplied. The Markdown files highlight
-per-judge behaviour and link directly to captured audit payloads, making it easier to review outliers during incident
-postmortems.
+Use this harness whenever you adjust judge prompts/configs in either repo. Treat the outputs as experimental telemetry
+and archive them with your CI artifacts.
 
-## Operational Tips
+## Guarding Reward Schemas Inside Atlas Core
 
-- **Version control** – treat the JSON outputs as experimental telemetry; archive them in object storage or attach to CI
-  artifacts rather than committing to the repo.
-- **Review gating** – align harness filters with your review policy. Learning evaluation defaults to all sessions, but
-  your pipeline should mimic the `arc-atlas export` filters you plan to use for training.
-- **Automation** – add these scripts to nightly jobs. Make the output directory configurable via `--output-dir` (learning)
-  so each pipeline run lands in its own folder.
-- **Judge preset config** – copy or edit `configs/eval/reward_system.yaml` to curate judge combos, latency budgets, or
-  model overrides without touching `scripts/eval_reward_models.py`. The CLI will pick up your file automatically when
-  passed via `--config`.
+Atlas Core still ships the `tests/test_reward_schema.py` regression suite to ensure the trainer-side configs stay in sync
+with SDK telemetry:
+
+```bash
+pytest tests/test_reward_schema.py -q
+```
+
+It validates:
+
+- Reward config `_target_` paths and prompt references in `configs/reward/` + `configs/trainer/reward/`.
+- Schema compatibility with the latest SDK telemetry (per-judge fields, optional blocks, etc.).
+- Trainer exports (`trainers/__init__.py`) so downstream imports keep working.
+
+Run it in CI alongside the SDK harnesses above whenever you edit reward prompts or trainer configs.
 
 ## Related Reading
 
