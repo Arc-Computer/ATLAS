@@ -11,7 +11,7 @@ Atlas SDK follows a simple promise: **your agent, our orchestration**. Adapters 
 
 | Adapter | Use when… | Strengths | Things to watch |
 |---------|-----------|-----------|-----------------|
-| `openai` | You have an OpenAI or Azure OpenAI chat model. | Minimal setup, native tool calling, streaming support. | Only works with OpenAI-compatible APIs. |
+| `litellm` | You need multi-provider support or want future-proof compatibility. | Supports 100+ LLM providers, minimal setup, native tool calling, streaming support. | Recommended for all new projects. |
 | `http_api` | Your agent already runs behind an HTTP endpoint. | Language-agnostic, deploy-anywhere. | You define the payload schema, handle auth, and parse responses. |
 | `python` | You want to call local functions or LangChain runnables directly. | Lowest latency, easy debugging. | Runs inside the orchestrator process—ensure your code is safe and performant. |
 
@@ -25,14 +25,18 @@ graph LR
     Teacher -->|Provides Guidance| Student
 ```
 
-## OpenAI Adapter (`atlas/connectors/openai.py`)
+## LiteLLM Adapter (`atlas/connectors/litellm.py`)
 
-This is the fastest way to get started, especially with GPT-4o-mini or Azure OpenAI models.
+This is the recommended adapter for all LLM providers, supporting 100+ models via LiteLLM.
+
+<Warning>
+The `type: openai` adapter is deprecated. Use `type: litellm` instead. The litellm adapter supports all OpenAI-compatible providers (OpenAI, Azure OpenAI) plus Anthropic Claude, Google Gemini, XAI Grok, AWS Bedrock, and local models via Ollama or vLLM. The openai type remains supported for backward compatibility but emits deprecation warnings.
+</Warning>
 
 ```yaml
 agent:
-  type: openai
-  name: sdk-quickstart-openai
+  type: litellm
+  name: sdk-quickstart-litellm
   system_prompt: |
     You are the Atlas Student. Be concise and helpful.
   tools: []
@@ -46,7 +50,7 @@ agent:
 
 - Supports conversation history and tool call metadata automatically.
 - Accepts `response_format` for JSON mode.
-- For Claude, Gemini, or other models, use the `http_api` adapter.
+- Works with OpenAI, Anthropic Claude, Google Gemini, XAI Grok, Azure OpenAI, AWS Bedrock, and local models (Ollama, vLLM).
 
 ## HTTP Adapter (`atlas/connectors/http.py`)
 
@@ -125,14 +129,62 @@ Most teams start by copying the `http_api` adapter and swapping the transport la
 Atlas auto-imports built-in adapters via `atlas.connectors.__init__`. Custom adapters should follow the same pattern—expose your module there (or import it in your app startup) so registration runs once on load.
 </Note>
 
+## Migrating from OpenAI to LiteLLM Adapter
+
+If you have existing configs using `type: openai`, migration is straightforward:
+
+### Before (Deprecated)
+```yaml
+agent:
+  type: openai
+  name: my-agent
+  system_prompt: "You are helpful."
+  llm:
+    provider: openai
+    model: gpt-4o-mini
+    api_key_env: OPENAI_API_KEY
+```
+
+### After (Recommended)
+```yaml
+agent:
+  type: litellm  # Changed from openai
+  name: my-agent
+  system_prompt: "You are helpful."
+  llm:
+    provider: openai  # Provider stays the same
+    model: gpt-4o-mini
+    api_key_env: OPENAI_API_KEY
+```
+
+### Breaking Changes
+**None.** The litellm adapter is a drop-in replacement. All OpenAI-compatible configs work without modification beyond changing the `type` field.
+
+### Benefits of Migration
+1. **Future-proof**: Access to new providers without code changes
+2. **Local models**: Use Ollama or vLLM with the same config structure
+3. **Cost optimization**: Easily switch to faster/cheaper models
+4. **No warnings**: Eliminate deprecation warnings in logs
+
+### Testing Migration
+```bash
+# 1. Update your config
+sed -i '' 's/type: openai/type: litellm/' config.yaml
+
+# 2. Run a test task
+atlas run --config config.yaml --task "Test migration"
+
+# 3. Verify no warnings in output
+```
+
 ## Decision Checklist
 
 | Need | Recommendation |
 |------|----------------|
-| Fastest time-to-first-run | `openai` adapter with `openai_agent.yaml`. |
+| Fastest time-to-first-run | `litellm` adapter with any provider. |
 | Reuse an existing microservice | `http_api` adapter with proper retries and auth. |
 | Full control in local experiments | `python` adapter calling your local function. |
-| Access non-OpenAI APIs (Claude, Gemini, etc.) | Wrap them with the `http_api` adapter. |
+| Access any LLM provider (OpenAI, Claude, Gemini, etc.) | Use `litellm` adapter with the appropriate provider setting. |
 
 ## Next Steps
 

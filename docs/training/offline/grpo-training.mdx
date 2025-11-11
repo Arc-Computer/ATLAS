@@ -126,22 +126,26 @@ scripts/launch.sh 2 configs/run/teacher_sft.yaml \
   +offload
 ```
 
-### Success Looks Like
+### Verify Success
+
+**Check training is running:**
+```bash
+tail -f checkpoints/sft/training.log | grep "loss:"
+```
+
+**Expected output:**
+```
+{'loss': 2.134, 'learning_rate': 1.8e-05, 'epoch': 0.15}
+{'loss': 1.892, 'learning_rate': 1.5e-05, 'epoch': 0.30}
+{'loss': 1.456, 'learning_rate': 1.2e-05, 'epoch': 0.50}
+# Loss should decrease from ~2.0 to <1.5 over 4-6 hours
+```
 
 | Metric | Target | What It Means |
 |--------|--------|---------------|
 | Training Loss | &lt;1.5 | Model is learning patterns |
 | Gradient Norm | &lt;5.0 | Training is stable |
 | Duration | 4-6 hours | On 8× H100 GPUs |
-
-**Monitor progress:**
-```bash
-# Watch training logs
-tail -f checkpoints/sft/training.log
-
-# Check GPU usage
-nvidia-smi -l 1
-```
 
 ## Step 2: Launch vLLM Server
 
@@ -165,13 +169,29 @@ python trainers/vllm_server.py \
 
 If you prefer a single command that starts the vLLM servers and the GRPO job together, stick with `scripts/launch_with_server.sh <server_gpus> <training_gpus> configs/run/teacher_rcl.yaml ...`. That wrapper orchestrates `trainers/vllm_server.py` under the hood, waits for the health checks to pass, and then launches `scripts/launch.sh` for reinforcement learning.
 
-### Success Looks Like
+### Verify Success
 
+**Check server health:**
 ```bash
-# Server should respond
-curl http://localhost:8000/v1/models
+curl http://localhost:8765/health
+```
 
-# Should return 200 with model info
+**Expected output:**
+```json
+{"status": "ok", "model_loaded": true}
+```
+
+**List available models:**
+```bash
+curl http://localhost:8765/v1/models
+```
+
+**Expected output:**
+```json
+{
+  "object": "list",
+  "data": [{"id": "checkpoints/sft/final", "created": 1234567890}]
+}
 ```
 
 **Key parameters:**
@@ -204,17 +224,44 @@ scripts/launch_with_server.sh 4 4 configs/run/teacher_rcl.yaml \
 
 The first number is training GPUs, second is vLLM GPUs.
 
-### Success Looks Like
+### Verify Success
+
+**Monitor training progress:**
+```bash
+tensorboard --logdir checkpoints/grpo --port 6006
+```
+
+**What to look for in TensorBoard:**
+
+1. **Reward Mean** (chart: `train/reward`)
+   - Should trend upward from baseline (~0.3-0.5 → 0.7-0.8)
+   - Steady increases indicate the teacher is learning effective guidance
+
+2. **KL Divergence** (chart: `train/kl`)
+   - Healthy range: 0.5-2.0
+   - Warning if &gt;5.0 (policy diverging too far from SFT baseline)
+
+3. **Non-degradation Rate** (chart: `train/non_degrade_rate`)
+   - Target: &gt;95% of samples improve or maintain quality
+   - Warning if &lt;90% (teaching is making students worse)
 
 | Metric | Healthy Range | Warning Sign |
 |--------|--------------|--------------|
-| Reward Mean | Increasing | Plateau or decrease |
+| Reward Mean | 0.3 → 0.8 (increasing) | Plateau or decrease |
 | Non-degradation Rate | &gt;95% | &lt;90% indicates issues |
 | KL Divergence | 0.5-2.0 | &gt;5.0 suggests collapse |
 
-**Monitor with TensorBoard:**
+**Check live metrics:**
 ```bash
-tensorboard --logdir checkpoints/grpo --port 6006
+tail -f checkpoints/grpo/training.log | grep "reward:"
+```
+
+**Expected output:**
+```
+{'step': 50, 'reward': 0.52, 'kl': 1.2, 'non_degrade': 0.96}
+{'step': 100, 'reward': 0.61, 'kl': 1.4, 'non_degrade': 0.97}
+{'step': 150, 'reward': 0.73, 'kl': 1.6, 'non_degrade': 0.98}
+# Rewards should steadily increase over 24-36 hours
 ```
 
 ## Key Configuration Parameters

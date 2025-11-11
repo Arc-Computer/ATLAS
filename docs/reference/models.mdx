@@ -130,21 +130,10 @@ Check model cards on Hugging Face for:
 
 ## Custom Model Training
 
-Train your own teacher models:
-
-```bash
-# Using pre-trained as base
-scripts/launch.sh 8 configs/run/teacher_sft.yaml \
-  model_name_or_path=Arc-Intelligence/ATLAS-8B-Thinking \
-  output_dir=my_custom_teacher
-
-# From scratch with your data
-scripts/launch.sh 8 configs/run/teacher_sft.yaml \
-  model_name_or_path=Qwen/Qwen2.5-7B-Instruct \
-  dataset_name=your_dataset
-```
-
-See [GRPO Training Guide](/training/offline/grpo-training) for detailed instructions.
+To train custom teacher models, see:
+- [GKD Training](/training/offline/gkd-training) - Fast distillation (4-8 hours)
+- [GRPO Training](/training/offline/grpo-training) - Full RL training (24-48 hours)
+- [Training Configuration](/training/configuration) - Parameter reference
 
 ## License and Usage
 

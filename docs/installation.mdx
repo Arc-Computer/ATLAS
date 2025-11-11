@@ -48,8 +48,69 @@ The training stack requires CUDA-capable GPUs, PyTorch 2.6.0, and vLLM 0.8.3. Mo
 
 ## Prerequisites
 
+<Warning>
+**Before installing:** Run this 30-second check to verify your system meets requirements.
+</Warning>
+
+```bash
+python - <<'EOF'
+import sys
+import subprocess
+
+checks = []
+
+# Check Python version
+py_version = sys.version_info
+checks.append(("Python 3.11 or 3.12", py_version >= (3, 11), f"Found {py_version.major}.{py_version.minor}"))
+
+# Check CUDA
+try:
+    result = subprocess.run(['nvidia-smi'], capture_output=True, text=True)
+    cuda_available = result.returncode == 0
+    checks.append(("NVIDIA GPU", cuda_available, "Found" if cuda_available else "Not found"))
+except:
+    checks.append(("NVIDIA GPU", False, "nvidia-smi not available"))
+
+# Check disk space
+import shutil
+stat = shutil.disk_usage("/")
+free_gb = stat.free / (1024**3)
+checks.append(("200GB+ free disk", free_gb >= 200, f"{free_gb:.1f}GB free"))
+
+# Print results
+print("\nPrerequisites Check:")
+print("-" * 50)
+for name, passed, detail in checks:
+    status = "✅" if passed else "❌"
+    print(f"{status} {name}: {detail}")
+
+all_passed = all(c[1] for c in checks)
+print("-" * 50)
+if all_passed:
+    print("✅ All checks passed! Proceed with installation.")
+else:
+    print("❌ Some checks failed. Review requirements before installing.")
+    sys.exit(1)
+EOF
+```
+
+**Expected output:**
+```
+Prerequisites Check:
+--------------------------------------------------
+✅ Python 3.11 or 3.12: Found 3.11
+✅ NVIDIA GPU: Found
+✅ 200GB+ free disk: 245.3GB free
+--------------------------------------------------
+✅ All checks passed! Proceed with installation.
+```
+
+<Note>
+**SDK-only users can skip this.** This check is only needed for the full training stack (Atlas Core).
+</Note>
+
 <Steps>
-  <Step title="CUDA Setup">
+  <Step title="Set up CUDA">
     Ensure NVIDIA drivers and CUDA are installed and compatible with PyTorch 2.6.0:
     ```bash
     nvidia-smi  # Verify CUDA version
@@ -63,7 +124,7 @@ The training stack requires CUDA-capable GPUs, PyTorch 2.6.0, and vLLM 0.8.3. Mo
     ```
   </Step>
 
-  <Step title="HuggingFace Authentication">
+  <Step title="Authenticate with HuggingFace">
     Authenticate for model and dataset access:
     ```bash
     huggingface-cli login
@@ -152,7 +213,7 @@ The training stack requires CUDA-capable GPUs, PyTorch 2.6.0, and vLLM 0.8.3. Mo
   </Tab>
 </Tabs>
 
-## Environment Configuration
+## Configure Environment
 
 ### API Keys and Tracking
 
@@ -220,7 +281,14 @@ print("GPU count:", torch.cuda.device_count())
 print("Teacher model loaded:", teacher.config.model_type)
 print("Model device:", next(teacher.parameters()).device)
 PY
-# Expected output: CUDA available: True, GPU count: 2+ (for RL training), model type shown
+```
+
+**Expected output:**
+```
+CUDA available: True
+GPU count: 8
+Teacher model loaded: qwen2
+Model device: cuda:0
 ```
 
 <CodeGroup>

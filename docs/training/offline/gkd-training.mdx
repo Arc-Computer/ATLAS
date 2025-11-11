@@ -11,9 +11,29 @@ Generalized Knowledge Distillation (GKD) enables on-policy distillation of Atlas
 
 **Problem**: Atlas SDK deployments often produce a reliable teacher policy plus verified runtime traces, yet the teacher checkpoint is too large or costly to redeploy, and running the full SFT → GRPO stack again would add days of compute.
 
-**Solution**: Use GKD to transfer the teacher’s action distribution to a smaller student directly from the same on-policy traces, reducing latency while respecting the reward-weighted data collected in production.
+**Solution**: Use GKD to transfer the teacher's action distribution to a smaller student directly from the same on-policy traces, reducing latency while respecting the reward-weighted data collected in production.
 
 **Technical Implementation**: The run config (`configs/run/teacher_gkd.yaml`) wires the GKD trainer (`configs/trainer/gkd.yaml`) and the Postgres-backed dataset builder in `trainers.gkd_dataset`. Trace exports match the schema captured in the [MCP Tool Learning example](/examples/adaptive-tool-use), so you can replay identical workloads through distillation or GRPO. For the reinforcement-learning path, see [`grpo-training.mdx`](./grpo-training.mdx); both flows follow the override patterns documented in the [Training Configuration Guide](../configuration.mdx).
+
+### Data Flow: Runtime to Training
+
+The GKD training pipeline connects runtime traces to trained models:
+
+| Stage | Tool | Input | Output | Time |
+|-------|------|-------|--------|------|
+| 1. Runtime execution | `atlas run` | User tasks | Episode traces in Postgres | Minutes |
+| 2. Export traces (optional) | `arc-atlas` | Postgres episodes | JSONL dataset | Minutes |
+| 3. GKD training | `python train.py --config-name teacher_gkd` | JSONL or Postgres traces | Distilled checkpoint | 4-8 hours |
+| 4. Deploy checkpoint | Update `teacher_model_name_or_path` in config | Trained model | Production teacher | Minutes |
+
+<Note>
+**No traces yet?** Run the [Adaptive Tool Use example](/examples/adaptive-tool-use) to generate training data, or see [SDK Export Traces](/sdk/export-traces) to populate your database.
+</Note>
+
+<div align="center">
+  <img src="/images/system-architecture.png" alt="Atlas system architecture showing runtime to training flow" width="800" />
+  <p><em>Runtime traces flow from SDK execution to Postgres storage to GKD training to deployed teacher models</em></p>
+</div>
 
 ### Core Capabilities
 
@@ -35,27 +55,109 @@ GKD handles multi-turn traces directly from Postgres, applies the same tokenizat
 
 ### Prerequisites
 
-For local smoke tests (for example `scripts/validate_gkd.py`) install `torch>=2.0.0` with CUDA or BF16 support alongside `transformers==4.51.1`, `accelerate==1.4.0`, `trl==0.14.0`, `datasets==3.2.0`, and `bitsandbytes>=0.48` when you plan to load either model in 8-bit. Everything else in `requirements-py312.txt` supports wider Atlas workflows (Hydra configs, serving, logging) and is not required for the math validation run.
+Before running GKD training, verify your environment:
+
+<Steps>
+  <Step title="Clone Atlas Core Repository">
+    GKD training requires the full Atlas Core repository (not just the SDK):
+    ```bash
+    git clone https://github.com/Arc-Computer/ATLAS.git
+    cd ATLAS
+    ```
+  </Step>
+
+  <Step title="Install Training Dependencies">
+    ```bash
+    # For Python 3.11
+    pip install -r requirements-py311.txt
+
+    # For Python 3.12
+    pip install -r requirements-py312.txt
+    ```
+
+    <Tip>
+    This installs PyTorch, TRL, vLLM, and all training dependencies. Takes 10-15 minutes.
+    </Tip>
+  </Step>
+
+  <Step title="Set Database URL (Optional)">
+    GKD training can load traces from Postgres. Set your connection string if using database access:
+    ```bash
+    export ATLAS_DB_URL="postgresql://user:pass@host:5432/atlas"
+    ```
+
+    <Note>
+    **Using JSONL exports instead?** Skip this step and provide `dataset_path` in your config.
+    </Note>
+  </Step>
+
+  <Step title="Verify Configuration Files Exist">
+    ```bash
+    # Check required config files
+    ls configs/run/teacher_gkd.yaml
+    ls configs/trainer/gkd.yaml
+
+    # Expected output:
+    # configs/run/teacher_gkd.yaml
+    # configs/trainer/gkd.yaml
+    ```
+  </Step>
+</Steps>
+
+### Run First Training Job
+
+Once prerequisites are met, start a minimal GKD run:
 
 ```bash
-# Ensure TRL is installed
-pip install "trl>=0.12.0"
-
-# Set database URL
-export ATLAS_DB_URL="postgresql://user:pass@host:5432/atlas"
-```
-
-### Basic Training
-
-Train a distilled student model from Atlas traces:
-
-```bash
+# Run from ATLAS repository root
 python train.py \
   --config-name teacher_gkd \
   teacher_model_name_or_path=Qwen/Qwen2.5-14B-Instruct \
   model.model_name_or_path=Qwen/Qwen2.5-7B-Instruct \
-  trainer.min_reward=0.8
+  trainer.min_reward=0.8 \
+  trainer.max_steps=100
 ```
+
+<Note>
+**First run?** Add `trainer.max_steps=100` to complete a smoke test in 15-20 minutes instead of hours.
+</Note>
+
+### Verify Success
+
+**Check training progress:**
+```bash
+tail -f outputs/gkd/training.log | grep "loss:"
+```
+
+**Expected output:**
+```
+{'loss': 1.342, 'learning_rate': 1.9e-05, 'epoch': 0.1}
+{'loss': 1.156, 'learning_rate': 1.5e-05, 'epoch': 0.3}
+{'loss': 0.892, 'learning_rate': 1.2e-05, 'epoch': 0.6}
+# Loss should steadily decrease during training
+```
+
+<Note>
+Custom metrics like `metrics/success_delta` and `metrics/token_reduction_pct` are logged to WandB/TensorBoard, not in the console training logs.
+</Note>
+
+**Check distillation metrics in WandB:**
+- `metrics/success_delta` - Should be positive (student improving over baseline)
+- `metrics/token_reduction_pct` - Target: >20% token savings
+- `metrics/meets_target` - Should be `true` when both success and token targets met
+
+**Verify checkpoint creation:**
+```bash
+ls -lh outputs/gkd/checkpoint-final/
+# Should contain: config.json, model.safetensors, tokenizer files
+```
+
+| Metric | Target | Meaning |
+|--------|--------|---------|
+| Training Loss | &lt;1.0 | Student learning teacher distribution |
+| KL Divergence | 0.3-0.6 | Balanced teacher/student alignment |
+| Success Delta | &gt;0 (positive) | Student improves over baseline |
+| Token Reduction | &gt;20% | Smaller model is more efficient |
 
 These same Qwen checkpoints (`Qwen/Qwen2.5-14B-Instruct` teacher and `Qwen/Qwen2.5-7B-Instruct` student) are used by `scripts/validate_gkd.py` to measure the GSM8K lift before scaling to customer traces.
 

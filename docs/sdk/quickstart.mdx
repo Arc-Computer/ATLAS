@@ -51,6 +51,10 @@ We recommend keeping credentials in a `.env` file and loading them with `dotenv`
 
 ## Step 1 – Run the Quickstart Task
 
+<Note>
+**Working directory:** The SDK installs globally via `pip install arc-atlas`. You can run `atlas` commands from any directory. Config files can live in your project root (for CLI autodiscovery) or in the [ATLAS Core repository](https://github.com/Arc-Computer/ATLAS) (for example configs).
+</Note>
+
 Atlas now ships with an autodiscovery CLI so you can validate your environment before touching Python.
 
 <div align="center">
@@ -68,18 +72,30 @@ atlas run --config .atlas/generated_config.yaml --task "Summarize the latest AI 
 
 - `atlas env init` scans for `@atlas.environment` / `@atlas.agent` decorators or factory functions, loads `.env`, and writes `.atlas/discover.json`, `.atlas/generated_factories.py`, and `.atlas/generated_config.yaml`.
 - `atlas run --config` loads the generated config, verifies module hashes, streams telemetry into `.atlas/runs/`, and injects learning playbooks when available.
-- Need to exercise the full orchestrator? Point `atlas run --config configs/examples/openai_agent.yaml --task "..."` at a config file to bypass discovery entirely.
+- Need to exercise the full orchestrator? Point `atlas run --config configs/examples/sdk_quickstart.yaml --task "..."` at a config file to bypass discovery entirely.
 
 ### Option B – Python API (direct invocation)
 
-If you already have a config checked into source control, the standard `atlas.core.run` entry point still works:
+<Warning>
+This option uses example configs from the Atlas Core repository. If you only installed the SDK (`pip install arc-atlas`), use Option A or create your own config file.
+</Warning>
+
+If you want to use pre-built example configs:
+
+```bash
+# Clone Atlas Core for example configs
+git clone https://github.com/Arc-Computer/ATLAS.git
+cd ATLAS
+```
+
+Then use the Python API with the example config:
 
 ```python
 from atlas.core import run
 
 result = run(
     task="Summarize the latest AI news",
-    config_path="configs/examples/openai_agent.yaml",
+    config_path="configs/examples/sdk_quickstart.yaml",  # Path relative to ATLAS repo root
     stream_progress=True,
 )
 print(result.final_answer)
@@ -88,11 +104,34 @@ print(result.final_answer)
 <Info>
 Run it inline if you prefer to avoid creating a file:
 ```bash
-python -c "from atlas.core import run; result = run(task='Summarize the latest AI news', config_path='configs/examples/openai_agent.yaml', stream_progress=True); print(result.final_answer)"
+python -c "from atlas.core import run; result = run(task='Summarize the latest AI news', config_path='configs/examples/sdk_quickstart.yaml', stream_progress=True); print(result.final_answer)"
 ```
 </Info>
 
-In both flows you should see an adaptive summary headline in the console stream (for example, `Adaptive: mode=coach confidence=0.58 certification=True`) followed by the plan–execute–synthesize loop. `atlas.runtime.telemetry.ConsoleTelemetryStreamer` auto-enables when stdout is a TTY; override with `stream_progress=True/False`.
+**Expected output:**
+```
+=== Atlas task started: Summarize the latest AI news (2025-01-11 10:30:45) ===
+Plan ready (3 steps):
+  1. Search for recent AI news articles
+  2. Extract key points from top articles
+  3. Synthesize findings into concise summary
+Adaptive: mode=coach confidence=0.58
+STEP 1: Search for recent AI news articles | actor=student | attempt=1 | validation=PASS (found relevant sources) | duration=1200.5ms
+STEP 1: Search for recent AI news articles | actor=teacher | attempt=1 | guidance=Focus on authoritative sources
+STEP 1: retry 1 | Reward score=0.82 | Judge scores: helpfulness:0.85, accuracy:0.80
+STEP 2: Extract key points from top articles | actor=student | attempt=1 | validation=PASS (extracted main themes) | duration=850.3ms
+STEP 2: retry 1 | Reward evaluation deferred to session-level judge
+STEP 3: Synthesize findings into concise summary | actor=student | attempt=1 | validation=PASS (summary complete) | duration=950.7ms
+STEP 3: retry 1 | Reward evaluation deferred to session-level judge
+Final Answer:
+  Recent AI developments include...
+Summary | execution_mode=stepwise | total_runtime=15.2s | judge_calls=1 | adaptive_mode=coach | adaptive_confidence=0.58
+  attempts: 1=1, 2=1, 3=1
+  Reward score=0.85 (All steps completed successfully)
+=== Atlas task completed in 15.2s ===
+```
+
+The console streamer shows the plan, adaptive lane selection, step-by-step execution with validation status, teacher guidance when provided, and reward scores. `atlas.runtime.telemetry.ConsoleTelemetryStreamer` auto-enables when stdout is a TTY; override with `stream_progress=True/False`.
 
 Need a local Postgres instance? Run `atlas init` to scaffold and launch the Docker Postgres stack. Skip this step if you prefer ephemeral runs.
 
@@ -115,7 +154,7 @@ See the [Agent Adapters guide](/sdk/adapters) for complete configuration options
 Think of `atlas.core.run` as a project manager who never gets tired—now fronted by an adaptive controller:
 
 - **Triage & probe** – a triage adapter builds context, the capability probe scores confidence, and the runtime picks a lane.
-- **Configure** – the YAML tells the orchestrator which agent to call and how the Student/Teacher/Reward System trio should behave.
+- **Configure** – the YAML tells the orchestrator which agent to call and how the dual-agent reasoning loop (student + verifying teacher) should behave.
 - **Plan** – the Student drafts a step-by-step approach when a stepwise lane is chosen; in single-shot lanes the plan collapses to one step.
 - **Review** – the Teacher approves or tweaks the plan (or just inspects the final answer in `paired` mode).
 - **Execute** – each step runs with lane-specific guidance, validation, and retries.
@@ -123,9 +162,9 @@ Think of `atlas.core.run` as a project manager who never gets tired—now fronte
 
 ## Configuration Breakdown
 
-The `openai_agent.yaml` config defines the runtime behavior. Here’s a high-level look at the key sections:
+The `sdk_quickstart.yaml` config defines the runtime behavior. Here's a high-level look at the key sections:
 
-- **`agent`**: Specifies the agent to run the task. The quickstart uses the OpenAI adapter with `gpt-5-mini` and no tools, requiring only an `OPENAI_API_KEY`.
+- **`agent`**: Specifies the agent to run the task. The quickstart uses the OpenAI adapter with `gpt-4o-mini` and no tools, requiring only an `OPENAI_API_KEY`.
 - **`student`**: Configures the planner, executor, and synthesizer roles with their respective prompts and token limits.
 - **`teacher`**: Defines the review and guidance agent, which also has its own model and token budget.
 - **`orchestration`**: Sets runtime parameters like the number of retries (default: 1) and step timeouts.
@@ -133,7 +172,7 @@ The `openai_agent.yaml` config defines the runtime behavior. Here’s a high-lev
 - **`storage`**: Point at Postgres to persist episodes; remove the block or set it to `null` for in-memory experiments.
 - **`student.prompts` / `teacher.prompts`**: Optional overrides. Atlas derives persona text from `atlas.prompts`; customize behaviour by editing these prompt blocks directly.
 
-To add tools, enable persistence, or use a different agent, switch the `config_path` to another template in `configs/examples/` (e.g., `http_agent.yaml`, `python_agent.yaml`) and see the `SDK Configuration` reference for details.
+To add tools, enable persistence, or use a different agent, create your own config file based on the SDK quickstart template and see the `SDK Configuration` reference for details.
 
 ## Troubleshooting Checklist
 
