@@ -5,7 +5,7 @@
   "colors": {
     "primary": "#2563EB",
     "light": "#60A5FA",
-    "dark": "#1E40AF"
+    "dark": "#3B82F6"
   },
   "favicon": "/images/Arc-Icon.png",
   "navigation": {
@@ -51,7 +51,8 @@
               "training/offline/gkd-training",
               "training/offline/grpo-training",
               "training/offline/training-data-pipeline",
-              "training/online/continuous-learning"
+              "training/custom-datasets",
+              "training/reward-system-usage"
             ]
           },
           {
@@ -93,6 +94,7 @@
         "groups": [
           {
             "group": "Training API",
+            "icon": "code",
             "pages": [
               "api-reference/trainers"
             ]

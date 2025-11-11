@@ -161,79 +161,11 @@ sre_data = dataset.filter(lambda x: x['domain'] == 'debug')
 
 ## Creating Custom Datasets
 
-### Data Format Requirements
-
-Your dataset should follow this structure:
-
-```python
-{
-    "prompt": str,           # Required: Task description
-    "ground_truth": str,     # Required: Correct solution
-    "metadata": {            # Optional: Additional context
-        "difficulty": str,
-        "source": str,
-        "tags": List[str]
-    }
-}
-```
-
-### Preprocessing Pipeline (JSONL exports)
-
-Use the runtime helpers that ship in this repository to turn SDK exports into trainer-ready splits:
-
-```python
-from transformers import AutoTokenizer
-from custom_data.runtime_trace_data import get_runtime_trace_dataset
-
-tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-7B-Instruct")
-splits = get_runtime_trace_dataset(
-    tokenizer=tokenizer,
-    export_path="traces/runtime.jsonl",  # Generated via `arc-atlas export …`
-    eval_split_ratio=0.1,
-    dataset_max_samples=5000,
-)
-
-train_ds = splits["train_dataset"]
-eval_ds = splits["eval_dataset"]
-```
-
-For Postgres-backed workflows, query the SDK database directly and convert records with `trainers.runtime_dataset`:
-
-```python
-from atlas.training_data import get_training_sessions
-from trainers.runtime_dataset import sessions_to_rl_records
-
-sessions = get_training_sessions(
-    db_url="postgresql://atlas:atlas@localhost:5433/atlas",
-    min_reward=0.8,
-    learning_key="security-review",
-)
-
-records = sessions_to_rl_records(sessions)
-```
-
-`records` is a list of dictionaries that any Hugging Face `Dataset` can ingest (the same structure Hydra configs consume via `custom_data.runtime_trace_data`). See the [Training Data Pipeline](/training/offline/training-data-pipeline) guide for additional filters and batching helpers.
-
-> **GKD alignment note:** Every conversation record now carries `prompt_text` (serialized messages excluding the final assistant turn) and `completion_text` (the assistant response the student learns to mimic). These fields let the distillation pipeline re-render prompts with both the student and teacher tokenizers so cross-tokenizer KL is computed in each model’s native chat template.
-
-### Quality Validation
-
-Inspect coverage with standard Python tooling—you already have `datasets` installed for training:
-
-```python
-from collections import Counter
-from datasets import Dataset
-
-dataset = Dataset.from_list(records)
-lengths = [len(example["step_trace"].split()) for example in dataset]
-domains = Counter(example["session_metadata"].get("domain", "unknown") for example in dataset)
-
-print(f"Examples: {len(dataset)}")
-print(f"Avg step length: {sum(lengths)/len(lengths):.1f} tokens")
-print(f"Domains: {domains}")
-```
-
-Pair these quick checks with any in-house validators your team already maintains. The key is to keep the format (`prompt`, `student_response`, guidance, rewards) identical to what the SDK emits so Atlas Core can reuse the traces without custom glue code.
+To create custom datasets from runtime traces or other sources, see [Custom Dataset Creation](/training/custom-datasets):
+- Data format requirements
+- Preprocessing JSONL exports from the SDK
+- Postgres-backed workflows
+- Quality validation
 
 ## Contributing Data
 

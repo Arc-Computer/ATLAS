@@ -38,7 +38,7 @@ runtime_safety:
 Drift alerts surface in `sessions.metadata["drift"]` and trigger flags in the review CLI. Review settings feed directly
 into `arc-atlas export` / `atlas train`, so production pipelines default to approved sessions only.
 
-## Review Workflow
+## Review Sessions
 
 1. **Approve or quarantine sessions**
    ```bash
@@ -46,6 +46,20 @@ into `arc-atlas export` / `atlas train`, so production pipelines default to appr
    arc-atlas review approve 123 --database-url postgresql://atlas:atlas@localhost:5433/atlas --note "Clean reward delta"
    arc-atlas review quarantine 456 --database-url postgresql://atlas:atlas@localhost:5433/atlas --note "Investigate drift"
    ```
+
+   **Expected output:**
+   ```
+   Status: pending (2 sessions)
+       123 | ok    | scoreΔ=+0.12 | uncΔ=+0.05 | reward=0.85±0.03 (n=3) | created=2025-01-11T10:30:45 | reason=-
+            Task: Debug authentication flow
+            Notes: -
+            Reward audit entries: 3
+       456 | ALERT | scoreΔ=-0.23 | uncΔ=+0.17 | reward=0.42±0.08 (n=2) | created=2025-01-11T11:15:22 | reason=Significant reward drop compared to recent window
+            Task: Debug authentication flow
+            Notes: -
+            Reward audit entries: 2
+   ```
+
    The listing groups sessions by review status and highlights drift alerts, reward deltas, and uncertainty changes so
    reviewers can triage quickly.
 

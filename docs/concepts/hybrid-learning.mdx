@@ -5,17 +5,17 @@ sidebarTitle: Hybrid Learning
 icon: brain
 ---
 
-## Architectural Overview
+## What is Hybrid Learning?
 
-ATLAS implements a revolutionary hybrid learning architecture that fundamentally reimagines how AI systems acquire and transfer knowledge. Instead of training separate models for every business domain (requiring massive datasets that rarely exist), we train a Teacher model to master reasoning in mathematics - where logic is clear and data is abundant - then transfer those reasoning skills to solve any business problem.
+ATLAS separates learning into two phases: **offline foundation training** (one-time, compute-intensive) and **runtime continual learning** (continuous, lightweight). This architecture solves the enterprise AI constraint: lack of high-quality preference data for complex business tasks.
 
-This cross-domain learning breakthrough means a model trained exclusively on math problems can guide agents through CRM workflows, telecom debugging, or any complex business task without domain-specific training. It's not about teaching facts; it's about teaching how to think.
+**Key insight:** Train a teacher once on math reasoning (where data is abundant and logic is clear), then apply that reasoning to any domain (CRM, telecom, debugging) without domain-specific retraining.
 
 ## The Two-Phase Paradigm
 
-### Phase 1: Offline Foundation Training
+### Phase 1: Offline Foundation Training (Atlas Core)
 
-Offline training establishes deep, generalizable skills through reinforcement learning:
+Establish deep, generalizable skills through reinforcement learning:
 
 ```
 Offline RL Training (24-48 hours)
@@ -24,170 +24,95 @@ Offline RL Training (24-48 hours)
 └── Output: Teacher model with foundational knowledge
 ```
 
-**Key Characteristics:**
-- **Compute-intensive**: Minimum 2 GPUs (1 for vLLM, 1 for training)
-- **High-quality teaching examples**: ~900 carefully curated adaptive dual-agent demonstrations from Arc-ATLAS-Teach-v0
-- **Math-trained foundation**: Teacher model trained as expert in reasoning, sequential thinking, and complex problem decomposition
-- **Cross-domain transfer**: Math-trained reasoning generalizes to debugging, coding, and other analytical tasks
-- **One-time cost**: Amortized over all deployments
+| Characteristic | Detail |
+|----------------|--------|
+| Compute requirement | Minimum 2 GPUs (1 for vLLM, 1 for training) |
+| Training data | ~900 curated dual-agent demonstrations from Arc-ATLAS-Teach-v0 |
+| Foundation domain | Mathematics (reasoning, sequential thinking, problem decomposition) |
+| Transfer capability | Math-trained reasoning generalizes to debugging, coding, analytical tasks |
+| Cost model | One-time; amortized over all deployments |
 
-### Phase 2: Runtime Continual Learning (SDK)
+### Phase 2: Runtime Continual Learning (Atlas SDK)
 
-The atlas-sdk runtime adapts pre-trained teachers to specific tasks between GRPO training runs:
+The [atlas-sdk](https://github.com/Arc-Computer/atlas-sdk) runtime adapts pre-trained teachers to specific tasks:
 
 ```
 Runtime Loop (continuous)
 ├── Task Analysis: Identify performance gaps via rewards
 ├── Experimentation: Adjust teaching prompts and strategies
 ├── Trace Export: Capture high-signal interactions
-└── Output: Data for the next GRPO cycle + incremental runtime improvements
+└── Output: Data for next GRPO cycle + incremental improvements
 ```
 
-**Key Characteristics:**
-- **Lightweight**: Runs through managed APIs in the SDK
-- **Rapid**: Improves over hours instead of full retraining cycles
-- **Safe**: Maintains non-degradation guarantee via reward guardrails
-- **Continuous**: Feeds fresh traces into the next offline training job
+| Characteristic | Detail |
+|----------------|--------|
+| Infrastructure | Managed APIs in SDK |
+| Speed | Improves over hours vs full retraining cycles |
+| Safety | Non-degradation guarantee via reward guardrails |
+| Feedback loop | Feeds fresh traces into next offline training job |
 
-## Technical Implementation
-
-### Offline Training Pipeline
-
-The offline phase uses GRPO (Group Relative Policy Optimization) with the following objective:
-
-```python
-def grpo_loss(logits, rewards, reference_logits, beta=0.04):
-    """
-    GRPO loss combining reward maximization with KL constraint
-
-    Args:
-        logits: Current policy outputs
-        rewards: Performance improvements from teaching
-        reference_logits: SFT baseline outputs
-        beta: KL divergence coefficient
-    """
-    policy_logprobs = F.log_softmax(logits, dim=-1)
-    reference_logprobs = F.log_softmax(reference_logits, dim=-1)
-
-    # Reward-weighted policy gradient
-    pg_loss = -(rewards * policy_logprobs).mean()
-
-    # KL divergence constraint
-    kl_loss = F.kl_div(policy_logprobs, reference_logprobs, reduction='batchmean')
-
-    return pg_loss + beta * kl_loss
-```
-
-### Runtime Continual Learning Loop (SDK)
-
-In production, the atlas-sdk runtime constantly evaluates teacher guidance, captures deltas, and exports high-signal traces. Those traces feed both short-term adjustments (prompt/runtime tuning) and the next GRPO training cycle. As a result, the hybrid system keeps improving without pausing deployment.
-
-## Empirical Validation
-
-### Performance Comparison
+## Performance Comparison
 
 | Training Approach | Time to Deploy | Performance Gain | Cost | Generalization |
 |-------------------|---------------|------------------|------|----------------|
 | Fine-tuning | 1-2 weeks | +10-15% | $1000s | Poor |
 | Few-shot prompting | Minutes | +3-5% | ~$1 | Limited |
-| ATLAS Runtime + GRPO | Hours (depends on export + training) | +15.7% baseline | API + GPU spend | Excellent |
+| ATLAS (Runtime + GRPO) | Hours | +15.7% baseline | API + GPU | Excellent |
 
 *With pre-trained teacher models
 
-<Note>
-  Baseline figures reflect the runtime dual-agent loop (student + verifying teacher) plus GRPO training. Online continual learning now lives in the [`atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) runtime.
-</Note>
+## Cross-Domain Transfer Results
 
-### Case Study: Validated Cross-Domain Transfer
+### Why Mathematics as Foundation?
 
-Our approach's effectiveness is validated across multiple benchmarks:
+- **Clear correctness**: Verifiable ground truth (unlike business tasks)
+- **Abundant data**: Thousands of well-structured problems
+- **Pure reasoning**: Systematic thinking, problem decomposition, logical flow
+- **Complexity gradient**: Simple arithmetic → AIME-level competition problems
+
+Our Teacher trained on ~7,000 math problems achieved **46% accuracy on AIME-25** (top-10 SOTA level).
+
+### Validated Transfer
 
 **Mathematics → Telecom (τ²-bench):**
-- Teacher trained only on math problems (Arc-ATLAS-Teach-v0)
-- Applied to telecom troubleshooting without any telecom training
-- Result: 24.0% pass@1 (vs 18.0% for GPT-4.1 and Claude 3.7)
+- Teacher trained only on math problems
+- Applied to telecom troubleshooting (no telecom training)
+- Result: 24.0% pass@1 (vs 18.0% for GPT-4.1, Claude 3.7)
 
 **Mathematics → CRM (CRMArena-Pro):**
 - Same math-trained teacher
 - Applied to policy compliance tasks
 - Result: 54% task completion (vs ~35% for leading models)
+- Critical accuracy: 69.2% identifying policy violations
 
-The key insight: The Teacher learns problem decomposition and systematic reasoning from mathematics, skills that transfer universally to any domain requiring analytical thinking.
+→ Full methodology in [Technical Report](/reference/technical-report)
 
-## Theoretical Foundation: Cross-Domain Learning
-
-### The Revolutionary Insight
-
-Traditional approaches require massive datasets for every business domain - data that rarely exists. Our breakthrough is teaching an agent the foundational skill of reasoning itself using mathematics, where logic principles are clear and data is abundant, then transferring that skill to solve any business problem.
-
-This cross-domain learning addresses the fundamental constraint in enterprise AI: **the scarcity of high-quality, in-domain preference data for complex business tasks**.
-
-### Why Mathematics as the Foundation?
-
-Mathematics was chosen deliberately as the training domain because:
-- **Clear correctness**: Unlike business tasks, math has verifiable ground truth
-- **Abundant data**: Thousands of well-structured problems available
-- **Pure reasoning**: Requires systematic thinking, problem decomposition, and logical flow
-- **Complexity gradient**: From simple arithmetic to AIME-level competition problems
-
-Our Teacher model trained on ~7,000 math problems achieved **46% accuracy on AIME-25**, placing it at top-10 SOTA level and validating its deep reasoning capabilities.
-
-### The Cross-Domain Transfer Mechanism
-
-The magic happens when this math-trained reasoning transfers to business domains:
-
-1. **Fundamental Skills Transfer**: Problem decomposition, logical sequencing, and systematic thinking learned in math apply universally
-2. **Domain-Agnostic Reasoning**: The Teacher generates "thinking traces" - step-by-step reasoning guides that work regardless of domain
-3. **No Domain Fine-tuning Required**: The Student agent uses these traces without needing business-specific training
-
-### Empirical Proof of Transfer
-
-Our results demonstrate unprecedented cross-domain transfer:
-- **Math → CRM**: 54% task completion on CRMArena-Pro (vs ~35% for leading models)
-- **Math → Telecom**: 24% pass@1 on τ²-bench (vs 18% for GPT-4.1 and Claude)
-- **Critical Accuracy**: 69.2% accuracy identifying policy violations when present
-
-This proves that deep reasoning skills learned in mathematics create a universal problem-solving capability.
-
-### Compounding Intelligence
-
-The hybrid architecture enables "Compounding Intelligence" through:
-
-1. **Skill Accumulation**: Each task creates reusable knowledge
-2. **Transfer Learning**: Skills generalize to related problems
-3. **Continuous Improvement**: Performance increases with deployment
-
-## Implementation Guide
-
-### Setting Up Hybrid Training
+## Quick Start
 
 <Steps>
   <Step title="Offline Foundation">
-    Train or download pre-trained teacher models:
+    Download pre-trained teacher or train custom:
     ```bash
-    # Option 1: Use pre-trained
+    # Option 1: Pre-trained
     huggingface-cli download Arc-Intelligence/ATLAS-8B-Thinking
 
-    # Option 2: Train custom (minimum 2 GPUs)
+    # Option 2: Custom (2+ GPUs)
     scripts/launch.sh 2 configs/run/teacher_sft.yaml
     scripts/launch_with_server.sh 1 1 configs/run/teacher_rcl.yaml
     ```
   </Step>
 
   <Step title="Run GRPO on Exported Traces">
-    Launch the one-touch offline pipeline once the SDK has exported traces:
     ```bash
     python scripts/run_offline_pipeline.py \
       --export-path traces/runtime.jsonl \
-      --wandb-project atlas-production \
-      --wandb-run-name runtime-to-grpo
+      --wandb-project atlas-production
     ```
   </Step>
 
   <Step title="Deploy Enhanced Model">
-    Point the SDK runtime at the new teacher checkpoint and redeploy:
+    Point SDK at new checkpoint:
     ```yaml
-    # atlas-sdk runtime config excerpt
     teacher:
       llm:
         provider: huggingface
@@ -197,32 +122,20 @@ The hybrid architecture enables "Compounding Intelligence" through:
   </Step>
 </Steps>
 
-## Advantages Over Alternatives
-
-### vs. Pure Online Learning
-- **More stable**: Offline foundation prevents catastrophic forgetting
-- **More efficient**: Reuses learned skills across tasks
-- **More general**: Transfers to unseen domains
-
-### vs. Pure Offline Training
-- **More adaptive**: Quickly specializes for new tasks
-- **Lower cost**: Minimal compute for deployment
-- **Continuous improvement**: Learns from production data
-
 ## Next Steps
 
 <CardGroup cols="2">
   <Card title="Adaptive Dual-Agent Reasoning" icon="chalkboard-user" href="/concepts/adaptive-dual-agent-reasoning">
-    Understand the two-pass dual-agent mechanism
+    Two-pass dual-agent mechanism
   </Card>
-  <Card title="Online Learning" icon="layer-group" href="/training/online/continuous-learning">
-    Learn how skills accumulate over time
-  </Card>
-  <Card title="Offline Training" icon="flask" href="/training/offline/grpo-training">
-    Run your first hybrid training pipeline
+  <Card title="Offline Training Guide" icon="flask" href="/training/offline/grpo-training">
+    Run GRPO training pipeline
   </Card>
   <Card title="Training Configuration" icon="diagram-project" href="/training/configuration">
-    Explore Hydra composition and overrides
+    Hydra composition and overrides
+  </Card>
+  <Card title="SDK Runtime" icon="layer-group" href="/sdk/quickstart">
+    Export traces and manage runtime learning
   </Card>
 </CardGroup>
 
@@ -230,4 +143,4 @@ The hybrid architecture enables "Compounding Intelligence" through:
 
 - [ATLAS Technical Report](/reference/technical-report) - Sections 3.1-3.3 on hybrid architecture
 - [GRPO Algorithm](https://arxiv.org/abs/2402.03300) - Foundation for offline training
-- [SDK Runtime Guide](/sdk/quickstart) - Export traces and manage continual learning
+- [SDK Runtime Guide](/sdk/quickstart) - Export traces and continual learning
