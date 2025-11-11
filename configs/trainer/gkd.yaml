@@ -21,6 +21,9 @@ learning_key: null
 baseline_success: 0.0    # Override with actual baseline
 baseline_tokens: null    # Override with actual baseline
 
+align_teacher_template: true
+teacher_tokenizer_name_or_path: null
+
 # Teacher model configuration
 teacher_model_name_or_path: null  # Must be specified via override
 teacher_model_init_kwargs: null
@@ -146,3 +149,5 @@ trainer:
   baseline_tokens: ${baseline_tokens}
   processing_class: null  # Will be set by train.py
   peft_config: ${peft_config}
+  align_teacher_template: ${align_teacher_template}
+  teacher_tokenizer_name_or_path: ${teacher_tokenizer_name_or_path}

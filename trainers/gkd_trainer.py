@@ -8,7 +8,8 @@ baseline comparison metrics tracking for evaluating distillation quality.
 from __future__ import annotations
 
 import logging
-from typing import Optional, Sequence
+from typing import Optional, Sequence, List
+import torch
 
 from datasets import Dataset
 from transformers import (
@@ -27,6 +28,31 @@ except ImportError as exc:  # pragma: no cover
     ) from exc
 
 from trainers.gkd_evaluator import BaselineMetricsCallback
+from trl.trainer.utils import DataCollatorForChatML, empty_cache
+
+
+class AlignedChatCollator:
+    """Wrap TRL's ChatML collator and add optional teacher-tokenizer batching."""
+
+    def __init__(
+        self,
+        student_collator: DataCollatorForChatML,
+        teacher_collator: Optional[DataCollatorForChatML] = None,
+    ) -> None:
+        self.student_collator = student_collator
+        self.teacher_collator = teacher_collator
+
+    def __call__(self, examples: List[dict]) -> dict:
+        batch = self.student_collator(examples)
+        if self.teacher_collator is not None:
+            teacher_batch = self.teacher_collator(examples)
+            batch["teacher_input_ids"] = teacher_batch["input_ids"]
+            batch["teacher_attention_mask"] = teacher_batch["attention_mask"]
+            batch["teacher_prompts"] = teacher_batch["prompts"]
+            batch["teacher_prompt_attention_mask"] = teacher_batch["prompt_attention_mask"]
+        batch["prompt_text"] = [example.get("prompt_text", "") for example in examples]
+        batch["completion_text"] = [example.get("completion_text", "") for example in examples]
+        return batch
 
 logger = logging.getLogger(__name__)
 
@@ -96,6 +122,8 @@ class AtlasGKDTrainer(GKDTrainer):
         processing_class: Optional[PreTrainedTokenizerBase] = None,
         train_dataset: Optional[Dataset] = None,
         eval_dataset: Optional[Dataset] = None,
+        align_teacher_template: bool = True,
+        teacher_tokenizer_name_or_path: Optional[str] = None,
         **kwargs,
     ):
         """Initialize AtlasGKDTrainer with support for Postgres or pre-loaded datasets."""
@@ -170,11 +198,95 @@ class AtlasGKDTrainer(GKDTrainer):
             **kwargs,
         )
 
+        self.align_teacher_template = align_teacher_template
+        self.teacher_tokenizer_name_or_path = teacher_tokenizer_name_or_path
+
+        student_collator = self.data_collator
+        teacher_collator = None
+
+        if align_teacher_template:
+            tokenizer_ref = teacher_tokenizer_name_or_path
+            if tokenizer_ref is None and hasattr(args, "teacher_model_name_or_path"):
+                tokenizer_ref = args.teacher_model_name_or_path
+            if tokenizer_ref is None and hasattr(teacher_model, "name_or_path"):
+                tokenizer_ref = teacher_model.name_or_path
+            if tokenizer_ref is None:
+                raise ValueError(
+                    "Unable to infer teacher tokenizer path. "
+                    "Set `teacher_tokenizer_name_or_path` or provide `trainer_args.teacher_model_name_or_path`."
+                )
+            teacher_tokenizer = AutoTokenizer.from_pretrained(tokenizer_ref)
+            if teacher_tokenizer.pad_token is None:
+                if teacher_tokenizer.eos_token is not None:
+                    teacher_tokenizer.pad_token = teacher_tokenizer.eos_token
+                else:
+                    teacher_tokenizer.add_special_tokens({"pad_token": "[PAD]"})
+            teacher_collator = DataCollatorForChatML(
+                tokenizer=teacher_tokenizer,
+                max_length=args.max_length if hasattr(args, "max_length") else None,
+            )
+
+        self.data_collator = AlignedChatCollator(student_collator, teacher_collator)
+
         logger.info(
             "AtlasGKDTrainer initialized with lmbda=%.1f (on-policy fraction), beta=%.1f (KL balance)",
             args.lmbda if hasattr(args, "lmbda") else 1.0,
             args.beta if hasattr(args, "beta") else 0.5,
         )
+
+    @staticmethod
+    def _pad_or_trim_logits(logits: torch.Tensor, target_len: int) -> tuple[torch.Tensor, int]:
+        """Ensure logits match the target length by trimming or padding."""
+        seq_len = logits.size(1)
+        if seq_len == target_len:
+            return logits, seq_len
+        if seq_len > target_len:
+            return logits[:, :target_len, :], target_len
+        pad = logits.new_zeros((logits.size(0), target_len - seq_len, logits.size(2)))
+        return torch.cat((logits, pad), dim=1), seq_len
+
+    def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
+        if not self.align_teacher_template or "teacher_input_ids" not in inputs:
+            return super().compute_loss(model, inputs, return_outputs, num_items_in_batch)
+
+        outputs_student = model(
+            input_ids=inputs["input_ids"],
+            attention_mask=inputs["attention_mask"],
+        )
+
+        self.teacher_model.eval()
+        with torch.no_grad():
+            outputs_teacher = self.teacher_model(
+                input_ids=inputs["teacher_input_ids"],
+                attention_mask=inputs["teacher_attention_mask"],
+            )
+
+        student_prompt_len = inputs["prompts"].shape[1]
+        teacher_prompt_len = inputs["teacher_prompts"].shape[1]
+
+        student_logits = outputs_student.logits[:, student_prompt_len - 1 : -1, :]
+        teacher_logits = outputs_teacher.logits[:, teacher_prompt_len - 1 : -1, :]
+
+        labels = inputs["labels"][:, student_prompt_len:]
+        target_len = labels.shape[1]
+
+        student_logits, _ = self._pad_or_trim_logits(student_logits, target_len)
+        teacher_logits, teacher_effective_len = self._pad_or_trim_logits(teacher_logits, target_len)
+
+        if teacher_effective_len < target_len:
+            labels = labels.clone()
+            labels[:, teacher_effective_len:] = -100
+
+        loss = self.generalized_jsd_loss(
+            student_logits=student_logits,
+            teacher_logits=teacher_logits,
+            labels=labels,
+            beta=self.beta,
+        )
+
+        empty_cache()
+
+        return (loss, outputs_student) if return_outputs else loss
 
     @staticmethod
     def _validate_chat_dataset(dataset: Optional[Dataset], name: str) -> None:

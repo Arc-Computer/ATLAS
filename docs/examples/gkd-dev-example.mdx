@@ -40,6 +40,7 @@ CUDA_VISIBLE_DEVICES=0 \
 python scripts/validate_gkd.py \
   --student Qwen/Qwen2.5-7B-Instruct \
   --teacher Qwen/Qwen2.5-14B-Instruct \
+  --teacher-tokenizer Qwen/Qwen2.5-14B-Instruct \
   --dataset-name gsm8k \
   --dataset-config main \
   --dataset-train-split train \
@@ -61,6 +62,8 @@ python scripts/validate_gkd.py \
 ```
 
 Set `--dataset-name` / `--dataset-config` to any Hugging Face dataset that contains math or reasoning conversations; the script formats it into the same chat schema the trainer expects. For your own traces, skip the HF flags and let the trainer load from Postgres via `ATLAS_DB_URL`.
+
+> **Cross-tokenizer tip:** The script aligns teacher logprobs with the teacher’s chat template automatically. Override the tokenizer path with `--teacher-tokenizer` when it differs from `--teacher`, or disable the behavior entirely with `--no-align-teacher-template` if both models share the same tokenizer and you want to reproduce legacy runs.
 
 ## Interpret `math_validation_metrics.json`
 

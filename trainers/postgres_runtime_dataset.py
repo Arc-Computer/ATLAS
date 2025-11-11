@@ -227,6 +227,19 @@ def session_to_conversation(
     if drop_empty and len(messages) <= (1 if include_system_message else 0):
         return None
 
+    prompt_messages = messages[:-1] if len(messages) > 1 else messages[:]
+    completion_message = messages[-1] if messages else None
+
+    def _serialize_messages(items: List[dict[str, str]]) -> str:
+        serialized: List[str] = []
+        for item in items:
+            role = item.get("role", "").strip()
+            content = item.get("content", "").strip()
+            if not content:
+                continue
+            serialized.append(f"{role}: {content}" if role else content)
+        return "\n".join(serialized)
+
     session_metadata = getattr(session, "session_metadata", {}) or {}
     session_id = session_metadata.get("session_id") or session_metadata.get("id")
     if session_id is None:
@@ -241,6 +254,8 @@ def session_to_conversation(
         "session_id": session_id,
         "learning_key": session_metadata.get("learning_key"),
         "reward": reward,
+        "prompt_text": _serialize_messages(prompt_messages),
+        "completion_text": completion_message.get("content", "").strip() if completion_message else "",
     }
 
     # Preserve lightweight metadata for filtering without embedding raw session dict.

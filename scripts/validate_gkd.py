@@ -167,6 +167,16 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Optional cap on total dataset records before splitting.",
     )
+    parser.add_argument(
+        "--teacher-tokenizer",
+        default=None,
+        help="Optional tokenizer identifier/path for aligning teacher templates.",
+    )
+    parser.add_argument(
+        "--no-align-teacher-template",
+        action="store_true",
+        help="Disable teacher-template alignment for cross-tokenizer runs.",
+    )
     return parser.parse_args()
 
 
@@ -281,6 +291,8 @@ def main() -> None:
         processing_class=tokenizer,
         train_dataset=train_dataset,
         eval_dataset=eval_dataset,
+        align_teacher_template=not args.no_align_teacher_template,
+        teacher_tokenizer_name_or_path=args.teacher_tokenizer,
     )
 
     train_start = time.perf_counter()
