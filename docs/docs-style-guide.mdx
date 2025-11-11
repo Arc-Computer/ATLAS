@@ -1,0 +1,73 @@
+---
+title: "Atlas Docs Style Guide"
+description: "Writing principles for Atlas engineering documentation"
+---
+
+## Purpose
+
+This guide establishes shared conventions for Atlas documentation. Our audience is staff-level ML engineers who need concise, high-signal references for training, runtime, and deployment workflows. The goals:
+
+- Deliver answers faster than a thoughtful teammate would.
+- Keep terminology and narrative consistent across the blog, SDK docs, and Atlas Core guides.
+- Apply the [Diátaxis](https://diataxis.fr/) framework so every page has a clear job (learn, solve, build, reference).
+
+## Core Principles
+
+1. **Audience first** – assume the reader ships ML systems professionally. They want runnable commands, switch points, constraints, and links to code—not marketing prose.
+2. **Information scent** – every section should answer a question the reader would actually type into search (e.g., "How do I export traces?", "When do I pick GKD vs GRPO?").
+3. **One job per page** – identify whether the content is tutorial, how-to, explanation, or reference (Diátaxis). Do not mix more than two modes on a single page.
+4. **Narrative parity** – the blog, quickstarts, and detailed guides must tell the same story. If a blog introduces "two gears" for GKD, the training docs must reuse that language.
+5. **Show > tell** – lead with commands, YAML snippets, or tables; follow with short explanations. Use callouts for heuristics instead of embedding them in dense paragraphs.
+
+## Diátaxis Mapping for Atlas
+
+| Content Type | Atlas Example | Approach |
+| --- | --- | --- |
+| Tutorial (learning-oriented) | `docs/examples/gkd-dev-example.mdx` | Step-by-step narrative with checkpoints and expected outputs. Avoid branching paths. |
+| How-to (task-oriented) | `docs/training/offline/gkd-training.mdx` | Checklist of prerequisites → command → verification. Assume prior knowledge. |
+| Explanation (conceptual) | `docs/concepts/reward-design.mdx` | Provide background, diagrams, and trade-offs. No commands. |
+| Reference (lookup) | `docs/reference/datasets.mdx` | Tables, field definitions, API signatures. Zero narrative. |
+
+When drafting or editing, state the intended type at the top of the MR/PR to make review easier.
+
+## Structural Guidelines
+
+### Page Headers
+- Start with a 2–3 sentence summary that answers "Why should I read this?".
+- Follow with a bulleted "You will learn" list or prerequisites when relevant.
+
+### Sections
+- Use verbs in headings ("Export traces", "Launch GKD", "Monitor metrics") rather than nouns.
+- Keep paragraphs ≤3 sentences. Break long explanations into definition lists or callouts.
+- Prefer tables for comparisons (e.g., GKD vs GRPO, diagnostic vs reliability runs).
+
+### Visual Elements
+- Use shared components (`<Figure>`, `<Callout>`, `<Tabs>`) instead of raw `<div>` tags so spacing stays consistent across themes.
+- Captions should explain *what to notice*, not restate the figure title.
+
+### Code & Commands
+- Lead with runnable commands. Immediately below, list the important flags and when to tweak them.
+- For Hydra overrides, show both CLI and config-file variants using tabs.
+- Include sample output or `math_validation_metrics.json` excerpts to validate success.
+
+### Linking & Cross-Referencing
+- Link to the canonical concept once; avoid redefining architecture terms on every page.
+- When duplicating content across blog/docs, track the source in the PR description and keep terminology synchronized.
+
+## Tone & Voice
+
+- Write like a senior engineer coaching a peer—direct, specific, and assumption-light.
+- Eliminate filler adjectives. Prefer "Run the diagnostic gear (500 steps, 12h)" over "We have already queued a follow-up distillation run...".
+- Use our own terminology consistently ("gear", "baseline comparison", "reward-weighted") and define it once.
+
+## Review Checklist
+
+Before merging a docs change:
+
+1. Identify the Diátaxis category and verify the structure matches it.
+2. Confirm every section answers a concrete question.
+3. Ensure commands are current (copy from scripts/ or configs) and include verification steps.
+4. Replace long paragraphs with tables, callouts, or bullet lists where possible.
+5. Check cross-page consistency (terminology, command syntax, dataset names).
+
+Adhering to this guide will keep Atlas documentation concise, purposeful, and aligned with the expectations of staff ML engineers who rely on it daily.
