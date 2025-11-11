@@ -28,9 +28,13 @@ Discovers Atlas-compatible agents and environments, populates `.atlas/`, and opt
 - **Sample task** – `--task "Investigate production incident"` seeds discovery telemetry and generated prompts.
 - **Factories** – pass explicit constructor callables with `--env-fn module:callable` / `--agent-fn module:callable`.
 - **Runtime args** – supply per-factory keyword args via `--env-arg key=value` (repeatable) or `--env-config config.yaml`.
-- **Config scaffolding** – `--scaffold-config-full` merges discovery metadata into the OpenAI template to produce a runnable orchestrator config (mirrors PR #75).
+- **Config scaffolding** – `--scaffold-config-full` merges discovery metadata into the litellm template to produce a runnable orchestrator config (mirrors PR #75).
 - **Execution control** – `--no-run` performs static analysis only; `--validate` forces a full run even if diagnostics recommend skipping; `--timeout` (default 240 s) bounds discovery.
 - **Environment** – `--env KEY=value` injects secrets for discovery; the CLI also auto-loads `.env` and adjusts `PYTHONPATH`.
+
+<Note>
+Example configs in the SDK use `type: litellm` as the recommended adapter. If you have legacy configs using `type: openai`, migrate to `type: litellm` to avoid deprecation warnings. See the [Adapter documentation](/sdk/adapters) for migration guidance.
+</Note>
 
 Outputs are written under `.atlas/`:
 

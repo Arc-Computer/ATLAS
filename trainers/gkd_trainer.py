@@ -1,7 +1,7 @@
-"""GKD trainer wrapper for Atlas runtime trace distillation.
+"""GKD trainer for Atlas runtime trace distillation.
 
-This module provides AtlasGKDTrainer, a minimal wrapper around TRL's GKDTrainer
-that integrates with Atlas' Postgres-backed dataset infrastructure and adds
+This module provides AtlasGKDTrainer for on-policy knowledge distillation,
+integrating with Atlas' Postgres-backed dataset infrastructure and adding
 baseline comparison metrics tracking for evaluating distillation quality.
 """
 
@@ -32,7 +32,7 @@ from trl.trainer.utils import DataCollatorForChatML, empty_cache
 
 
 class AlignedChatCollator:
-    """Wrap TRL's ChatML collator and add optional teacher-tokenizer batching."""
+    """Data collator for chat-style conversations with optional teacher-tokenizer batching."""
 
     def __init__(
         self,
@@ -59,9 +59,9 @@ logger = logging.getLogger(__name__)
 
 class AtlasGKDTrainer(GKDTrainer):
     """
-    Atlas-specific wrapper around TRL's GKDTrainer for on-policy distillation.
+    Atlas GKD trainer for on-policy knowledge distillation.
 
-    This trainer extends TRL's GKDTrainer with:
+    This trainer provides:
     - Direct Postgres dataset loading via build_gkd_dataset()
     - baseline comparison metrics callback for tracking distillation quality
     - Configurable teacher model loading (local, API, or Atlas teacher)

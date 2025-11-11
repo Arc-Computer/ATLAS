@@ -5,7 +5,7 @@ sidebarTitle: Configuration
 icon: sliders
 ---
 
-Atlas SDK configs are the control tower for runtime orchestration. Every key is validated by a Pydantic schema (`atlas-sdk/atlas/config/models.py`), so mistakes surface before the adaptive dual-agent reasoning loop—your agent paired with a verifying teacher—spins up. Atlas uses [LiteLLM](https://github.com/BerriAI/litellm) as its backend, making the system model-agnostic and compatible with 100+ LLM providers including OpenAI, Anthropic, local models (Ollama, vLLM), and custom endpoints.
+Atlas SDK configs are the control tower for runtime orchestration. Every key is validated by a Pydantic schema (`atlas-sdk/atlas/config/models.py`), so mistakes surface before the adaptive dual-agent reasoning loop—your agent paired with a verifying teacher—spins up. Atlas uses [LiteLLM](https://github.com/BerriAI/litellm) as its primary adapter backend, making the system model-agnostic and compatible with 100+ LLM providers including OpenAI, Anthropic Claude, Google Gemini, XAI Grok, Azure OpenAI, AWS Bedrock, local models (Ollama, vLLM), and custom endpoints.
 
 <Note>
 This page is a configuration reference. For adapter walkthroughs and orchestration concepts, see [`Bring Your Own Agent`](/sdk/adapters) and [`How Orchestration Works`](/sdk/orchestration).
@@ -19,7 +19,7 @@ Keep `atlas.core.run(..., stream_progress=True)` enabled while tuning configs—
 
 | Field | Type / Default | Required? | Why it matters |
 | --- | --- | --- | --- |
-| `agent` | Adapter union (`http_api` \| `python` \| `openai`) | Yes | Connects the orchestrator to your underlying agent transport. |
+| `agent` | Adapter union (`litellm` \| `http_api` \| `python` \| `openai`) | Yes | Connects the orchestrator to your underlying agent transport. Use `litellm` for all new projects. |
 | `teacher` | `TeacherConfig` | Yes | Defines the verifying teacher persona, LLM, and feedback limits. |
 | `rim` | `RIMConfig` | Yes | Configures the [`RIM`](/reference/glossary#rim-reward-integration-module) ensemble that drives retries and adaptive feedback. |
 | `student` | `StudentConfig` (token caps default to `2048`) | No | Controls your agent’s (student) prompts, tool usage, and token budgets. |
@@ -36,7 +36,7 @@ This block wires the orchestrator to your agent. The schema is defined by `Adapt
 
 | Parameter | Type / Default | Required? | Why adjust |
 | --- | --- | --- | --- |
-| `type` | Enum: `http_api`, `python`, `openai` | Yes | Selects which adapter subclass will validate the rest of the block. |
+| `type` | Enum: `litellm`, `http_api`, `python`, `openai` | Yes | Selects which adapter subclass will validate the rest of the block. Use `litellm` for new projects. |
 | `name` | `str` | Yes | Appears in telemetry and logs; use a descriptive identifier per deployment. |
 | `system_prompt` | `str` | Yes | Baseline persona text passed to your agent (the student). |
 | `tools` | `List[ToolDefinition]` (default `[]`) | No | Register JSON-schema tool signatures; validation ensures required keys exist. |
@@ -63,41 +63,122 @@ This block wires the orchestrator to your agent. The schema is defined by `Adapt
 | `allow_generator` | `bool` (default `false`) | No | Enable when the callable yields streaming results. |
 | `llm` | `LLMParameters \| null` | No | Supply metadata when the callable proxies an LLM (e.g., for telemetry). |
 
-### OpenAI adapter (`type: openai`)
+### LiteLLM adapter (`type: litellm`)
 
 | Parameter | Type / Default | Required? | Why adjust |
 | --- | --- | --- | --- |
-| `llm.provider` | `'openai'` or `'azure-openai'` | Yes | Adapter enforces OpenAI-compatible providers. |
+| `llm.provider` | `str` | Yes | Choose from 100+ providers: `openai`, `anthropic`, `gemini`, `xai`, `azure-openai`, `bedrock`, etc. |
 | `llm.model` | `str` | Yes | Choose the underlying chat model. |
-| `llm.api_key_env` | `str` (default `"OPENAI_API_KEY"`) | No | Point to a different environment variable. |
-| `llm.api_base` | `str \| null` | No | Override the base URL for local models (e.g., `http://localhost:11434` for Ollama) or custom endpoints. |
-| `llm.temperature` | `float` (default `0.0`, range `0..2`) | No | Increase for more exploratory generations. |
+| `llm.api_key_env` | `str` | Yes | Environment variable containing the API key. |
+| `llm.api_base` | `str \| null` | No | Override the base URL for local models or custom endpoints. |
+| `llm.temperature` | `float` (default `0.0`, range `0..2`) | Yes | Increase for more exploratory generations. |
 | `llm.top_p` | `float \| null` | No | Apply nucleus sampling if desired. |
-| `llm.max_output_tokens` | `int \| null` | No | Cap response length. |
+| `llm.max_output_tokens` | `int` | Yes | Cap response length. |
 | `llm.timeout_seconds` | `float` (default `60.0`) | No | Widen for long-running completions. |
 | `llm.retry.attempts` | `int` (default `1`, bounded `1..5`) | No | Increase for transient API failures. |
 | `response_format` | `Dict[str, Any] \| null` | No | Request JSON schema enforcement when the provider supports it. |
 
-Example (from `atlas-sdk/configs/examples/openai_agent.yaml`):
+<Tip>
+**Using local models:** The litellm adapter makes local model integration seamless.
 
+**Ollama:**
 ```yaml
 agent:
-  type: openai
-  name: example-openai-agent
-  system_prompt: |
-    You are an OpenAI model acting as the Atlas Student. Follow instructions carefully and respond with JSON when asked.
-  tools: []
+  type: litellm
   llm:
-    provider: openai
-    model: gpt-5-mini
-    api_key_env: OPENAI_API_KEY
+    provider: openai  # Ollama is OpenAI-compatible
+    model: llama3.1
+    api_base: http://localhost:11434
+    api_key_env: DUMMY  # Ollama doesn't need auth
     temperature: 0.2
     max_output_tokens: 2048
 ```
 
-<Tip>
-**Using local models:** Set `api_base` to point to your local inference server. For Ollama: `api_base: http://localhost:11434`, `provider: openai`, `model: ollama/llama3.1` (LiteLLM uses the `ollama/` prefix). For vLLM or other OpenAI-compatible servers, use the same pattern with your server's URL. Note: Some Ollama features may also require setting the `OLLAMA_API_BASE` environment variable.
+**vLLM:**
+```yaml
+agent:
+  type: litellm
+  llm:
+    provider: openai
+    model: meta-llama/Llama-3.1-8B-Instruct
+    api_base: http://localhost:8000/v1
+    api_key_env: DUMMY
+    temperature: 0.2
+    max_output_tokens: 2048
+```
+
+Both Ollama and vLLM are OpenAI-compatible, so use `provider: openai` with the correct `api_base`.
 </Tip>
+
+### Provider Examples
+
+<Accordion title="OpenAI">
+```yaml
+llm:
+  provider: openai
+  model: gpt-4o-mini
+  api_key_env: OPENAI_API_KEY
+  temperature: 0.2
+  max_output_tokens: 2048
+```
+</Accordion>
+
+<Accordion title="Anthropic Claude">
+```yaml
+llm:
+  provider: anthropic
+  model: claude-sonnet-4-5
+  api_key_env: ANTHROPIC_API_KEY
+  temperature: 0.2
+  max_output_tokens: 2048
+```
+</Accordion>
+
+<Accordion title="Google Gemini">
+```yaml
+llm:
+  provider: gemini
+  model: gemini/gemini-2.5-flash
+  api_key_env: GEMINI_API_KEY
+  temperature: 0.2
+  max_output_tokens: 2048
+```
+</Accordion>
+
+<Accordion title="XAI Grok">
+```yaml
+llm:
+  provider: xai
+  model: xai/grok-4-fast
+  api_key_env: XAI_API_KEY
+  temperature: 0.2
+  max_output_tokens: 2048
+```
+</Accordion>
+
+<Accordion title="Azure OpenAI">
+```yaml
+llm:
+  provider: azure-openai
+  model: gpt-4o-mini
+  api_key_env: AZURE_OPENAI_API_KEY
+  api_base: https://your-resource.openai.azure.com
+  temperature: 0.2
+  max_output_tokens: 2048
+```
+</Accordion>
+
+<Accordion title="AWS Bedrock">
+```yaml
+llm:
+  provider: bedrock
+  model: anthropic.claude-3-5-sonnet-20241022-v2:0
+  api_key_env: AWS_ACCESS_KEY_ID
+  # Also requires AWS_SECRET_ACCESS_KEY and AWS_REGION
+  temperature: 0.2
+  max_output_tokens: 2048
+```
+</Accordion>
 
 ## Student Block (`student`)
 
@@ -305,7 +386,8 @@ Legacy configs may still include a `prompt_rewrite` block, but the runtime now r
 
 | Goal | Section to edit | Pointer |
 | --- | --- | --- |
-| Swap to Anthropic or Gemini | `agent` | Use the `http_api` adapter and supply the matching transport payload. |
+| Swap to Anthropic or Gemini | `agent` | Use `type: litellm` with `provider: anthropic` or `provider: gemini`. |
+| Use local models (Ollama/vLLM) | `agent` | Use `type: litellm`, `provider: openai`, and set `api_base` to your local server. |
 | Tighten or loosen retries | `orchestration` + `rim` | Adjust `max_retries`, `variance_threshold`, and `uncertainty_threshold`. |
 | Persist adaptive memories | `storage` | Add a Postgres URL or run `atlas init`. |
 | Force a supervision lane | `adaptive_teaching` | Set `mode_override` to `auto`, `paired`, or `coach`. |
@@ -316,27 +398,26 @@ Legacy configs may still include a `prompt_rewrite` block, but the runtime now r
 
 ## Validated Example (Quickstart)
 
-This minimal config (from `atlas-sdk/configs/examples/openai_agent.yaml`) matches the ready-to-run OpenAI example in the SDK repository:
+This minimal config demonstrates the recommended litellm adapter with OpenAI models:
 
 ```yaml
 agent:
-  type: openai
-  name: example-openai-agent
+  type: litellm
+  name: example-litellm-agent
   system_prompt: |
-    You are an OpenAI model acting as the Atlas Student. Follow instructions carefully and respond with JSON when asked.
+    You are an AI model acting as the Atlas Student. Follow instructions carefully and respond with JSON when asked.
   tools: []
   llm:
     provider: openai
-    model: gpt-5-mini
+    model: gpt-4o-mini
     api_key_env: OPENAI_API_KEY
     temperature: 0.2
     max_output_tokens: 2048
-  response_format: null
 
 teacher:
   llm:
     provider: openai
-    model: gpt-5-mini
+    model: gpt-4o-mini
     api_key_env: OPENAI_API_KEY
     temperature: 0.1
     max_output_tokens: 2048
@@ -362,6 +443,10 @@ storage:
   max_connections: 5
   statement_timeout_seconds: 30
 ```
+
+<Note>
+**Legacy configs:** If you have existing configs using `type: openai`, they will continue to work but emit deprecation warnings. Migrate to `type: litellm` at your convenience.
+</Note>
 
 ## Parameter Index (Alphabetical)
 
