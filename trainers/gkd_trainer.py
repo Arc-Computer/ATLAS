@@ -228,6 +228,12 @@ class AtlasGKDTrainer(GKDTrainer):
 
         self.data_collator = AlignedChatCollator(student_collator, teacher_collator)
 
+        logger.info(
+            "AtlasGKDTrainer initialized with lmbda=%.1f (on-policy fraction), beta=%.1f (KL balance)",
+            args.lmbda if hasattr(args, "lmbda") else 1.0,
+            args.beta if hasattr(args, "beta") else 0.5,
+        )
+
     @staticmethod
     def _pad_or_trim_logits(logits: torch.Tensor, target_len: int) -> tuple[torch.Tensor, int]:
         """Ensure logits match the target length by trimming or padding."""
@@ -281,12 +287,6 @@ class AtlasGKDTrainer(GKDTrainer):
         empty_cache()
 
         return (loss, outputs_student) if return_outputs else loss
-
-        logger.info(
-            "AtlasGKDTrainer initialized with lmbda=%.1f (on-policy fraction), beta=%.1f (KL balance)",
-            args.lmbda if hasattr(args, "lmbda") else 1.0,
-            args.beta if hasattr(args, "beta") else 0.5,
-        )
 
     @staticmethod
     def _validate_chat_dataset(dataset: Optional[Dataset], name: str) -> None:
