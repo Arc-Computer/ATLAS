@@ -1,0 +1,21 @@
+# GSM8K dataset configuration for GKD training
+# Uses existing build_gsm8k_gkd_dataset from trainers.gsm8k_dataset
+
+dataset_name: gsm8k
+subset: main
+train_split: train
+eval_split: test
+train_ratio: 0.9
+seed: 42
+dataset_max_samples: 8792  # Total dataset size
+
+make_dataset_fn:
+  _target_: trainers.gsm8k_dataset.build_gsm8k_gkd_dataset
+  dataset_name: ${dataset_name}
+  subset: ${subset}
+  train_split: ${train_split}
+  eval_split: ${eval_split}
+  train_ratio: ${train_ratio}
+  seed: ${seed}
+  dataset_max_samples: ${dataset_max_samples}
+
