@@ -32,7 +32,7 @@ accelerate launch \
   --config_file "$TEMP_CONFIG" \
   train.py \
   --config-name run/teacher_gkd \
-  data@_global_=gsm8k_gkd \
+  +data@_global_=gsm8k_gkd \
   trainer.temperature=0.6 \
   trainer.max_steps=2500 \
   trainer.learning_rate=3e-6 \
