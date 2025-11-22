@@ -1,0 +1,28 @@
+# GSM8K dataset configuration for Generalized Knowledge Distillation (GKD)
+#
+# Dataset: GSM8K (Grade School Math 8K problems)
+# Source: https://huggingface.co/datasets/gsm8k
+# Total samples: 8,792 (full training set)
+# Train/Eval split: 90/10 (7,913 train / 879 eval)
+#
+# This configuration uses the build_gsm8k_gkd_dataset function from
+# trainers.gsm8k_dataset which formats the data for on-policy distillation.
+
+dataset_name: gsm8k
+subset: main
+train_split: train
+eval_split: test
+train_ratio: 0.9
+seed: 42
+dataset_max_samples: 8792  # Full GSM8K training dataset
+
+make_dataset_fn:
+  _target_: trainers.gsm8k_dataset.build_gsm8k_gkd_dataset
+  dataset_name: ${dataset_name}
+  subset: ${subset}
+  train_split: ${train_split}
+  eval_split: ${eval_split}
+  train_ratio: ${train_ratio}
+  seed: ${seed}
+  dataset_max_samples: ${dataset_max_samples}
+

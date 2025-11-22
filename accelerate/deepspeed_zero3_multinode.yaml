@@ -1,0 +1,31 @@
+# Multi-node DeepSpeed ZeRO-3 configuration
+# This config is dynamically updated by the launch script with runtime values:
+# - machine_rank: Set via script argument (0 for master, 1+ for workers)
+# - main_process_ip: Set via MASTER_ADDR environment variable
+# - main_process_port: Set via MASTER_PORT environment variable (default: 29500)
+
+compute_environment: LOCAL_MACHINE
+debug: false
+deepspeed_config:
+  deepspeed_multinode_launcher: standard
+  offload_optimizer_device: none
+  offload_param_device: none
+  zero3_init_flag: true
+  zero3_save_16bit_model: true
+  zero_stage: 3
+distributed_type: DEEPSPEED
+downcast_bf16: "no"
+machine_rank: 0  # Override via launch script
+main_process_ip: null  # Set to master node IP address
+main_process_port: 29500
+main_training_function: main
+mixed_precision: bf16
+num_machines: 2
+num_processes: 2  # Total processes across all nodes
+rdzv_backend: static
+same_network: true
+tpu_env: []
+tpu_use_cluster: false
+tpu_use_sudo: false
+use_cpu: false
+
