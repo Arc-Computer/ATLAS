@@ -125,7 +125,7 @@ docker run --rm -d \
   $VOLUMES \
   -w /workspace \
   $ENV_ARGS \
-  nvcr.io/nvidia/pytorch:25.09-py3 \
+  nvcr.io/nvidia/pytorch:25.10-py3 \
   bash -c "pip install -q accelerate deepspeed transformers datasets hydra-core wandb && bash scripts/launch_multinode_gkd.sh $NODE_RANK"
 
 echo ""
