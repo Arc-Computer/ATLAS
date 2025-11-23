@@ -52,7 +52,7 @@ docker run --rm -d --name $CONTAINER_NAME --gpus all --ipc=host \
   $VOLUMES \
   -w /workspace -e PYTHONPATH=/workspace $ENV_ARGS \
   nvcr.io/nvidia/pytorch:25.09-py3 \
-  bash -c "${PRE_CMD}pip install -q accelerate deepspeed transformers datasets hydra-core wandb && bash scripts/launch_gear2_multinode.sh $NODE_RANK"
+  bash -c "${PRE_CMD}pip install -q accelerate deepspeed transformers datasets hydra-core wandb trl && bash scripts/launch_gear2_multinode.sh $NODE_RANK"
 
 echo "Container $CONTAINER_NAME started"
 echo "Monitor logs: docker logs -f $CONTAINER_NAME"
