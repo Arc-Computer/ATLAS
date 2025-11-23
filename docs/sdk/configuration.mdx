@@ -236,7 +236,7 @@ Controls the runtime synthesizer that generates and applies student/teacher play
 | `history_limit` | `int` (default `10`) | No | Cap historical sessions fed into each update. |
 | `session_note_enabled` | `bool` (default `true`) | No | Persist per-session learning notes alongside the registry. |
 | `apply_to_prompts` | `bool` (default `true`) | No | Toggle playbook injection into persona prompts and validation payloads. |
-| `playbook_injection_mode` | `"prefix"` or `"suffix"` (default `"prefix"`) | No | Inject playbook before (`prefix`) or after (`suffix`) system prompt. Suffix mode enables KV cache reuse. |
+| `injection_mode` | `"prefix"` or `"suffix"` (default `"prefix"`) | No | Inject playbook before (`prefix`) or after (`suffix`) system prompt. Suffix mode enables KV cache reuse. |
 | `inject_few_shot_examples` | `bool` (default `false`) | No | Append captured examples to playbook entries for in-context learning. |
 
 Pair this section with [`Learning System Architecture`](/sdk/learning-system) for deeper context.
