@@ -1,6 +1,8 @@
 # GSM8K dataset configuration for GKD training
 # Uses existing build_gsm8k_gkd_dataset from trainers.gsm8k_dataset
 
+data_log_name: gsm8k_gkd
+
 dataset_name: gsm8k
 subset: main
 train_split: train
