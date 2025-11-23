@@ -31,13 +31,12 @@ python -m pip install --upgrade arc-atlas
 
 Set your API keys (see [Installation](/installation) for details):
 ```bash
-export OPENAI_API_KEY="sk-your-key"
-export GEMINI_API_KEY="your-gemini-key"
-export XAI_API_KEY="your-xai-key"  # Optional
+export ANTHROPIC_API_KEY="sk-ant-your-key"
+export GEMINI_API_KEY="your-gemini-key"  # Optional for rewards
 ```
 
 <Note>
-Store credentials in `.env` to avoid shell history exposure. The default config uses OpenAI for student/teacher, Gemini for rewards, and xAI for capability probing. See [Configuration](/sdk/configuration) for alternatives.
+Store credentials in `.env` to avoid shell history exposure. Atlas defaults to Anthropic (Claude Haiku 4.5 for student, Claude Sonnet 4.5 for teacher) with Gemini for rewards. See [Configuration](/sdk/configuration) for alternatives.
 </Note>
 
 ## Step 1 – Run the Quickstart Task
@@ -61,13 +60,14 @@ atlas env init --task "Summarize the latest AI news"
 atlas run --config .atlas/generated_config.yaml --task "Summarize the latest AI news"
 ```
 
-- `atlas env init` scans for `@atlas.environment` / `@atlas.agent` decorators or factory functions, loads `.env`, and writes `.atlas/discover.json`, `.atlas/generated_factories.py`, and `.atlas/generated_config.yaml`.
+- `atlas env init` scans for `@atlas.environment` / `@atlas.agent` decorators or factory functions, loads `.env`, writes `.atlas/discover.json`, `.atlas/generated_factories.py`, and `.atlas/generated_config.yaml`, and automatically sets up storage (integrating `atlas init` functionality).
 - **Agent Selection**: `atlas env init` uses Claude Haiku 4.5 (`claude-haiku-4-5-20251001`) as an LLM-powered agent selector to analyze your codebase and automatically detect the best agent integration points. This intelligent discovery helps bootstrap configuration for existing codebases.
+- **Learning Features**: Few-shot prompting and playbook injection are enabled by default, allowing the system to learn from past interactions immediately.
 - `atlas run --config` loads the generated config, verifies module hashes, streams telemetry into `.atlas/runs/`, and injects learning playbooks when available.
 - Need to exercise the full orchestrator? Point `atlas run --config configs/examples/sdk_quickstart.yaml --task "..."` at a config file to bypass discovery entirely.
 
 <Tip>
-**Customizing agent discovery**: Set `ATLAS_DISCOVERY_MODEL` to override the default Claude Haiku 4.5 model used for agent selection. Any Anthropic model is supported via the `ANTHROPIC_API_KEY` environment variable.
+**Customizing agent discovery**: Set `ATLAS_DISCOVERY_MODEL` to override the default Claude Haiku 4.5 model used for agent selection. Any Anthropic model is supported via the `ANTHROPIC_API_KEY` environment variable. Storage setup is now automatic—no need to run `atlas init` separately.
 </Tip>
 
 ### Option B – Python API (direct invocation)
@@ -128,8 +128,6 @@ Summary | execution_mode=stepwise | total_runtime=15.2s | judge_calls=1 | adapti
 ```
 
 The console streamer shows the plan, adaptive lane selection, step-by-step execution with validation status, teacher guidance when provided, and reward scores. `atlas.runtime.telemetry.ConsoleTelemetryStreamer` auto-enables when stdout is a TTY; override with `stream_progress=True/False`.
-
-Need a local Postgres instance? Run `atlas init` to scaffold and launch the Docker Postgres stack. Skip this step if you prefer ephemeral runs.
 
 <Info>
 **Want to see adaptive learning in action?** Check out the [Adaptive Tool Use example](/examples/adaptive-tool-use) showing a LangGraph agent learning efficient MCP tool usage across 25 tasks, demonstrating 30-40% reduction in tool calls.

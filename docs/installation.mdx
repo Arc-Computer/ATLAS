@@ -141,7 +141,7 @@ Prerequisites Check:
     ```
 
     <Tip>
-    Keep credentials such as `OPENAI_API_KEY` in a `.env` file and load them before orchestrating runs.
+    Keep credentials such as `ANTHROPIC_API_KEY` in a `.env` file and load them before orchestrating runs. Atlas defaults to Anthropic as the primary provider.
     </Tip>
 
     After the package installs, bootstrap your project with autodiscovery:
@@ -151,9 +151,7 @@ Prerequisites Check:
     atlas run --config .atlas/generated_config.yaml --task "Summarize the latest AI news"
     ```
 
-    The CLI writes `.atlas/discover.json`, optional factory scaffolds, and metadata snapshots while automatically loading
-    `.env` and extending `PYTHONPATH`. Re-run `atlas env init --scaffold-config-full` whenever you want a fresh runtime
-    configuration derived from discovery output.
+    The CLI writes `.atlas/discover.json`, optional factory scaffolds, and metadata snapshots while automatically loading `.env` and extending `PYTHONPATH`. `atlas env init` now handles storage setup automatically—no need to run `atlas init` separately. Re-run `atlas env init --scaffold-config-full` whenever you want a fresh runtime configuration derived from discovery output.
   </Tab>
   <Tab title="Automated Training Setup (Recommended)">
     Use our validated installation scripts for the smoothest setup:
@@ -223,9 +221,8 @@ export HF_TOKEN="your-huggingface-token"
 export WANDB_API_KEY="your-wandb-key"  # Optional
 
 # Runtime SDK
-export OPENAI_API_KEY="your-openai-key"
-export GEMINI_API_KEY="your-gemini-key"
-export XAI_API_KEY="your-xai-key"  # Optional
+export ANTHROPIC_API_KEY="sk-ant-your-key"  # Primary provider
+export GEMINI_API_KEY="your-gemini-key"  # Optional for rewards
 ```
 
 <Tip>
