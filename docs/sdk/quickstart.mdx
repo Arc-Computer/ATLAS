@@ -25,40 +25,19 @@ This guide provides the fastest path to running the Atlas SDK. Install the packa
 
 ## Prerequisites
 
-<Note>
-Install the SDK directly from PyPI:
-</Note>
+```bash
+python -m pip install --upgrade arc-atlas
+```
 
-1. **Install and upgrade the SDK**
-   ```bash
-   python -m pip install --upgrade arc-atlas
-   ```
-   <Tip>
-   Working inside a virtual environment? Activate it first, then install the package.
-   </Tip>
-2. **Store your LLM credentials**
-   ```bash
-   # Required for default configuration
-   export OPENAI_API_KEY="sk-your-key"      # Student & teacher models
-   export GEMINI_API_KEY="your-gemini-key"  # RIM reward system & learning synthesis
-   export XAI_API_KEY="your-xai-key"        # Capability probe (optional, can disable)
-   ```
-   <Tip>
-   Using Azure OpenAI? Set the usual environment variables (`AZURE_OPENAI_API_KEY`, `AZURE_OPENAI_ENDPOINT`) and update the config's provider/model entries before running.
-   </Tip>
-   <Note>
-   The default configuration uses multiple providers optimized for each component:
-   - **Student/Teacher**: OpenAI or Anthropic (your choice)
-   - **RIM (Reward System)**: Gemini 2.5 Flash/Pro (cost-effective multi-judge evaluation)
-   - **Capability Probe**: xAI Grok-2-mini (fast confidence assessment)
-   - **Learning Synthesis**: Gemini 2.5 Flash
-
-   See [Configuration Stacks](/sdk/configuration#configuration-stacks) for preset configurations.
-   </Note>
-3. **Use a modern version of Python.** The SDK is tested with Python 3.10 and newer (the repo is developed with Python 3.13).
+Set your API keys (see [Installation](/installation) for details):
+```bash
+export OPENAI_API_KEY="sk-your-key"
+export GEMINI_API_KEY="your-gemini-key"
+export XAI_API_KEY="your-xai-key"  # Optional
+```
 
 <Note>
-We recommend keeping credentials in a `.env` file and loading them with `dotenv` or your process manager so they never land in shell history.
+Store credentials in `.env` to avoid shell history exposure. The default config uses OpenAI for student/teacher, Gemini for rewards, and xAI for capability probing. See [Configuration Stacks](/sdk/configuration#configuration-stacks) for alternatives.
 </Note>
 
 ## Step 1 – Run the Quickstart Task
@@ -179,27 +158,15 @@ Think of `atlas.core.run` as a project manager who never gets tired—now fronte
 
 ## Configuration Breakdown
 
-The `sdk_quickstart.yaml` config defines the runtime behavior. Here's a high-level look at the key sections:
+Key sections in `sdk_quickstart.yaml`:
 
-- **`agent`**: Specifies the agent to run the task. The quickstart uses the OpenAI adapter with `gpt-4.1-mini` and no tools, requiring only an `OPENAI_API_KEY`.
-- **`student`**: Configures the planner, executor, and synthesizer roles with their respective prompts and token limits.
-- **`teacher`**: Defines the review and guidance agent, which uses `gpt-4.1` by default for stronger verification.
-- **`orchestration`**: Sets runtime parameters like the number of retries (default: 1) and step timeouts.
-- **`rim`** (Reward System): Defines the judges that score the final answer for quality and helpfulness. Uses Gemini 2.5 Flash/Pro for cost-effective evaluation.
-- **`adaptive_teaching.probe`**: Configures the capability probe using `xai/grok-2-mini` for fast confidence assessment.
-- **`learning`**: Controls playbook synthesis using Gemini 2.5 Flash by default.
-- **`storage`**: Point at Postgres to persist episodes; remove the block or set it to `null` for in-memory experiments.
-- **`student.prompts` / `teacher.prompts`**: Optional overrides. Atlas derives persona text from `atlas.prompts`; customize behaviour by editing these prompt blocks directly.
+- **`agent`**: Adapter settings (litellm/http/python) and model choice
+- **`teacher`**: Verification model, typically stronger than student
+- **`rim`**: Reward system judges (Gemini 2.5 Flash/Pro by default)
+- **`adaptive_teaching.probe`**: Capability assessment (xAI Grok-2-mini)
+- **`storage`**: Optional Postgres persistence
 
-### Choosing a Configuration Stack
-
-Atlas SDK provides three preset configuration stacks optimized for different priorities:
-
-- **Cost-Optimized**: `gpt-4.1-mini` for student/teacher, Gemini Flash for rewards, probe disabled
-- **Quality-First**: `gpt-4.1` student + `gpt-4o` teacher, Gemini Flash/Pro rewards, xAI probe enabled
-- **Latency-Sensitive**: `gpt-4.1-nano` for student/teacher, Gemini Flash rewards, learning updates disabled
-
-See the [Configuration Stacks](/sdk/configuration#configuration-stacks) section for complete examples and when to use each stack.
+See [Configuration Reference](/sdk/configuration) for complete details and [Configuration Stacks](/sdk/configuration#configuration-stacks) for preset templates.
 
 ## Troubleshooting Checklist
 

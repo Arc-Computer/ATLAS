@@ -52,52 +52,13 @@ agent:
 - Accepts `response_format` for JSON mode.
 - Works with OpenAI, Anthropic Claude, Google Gemini, XAI Grok, Azure OpenAI, AWS Bedrock, and local models (Ollama, vLLM).
 
-## HTTP Adapter (`atlas/connectors/http.py`)
+## HTTP Adapter
 
-Best for microservices, serverless functions, or non-Python agents.
+For microservices or non-Python agents. Set `type: http_api`, provide `transport.base_url`, and define `payload_template` + `result_path`. See [Configuration Reference](/sdk/configuration#agent-block-agent) for details.
 
-```yaml
-agent:
-  type: http_api
-  name: example-http-agent
-  transport:
-    base_url: https://agent.example.com/run
-    headers:
-      Authorization: Bearer $AGENT_TOKEN
-    timeout_seconds: 60
-    retry:
-      attempts: 3
-      backoff_seconds: 1.0
-  payload_template:
-    mode: inference
-  result_path:
-    - data
-    - output
-```
+## Python Adapter
 
-Wrap any service that accepts a JSON request. You define:
-
-- **`payload_template`**: The base JSON payload; the adapter injects the `prompt` and optional metadata.
-- **`result_path`**: A list of keys to traverse in the JSON response to find the agent's output string.
-- **Auth & retries**: Handled via the `transport` block, which mirrors `httpx` settings.
-
-## Python Adapter (`atlas/connectors/python.py`)
-
-Ideal when your agent is a local Python function or a LangChain runnable.
-
-```yaml
-agent:
-  type: python
-  name: example-python-agent
-  import_path: agents.python_example
-  attribute: run_agent
-  working_directory: ./
-  allow_generator: false
-```
-
-- The adapter imports the `attribute` (e.g., `run_agent`) from the `import_path` module.
-- If the callable is async, the adapter awaits it; sync functions run in a background thread.
-- Set `allow_generator: true` to let the adapter consume a generator, concatenating all yielded strings into a single output.
+For local functions or LangGraph runnables. Set `type: python`, specify `import_path` and `attribute`. Supports async/sync callables and generators. See [Configuration Reference](/sdk/configuration#agent-block-agent) for details.
 
 ## Building Custom Adapters
 
@@ -161,51 +122,7 @@ Four core methods: `resolve_playbook()`, `detect_and_record()`, `record_action_a
 
 ## Migrating from OpenAI to LiteLLM Adapter
 
-If you have existing configs using `type: openai`, migration is straightforward:
-
-### Before (Deprecated)
-```yaml
-agent:
-  type: openai
-  name: my-agent
-  system_prompt: "You are helpful."
-  llm:
-    provider: openai
-    model: gpt-4o-mini
-    api_key_env: OPENAI_API_KEY
-```
-
-### After (Recommended)
-```yaml
-agent:
-  type: litellm  # Changed from openai
-  name: my-agent
-  system_prompt: "You are helpful."
-  llm:
-    provider: openai  # Provider stays the same
-    model: gpt-4o-mini
-    api_key_env: OPENAI_API_KEY
-```
-
-### Breaking Changes
-**None.** The litellm adapter is a drop-in replacement. All OpenAI-compatible configs work without modification beyond changing the `type` field.
-
-### Benefits of Migration
-1. **Future-proof**: Access to new providers without code changes
-2. **Local models**: Use Ollama or vLLM with the same config structure
-3. **Cost optimization**: Easily switch to faster/cheaper models
-4. **No warnings**: Eliminate deprecation warnings in logs
-
-### Testing Migration
-```bash
-# 1. Update your config
-sed -i '' 's/type: openai/type: litellm/' config.yaml
-
-# 2. Run a test task
-atlas run --config config.yaml --task "Test migration"
-
-# 3. Verify no warnings in output
-```
+Change `type: openai` to `type: litellm` in your config. The litellm adapter is a drop-in replacement with no breaking changes. Benefits include multi-provider support, local model compatibility, and elimination of deprecation warnings.
 
 ## Decision Checklist
 
