@@ -42,6 +42,7 @@ accelerate launch \
   ++trainer.args.per_device_train_batch_size=2 \
   ++trainer.args.gradient_accumulation_steps=4 \
   ++trainer.args.max_new_tokens=128 \
+  ++trainer.args.max_length=8192 \
   ++trainer.args.eval_steps=50 \
   +trainer.model_init_kwargs.device_map=null \
   +trainer.teacher_model_init_kwargs.device_map=null \
