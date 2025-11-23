@@ -34,15 +34,15 @@ accelerate launch \
   --config-name train \
   run@_global_=teacher_gkd \
   data@_global_=gsm8k_gkd \
-  trainer.temperature=0.6 \
-  trainer.max_steps=2500 \
-  trainer.learning_rate=3e-6 \
-  trainer.per_device_train_batch_size=2 \
-  trainer.gradient_accumulation_steps=4 \
-  trainer.max_new_tokens=128 \
-  trainer.eval_steps=50 \
-  trainer.model_init_kwargs.device_map=null \
-  trainer.teacher_model_init_kwargs.device_map=null \
+  +trainer.temperature=0.6 \
+  +trainer.max_steps=2500 \
+  +trainer.learning_rate=3e-6 \
+  +trainer.per_device_train_batch_size=2 \
+  +trainer.gradient_accumulation_steps=4 \
+  +trainer.max_new_tokens=128 \
+  +trainer.eval_steps=50 \
+  +trainer.model_init_kwargs.device_map=null \
+  +trainer.teacher_model_init_kwargs.device_map=null \
   output_dir=outputs/gkd_gsm8k_reliability_opt \
   wandb_project=atlas_gkd_gsm8k \
   wandb_run_name=gear2_reliability_$(date +%Y%m%d_%H%M%S)
