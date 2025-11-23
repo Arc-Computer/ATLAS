@@ -67,7 +67,7 @@ atlas run --config .atlas/generated_config.yaml --task "Summarize the latest AI 
 - Need to exercise the full orchestrator? Point `atlas run --config configs/examples/sdk_quickstart.yaml --task "..."` at a config file to bypass discovery entirely.
 
 <Tip>
-**Customizing agent discovery**: Set `ATLAS_DISCOVERY_MODEL` to override the default Claude Haiku 4.5 model used for agent selection. Any Anthropic model is supported via the `ANTHROPIC_API_KEY` environment variable.
+**Customizing agent discovery**: Set `ATLAS_DISCOVERY_MODEL` to override the default Claude Haiku 4.5 model used for agent selection. Any Anthropic model is supported via the `ANTHROPIC_API_KEY` environment variable. Storage setup is now automatic—no need to run `atlas init` separately.
 </Tip>
 
 ### Option B – Python API (direct invocation)
