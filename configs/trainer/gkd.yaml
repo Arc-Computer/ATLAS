@@ -26,7 +26,6 @@ teacher_tokenizer_name_or_path: null
 
 # Teacher model configuration
 teacher_model_name_or_path: null  # Must be specified via override
-teacher_model_init_kwargs: null
 
 # Training parameters (override base as needed)
 max_steps: -1

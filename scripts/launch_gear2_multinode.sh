@@ -31,8 +31,9 @@ cat "$TEMP_CONFIG" | grep -E "(machine_rank|main_process_ip|main_process_port|nu
 accelerate launch \
   --config_file "$TEMP_CONFIG" \
   train.py \
-  --config-name run/teacher_gkd \
-  +data@_global_=gsm8k_gkd \
+  --config-name train \
+  run@_global_=teacher_gkd \
+  data@_global_=gsm8k_gkd \
   trainer.temperature=0.6 \
   trainer.max_steps=2500 \
   trainer.learning_rate=3e-6 \
