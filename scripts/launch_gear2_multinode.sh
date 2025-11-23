@@ -36,7 +36,7 @@ accelerate launch \
   data@_global_=gsm8k_gkd \
   db_url=null \
   trainer.db_url=null \
-  +trainer.temperature=0.6 \
+  temperature=0.6 \
   ++trainer.args.max_steps=2500 \
   ++trainer.args.learning_rate=3e-6 \
   ++trainer.args.per_device_train_batch_size=2 \
