@@ -22,7 +22,7 @@ project root and extends `PYTHONPATH` with `src`/root directories.
 
 ### `atlas env init`
 
-Discovers Atlas-compatible agents and environments, populates `.atlas/`, and optionally runs a sample task.
+Discovers Atlas-compatible agents and environments, populates `.atlas/`, and optionally runs a sample task. Uses Claude Haiku 4.5 to rank agent candidates based on codebase analysis. Auto-selects if confidence exceeds 0.85, shows reasoning otherwise. Falls back to heuristic ranking if `ANTHROPIC_API_KEY` unavailable.
 
 - **Project root** – defaults to the current directory; override with `--path`.
 - **Sample task** – `--task "Investigate production incident"` seeds discovery telemetry and generated prompts.

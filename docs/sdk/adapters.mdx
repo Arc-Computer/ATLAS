@@ -129,6 +129,36 @@ Most teams start by copying the `http_api` adapter and swapping the transport la
 Atlas auto-imports built-in adapters via `atlas.connectors.__init__`. Custom adapters should follow the same pattern—expose your module there (or import it in your app startup) so registration runs once on load.
 </Note>
 
+## Structured Payloads
+
+Pass complex nested dictionaries as tasks without serialization overhead:
+
+```python
+task = {
+    "query": "Debug API errors",
+    "context": {"service": "payments", "error_rate": 0.15}
+}
+result = adapter.execute(task=task)
+```
+
+Works with LangGraph, custom agents, and any adapter. No manual JSON encoding required.
+
+## Learning Tracking
+
+Integrate learning tracking into custom adapters:
+
+```python
+from atlas.learning.usage import get_tracker
+
+tracker = get_tracker()
+playbook = tracker.resolve_playbook(learning_key="my-agent")
+tracker.detect_and_record(user_input=task, playbook_entries=playbook)
+tracker.record_action_adoption(entry_id=entry.id, adopted=True)
+tracker.record_session_outcome(session_id=sid, success=True)
+```
+
+Four core methods: `resolve_playbook()`, `detect_and_record()`, `record_action_adoption()`, `record_session_outcome()`. See [Learning System](/sdk/learning-system) for details.
+
 ## Migrating from OpenAI to LiteLLM Adapter
 
 If you have existing configs using `type: openai`, migration is straightforward:

@@ -226,10 +226,22 @@ export HF_TOKEN="your-huggingface-token"
 # Optional: Weights & Biases for experiment tracking
 export WANDB_API_KEY="your-wandb-key"
 
-# Optional: OpenAI/Gemini for runtime orchestration
-export OPENAI_API_KEY="your-openai-key"
-export GEMINI_API_KEY="your-gemini-key"
+# SDK Runtime: LLM providers (required for runtime orchestration)
+export OPENAI_API_KEY="your-openai-key"      # Student & teacher models
+export GEMINI_API_KEY="your-gemini-key"      # RIM reward system & learning synthesis
+export XAI_API_KEY="your-xai-key"            # Capability probe (optional)
+export ANTHROPIC_API_KEY="your-anthropic-key"  # Alternative to OpenAI (optional)
 ```
+
+<Note>
+Atlas SDK uses multiple providers optimized for each component:
+- **Student/Teacher**: OpenAI, Anthropic, or other LiteLLM-compatible providers
+- **RIM (Reward System)**: Gemini 2.5 Flash/Pro for cost-effective multi-judge evaluation
+- **Capability Probe**: xAI Grok-2-mini for fast confidence assessment
+- **Learning Synthesis**: Gemini 2.5 Flash
+
+See [Configuration Stacks](/sdk/configuration#configuration-stacks) for preset configurations optimized for cost, quality, or latency.
+</Note>
 
 <Note>
   The training script automatically sets `HF_HUB_ENABLE_HF_TRANSFER=1` to speed up model downloads.

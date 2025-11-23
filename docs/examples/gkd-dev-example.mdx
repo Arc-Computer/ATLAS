@@ -87,5 +87,5 @@ Compute success delta (`0.815 - 0.758 = +5.7 pp`) and token reduction (`1 - 180/
 
 ## Next steps
 
-- Experiment with different hyperparameters (`learning_rate`, `temperature`, `max_steps`) to optimize for your quality vs. speed tradeoff.
+- Use `scripts/examples/run_two_gear_gkd.py` to run the fast and reliability configs back-to-back and automatically print the comparison table.
 - Once you have Postgres traces from the Atlas runtime, re-run `train.py --config-name teacher_gkd` pointing at `ATLAS_DB_URL` to distill your own workflows instead of GSM8K.
