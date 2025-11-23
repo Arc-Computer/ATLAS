@@ -19,7 +19,7 @@ Keep `atlas.core.run(..., stream_progress=True)` enabled while tuning configs—
 
 | Field | Type / Default | Required? | Why it matters |
 | --- | --- | --- | --- |
-| `agent` | Adapter union (`litellm` \| `http_api` \| `python` \| `openai`) | Yes | Connects the orchestrator to your underlying agent transport. Use `litellm` for all new projects. |
+| `agent` | Adapter union (`litellm` \| `http_api` \| `python` \| `openai`) | Yes | Connects the orchestrator to your underlying agent transport.  |
 | `teacher` | `TeacherConfig` | Yes | Defines the verifying teacher persona, LLM, and feedback limits. |
 | `rim` | `RIMConfig` | Yes | Configures the [`RIM`](/reference/glossary#rim-reward-integration-module) ensemble that drives retries and adaptive feedback. |
 | `student` | `StudentConfig` (token caps default to `2048`) | No | Controls your agent’s (student) prompts, tool usage, and token budgets. |
