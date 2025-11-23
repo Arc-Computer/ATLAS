@@ -178,6 +178,7 @@ def main(cfg: DictConfig):
 
     trainer = hydra.utils.instantiate(
         cfg.trainer,
+        processing_class=tokenizer,
         **datasets,
     )
 
