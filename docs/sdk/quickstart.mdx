@@ -129,8 +129,6 @@ Summary | execution_mode=stepwise | total_runtime=15.2s | judge_calls=1 | adapti
 
 The console streamer shows the plan, adaptive lane selection, step-by-step execution with validation status, teacher guidance when provided, and reward scores. `atlas.runtime.telemetry.ConsoleTelemetryStreamer` auto-enables when stdout is a TTY; override with `stream_progress=True/False`.
 
-Need a local Postgres instance? Run `atlas init` to scaffold and launch the Docker Postgres stack. Skip this step if you prefer ephemeral runs.
-
 <Info>
 **Want to see adaptive learning in action?** Check out the [Adaptive Tool Use example](/examples/adaptive-tool-use) showing a LangGraph agent learning efficient MCP tool usage across 25 tasks, demonstrating 30-40% reduction in tool calls.
 </Info>
