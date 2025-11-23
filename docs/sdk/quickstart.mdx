@@ -60,8 +60,9 @@ atlas env init --task "Summarize the latest AI news"
 atlas run --config .atlas/generated_config.yaml --task "Summarize the latest AI news"
 ```
 
-- `atlas env init` scans for `@atlas.environment` / `@atlas.agent` decorators or factory functions, loads `.env`, and writes `.atlas/discover.json`, `.atlas/generated_factories.py`, and `.atlas/generated_config.yaml`.
+- `atlas env init` scans for `@atlas.environment` / `@atlas.agent` decorators or factory functions, loads `.env`, writes `.atlas/discover.json`, `.atlas/generated_factories.py`, and `.atlas/generated_config.yaml`, and automatically sets up storage (integrating `atlas init` functionality).
 - **Agent Selection**: `atlas env init` uses Claude Haiku 4.5 (`claude-haiku-4-5-20251001`) as an LLM-powered agent selector to analyze your codebase and automatically detect the best agent integration points. This intelligent discovery helps bootstrap configuration for existing codebases.
+- **Learning Features**: Few-shot prompting and playbook injection are enabled by default, allowing the system to learn from past interactions immediately.
 - `atlas run --config` loads the generated config, verifies module hashes, streams telemetry into `.atlas/runs/`, and injects learning playbooks when available.
 - Need to exercise the full orchestrator? Point `atlas run --config configs/examples/sdk_quickstart.yaml --task "..."` at a config file to bypass discovery entirely.
 
