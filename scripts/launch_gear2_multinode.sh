@@ -34,6 +34,7 @@ accelerate launch \
   --config-name train \
   run@_global_=teacher_gkd \
   data@_global_=gsm8k_gkd \
+  trainer.db_url=null \
   +trainer.temperature=0.6 \
   +trainer.max_steps=2500 \
   +trainer.learning_rate=3e-6 \
