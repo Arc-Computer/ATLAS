@@ -25,28 +25,19 @@ This guide provides the fastest path to running the Atlas SDK. Install the packa
 
 ## Prerequisites
 
-<Note>
-Install the SDK directly from PyPI:
-</Note>
+```bash
+python -m pip install --upgrade arc-atlas
+```
 
-1. **Install and upgrade the SDK**
-   ```bash
-   python -m pip install --upgrade arc-atlas
-   ```
-   <Tip>
-   Working inside a virtual environment? Activate it first, then install the package.
-   </Tip>
-2. **Store your LLM credentials**
-   ```bash
-   export OPENAI_API_KEY="sk-your-key"
-   ```
-   <Tip>
-   Using Azure OpenAI? Set the usual environment variables (`AZURE_OPENAI_API_KEY`, `AZURE_OPENAI_ENDPOINT`) and update the config’s provider/model entries before running.
-   </Tip>
-3. **Use a modern version of Python.** The SDK is tested with Python 3.10 and newer (the repo is developed with Python 3.13).
+Set your API keys (see [Installation](/installation) for details):
+```bash
+export OPENAI_API_KEY="sk-your-key"
+export GEMINI_API_KEY="your-gemini-key"
+export XAI_API_KEY="your-xai-key"  # Optional
+```
 
 <Note>
-We recommend keeping credentials in a `.env` file and loading them with `dotenv` or your process manager so they never land in shell history.
+Store credentials in `.env` to avoid shell history exposure. The default config uses OpenAI for student/teacher, Gemini for rewards, and xAI for capability probing. See [Configuration](/sdk/configuration) for alternatives.
 </Note>
 
 ## Step 1 – Run the Quickstart Task
@@ -71,8 +62,13 @@ atlas run --config .atlas/generated_config.yaml --task "Summarize the latest AI 
 ```
 
 - `atlas env init` scans for `@atlas.environment` / `@atlas.agent` decorators or factory functions, loads `.env`, and writes `.atlas/discover.json`, `.atlas/generated_factories.py`, and `.atlas/generated_config.yaml`.
+- **Agent Selection**: `atlas env init` uses Claude Haiku 4.5 (`claude-haiku-4-5-20251001`) as an LLM-powered agent selector to analyze your codebase and automatically detect the best agent integration points. This intelligent discovery helps bootstrap configuration for existing codebases.
 - `atlas run --config` loads the generated config, verifies module hashes, streams telemetry into `.atlas/runs/`, and injects learning playbooks when available.
 - Need to exercise the full orchestrator? Point `atlas run --config configs/examples/sdk_quickstart.yaml --task "..."` at a config file to bypass discovery entirely.
+
+<Tip>
+**Customizing agent discovery**: Set `ATLAS_DISCOVERY_MODEL` to override the default Claude Haiku 4.5 model used for agent selection. Any Anthropic model is supported via the `ANTHROPIC_API_KEY` environment variable.
+</Tip>
 
 ### Option B – Python API (direct invocation)
 
@@ -162,17 +158,15 @@ Think of `atlas.core.run` as a project manager who never gets tired—now fronte
 
 ## Configuration Breakdown
 
-The `sdk_quickstart.yaml` config defines the runtime behavior. Here's a high-level look at the key sections:
+Key sections in `sdk_quickstart.yaml`:
 
-- **`agent`**: Specifies the agent to run the task. The quickstart uses the OpenAI adapter with `gpt-4o-mini` and no tools, requiring only an `OPENAI_API_KEY`.
-- **`student`**: Configures the planner, executor, and synthesizer roles with their respective prompts and token limits.
-- **`teacher`**: Defines the review and guidance agent, which also has its own model and token budget.
-- **`orchestration`**: Sets runtime parameters like the number of retries (default: 1) and step timeouts.
-- **`rim`** (Reward System): Defines the judges and arbiter that score the final answer for quality and helpfulness. This score determines if a retry is needed.
-- **`storage`**: Point at Postgres to persist episodes; remove the block or set it to `null` for in-memory experiments.
-- **`student.prompts` / `teacher.prompts`**: Optional overrides. Atlas derives persona text from `atlas.prompts`; customize behaviour by editing these prompt blocks directly.
+- **`agent`**: Adapter settings (litellm/http/python) and model choice
+- **`teacher`**: Verification model, typically stronger than student
+- **`rim`**: Reward system judges (Gemini 2.5 Flash/Pro by default)
+- **`adaptive_teaching.probe`**: Capability assessment (xAI Grok-2-mini)
+- **`storage`**: Optional Postgres persistence
 
-To add tools, enable persistence, or use a different agent, create your own config file based on the SDK quickstart template and see the `SDK Configuration` reference for details.
+See [Configuration Reference](/sdk/configuration) for complete details and preset templates.
 
 ## Troubleshooting Checklist
 

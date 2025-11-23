@@ -63,7 +63,7 @@ python scripts/validate_gkd.py \
 
 Set `--dataset-name` / `--dataset-config` to any Hugging Face dataset that contains math or reasoning conversations; the script formats it into the same chat schema the trainer expects. For your own traces, skip the HF flags and let the trainer load from Postgres via `ATLAS_DB_URL`.
 
-> **Cross-tokenizer tip:** The script aligns teacher logprobs with the teacher’s chat template automatically. Override the tokenizer path with `--teacher-tokenizer` when it differs from `--teacher`, or disable the behavior entirely with `--no-align-teacher-template` if both models share the same tokenizer and you want to reproduce legacy runs.
+> **Cross-tokenizer tip:** The script aligns teacher logprobs with the teacher's chat template automatically. Override the tokenizer path with `--teacher-tokenizer` when it differs from `--teacher`, or disable the behavior entirely with `--no-align-teacher-template` if both models share the same tokenizer and you want to reproduce legacy runs.
 
 ## Interpret `math_validation_metrics.json`
 
@@ -87,5 +87,4 @@ Compute success delta (`0.815 - 0.758 = +5.7 pp`) and token reduction (`1 - 180/
 
 ## Next steps
 
-- Experiment with different hyperparameters (`learning_rate`, `temperature`, `max_steps`) to optimize for your quality vs. speed tradeoff.
-- Once you have Postgres traces from the Atlas runtime, re-run `train.py --config-name teacher_gkd` pointing at `ATLAS_DB_URL` to distill your own workflows instead of GSM8K.
+Once you have Postgres traces from the Atlas runtime, re-run `train.py --config-name teacher_gkd` pointing at `ATLAS_DB_URL` to distill your own workflows instead of GSM8K.

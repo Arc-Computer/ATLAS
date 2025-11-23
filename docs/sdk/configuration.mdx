@@ -19,7 +19,7 @@ Keep `atlas.core.run(..., stream_progress=True)` enabled while tuning configs—
 
 | Field | Type / Default | Required? | Why it matters |
 | --- | --- | --- | --- |
-| `agent` | Adapter union (`litellm` \| `http_api` \| `python` \| `openai`) | Yes | Connects the orchestrator to your underlying agent transport. Use `litellm` for all new projects. |
+| `agent` | Adapter union (`litellm` \| `http_api` \| `python` \| `openai`) | Yes | Connects the orchestrator to your underlying agent transport.  |
 | `teacher` | `TeacherConfig` | Yes | Defines the verifying teacher persona, LLM, and feedback limits. |
 | `rim` | `RIMConfig` | Yes | Configures the [`RIM`](/reference/glossary#rim-reward-integration-module) ensemble that drives retries and adaptive feedback. |
 | `student` | `StudentConfig` (token caps default to `2048`) | No | Controls your agent’s (student) prompts, tool usage, and token budgets. |
@@ -112,73 +112,18 @@ Both Ollama and vLLM are OpenAI-compatible, so use `provider: openai` with the c
 
 ### Provider Examples
 
-<Accordion title="OpenAI">
-```yaml
-llm:
-  provider: openai
-  model: gpt-4o-mini
-  api_key_env: OPENAI_API_KEY
-  temperature: 0.2
-  max_output_tokens: 2048
-```
-</Accordion>
+Common LiteLLM provider configurations:
 
-<Accordion title="Anthropic Claude">
-```yaml
-llm:
-  provider: anthropic
-  model: claude-sonnet-4-5
-  api_key_env: ANTHROPIC_API_KEY
-  temperature: 0.2
-  max_output_tokens: 2048
-```
-</Accordion>
+| Provider | Model Example | API Key Env |
+|----------|---------------|-------------|
+| OpenAI | `gpt-4o-mini` | `OPENAI_API_KEY` |
+| Anthropic | `claude-sonnet-4-5` | `ANTHROPIC_API_KEY` |
+| Gemini | `gemini/gemini-2.5-flash` | `GEMINI_API_KEY` |
+| XAI Grok | `xai/grok-4-fast` | `XAI_API_KEY` |
+| Azure OpenAI | `gpt-4o-mini` | `AZURE_OPENAI_API_KEY` + `api_base` |
+| AWS Bedrock | `anthropic.claude-3-5-sonnet-*` | `AWS_ACCESS_KEY_ID` + region/secret |
 
-<Accordion title="Google Gemini">
-```yaml
-llm:
-  provider: gemini
-  model: gemini/gemini-2.5-flash
-  api_key_env: GEMINI_API_KEY
-  temperature: 0.2
-  max_output_tokens: 2048
-```
-</Accordion>
-
-<Accordion title="XAI Grok">
-```yaml
-llm:
-  provider: xai
-  model: xai/grok-4-fast
-  api_key_env: XAI_API_KEY
-  temperature: 0.2
-  max_output_tokens: 2048
-```
-</Accordion>
-
-<Accordion title="Azure OpenAI">
-```yaml
-llm:
-  provider: azure-openai
-  model: gpt-4o-mini
-  api_key_env: AZURE_OPENAI_API_KEY
-  api_base: https://your-resource.openai.azure.com
-  temperature: 0.2
-  max_output_tokens: 2048
-```
-</Accordion>
-
-<Accordion title="AWS Bedrock">
-```yaml
-llm:
-  provider: bedrock
-  model: anthropic.claude-3-5-sonnet-20241022-v2:0
-  api_key_env: AWS_ACCESS_KEY_ID
-  # Also requires AWS_SECRET_ACCESS_KEY and AWS_REGION
-  temperature: 0.2
-  max_output_tokens: 2048
-```
-</Accordion>
+All use `temperature: 0.2` and `max_output_tokens: 2048` by default. See LiteLLM docs for full provider list.
 
 ## Student Block (`student`)
 
@@ -193,26 +138,11 @@ Guides the student agent’s prompts and token budgets. When `prompts` is omitte
 | `max_synthesis_tokens` | `int` (default `2048`) | No | Allow longer final answers. |
 | `tool_choice` | Literal `auto` \| `required` (default `auto`) | No | Force tool invocation on every step when governance demands it. |
 
-Example override (add explicit prompts to your config):
-
+Override example:
 ```yaml
 student:
-  prompts:
-    planner: |
-      {base_prompt}
-
-      Break the user's task into a short numbered plan.
-    executor: |
-      {base_prompt}
-
-      Execute the current plan step. Show the work that led to your answer.
-    synthesizer: |
-      {base_prompt}
-
-      Summarize the important findings from every step and deliver the final answer.
   max_plan_tokens: 1024
   max_step_tokens: 1024
-  max_synthesis_tokens: 1024
   tool_choice: auto
 ```
 
@@ -242,15 +172,6 @@ Controls retry semantics and telemetry.
 | `emit_intermediate_steps` | `bool` (default `true`) | No | Toggle console/storage streaming of intermediate events. |
 | `forced_mode` | `AdaptiveMode \| null` | No | Lock the runtime to `auto`, `paired`, or `coach` (useful for deterministic evaluation). |
 
-Example override (pairing with the prompts above):
-
-```yaml
-orchestration:
-  max_retries: 1
-  step_timeout_seconds: 600
-  rim_guidance_tag: rim_feedback
-  emit_intermediate_steps: true
-```
 
 ## Reward System Block (RIM - Reward Integration Module)
 
@@ -266,30 +187,7 @@ The RIM (Reward Integration Module) evaluates each trajectory to decide whether 
 | `parallel_workers` | `int` (default `4`, range `1..32`) | No | Tune concurrency to match judge model throughput. |
 | `judge_prompt` | `str \| null` | No | Provide a rubric that defines success for your domain. |
 
-Example of weighting judges:
-
-```yaml
-rim:
-  small_model:
-    provider: gemini
-    model: gemini/gemini-2.5-flash
-    api_key_env: GEMINI_API_KEY
-    max_output_tokens: 512
-  large_model:
-    provider: gemini
-    model: gemini/gemini-2.5-flash
-    api_key_env: GEMINI_API_KEY
-    max_output_tokens: 768
-  active_judges:
-    process: true
-    helpfulness: true
-    accuracy: false
-  variance_threshold: 0.15
-  uncertainty_threshold: 0.3
-  judge_prompt: 'Reward runs that stay on brief, respect APIs, and deliver correct answers.'
-```
-
-See [`Reward Design`](/concepts/reward-design#reward-system-in-the-atlas-sdk) for guidance on composing ensembles and custom judges.
+See [`Reward Design`](/concepts/reward-design#reward-system-in-the-atlas-sdk) for judge composition examples.
 
 ## Adaptive Teaching Block (`adaptive_teaching`)
 
@@ -311,22 +209,6 @@ Configures triage, probing, and lane routing for the adaptive dual-agent pair—
 | `reward.import_path` / `attribute` | `str` / `str` | Required when `type="python"` | Point at your custom scorer. |
 | `reward.focus_prompt` | `str \| null` | No | Give the reward model an extra steer for this deployment. |
 
-Example of forcing coach mode:
-
-```yaml
-adaptive_teaching:
-  enabled: true
-  mode_override: coach
-  default_tags:
-    - tenant:demo
-    - domain:sre
-  probe:
-    thresholds:
-      auto: 0.9
-      paired: 0.7
-      coach: 0.4
-    fallback_mode: coach
-```
 
 ## Storage Block (`storage`)
 
@@ -354,6 +236,8 @@ Controls the runtime synthesizer that generates and applies student/teacher play
 | `history_limit` | `int` (default `10`) | No | Cap historical sessions fed into each update. |
 | `session_note_enabled` | `bool` (default `true`) | No | Persist per-session learning notes alongside the registry. |
 | `apply_to_prompts` | `bool` (default `true`) | No | Toggle playbook injection into persona prompts and validation payloads. |
+| `injection_mode` | `"prefix"` or `"suffix"` (default `"prefix"`) | No | Inject playbook before (`prefix`) or after (`suffix`) system prompt. Suffix mode enables KV cache reuse. |
+| `inject_few_shot_examples` | `bool` (default `false`) | No | Append captured examples to playbook entries for in-context learning. |
 
 Pair this section with [`Learning System Architecture`](/sdk/learning-system) for deeper context.
 

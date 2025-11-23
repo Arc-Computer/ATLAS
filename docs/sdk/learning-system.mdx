@@ -52,6 +52,38 @@ Set `learning.apply_to_prompts=false` to keep generating playbooks without injec
 pattern for staging and smoke tests. The hash still flows through telemetry so you can verify the correct playbook would
 have been used.
 
+#### Playbook Injection Modes
+
+Atlas supports two playbook injection strategies optimized for different scenarios:
+
+**Prefix Mode (Default)**
+```yaml
+learning:
+  injection_mode: prefix  # Default
+```
+
+Playbooks are injected at the beginning of the system prompt. Best for:
+- General guidance and behavioral patterns
+- Task-agnostic learning that should influence all reasoning
+- Compatibility with providers that don't support advanced caching
+
+**Suffix Mode (KV Cache Optimization)**
+```yaml
+learning:
+  injection_mode: suffix
+```
+
+Playbooks are appended after the base system prompt. Optimized for:
+- **Provider KV cache efficiency**: Anthropic and other providers cache the static system prompt prefix, avoiding recomputation when only the playbook changes
+- **Reduced latency**: Cache hits eliminate prompt reprocessing overhead
+- **Cost savings**: Cached tokens aren't rebilled on subsequent requests
+
+The runtime automatically computes cache breakpoints when `injection_mode: suffix` is used with compatible providers (Anthropic Claude, providers supporting prompt caching). The base system prompt becomes the cached prefix, and the playbook suffix can be updated without invalidating the cache.
+
+<Tip>
+**When to use suffix mode**: Enable `injection_mode: suffix` for production workloads with frequent playbook updates and providers supporting KV cache (e.g., Anthropic Claude). This can reduce prompt processing time by 80%+ when the base prompt remains stable.
+</Tip>
+
 ### Learning Registry (`atlas/runtime/storage/schema.sql`)
 
 `learning_registry` keeps the current playbooks for each `learning_key`. The table stores a single row per key with:
@@ -100,11 +132,12 @@ Add a `learning` block to your runtime config to control behavior:
 | --- | --- | --- |
 | `enabled` | `true` | Master switch. Set `false` to run without playbooks or registry updates. |
 | `update_enabled` | `true` | Allow the synthesizer to write updated playbooks. Disable for read-only playbook usage. |
-| `llm` | `null` | Override synthesizer model; defaults to the runtime’s standard LLM if omitted. |
+| `llm` | `null` | Override synthesizer model; defaults to the runtime's standard LLM if omitted. |
 | `prompts` | `null` | Custom prompt templates for the synthesizer LLM. |
 | `history_limit` | `10` | Max historical sessions considered when generating an update. |
 | `session_note_enabled` | `true` | Emit per-session learning notes alongside registry updates. |
 | `apply_to_prompts` | `true` | Inject playbooks into persona prompts and validation payloads. |
+| `playbook_injection_mode` | `prefix` | Playbook injection strategy: `prefix` (default) or `suffix` (KV cache optimization). |
 
 Example configuration:
 
@@ -185,6 +218,29 @@ Persist the JSON payloads under `results/learning/` (for example `results/learni
 | Prompts missing playbook content | `learning.apply_to_prompts=false` or cache invalidation failed | Flip the flag to `true`, clear `.atlas/cache/learning/*`, rerun `atlas run`. |
 | Evaluation harness shows empty history | `learning_key` absent in sessions | Ensure `atlas env init` / runtime config tags sessions with consistent metadata. |
 | Synthesizer timeouts | LLM provider throttling | Configure `learning.llm` with a provider-specific timeout or reduce `history_limit`. |
+| Learning updates lost on restart | Registry not persisting (fixed in atlas-sdk v0.2.5+) | Upgrade to latest SDK version. Earlier versions had a persistence bug where updates were only cached in memory. |
+| Playbook reverts to older version | Cache staleness or registry race condition | Clear `.atlas/cache/learning/*` and verify `learning_registry` table shows latest `updated_at` timestamp. |
+
+<Note>
+**Learning Persistence Fix (v0.2.5+)**: Earlier versions of atlas-sdk had a bug where learning updates were cached in memory but not reliably persisted to the database. This caused playbooks to revert on restart. If you're experiencing this issue, upgrade to atlas-sdk v0.2.5 or later:
+
+```bash
+pip install --upgrade arc-atlas
+```
+
+After upgrading, verify persistence is working:
+```bash
+# Run a session that should trigger learning
+atlas run --config your_config.yaml --task "test task"
+
+# Restart the runtime (new Python process)
+# Verify playbook loads from database
+atlas run --config your_config.yaml --task "another task"
+
+# Check that playbook_hash in telemetry matches registry
+psql $DATABASE_URL -c "SELECT learning_key, updated_at FROM learning_registry WHERE learning_key='your-key';"
+```
+</Note>
 
 ## Related Guides
 

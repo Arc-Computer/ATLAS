@@ -22,40 +22,15 @@ project root and extends `PYTHONPATH` with `src`/root directories.
 
 ### `atlas env init`
 
-Discovers Atlas-compatible agents and environments, populates `.atlas/`, and optionally runs a sample task.
+Discovers agents/environments and populates `.atlas/`. Uses Claude Haiku 4.5 for agent ranking (auto-selects at 0.85+ confidence).
 
-- **Project root** – defaults to the current directory; override with `--path`.
-- **Sample task** – `--task "Investigate production incident"` seeds discovery telemetry and generated prompts.
-- **Factories** – pass explicit constructor callables with `--env-fn module:callable` / `--agent-fn module:callable`.
-- **Runtime args** – supply per-factory keyword args via `--env-arg key=value` (repeatable) or `--env-config config.yaml`.
-- **Config scaffolding** – `--scaffold-config-full` merges discovery metadata into the litellm template to produce a runnable orchestrator config (mirrors PR #75).
-- **Execution control** – `--no-run` performs static analysis only; `--validate` forces a full run even if diagnostics recommend skipping; `--timeout` (default 240 s) bounds discovery.
-- **Environment** – `--env KEY=value` injects secrets for discovery; the CLI also auto-loads `.env` and adjusts `PYTHONPATH`.
+Key flags: `--task`, `--scaffold-config-full`, `--no-run`, `--timeout` (240s default)
 
-<Note>
-Example configs in the SDK use `type: litellm` as the recommended adapter. If you have legacy configs using `type: openai`, migrate to `type: litellm` to avoid deprecation warnings. See the [Adapter documentation](/sdk/adapters) for migration guidance.
-</Note>
-
-Outputs are written under `.atlas/`:
-
-- `.atlas/discover.json` – module hashes, handshake metadata, telemetry samples, and reward summaries.
-- `.atlas/generated_factories.py` – auto-generated factories when discovery synthesizes wrappers.
-- `.atlas/generated_config.yaml` – optional orchestrator config created when `--scaffold-config-full` is enabled.
-- `.atlas/runs/` – runtime telemetry snapshots from validation passes.
-
-Re-run `atlas env init` whenever code or dependencies change; hashes protect against stale factories.
+Outputs: `.atlas/discover.json`, `.atlas/generated_config.yaml`, `.atlas/runs/`
 
 ### `atlas env scaffold`
 
-Seeds a project with reference factories (currently LangGraph) or other adapters before running discovery.
-
-- `--template langgraph` – default template. Extendable as additional templates ship.
-- `--output` – destination file (defaults to the template name).
-- `--path` – project root for the scaffold (defaults to CWD).
-- `--force` – overwrite existing files.
-
-Use scaffold when your stack needs custom constructors or multi-service wiring; follow it with `atlas env init` to
-validate the generated factories.
+Seeds projects with reference factories (LangGraph template). Use `--template`, `--output`, `--force` flags. Follow with `atlas env init` to validate.
 
 ## Runtime Execution
 
