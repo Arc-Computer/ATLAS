@@ -8,6 +8,7 @@
 # This configuration uses the build_gsm8k_gkd_dataset function from
 # trainers.gsm8k_dataset which formats the data for on-policy distillation.
 
+data_log_name: gsm8k_gkd
 dataset_name: gsm8k
 subset: main
 train_split: train
