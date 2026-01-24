@@ -15,8 +15,9 @@ ATLAS provides specialized trainer classes for different training paradigms. Eac
 
 <CodeGroup>
 ```python title="Standard GRPO Training"
-from trainers import GRPOTrainer, GRPOConfig
-from RIM.reward_adapter import RIMReward
+from atlas_core.training.algorithms.grpo import GRPOTrainer
+from atlas_core.training.algorithms.grpo_config import GRPOConfig
+from atlas_core.reward.interpretation import RIMReward
 
 # Minimal training arguments (TrainingArguments requires an output_dir)
 grpo_args = GRPOConfig(
@@ -30,7 +31,7 @@ grpo_args = GRPOConfig(
     logging_steps=10,
 )
 
-reward = RIMReward(config_path="configs/rim_config.yaml")
+reward = RIMReward(config_path="reward_system/interpretation.yaml")
 
 trainer = GRPOTrainer(
     model=grpo_args.model_name_or_path,
@@ -46,8 +47,9 @@ trainer.save_model("./output/grpo/checkpoint-final")
 ```
 
 ```python title="Dual-Agent Teacher Training"
-from trainers import TeacherGRPOTrainer, GRPOConfig
-from RIM.reward_adapter import RIMReward
+from atlas_core.training.algorithms.teacher_trainers import TeacherGRPOTrainer
+from atlas_core.training.algorithms.grpo_config import GRPOConfig
+from atlas_core.reward.interpretation import RIMReward
 
 teacher_args = GRPOConfig(
     output_dir="./output/teacher-grpo",
@@ -60,7 +62,7 @@ teacher_args = GRPOConfig(
     logging_steps=10,
 )
 
-reward = RIMReward(config_path="configs/rim_offline_config.yaml")
+reward = RIMReward(config_path="reward_system/interpretation_offline.yaml")
 
 trainer = TeacherGRPOTrainer(
     model=teacher_args.model_name_or_path,
@@ -76,8 +78,7 @@ trainer.save_model("./output/teacher-grpo/checkpoint-final")
 ```
 
 ```python title="SFT Warmup"
-from trainers import SFTTrainer
-from configs import SFTConfig
+from trl import SFTConfig, SFTTrainer
 
 # Supervised fine-tuning before RL
 trainer = SFTTrainer(
@@ -123,9 +124,9 @@ GRPOTrainer is the main trainer class for Group Relative Policy Optimization, ex
 
     **Memory Management**: Includes optimizations for training large models with gradient checkpointing and model offloading.
 
-    **Reward Integration**: Handles multiple reward functions and reward weighting for complex optimization objectives.
+    **Reward Composition**: Handles multiple reward functions (including optional RIM-based scoring) and reward weighting for complex optimization objectives.
 
-    **Implementation**: See `trainers/grpo.py` for complete method signatures and implementation details.
+    **Implementation**: See `src/atlas_core/training/algorithms/grpo.py` for complete method signatures and implementation details.
   </Accordion>
 
   <Accordion title="Training Hooks">
@@ -152,7 +153,7 @@ GRPOTrainer is the main trainer class for Group Relative Policy Optimization, ex
   </Accordion>
 </AccordionGroup>
 
-**Source**: `trainers/grpo.py`
+**Source**: `src/atlas_core/training/algorithms/grpo.py`
 
 ## TeacherGRPOTrainer
 
@@ -160,7 +161,7 @@ Specialized trainer for adaptive dual-agent teaching (student agent + verifying 
 
 ### Class Overview
 
-TeacherGRPOTrainer extends GRPOTrainer to implement the two-pass teaching protocol. From the actual source code (`trainers/teacher_trainers.py`), this trainer:
+TeacherGRPOTrainer extends GRPOTrainer to implement the two-pass teaching protocol. From the actual source code (`src/atlas_core/training/algorithms/teacher_trainers.py`), this trainer:
 
 - Inherits from both `GRPOTrainer` and `TeacherTrainer`
 - Accepts `student_model` parameter in constructor
@@ -330,9 +331,9 @@ TeacherGRPOTrainer extends GRPOTrainer to implement the two-pass teaching protoc
 
 ### Reward System Integration
 
-TeacherGRPOTrainer expects `reward_funcs` to supply the evaluation signal. When you pass an instance of `RIMReward`, each call returns both the aggregated reward and an information dictionary containing per-judge scores, principles, and rationales. The trainer logs these details under `rim_rewards` and `rim_explanations`, making it possible to inspect accuracy, helpfulness, process, and diagnostic scores separately. To switch configurations during an experiment, update the Hydra override so that `RIMReward` loads either `configs/rim_config.yaml` or `configs/rim_offline_config.yaml`. The trainer does not need any code changes when you modify judge prompts, thresholds, or model choices.
+TeacherGRPOTrainer expects `reward_funcs` to supply the evaluation signal. When you pass an instance of `RIMReward`, each call returns both the aggregated reward and an information dictionary containing per-judge scores, principles, and rationales. The trainer logs these details under `rim_rewards` and `rim_explanations`, making it possible to inspect accuracy, helpfulness, process, and diagnostic scores separately. To switch configurations during an experiment, update the Hydra override so that `RIMReward` loads either `reward_system/interpretation.yaml` or `reward_system/interpretation_offline.yaml`. The trainer does not need any code changes when you modify judge prompts, thresholds, or model choices.
 
-**Source**: `trainers/teacher_grpo.py`
+**Source**: `src/atlas_core/training/algorithms/teacher_trainers.py`
 
 ## SFTTrainer
 
@@ -393,14 +394,14 @@ class SFTTrainer(Trainer):
   </Accordion>
 </AccordionGroup>
 
-**Source**: `trainers/sft.py`
+**Source**: TRL `SFTTrainer`
 
 ## Custom Trainer Implementation
 
 Create your own trainer by extending base classes:
 
 ```python
-from trainers import GRPOTrainer
+from atlas_core.training.algorithms.grpo import GRPOTrainer
 import torch
 
 class CustomRewardTrainer(GRPOTrainer):
@@ -431,12 +432,8 @@ class CustomRewardTrainer(GRPOTrainer):
 ### Available Callbacks
 
 ```python
-from trainers.callbacks import (
-    WandbCallback,
-    TensorBoardCallback,
-    EarlyStoppingCallback,
-    ModelCheckpointCallback
-)
+from transformers import EarlyStoppingCallback
+from transformers.integrations import TensorBoardCallback, WandbCallback
 
 # Configure callbacks
 callbacks = [
@@ -447,10 +444,6 @@ callbacks = [
     EarlyStoppingCallback(
         early_stopping_patience=3,
         early_stopping_threshold=0.001
-    ),
-    ModelCheckpointCallback(
-        save_steps=500,
-        save_total_limit=3
     )
 ]
 
@@ -485,7 +478,7 @@ trainer = GRPOTrainer(
 ### Multi-GPU Setup
 
 ```python
-from trainers import GRPOTrainer
+from atlas_core.training.algorithms.grpo import GRPOTrainer
 from accelerate import Accelerator
 
 accelerator = Accelerator()
@@ -502,33 +495,25 @@ trainer.train()
 
 ### DeepSpeed Integration
 
-```python
-# deepspeed_config.json
-{
-    "zero_optimization": {
-        "stage": 2,
-        "offload_optimizer": {
-            "device": "cpu"
-        }
-    },
-    "fp16": {
-        "enabled": true
-    }
-}
+Atlas Core relies on Accelerate configs to enable DeepSpeed. Use one of the presets in `accelerate/`:
 
-trainer = GRPOTrainer(
-    config=config,
-    deepspeed="deepspeed_config.json"
-)
+```bash
+# Default zero3
+accelerate launch --config_file accelerate/deepspeed_zero3.yaml \
+  -m atlas_core.cli.train recipe@_global_=teacher_rcl
+
+# CPU offload
+accelerate launch --config_file accelerate/deepspeed_zero3_cpu_offloading.yaml \
+  -m atlas_core.cli.train recipe@_global_=teacher_rcl
 ```
 
 ## Implementation Notes
 
 ATLAS trainers extend standard HuggingFace Trainer classes with RL-specific functionality. The implementation details can be found in:
 
-- `trainers/grpo.py` - Main GRPO trainer implementation
-- `trainers/teacher_trainers.py` - Teacher-student training logic
-- `trainers/grpo_config.py` - Configuration parameters
+- `src/atlas_core/training/algorithms/grpo.py` - Main GRPO trainer implementation
+- `src/atlas_core/training/algorithms/teacher_trainers.py` - Teacher-student training logic
+- `src/atlas_core/training/algorithms/grpo_config.py` - Configuration parameters
 
 ## Troubleshooting
 

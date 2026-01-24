@@ -27,25 +27,25 @@ Hydra builds a training run by merging defaults from each config group:
 
 ```mermaid
 graph TD
-    A[configs/train.yaml<br/>Global defaults] --> B[configs/run/*.yaml<br/>Experiment recipes]
-    C[configs/trainer/*.yaml<br/>Algorithms] --> B
-    D[configs/model/*.yaml<br/>Models] --> B
-    E[configs/data/*.yaml<br/>Datasets] --> B
-    F[configs/trainer/reward/*.yaml<br/>Reward presets] --> B
+    A[src/atlas_core/configs/train.yaml<br/>Global defaults] --> B[src/atlas_core/configs/recipe/*.yaml<br/>Experiment recipes]
+    C[src/atlas_core/configs/trainer/*.yaml<br/>Algorithms] --> B
+    D[src/atlas_core/configs/model/*.yaml<br/>Models] --> B
+    E[src/atlas_core/configs/data/*.yaml<br/>Datasets] --> B
+    F[src/atlas_core/configs/reward/*.yaml<br/>Reward presets] --> B
 ```
 
 | Layer | Example Files | When to Modify |
 |-------|---------------|----------------|
-| `train.yaml` | `configs/train.yaml` | Global logging/output rules |
+| `train.yaml` | `src/atlas_core/configs/train.yaml` | Global logging/output rules |
 | `model@_global_` | `qwen3_8b.yaml`, `base.yaml` | Swap checkpoints, quantization |
 | `data@_global_` | `runtime_traces.yaml`, `arc_atlas_rl.yaml` | Choose datasets, sampling |
 | `trainer@_global_` | `grpo.yaml`, `base_sft.yaml`, `teacher_grpo.yaml` | Algorithm, optimizer, batching |
-| `run@_global_` | `teacher_rcl.yaml`, `teacher_sft.yaml` | Pre-built experiment bundles |
-| `reward@_global_` | `rim_teaching.yaml` | Reward adapter, prompt templates |
+| `recipe@_global_` | `teacher_rcl.yaml`, `teacher_sft.yaml` | Pre-built experiment bundles |
+| `reward@_global_` | `interpretation_teaching.yaml` | Reward adapter, prompt templates |
 
 ---
 
-## Model Presets (`configs/model/`)
+## Model Presets (`src/atlas_core/configs/model/`)
 
 | Parameter | Default | When to Change |
 |-----------|---------|----------------|
@@ -61,7 +61,7 @@ graph TD
 
 ---
 
-## Dataset Presets (`configs/data/`)
+## Dataset Presets (`src/atlas_core/configs/data/`)
 
 | Parameter | Default | When to Change |
 |-----------|---------|----------------|
@@ -73,7 +73,7 @@ graph TD
 | `shuffle` | `true` (`runtime_traces`) | Randomize JSONL before split |
 | `completion_only_training` | `True` (`arc_atlas_sft`) | Trim prompts in SFT |
 | `dataset_path` | `traces/export.jsonl` (`runtime_traces`) | Point at exported JSONL |
-| `make_dataset_fn._target_` | `custom_data.runtime_trace_data.get_runtime_trace_dataset` | Loader entrypoint |
+| `make_dataset_fn._target_` | `atlas_core.data.runtime_traces.get_runtime_trace_dataset` | Loader entrypoint |
 
 **Common Dataset Configs:**
 - `runtime_traces.yaml` - Exported JSONL from Atlas SDK
@@ -82,7 +82,7 @@ graph TD
 
 ---
 
-## Trainer Base Defaults (`configs/trainer/base.yaml`)
+## Trainer Base Defaults (`src/atlas_core/configs/trainer/base.yaml`)
 
 | Parameter | Default | When to Change |
 |-----------|---------|----------------|
@@ -101,12 +101,12 @@ graph TD
 | `ddp_timeout` | `18000` seconds | Distributed training timeout |
 
 <Info>
-`gradient_accumulation_steps` is auto-computed: `train_batch_size / (per_device_train_batch_size × num_devices)`. Provide any two values; the launcher resolves the third (see `train.py:55-103`).
+`gradient_accumulation_steps` is auto-computed: `train_batch_size / (per_device_train_batch_size × num_devices)`. Provide any two values; the launcher resolves the third (see `src/atlas_core/cli/train.py`).
 </Info>
 
 ---
 
-## GRPO Algorithm Controls (`configs/trainer/grpo.yaml`)
+## GRPO Algorithm Controls (`src/atlas_core/configs/trainer/grpo.yaml`)
 
 | Parameter | Default | When to Change |
 |-----------|---------|----------------|
@@ -141,7 +141,7 @@ graph TD
 
 ---
 
-## Teacher GRPO Overlay (`configs/trainer/teacher_grpo.yaml`)
+## Teacher GRPO Overlay (`src/atlas_core/configs/trainer/teacher_grpo.yaml`)
 
 Extends base GRPO with diagnostic prompts and teacher-specific controls.
 
@@ -189,7 +189,7 @@ student_with_teaching_template: |
 
 ---
 
-## SFT Trainer (`configs/trainer/base_sft.yaml`)
+## SFT Trainer (`src/atlas_core/configs/trainer/base_sft.yaml`)
 
 | Parameter | Default | Run Override (`teacher_sft.yaml`) | When to Change |
 |-----------|---------|-----------------------------------|----------------|
@@ -207,7 +207,7 @@ student_with_teaching_template: |
 
 ---
 
-## Run Recipes (`configs/run/`)
+## Run Recipes (`src/atlas_core/configs/recipe/`)
 
 Pre-built experiment bundles that override multiple config groups.
 
@@ -219,18 +219,18 @@ Pre-built experiment bundles that override multiple config groups.
 
 ---
 
-## Reward Preset (`configs/trainer/reward/rim_teaching.yaml`)
+## Reward Preset (`src/atlas_core/configs/reward/interpretation_teaching.yaml`)
 
 | Parameter | Default | When to Change |
 |-----------|---------|----------------|
-| `reward_log_name` | `rim_teaching` | Propagates to trainer logs |
+| `reward_log_name` | `interpretation_teaching` | Propagates to trainer logs |
 | `max_probe_tokens` | `500` | Diagnostic prompt length |
-| `teacher_reward._target_` | `RIM.reward_adapter.RIMReward` | Uses `rim_offline_config.yaml` |
+| `teacher_reward._target_` | `atlas_core.reward.interpretation.RIMReward` | Uses `reward_system/interpretation_offline.yaml` |
 | `student_model` / `teacher_model` / `tokenizer` | `null` | Auto-populated from Hydra model |
 
 ### Reward Configs (Runtime vs Offline)
 
-| Setting | Runtime (`rim_config.yaml`) | Offline (`rim_offline_config.yaml`) |
+| Setting | Runtime (`reward_system/interpretation.yaml`) | Offline (`reward_system/interpretation_offline.yaml`) |
 |---------|----------------------------|-------------------------------------|
 | `temperatures` | `[0.2, 0.5, 0.8]` | `[0.2, 0.5, 0.8]` |
 | `models.small_model` | `"gemini/gemini-2.5-flash"` | `"gemini/gemini-2.5-flash"` |

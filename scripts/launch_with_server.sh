@@ -6,10 +6,10 @@ num_gpus=$1
 num_gpus_2=$2
 
 # resolve yaml path
-if [[ "$3" == configs/run/* ]]; then
+if [[ "$3" == src/atlas_core/configs/recipe/* ]]; then
   yaml_file="$3"
 else
-  yaml_file="configs/run/$3"
+  yaml_file="src/atlas_core/configs/recipe/$3"
 fi
 
 # collect extra args, grabbing an opt model override if present
@@ -63,10 +63,10 @@ fi
 # seed handling
 if grep -q '^seed:' "$yaml_file"; then
   base_seed=$(grep '^seed:' "$yaml_file" | awk '{print $2}')
-elif grep -q '^seed:' configs/train.yaml; then
-  base_seed=$(grep '^seed:' configs/train.yaml | awk '{print $2}')
+elif grep -q '^seed:' src/atlas_core/configs/train.yaml; then
+  base_seed=$(grep '^seed:' src/atlas_core/configs/train.yaml | awk '{print $2}')
 else
-  echo "Error: seed not found in $yaml_file or configs/train.yaml"
+  echo "Error: seed not found in $yaml_file or src/atlas_core/configs/train.yaml"
   exit 1
 fi
 
@@ -95,15 +95,15 @@ fi
 for ((i=0; i<num_gpus; i++)); do
   seed=$((base_seed + i))
   seed_arg="--seed $seed"
-  
+
   # Alternate between teacher (even) and student (odd) models
   if (( i % 2 == 0 )); then
     current_model=$model_name
   else
     current_model=$student_model
   fi
-  
-  cmd="CUDA_VISIBLE_DEVICES=$i python trainers/vllm_server.py \
+
+  cmd="CUDA_VISIBLE_DEVICES=$i python -m atlas_core.training.generation.vllm_server \
 --model=$current_model --port=$((base_port + i)) $prefix_arg $seed_arg"
   bash -c "$cmd" 2>&1 | tee -a job_${PBS_JOBID}.log &
 done
@@ -111,7 +111,7 @@ done
 # If single GPU, also launch student model on same GPU with different port
 if [[ $num_gpus -eq 1 ]]; then
   echo "Single GPU detected, launching student model on port $((base_port + 1))..."
-  cmd="CUDA_VISIBLE_DEVICES=0 python trainers/vllm_server.py \
+  cmd="CUDA_VISIBLE_DEVICES=0 python -m atlas_core.training.generation.vllm_server \
 --model=$student_model --port=$((base_port + 1)) $prefix_arg --seed $((base_seed + 1))"
   bash -c "$cmd" 2>&1 | tee -a job_${PBS_JOBID}.log &
 fi
@@ -164,4 +164,3 @@ CUDA_VISIBLE_DEVICES=$dev_list bash "$SCRIPT_DIR/launch.sh" "$num_gpus_2" \
   "$yaml_file" "${extra_args[@]}"
 
 unset CUDA_VISIBLE_DEVICES
-

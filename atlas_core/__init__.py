@@ -1,2 +1,0 @@
-"""Core Atlas shared utilities."""
-

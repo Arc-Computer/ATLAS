@@ -4,7 +4,7 @@ pytest.importorskip("atlas.training_data")
 
 from atlas_core.runtime import AtlasRewardBreakdown, AtlasSessionTrace, AtlasStepTrace
 
-from trainers import postgres_runtime_dataset as pg_dataset
+from atlas_core.data import postgres_runtime as pg_dataset
 
 
 def _make_session(

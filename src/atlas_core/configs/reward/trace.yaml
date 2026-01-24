@@ -1,0 +1,9 @@
+reward_log_name: trace
+
+trace_reward:
+  _target_: atlas_core.utils.hydra.load_function
+  path: atlas_core.training.reward.reward_functions.trace_reward_from_score
+
+reward_fns:
+  _target_: atlas_core.utils.hydra.wrap_as_list
+  trace_reward: ${trace_reward}

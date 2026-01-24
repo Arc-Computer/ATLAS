@@ -1,12 +1,7 @@
 import json
-import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
-from trainers.runtime_dataset import (
+from atlas_core.data.runtime_traces import (
     load_runtime_traces,
     flatten_traces_for_training,
     build_executor_prompt,

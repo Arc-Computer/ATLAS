@@ -151,7 +151,7 @@ def test_new_feature():
 
 Run tests with coverage:
 ```bash
-pytest tests/ --cov=atlas --cov-report=html
+pytest tests/ --cov=atlas_core --cov-report=html
 ```
 
 ## Pull Request Checklist

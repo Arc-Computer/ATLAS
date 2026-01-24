@@ -1,10 +1,10 @@
 # ATLAS Quickstart Evaluation
 
-Run a single question through the ATLAS loop to see how much a GPT-5 teacher and the RIM reward system improve your agent before you export traces and launch GRPO training.
+Run a single question through the ATLAS loop to see how much a GPT-5 teacher and the Reward Interpretation System (RIM) improve your agent before you export traces and launch GRPO training.
 
 ## Prerequisites
 - Python 3.11+
-- `pip install -r requirements-py312.txt`
+- `pip install atlas-core`
 - Environment variables:
   - `OPENAI_API_KEY`
   - `GEMINI_API_KEY`
@@ -20,6 +20,6 @@ The script prints baseline and teacher-guided responses plus their RIM scores.
 
 Use the optional flags to change models or token limits. When you’re ready to graduate from evaluation to training, export a batch of runtime traces with the atlas-sdk CLI and run:
 ```bash
-python scripts/run_offline_pipeline.py --export-path traces/<your-export>.jsonl
+atlas-core offline-pipeline --export-path traces/<your-export>.jsonl
 ```
 This converts the export into a GRPO training job without any additional overrides.

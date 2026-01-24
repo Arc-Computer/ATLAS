@@ -187,7 +187,7 @@ Use `adaptive_summary` to audit routing choices, probe evidence, and certificati
 
 ```python
 from atlas.training_data import get_training_sessions
-from trainers.runtime_dataset import sessions_to_rl_records
+from atlas_core.data.runtime_traces import sessions_to_rl_records
 
 # Query sessions directly
 sessions = get_training_sessions(
@@ -204,13 +204,13 @@ records = sessions_to_rl_records(sessions)
 ### Using JSONL Export (Alternative Method)
 
 ```python
-from trainers.runtime_dataset import load_runtime_traces, sessions_to_rl_records
+from atlas_core.data.runtime_traces import load_runtime_traces, sessions_to_rl_records
 
 sessions = load_runtime_traces("traces/my-session.jsonl")
 records = sessions_to_rl_records(sessions)
 ```
 
-Or use the Hydra shortcut (`configs/data/runtime_traces.yaml`) described in the top-level quickstart. The schema matches the training adapters, so no custom glue code is required.
+Or use the Hydra shortcut (`src/atlas_core/configs/data/runtime_traces.yaml`) described in the top-level quickstart. The schema matches the training adapters, so no custom glue code is required.
 
 ## Troubleshooting
 

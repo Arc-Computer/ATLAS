@@ -126,9 +126,9 @@ pytest tests/test_reward_schema.py -q
 
 It validates:
 
-- Reward config `_target_` paths and prompt references in `configs/reward/` + `configs/trainer/reward/`.
+- Reward config `_target_` paths and prompt references in `src/atlas_core/configs/reward/`.
 - Schema compatibility with the latest SDK telemetry (per-judge fields, optional blocks, etc.).
-- Trainer exports (`trainers/__init__.py`) so downstream imports keep working.
+- Trainer exports (`src/atlas_core/training/__init__.py`) so downstream imports keep working.
 
 Run it in CI alongside the SDK harnesses above whenever you edit reward prompts or trainer configs.
 

@@ -6,7 +6,7 @@ pytest.importorskip("atlas.training_data")
 
 from atlas_core.runtime import AtlasRewardBreakdown, AtlasSessionTrace, AtlasStepTrace
 
-from trainers import gkd_dataset
+from atlas_core.data import gkd as gkd_dataset
 
 
 def _make_session(

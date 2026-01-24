@@ -14,12 +14,12 @@ This guide shows **HOW-TO** use the reward system in code. For conceptual unders
 The reward system integrates seamlessly with the GRPO trainer:
 
 ```python
-from trainers.grpo import GRPOTrainer
-from RIM.reward_adapter import RIMReward
+from atlas_core.training.algorithms.grpo import GRPOTrainer
+from atlas_core.reward.interpretation import RIMReward
 from datasets import load_dataset
 
 # 1. Instantiate reward system
-reward_system = RIMReward(config_path='configs/rim_config.yaml')
+reward_system = RIMReward(config_path='reward_system/interpretation.yaml')
 
 # 2. Pass to trainer
 trainer = GRPOTrainer(
@@ -40,22 +40,22 @@ The trainer handles calling the reward system with batches of data during the RL
 Quick evaluation of teaching effectiveness:
 
 ```python
-from RIM.reward_adapter import RIMReward
+from atlas_core.reward.interpretation import RIMReward
 
 # Create reward system
-reward = RIMReward(config_path='configs/rim_config.yaml')
+reward = RIMReward(config_path='reward_system/interpretation.yaml')
 
 # Evaluate a single interaction
-result = reward.evaluate({
-    'question': 'What is 2+2?',
-    'baseline_response': 'It is 4',
-    'taught_response': 'The answer is 4 because 2 plus 2 equals 4',
-    'teaching': 'Explain your reasoning step by step'
-})
+result = reward.evaluate(
+    prompt="What is 2+2?",
+    response="The answer is <solution>4</solution>.",
+    baseline_solutions="It is 4",
+    teacher_traces="Explain your reasoning step by step",
+)
 
-print(f"Accuracy: {result['accuracy']}")
-print(f"Helpfulness: {result['helpfulness']}")
-print(f"Improvement: {result['helpfulness'] - result['baseline_accuracy']}")
+print(f"Score: {result.score}")
+print(f"Per-judge: {result.judge_scores}")
+print(f"Rationale:\\n{result.rationale}")
 ```
 
 ### In Continual Learning
@@ -70,10 +70,10 @@ In the SDK runtime, the same reward signals drive continual learning loops and h
 
 ### Modifying Existing Judges
 
-Judge behavior is controlled by their prompts in `RIM/judges.py`. To change what AccuracyJudge prioritizes:
+Judge behavior is controlled by their prompts in `src/atlas_core/reward/interpretation/judges.py`. To change what AccuracyJudge prioritizes:
 
 ```python
-# RIM/judges.py
+# src/atlas_core/reward/interpretation/judges.py
 class AccuracyJudge:
     def _build_prompt(self, inputs: Dict[str, Any]) -> str:
         # Customize this string to change evaluation criteria
@@ -92,7 +92,7 @@ Output JSON only: {{"principles": [...], "score_a": float, "score_b": float, "un
 
 ### Adding a New Judge
 
-**Step 1: Create judge class** (`RIM/judges.py`):
+**Step 1: Create judge class** (`src/atlas_core/reward/interpretation/judges.py`):
 
 ```python
 class CreativityJudge:
@@ -108,10 +108,10 @@ class CreativityJudge:
         return json.loads(response)
 ```
 
-**Step 2: Register in reward adapter** (`RIM/reward_adapter.py`):
+**Step 2: Register in reward adapter** (`src/atlas_core/reward/interpretation/reward_adapter.py`):
 
 ```python
-from RIM.judges import AccuracyJudge, HelpfulnessJudge, CreativityJudge
+from atlas_core.reward.interpretation.judges import AccuracyJudge, HelpfulnessJudge, CreativityJudge
 
 class RIMReward:
     def __init__(self, ...):
@@ -122,7 +122,7 @@ class RIMReward:
         }
 ```
 
-**Step 3: Enable in config** (`configs/rim_config.yaml`):
+**Step 3: Enable in config** (`reward_system/interpretation.yaml`):
 
 ```yaml
 active_judges:

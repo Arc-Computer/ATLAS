@@ -24,7 +24,8 @@ else
 fi
 arg2=${args[1]:-"default"}
 
-prefix="configs/run/"
+config_root="src/atlas_core/configs/recipe"
+prefix="${config_root}/"
 if [[ "$arg2" == $prefix* ]]; then
     arg2="${arg2#$prefix}"
 fi
@@ -38,4 +39,4 @@ echo $RND_PORT
 accelerate launch --num_processes "$nproc" \
   --main_process_port "$RND_PORT" \
   --config_file "$config" \
-  train.py run@_global_="$arg2" "${extra_args[@]}"
+  -m atlas_core.cli.train recipe@_global_="$arg2" "${extra_args[@]}"

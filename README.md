@@ -47,11 +47,11 @@ The **Atlas SDK** is the runtime component that wraps existing agent systems in 
 
    ```bash
    # Example: GRPO training
-   python scripts/run_offline_pipeline.py \
+   atlas-core offline-pipeline \
      --export-path traces/runtime.jsonl \
      output_dir=results/teacher-grpo
    ```
-   Override Hydra arguments (model, batch size, GPUs) as needed; the helper wires up `configs/run/teacher_rcl.yaml` by default.
+   Override Hydra arguments (model, batch size, GPUs) as needed; the helper wires up `recipe/teacher_rcl.yaml` by default.
 
 3. **Redeploy the checkpoint**
    Point the runtime SDK at your output directory (e.g., `results/teacher-grpo/rl_checkpoint/`) to load the new teacher, then rerun `atlas.core.run` to close the loop.
@@ -70,12 +70,12 @@ See the [Training Guide](https://docs.arc.computer/training) for detailed compar
 
 ## Rewards Only?
 
-Need scoring without training? Import `RIMReward` directly:
+Need scoring without training? Import the Reward Interpretation System (RIM) directly:
 
 ```python
-from RIM.reward_adapter import RIMReward
+from atlas_core.reward.interpretation import RIMReward
 
-reward_system = RIMReward(config_path="configs/rim_config.yaml")
+reward_system = RIMReward(config_path="reward_system/interpretation.yaml")
 score = reward_system.evaluate(prompt="...", response="...")
 print(score.score, score.rationale)
 ```
@@ -92,19 +92,36 @@ print(score.score, score.rationale)
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install -r requirements-py312.txt
+pip install atlas-core
 ```
 
-> Need GPU-backed training? Install PyTorch matching your CUDA stack, then run `pip install -r requirements-py312.txt`.
->
-> On Linux/CUDA environments the pinned `bitsandbytes` wheel will install automatically; on macOS or Windows it is skipped.
+> Need GPU-backed training? Install PyTorch matching your CUDA stack first. For source installs, use `pip install -e ".[dev]"` and add extras like `vllm` or `ray` as needed.
+
+## Docker (reproducible training environment)
+
+Build a pinned, reproducible image directly from this repo:
+
+```bash
+docker build -t atlas-core:local .
+```
+
+Run the offline pipeline helper against a JSONL export:
+
+```bash
+docker run --rm \
+  -v "$(pwd)/exports:/data" \
+  atlas-core:local \
+  atlas-core offline-pipeline --export-path /data/traces.jsonl --dry-run
+```
+
+> For GPU hosts, rebuild with CUDA-enabled base images and install the `deepspeed`, `ray`, or `vllm` extras as needed.
 
 ## Development
 
 - Format / lint: `ruff check .`
 - Tests: `pytest`
 - Docs sanity: `mintlify broken-links` (requires interactive prompt today)
-- Type checking: `pyright` (covers `train.py`, offline CLI helpers, and the runtime trace ingest path; see `pyrightconfig.json`)
+- Type checking: `pyright` (covers `src/atlas_core/cli/train.py`, offline CLI helpers, and the runtime trace ingest path; see `pyrightconfig.json`)
 
 We track major changes in `CHANGELOG.md`.
 

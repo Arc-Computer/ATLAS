@@ -71,3 +71,46 @@ Before merging a docs change:
 5. Check cross-page consistency (terminology, command syntax, dataset names).
 
 Adhering to this guide will keep Atlas documentation concise, purposeful, and aligned with the expectations of staff ML engineers who rely on it daily.
+
+## Documentation Audit & Refactoring Plan
+
+**Objective:** Refactor the ATLAS documentation to be more concise, clear, and aligned with this style guide. The focus is on serving staff-level ML engineers by prioritizing actionable content ("show > tell") and strictly adhering to the Diátaxis framework.
+
+**Methodology:**
+1.  **Categorize Each Document:** Assign a primary Diátaxis type (Tutorial, How-To, Explanation, Reference) to each `.mdx` file.
+2.  **Identify Verbosity & Clarity Issues:** Flag long paragraphs, marketing language, and sections that "tell" instead of "show".
+3.  **Propose Concrete Refactoring Actions:** For each document group, suggest specific changes like converting paragraphs to tables/lists, adding runnable code blocks with verification steps, and standardizing headings.
+
+---
+
+### **Phase 1: Core Concepts & Introductions (`docs/concepts/`, `docs/introduction.mdx`)**
+*   **Category:** Explanation
+*   **Critique:** These documents contain good conceptual overviews but are verbose and sometimes mix in how-to steps.
+*   **Action Plan:**
+    1.  **Isolate Explanations:** Move any implementation code snippets or step-by-step instructions to new or existing "How-To" guides. Replace them with links.
+    2.  **Increase Information Density:** Convert descriptive paragraphs into tables, definition lists, or `<CardGroup>` components to make comparisons and key takeaways easier to scan.
+    3.  **Eliminate Filler Language:** Remove marketing-oriented adjectives (e.g., "revolutionary") and rephrase sentences to be more direct and technical.
+
+### **Phase 2: Training & Benchmark Guides (`docs/training/`, `docs/benchmarks/`)**
+*   **Category:** How-To & Explanation
+*   **Critique:** These guides are action-oriented but can be dense. Long sections of prose explain concepts instead of showing commands.
+*   **Action Plan:**
+    1.  **Structure as Checklists:** Reformat each guide to follow a strict `Prerequisites -> Command -> Verification` pattern.
+    2.  **Lead with Code:** Place runnable commands, configuration snippets, and expected outputs at the beginning of sections. Follow with brief, collapsible explanations (`<Accordion>`).
+    3.  **Refactor Explanations:** For methodology documents, break down dense sections into more digestible visual elements like tables and diagrams with concise captions.
+
+### **Phase 3: Reference Documentation (`docs/reference/`, `docs/api-reference/`)**
+*   **Category:** Reference
+*   **Critique:** These sections incorrectly mix reference material with tutorials and usage examples, making them hard to use for quick lookups.
+*   **Action Plan:**
+    1.  **Purge Narrative:** Move all tutorials and usage examples (e.g., "Typical Usage") into new "How-To" guides. Reference pages should contain only API signatures, parameter tables, schema definitions, and source code links.
+    2.  **Standardize Format:** Ensure all reference pages use a consistent, table-driven format.
+    3.  **De-duplicate Content:** Move "How-To" sections out of reference docs into appropriate guides and link back.
+
+### **Phase 4: SDK Guides & Examples (`docs/sdk/`, `docs/examples/`)**
+*   **Category:** How-To & Tutorial
+*   **Critique:** Generally well-structured, but consistency can be improved. Some "How-To" guides are written like "Explanations."
+*   **Action Plan:**
+    1.  **Enforce Action-Oriented Headings:** Rename section titles to use verbs (e.g., "Configure the Agent" instead of "Agent Configuration").
+    2.  **Review for Clarity:** Examine pages like `orchestration.mdx` and `learning-system.mdx`. If they primarily explain concepts, move them to `docs/concepts/`. If they are guides, rewrite them to be more direct and task-focused.
+    3.  **Add Verification Steps:** Ensure every "How-To" guide includes a clear, runnable command or method to verify that the step was successful.

@@ -81,8 +81,8 @@ The system layers a dual-agent reasoning loop (student + verifying teacher) on t
 |-------|----------|--------|------|
 | Runtime quality control | [`atlas run`](/sdk/quickstart) | Reviewed traces with reward scores | Minutes |
 | Export traces | [`arc-atlas export`](/sdk/export-traces) | JSONL dataset from approved sessions | Minutes |
-| Train teacher (GKD) | [`scripts/run_offline_pipeline.py`](/training/offline/gkd-training) | Distilled teacher checkpoint | 4-8 hours |
-| Train teacher (GRPO) | [`configs/run/teacher_rcl.yaml`](/training/offline/grpo-training) | RL-optimized teacher checkpoint | 24-48 hours |
+| Train teacher (GKD) | [`atlas-core offline-pipeline`](/training/offline/gkd-training) | Distilled teacher checkpoint | 4-8 hours |
+| Train teacher (GRPO) | [`atlas-core train recipe@_global_=teacher_rcl`](/training/offline/grpo-training) | RL-optimized teacher checkpoint | 24-48 hours |
 
 Every stage feeds the next—runtime traces become training data; trained checkpoints redeploy to runtime.
 

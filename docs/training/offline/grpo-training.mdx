@@ -61,9 +61,9 @@ arc-atlas --database-url postgresql://... --output traces.jsonl
 Reference the provided Hydra config for dataset loading:
 
 ```yaml
-# configs/data/runtime_traces.yaml
+# src/atlas_core/configs/data/runtime_traces.yaml
 make_dataset_fn:
-  _target_: custom_data.runtime_trace_data.get_runtime_trace_dataset
+  _target_: atlas_core.data.runtime_traces.get_runtime_trace_dataset
   export_path: traces/aime-batch.jsonl  # Or use direct database access
   eval_split_ratio: 0.1
 ```
@@ -90,7 +90,7 @@ Supervised fine-tuning teaches the model basic teaching patterns through demonst
 ### Configuration Snapshot
 
 ```yaml
-# configs/run/teacher_sft.yaml
+# src/atlas_core/configs/recipe/teacher_sft.yaml
 defaults:
   - _self_
   - override /model: llama3_8b
@@ -109,21 +109,20 @@ output_dir: checkpoints/sft
 
 ```bash
 # Minimum (2 GPUs)
-scripts/launch.sh 2 configs/run/teacher_sft.yaml \
+scripts/launch.sh 2 src/atlas_core/configs/recipe/teacher_sft.yaml \
   output_dir=checkpoints/sft
 
 # Recommended (4 GPUs)
-scripts/launch.sh 4 configs/run/teacher_sft.yaml \
+scripts/launch.sh 4 src/atlas_core/configs/recipe/teacher_sft.yaml \
   output_dir=checkpoints/sft
 
 # Full production (8 GPUs)
-scripts/launch.sh 8 configs/run/teacher_sft.yaml \
+scripts/launch.sh 8 src/atlas_core/configs/recipe/teacher_sft.yaml \
   output_dir=checkpoints/sft
 
 # Memory-constrained with offloading
-scripts/launch.sh 2 configs/run/teacher_sft.yaml \
-  output_dir=checkpoints/sft \
-  +offload
+scripts/launch.sh offload 2 src/atlas_core/configs/recipe/teacher_sft.yaml \
+  output_dir=checkpoints/sft
 ```
 
 ### Verify Success
@@ -160,14 +159,14 @@ Atlas Core ships a lightweight launcher so you can spin up the inference stack w
 
 ```bash
 CUDA_VISIBLE_DEVICES=0,1 \
-python trainers/vllm_server.py \
+python -m atlas_core.training.generation.vllm_server \
   --model checkpoints/sft/final \
   --port 8765 \
   --tensor-parallel-size 2 \
   --gpu-memory-utilization 0.9
 ```
 
-If you prefer a single command that starts the vLLM servers and the GRPO job together, stick with `scripts/launch_with_server.sh <server_gpus> <training_gpus> configs/run/teacher_rcl.yaml ...`. That wrapper orchestrates `trainers/vllm_server.py` under the hood, waits for the health checks to pass, and then launches `scripts/launch.sh` for reinforcement learning.
+If you prefer a single command that starts the vLLM servers and the GRPO job together, stick with `scripts/launch_with_server.sh <server_gpus> <training_gpus> src/atlas_core/configs/recipe/teacher_rcl.yaml ...`. That wrapper orchestrates `atlas_core.training.generation.vllm_server` under the hood, waits for the health checks to pass, and then launches `scripts/launch.sh` for reinforcement learning.
 
 ### Verify Success
 
@@ -210,15 +209,15 @@ GRPO (Group Relative Policy Optimization) trains the teacher to actually improve
 
 ```bash
 # Minimum (2 GPUs: 1 training, 1 vLLM)
-scripts/launch_with_server.sh 1 1 configs/run/teacher_rcl.yaml \
+scripts/launch_with_server.sh 1 1 src/atlas_core/configs/recipe/teacher_rcl.yaml \
   model_name_or_path=checkpoints/sft/final
 
 # Recommended (4 GPUs: 2 training, 2 vLLM)
-scripts/launch_with_server.sh 2 2 configs/run/teacher_rcl.yaml \
+scripts/launch_with_server.sh 2 2 src/atlas_core/configs/recipe/teacher_rcl.yaml \
   model_name_or_path=checkpoints/sft/final
 
 # Production (8 GPUs: 4 training, 4 vLLM)
-scripts/launch_with_server.sh 4 4 configs/run/teacher_rcl.yaml \
+scripts/launch_with_server.sh 4 4 src/atlas_core/configs/recipe/teacher_rcl.yaml \
   model_name_or_path=checkpoints/sft/final
 ```
 
@@ -300,16 +299,16 @@ You only need to understand 3-5 core parameters:
     GRPO uses the principle-based reward system. Point to the config:
 
     ```yaml
-    # configs/trainer/reward/rim_teaching.yaml
+    # src/atlas_core/configs/reward/interpretation_teaching.yaml
     teacher_reward:
-      _target_: RIM.reward_adapter.RIMReward
-      config_path: configs/rim_offline_config.yaml
+      _target_: atlas_core.reward.interpretation.RIMReward
+      config_path: reward_system/interpretation_offline.yaml
     ```
 
     The offline config focuses on helpfulness and process (not accuracy):
 
     ```yaml
-    # configs/rim_offline_config.yaml
+    # reward_system/interpretation_offline.yaml
     active_judges:
       accuracy: false      # Disable for offline training
       helpfulness: true    # Core reward signal
@@ -348,8 +347,8 @@ You only need to understand 3-5 core parameters:
     # Enable gradient checkpointing
     gradient_checkpointing=true
 
-    # Use DeepSpeed offloading
-    deepspeed=configs/deepspeed/zero2.json
+    # Use DeepSpeed offloading (Accelerate config)
+    # scripts/launch.sh offload <gpus> src/atlas_core/configs/recipe/teacher_rcl.yaml
     ```
   </Accordion>
 
@@ -481,7 +480,7 @@ torchrun \
   --nnodes=2 \
   --node_rank=0 \
   --master_addr=10.0.0.1 \
-  train.py configs/run/teacher_rcl.yaml
+  atlas-core train recipe@_global_=teacher_rcl
 
 # Node 2
 torchrun \
@@ -489,28 +488,28 @@ torchrun \
   --nnodes=2 \
   --node_rank=1 \
   --master_addr=10.0.0.1 \
-  train.py configs/run/teacher_rcl.yaml
+  atlas-core train recipe@_global_=teacher_rcl
 ```
 
 ### DeepSpeed for Large Models
 
-```json
-// configs/deepspeed/zero2.json
-{
-  "zero_optimization": {
-    "stage": 2,
-    "offload_optimizer": {"device": "cpu"},
-    "overlap_comm": true
-  },
-  "fp16": {"enabled": true},
-  "gradient_clipping": 1.0
-}
-```
+Atlas Core uses Accelerate configs (in `accelerate/`) to control DeepSpeed settings. Choose one of the shipped presets:
+
+- `accelerate/deepspeed_zero3.yaml` (default)
+- `accelerate/deepspeed_zero3_cpu_offloading.yaml` (CPU offload)
+- `accelerate/deepspeed_zero1.yaml` (lighter config)
 
 Use with:
 ```bash
-scripts/launch.sh 8 configs/run/teacher_rcl.yaml \
-  deepspeed=configs/deepspeed/zero2.json
+# Default zero3
+scripts/launch.sh 8 src/atlas_core/configs/recipe/teacher_rcl.yaml
+
+# CPU offload
+scripts/launch.sh offload 8 src/atlas_core/configs/recipe/teacher_rcl.yaml
+
+# Or explicitly via Accelerate
+accelerate launch --config_file accelerate/deepspeed_zero3.yaml \
+  -m atlas_core.cli.train recipe@_global_=teacher_rcl
 ```
 
 ## Next Steps

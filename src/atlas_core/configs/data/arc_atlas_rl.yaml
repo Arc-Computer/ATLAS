@@ -1,0 +1,13 @@
+dataset_id_or_path: Arc-Intelligence/Arc-ATLAS-Teach-v0
+dataset_split: rl
+dataset_max_samples: null
+eval_split_ratio: 0.1
+
+data_log_name: arc_atlas_rl
+
+make_dataset_fn:
+  _target_: atlas_core.data.arc_atlas_rl.get_arc_atlas_rl_dataset
+  dataset_id_or_path: ${dataset_id_or_path}
+  dataset_split: ${dataset_split}
+  dataset_max_samples: ${dataset_max_samples}
+  eval_split_ratio: ${eval_split_ratio}

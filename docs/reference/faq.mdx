@@ -132,7 +132,7 @@ Yes, prepare your data in this format:
 
 Then train:
 ```bash
-scripts/launch.sh 8 configs/run/teacher_sft.yaml \
+scripts/launch.sh 8 src/atlas_core/configs/recipe/teacher_sft.yaml \
   dataset_name=path/to/your/data
 ```
 
@@ -144,7 +144,7 @@ Use the ATLAS teaching protocol with real imports:
 
 ```python
 from openai import OpenAI
-from RIM.reward_adapter import RIMReward
+from atlas_core.reward.interpretation import RIMReward
 
 client = OpenAI()
 
@@ -181,9 +181,9 @@ Yes. Use the [`atlas-sdk`](https://github.com/Arc-Computer/atlas-sdk) runtime wr
 Use RIM reward scoring to track quality:
 
 ```python
-from RIM.reward_adapter import RIMReward
+from atlas_core.reward.interpretation import RIMReward
 
-reward = RIMReward(config_path='configs/rim_config.yaml')
+reward = RIMReward(config_path='reward_system/interpretation.yaml')
 
 # Track each request
 baseline_eval = reward.evaluate(prompt=task, response=baseline_response)

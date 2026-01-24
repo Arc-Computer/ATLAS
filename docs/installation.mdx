@@ -173,6 +173,26 @@ Prerequisites Check:
     - Install all dependencies
   </Tab>
 
+  <Tab title="Docker (Reproducible)">
+    Build a pinned training image directly from this repo:
+
+    ```bash
+    docker build -t atlas-core:local .
+    ```
+
+    Run the offline pipeline helper against a JSONL export:
+
+    ```bash
+    docker run --rm \
+      -v "$(pwd)/exports:/data" \
+      atlas-core:local \
+      atlas-core offline-pipeline --export-path /data/traces.jsonl --dry-run
+    ```
+
+    For GPU hosts, rebuild with CUDA-enabled base images and include extras such as
+    `deepspeed`, `ray`, or `vllm`.
+  </Tab>
+
   <Tab title="Manual Training Installation">
     For custom environments or debugging:
 
@@ -235,7 +255,7 @@ To disable Weights & Biases tracking:
 
 ```bash
 # In command line
-python train.py report_to=null
+atlas-core train report_to=null
 
 # Or in config file
 report_to: null
@@ -322,10 +342,10 @@ For different GPU configurations:
     python examples/quickstart/evaluate.py  # Quick evaluation test
 
     # For training with limited VRAM (requires 2+ GPUs)
-    python train.py +offload
+    scripts/launch.sh offload 2 src/atlas_core/configs/recipe/teacher_rcl.yaml
 
     # Or use Zero-1 optimization
-    python train.py +zero1
+    scripts/launch.sh zero1 2 src/atlas_core/configs/recipe/teacher_rcl.yaml
     ```
   </Accordion>
 
@@ -333,13 +353,13 @@ For different GPU configurations:
     For distributed training across multiple GPUs:
     ```bash
     # Minimum 2 GPUs for RL training (1 for vLLM, 1 for training)
-    scripts/launch_with_server.sh 1 1 configs/run/teacher_rcl.yaml
+    scripts/launch_with_server.sh 1 1 src/atlas_core/configs/recipe/teacher_rcl.yaml
 
     # Production setup with 4 GPUs (2 for vLLM, 2 for training)
-    scripts/launch_with_server.sh 2 2 configs/run/teacher_rcl.yaml
+    scripts/launch_with_server.sh 2 2 src/atlas_core/configs/recipe/teacher_rcl.yaml
 
     # Full 8 GPU setup
-    scripts/launch_with_server.sh 4 4 configs/run/teacher_rcl.yaml
+    scripts/launch_with_server.sh 4 4 src/atlas_core/configs/recipe/teacher_rcl.yaml
     ```
   </Accordion>
 
@@ -409,13 +429,13 @@ For different GPU configurations:
     Reduce memory usage:
     ```bash
     # Use gradient checkpointing
-    python train.py gradient_checkpointing=true
+    atlas-core train gradient_checkpointing=true
 
     # Reduce batch size
-    python train.py per_device_train_batch_size=1
+    atlas-core train per_device_train_batch_size=1
 
     # Enable CPU offloading
-    python train.py +offload
+    scripts/launch.sh offload 2 src/atlas_core/configs/recipe/teacher_rcl.yaml
     ```
   </Accordion>
 

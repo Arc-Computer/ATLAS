@@ -9,7 +9,7 @@ from atlas import run
 from atlas.agent.registry import AdapterError
 from atlas.types import StepResult
 
-CONFIG_PATH = "configs/examples/sdk_quickstart.yaml"
+CONFIG_PATH = "src/atlas_core/configs/recipe/sdk_quickstart.yaml"
 
 
 def pretty_attempt(step_result: StepResult) -> dict[str, Any]:
