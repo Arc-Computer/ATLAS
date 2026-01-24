@@ -72,7 +72,7 @@ atlas run --config .atlas/generated_config.yaml --task "Summarize the latest AI 
 
 - `atlas env init` scans for `@atlas.environment` / `@atlas.agent` decorators or factory functions, loads `.env`, and writes `.atlas/discover.json`, `.atlas/generated_factories.py`, and `.atlas/generated_config.yaml`.
 - `atlas run --config` loads the generated config, verifies module hashes, streams telemetry into `.atlas/runs/`, and injects learning playbooks when available.
-- Need to exercise the full orchestrator? Point `atlas run --config configs/examples/sdk_quickstart.yaml --task "..."` at a config file to bypass discovery entirely.
+- Need to exercise the full orchestrator? Point `atlas run --config src/atlas_core/configs/recipe/sdk_quickstart.yaml --task "..."` at a config file to bypass discovery entirely.
 
 ### Option B – Python API (direct invocation)
 
@@ -95,7 +95,7 @@ from atlas.core import run
 
 result = run(
     task="Summarize the latest AI news",
-    config_path="configs/examples/sdk_quickstart.yaml",  # Path relative to ATLAS repo root
+    config_path="src/atlas_core/configs/recipe/sdk_quickstart.yaml",  # Path relative to ATLAS repo root
     stream_progress=True,
 )
 print(result.final_answer)
@@ -104,7 +104,7 @@ print(result.final_answer)
 <Info>
 Run it inline if you prefer to avoid creating a file:
 ```bash
-python -c "from atlas.core import run; result = run(task='Summarize the latest AI news', config_path='configs/examples/sdk_quickstart.yaml', stream_progress=True); print(result.final_answer)"
+python -c "from atlas.core import run; result = run(task='Summarize the latest AI news', config_path='src/atlas_core/configs/recipe/sdk_quickstart.yaml', stream_progress=True); print(result.final_answer)"
 ```
 </Info>
 

@@ -117,8 +117,8 @@ export TRANSFORMERS_OFFLINE=1
   <Accordion title="CPU Offloading">
     ```python
     config.offload = True
-    # Or with DeepSpeed
-    config.deepspeed = "configs/deepspeed/zero3_offload.json"
+    # Or with DeepSpeed via Accelerate
+    # accelerate launch --config_file accelerate/deepspeed_zero3_cpu_offloading.yaml -m atlas_core.cli.train ...
     ```
   </Accordion>
 </AccordionGroup>

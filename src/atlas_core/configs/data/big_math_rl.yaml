@@ -1,0 +1,13 @@
+dataset_id_or_path: open-r1/Big-Math-RL-Verified-Processed
+dataset_split: train
+dataset_level_filter: level_4_5
+dataset_max_samples: 1000
+
+data_log_name: big_math_rl_level_4_5_1000
+
+make_dataset_fn:
+  _target_: atlas_core.data.bigmath_rl.get_bigmath_rl_dataset
+  dataset_id_or_path: ${dataset_id_or_path}
+  dataset_split: ${dataset_split}
+  dataset_level_filter: ${dataset_level_filter}
+  dataset_max_samples: ${dataset_max_samples}

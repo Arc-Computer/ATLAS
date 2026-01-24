@@ -1,0 +1,12 @@
+reward_log_name: interpretation
+
+rim_reward:
+  _target_: atlas_core.reward.interpretation.RIMReward
+  student_model: null
+  teacher_model: null
+  tokenizer: null
+  config_path: reward_system/interpretation.yaml
+
+reward_fns:
+  _target_: atlas_core.utils.hydra.wrap_as_list
+  rim_reward: ${rim_reward}

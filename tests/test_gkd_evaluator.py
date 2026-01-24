@@ -2,7 +2,10 @@
 
 import pytest
 
-from trainers.gkd_evaluator import BaselineMetricsCallback, compute_baseline_summary
+from atlas_core.training.evaluation.gkd_evaluator import (
+    BaselineMetricsCallback,
+    compute_baseline_summary,
+)
 
 
 def test_baseline_callback_initialization():

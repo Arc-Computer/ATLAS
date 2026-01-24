@@ -2,16 +2,9 @@ import json
 from pathlib import Path
 
 import pytest
-import sys
-from pathlib import Path
-
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
 import yaml
 
-from RIM.reward_adapter import RIMReward
+from atlas_core.reward.interpretation import RIMReward
 from atlas_core.runtime import AtlasRewardBreakdown
 
 
@@ -29,7 +22,7 @@ def stub_config(tmp_path: Path) -> Path:
             "parallel_execution": {"max_workers": 1},
         }
     }
-    path = tmp_path / "rim_config.yaml"
+    path = tmp_path / "interpretation.yaml"
     path.write_text(yaml.safe_dump(config), encoding="utf-8")
     return path
 
@@ -60,11 +53,11 @@ def stubbed_model_interface(monkeypatch):
         )
 
     monkeypatch.setattr(
-        "RIM.model_interface.model_interface.call_model",
+        "atlas_core.reward.interpretation.model_interface.model_interface.call_model",
         _call_model,
     )
     monkeypatch.setattr(
-        "RIM.judge_specs.get_judge_prompt",
+        "atlas_core.reward.interpretation.judge_specs.get_judge_prompt",
         lambda reward_type: (
             "Question: {question}\n"
             "Answer: {student_answer}\n"
@@ -72,7 +65,7 @@ def stubbed_model_interface(monkeypatch):
         ),
     )
     monkeypatch.setattr(
-        "RIM.rim.RewardInterpretationModel._build_judge_prompt",
+        "atlas_core.reward.interpretation.rim.RewardInterpretationModel._build_judge_prompt",
         lambda self, trajectory, reward_type: "prompt",
     )
 

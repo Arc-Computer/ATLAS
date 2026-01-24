@@ -1,10 +1,11 @@
 {
   "include": [
-    "train.py",
-    "scripts/run_offline_pipeline.py",
-    "custom_data/runtime_trace_data.py",
-    "trainers/runtime_dataset.py",
-    "atlas_core/runtime/schema.py"
+    "src/atlas_core/cli/train.py",
+    "src/atlas_core/cli/offline_pipeline.py",
+    "src/atlas_core/data/runtime_traces.py",
+    "src/atlas_core/data/postgres_runtime.py",
+    "src/atlas_core/runtime/schema.py",
+    "src/atlas_core/training"
   ],
   "exclude": [
     "**/__pycache__",

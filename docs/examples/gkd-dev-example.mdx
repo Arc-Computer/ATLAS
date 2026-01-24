@@ -20,8 +20,8 @@ Ensure `ATLAS_DB_URL` points to the same Postgres instance the SDK writes to, th
 
 ```bash
 export ATLAS_DB_URL="postgresql://user:pass@host:5432/atlas"
-python train.py \
-  --config-name teacher_gkd \
+atlas-core train \
+  recipe@_global_=teacher_gkd \
   teacher_model_name_or_path=Qwen/Qwen2.5-14B-Instruct \
   model.model_name_or_path=Qwen/Qwen2.5-7B-Instruct \
   trainer.min_reward=0.8
@@ -88,4 +88,4 @@ Compute success delta (`0.815 - 0.758 = +5.7 pp`) and token reduction (`1 - 180/
 ## Next steps
 
 - Use `scripts/examples/run_two_gear_gkd.py` to run the fast and reliability configs back-to-back and automatically print the comparison table.
-- Once you have Postgres traces from the Atlas runtime, re-run `train.py --config-name teacher_gkd` pointing at `ATLAS_DB_URL` to distill your own workflows instead of GSM8K.
+- Once you have Postgres traces from the Atlas runtime, re-run `atlas-core train recipe@_global_=teacher_gkd` pointing at `ATLAS_DB_URL` to distill your own workflows instead of GSM8K.

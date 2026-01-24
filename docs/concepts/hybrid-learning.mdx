@@ -97,14 +97,14 @@ Our Teacher trained on ~7,000 math problems achieved **46% accuracy on AIME-25**
     huggingface-cli download Arc-Intelligence/ATLAS-8B-Thinking
 
     # Option 2: Custom (2+ GPUs)
-    scripts/launch.sh 2 configs/run/teacher_sft.yaml
-    scripts/launch_with_server.sh 1 1 configs/run/teacher_rcl.yaml
+    scripts/launch.sh 2 src/atlas_core/configs/recipe/teacher_sft.yaml
+    scripts/launch_with_server.sh 1 1 src/atlas_core/configs/recipe/teacher_rcl.yaml
     ```
   </Step>
 
   <Step title="Run GRPO on Exported Traces">
     ```bash
-    python scripts/run_offline_pipeline.py \
+    atlas-core offline-pipeline \
       --export-path traces/runtime.jsonl \
       --wandb-project atlas-production
     ```

@@ -5,10 +5,13 @@ torch = pytest.importorskip("torch")
 from datasets import Dataset
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from trl import GKDConfig
-from trl.trainer.utils import DataCollatorForChatML
+try:
+    from trl.experimental.utils import DataCollatorForChatML
+except ImportError:  # pragma: no cover - fallback for older TRL versions
+    from trl.trainer.utils import DataCollatorForChatML
 
-from trainers.gkd_trainer import AlignedChatCollator, AtlasGKDTrainer
-from trainers.postgres_runtime_dataset import session_to_conversation
+from atlas_core.training.algorithms.gkd_trainer import AlignedChatCollator, AtlasGKDTrainer
+from atlas_core.data.postgres_runtime import session_to_conversation
 
 
 def _ensure_pad_token(tokenizer):
@@ -17,7 +20,18 @@ def _ensure_pad_token(tokenizer):
             tokenizer.pad_token = tokenizer.eos_token
         else:
             tokenizer.add_special_tokens({"pad_token": "[PAD]"})
+    if getattr(tokenizer, "chat_template", None) is None:
+        tokenizer.chat_template = (
+            "{% for message in messages %}"
+            "{{ message['role'] }}: {{ message['content'] }}\n"
+            "{% endfor %}"
+            "{% if add_generation_prompt %}assistant: {% endif %}"
+        )
     return tokenizer
+
+
+STUDENT_MODEL = "hf-internal-testing/tiny-random-gpt2"
+TEACHER_MODEL = STUDENT_MODEL
 
 
 def _sample_messages():
@@ -45,8 +59,8 @@ def test_session_to_conversation_adds_prompt_and_completion():
 
 
 def test_aligned_chat_collator_handles_dual_tokenizers():
-    student_tok = _ensure_pad_token(AutoTokenizer.from_pretrained("hf-internal-testing/tiny-random-gpt2"))
-    teacher_tok = _ensure_pad_token(AutoTokenizer.from_pretrained("hf-internal-testing/tiny-random-llama"))
+    student_tok = _ensure_pad_token(AutoTokenizer.from_pretrained(STUDENT_MODEL))
+    teacher_tok = _ensure_pad_token(AutoTokenizer.from_pretrained(TEACHER_MODEL))
     student_collator = DataCollatorForChatML(tokenizer=student_tok, max_length=128)
     teacher_collator = DataCollatorForChatML(tokenizer=teacher_tok, max_length=128)
     collator = AlignedChatCollator(student_collator, teacher_collator)
@@ -64,12 +78,13 @@ def test_aligned_chat_collator_handles_dual_tokenizers():
 
 
 def test_atlas_gkd_trainer_aligns_teacher_logits(tmp_path):
-    student_model_name = "hf-internal-testing/tiny-random-gpt2"
-    teacher_model_name = "hf-internal-testing/tiny-random-llama"
+    student_model_name = STUDENT_MODEL
+    teacher_model_name = TEACHER_MODEL
 
     tokenizer = _ensure_pad_token(AutoTokenizer.from_pretrained(student_model_name))
-    student_model = AutoModelForCausalLM.from_pretrained(student_model_name)
-    teacher_model = AutoModelForCausalLM.from_pretrained(teacher_model_name)
+    device = torch.device("cpu")
+    student_model = AutoModelForCausalLM.from_pretrained(student_model_name).to(device)
+    teacher_model = AutoModelForCausalLM.from_pretrained(teacher_model_name).to(device)
 
     dataset = Dataset.from_list(
         [
@@ -89,6 +104,7 @@ def test_atlas_gkd_trainer_aligns_teacher_logits(tmp_path):
         eval_strategy="no",
         save_strategy="no",
         logging_steps=1,
+        use_cpu=True,
     )
 
     trainer = AtlasGKDTrainer(

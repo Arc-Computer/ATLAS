@@ -8,11 +8,11 @@ from pathlib import Path
 from typing import List, Sequence
 
 if __package__ in {None, ""}:
-    sys.path.append(str(Path(__file__).resolve().parents[2]))
+    sys.path.append(str(Path(__file__).resolve().parents[2] / "src"))
 
 from openai import OpenAI
 
-from RIM.reward_adapter import RIMReward
+from atlas_core.reward.interpretation import RIMReward
 
 
 DEFAULT_QUESTION = (
@@ -166,8 +166,8 @@ def main() -> None:
     )
     parser.add_argument(
         "--reward-config",
-        default="configs/rim_config.yaml",
-        help="Path to RIM reward configuration",
+        default="reward_system/interpretation.yaml",
+        help="Path to Reward Interpretation System (RIM) configuration",
     )
     parser.add_argument(
         "--teacher-max-output",

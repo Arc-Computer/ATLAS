@@ -141,7 +141,7 @@ documented in [`Export Runtime Traces`](/sdk/export-traces).
 ### `atlas train`
 
 Bridges exports into Atlas Core’s offline pipeline. It reuses the exporter filters above and then launches
-`scripts/run_offline_pipeline.py` with Hydra overrides.
+`atlas-core offline-pipeline` with Hydra overrides.
 
 - Filters: `--session-id`, `--limit`, `--status`, `--include-status`, `--trajectory-event-limit`.
 - Atlas Core overrides: `--atlas-core-path`, `--config-name`, `--data-config`, `--trainer-config`, `--model-config`.

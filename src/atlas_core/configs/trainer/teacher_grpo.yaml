@@ -1,0 +1,27 @@
+defaults:
+  - grpo
+  - reward@_global_: interpretation_teaching
+  - _self_
+
+trainer_log_name: teacher_grpo_rw_${reward_log_name}
+
+logging_prob: 0.1
+student_model: null
+use_reference_teacher_model: false
+student_model_init_kwargs: null
+completion_only_training: false
+disable_student_offloading: false
+
+trainer_args:
+  max_probe_tokens: ${max_probe_tokens}
+  student_diagnostic_template: ${student_diagnostic_template}
+  teacher_adaptive_template: ${teacher_adaptive_template}
+  student_with_teaching_template: ${student_with_teaching_template}
+
+trainer:
+  _target_: atlas_core.training.algorithms.teacher_trainers.TeacherGRPOTrainer
+  student_model: ${student_model}
+  use_reference_teacher_model: ${use_reference_teacher_model}
+  student_model_init_kwargs: ${student_model_init_kwargs}
+  logging_prob: ${logging_prob}
+  disable_student_offloading: ${disable_student_offloading}

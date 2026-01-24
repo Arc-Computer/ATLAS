@@ -1,0 +1,30 @@
+model_log_name:
+model_name_or_path:
+tokenizer_name_or_path: ${model_name_or_path}
+
+model_args:
+  _target_: atlas_core.utils.hydra.trl.ModelConfig
+  model_name_or_path: ${model_name_or_path}
+  trust_remote_code: true
+  use_peft: ${use_peft}
+  load_in_4bit: ${load_in_4bit}
+
+use_peft: false
+load_in_4bit: false
+
+tokenizer:
+  _target_: atlas_core.utils.hydra.transformers.AutoTokenizer.from_pretrained
+  pretrained_model_name_or_path: ${tokenizer_name_or_path}
+  trust_remote_code: true
+  padding_side: left
+
+unsafe_tokenizer_loading: false
+make_tokenizer_fn:
+  _target_: atlas_core.utils.hydra.fix_pad_token
+  tokenizer: ${tokenizer}
+  model_name: ${model_name_or_path}
+  unsafe: ${unsafe_tokenizer_loading}
+
+peft_config:
+  _target_: atlas_core.utils.hydra.trl.get_peft_config
+  model_args: ${model_args}

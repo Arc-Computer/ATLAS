@@ -123,7 +123,7 @@ Integrate via the SDK to wrap your agent with adaptive lanes (auto, paired, coac
 
 ### Offline GRPO training
 
-Export runtime traces (`arc-atlas --output traces.jsonl`) and run `python scripts/run_offline_pipeline.py --export-path <traces>.jsonl` to produce updated teacher checkpoints. Point the SDK back at the new weights to close the loop.
+Export runtime traces (`arc-atlas --output traces.jsonl`) and run `atlas-core offline-pipeline --export-path <traces>.jsonl` to produce updated teacher checkpoints. Point the SDK back at the new weights to close the loop.
 
 ## Best practices
 

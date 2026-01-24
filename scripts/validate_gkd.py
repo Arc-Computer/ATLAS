@@ -33,8 +33,8 @@ os.environ.setdefault("TRANSFORMERS_NO_APEX", "1")
 
 from trl import GKDConfig
 
-from trainers.gkd_trainer import AtlasGKDTrainer
-from trainers.math_gkd_dataset import (
+from atlas_core.training.algorithms.gkd_trainer import AtlasGKDTrainer
+from atlas_core.data.math_gkd import (
     MathGKDDatasetConfig,
     build_math_gkd_dataset,
     extract_answer_from_text,

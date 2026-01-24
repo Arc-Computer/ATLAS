@@ -13,7 +13,7 @@ Generalized Knowledge Distillation (GKD) enables on-policy distillation of Atlas
 
 **Solution**: Use GKD to transfer the teacher's action distribution to a smaller student directly from the same on-policy traces, reducing latency while respecting the reward-weighted data collected in production.
 
-**Technical Implementation**: The run config (`configs/run/teacher_gkd.yaml`) wires the GKD trainer (`configs/trainer/gkd.yaml`) and the Postgres-backed dataset builder in `trainers.gkd_dataset`. Trace exports match the schema captured in the [MCP Tool Learning example](/examples/adaptive-tool-use), so you can replay identical workloads through distillation or GRPO. For the reinforcement-learning path, see [`grpo-training.mdx`](./grpo-training.mdx); both flows follow the override patterns documented in the [Training Configuration Guide](../configuration.mdx).
+**Technical Implementation**: The run config (`src/atlas_core/configs/recipe/teacher_gkd.yaml`) wires the GKD trainer (`src/atlas_core/configs/trainer/gkd.yaml`) and the Postgres-backed dataset builder in `atlas_core.data.gkd`. Trace exports match the schema captured in the [MCP Tool Learning example](/examples/adaptive-tool-use), so you can replay identical workloads through distillation or GRPO. For the reinforcement-learning path, see [`grpo-training.mdx`](./grpo-training.mdx); both flows follow the override patterns documented in the [Training Configuration Guide](../configuration.mdx).
 
 ### Data Flow: Runtime to Training
 
@@ -23,7 +23,7 @@ The GKD training pipeline connects runtime traces to trained models:
 |-------|------|-------|--------|------|
 | 1. Runtime execution | `atlas run` | User tasks | Episode traces in Postgres | Minutes |
 | 2. Export traces (optional) | `arc-atlas` | Postgres episodes | JSONL dataset | Minutes |
-| 3. GKD training | `python train.py --config-name teacher_gkd` | JSONL or Postgres traces | Distilled checkpoint | 4-8 hours |
+| 3. GKD training | `atlas-core train recipe@_global_=teacher_gkd` | JSONL or Postgres traces | Distilled checkpoint | 4-8 hours |
 | 4. Deploy checkpoint | Update `teacher_model_name_or_path` in config | Trained model | Production teacher | Minutes |
 
 <Note>
@@ -94,12 +94,12 @@ Before running GKD training, verify your environment:
   <Step title="Verify Configuration Files Exist">
     ```bash
     # Check required config files
-    ls configs/run/teacher_gkd.yaml
-    ls configs/trainer/gkd.yaml
+    ls src/atlas_core/configs/recipe/teacher_gkd.yaml
+    ls src/atlas_core/configs/trainer/gkd.yaml
 
     # Expected output:
-    # configs/run/teacher_gkd.yaml
-    # configs/trainer/gkd.yaml
+    # src/atlas_core/configs/recipe/teacher_gkd.yaml
+    # src/atlas_core/configs/trainer/gkd.yaml
     ```
   </Step>
 </Steps>
@@ -110,8 +110,8 @@ Once prerequisites are met, start a minimal GKD run:
 
 ```bash
 # Run from ATLAS repository root
-python train.py \
-  --config-name teacher_gkd \
+atlas-core train \
+  recipe@_global_=teacher_gkd \
   teacher_model_name_or_path=Qwen/Qwen2.5-14B-Instruct \
   model.model_name_or_path=Qwen/Qwen2.5-7B-Instruct \
   trainer.min_reward=0.8 \
@@ -161,13 +161,13 @@ ls -lh outputs/gkd/checkpoint-final/
 
 These same Qwen checkpoints (`Qwen/Qwen2.5-14B-Instruct` teacher and `Qwen/Qwen2.5-7B-Instruct` student) are used by `scripts/validate_gkd.py` to measure the GSM8K lift before scaling to customer traces.
 
-Hydra composes the trainer from `configs/run/teacher_gkd.yaml`, which overrides `_global_.trainer=gkd` and the shared data presets documented in [Training Configuration](../configuration.mdx). Override any field inline (for example `trainer.learning_key`) using the same syntax shown in the GRPO guide.
+Hydra composes the trainer from `src/atlas_core/configs/recipe/teacher_gkd.yaml`, which overrides `_global_.trainer=gkd` and the shared data presets documented in [Training Configuration](../configuration.mdx). Override any field inline (for example `trainer.learning_key`) using the same syntax shown in the GRPO guide.
 
 Running the command streams Atlas runtime traces directly from Postgres (the same database you populate with `arc-atlas --database-url postgresql://... --include-status approved --output traces/runtime.jsonl`), fine-tunes the 7B student to mimic the 14B teacher, logs the Baseline Comparison metrics (success delta and token reduction) to WandB, and writes checkpoints into `outputs/gkd/`. If you prefer to operate on JSONL exports, point the dataset adapter at the CLI output; both paths preserve the SDK schema so Atlas Core sees identical conversation records. For a step-by-step walkthrough of exporting traces, running the validation script, and reading the metrics file, see the [Developer Example: Running GKD](/examples/gkd-dev-example).
 
 ### Configuration Files
 
-GKD training uses two main config files. The trainer config (`configs/trainer/gkd.yaml`) houses the GKD-specific hyperparameters (lmbda, beta, temperature) plus database connectivity and general training settings. The run config (`configs/run/teacher_gkd.yaml`) specifies student and teacher checkpoints, the Baseline Comparison reference metrics, and the output/logging targets.
+GKD training uses two main config files. The trainer config (`src/atlas_core/configs/trainer/gkd.yaml`) houses the GKD-specific hyperparameters (lmbda, beta, temperature) plus database connectivity and general training settings. The run config (`src/atlas_core/configs/recipe/teacher_gkd.yaml`) specifies student and teacher checkpoints, the Baseline Comparison reference metrics, and the output/logging targets.
 
 ### Cross-Tokenizer Alignment
 
@@ -246,7 +246,7 @@ Atlas logs `metrics/success_delta`, `metrics/token_reduction_pct`, and `metrics/
 For maximum quality, use higher reward threshold and more epochs:
 
 ```yaml
-# configs/run/gkd_high_quality.yaml
+# src/atlas_core/configs/recipe/gkd_high_quality.yaml
 defaults:
   - override /trainer@_global_: gkd
 
@@ -264,7 +264,7 @@ trainer:
 For rapid experimentation:
 
 ```yaml
-# configs/run/gkd_fast.yaml
+# src/atlas_core/configs/recipe/gkd_fast.yaml
 defaults:
   - override /trainer@_global_: gkd
 
@@ -363,12 +363,12 @@ Each stage uses the previous student as the teacher:
 
 ```bash
 # Stage 1: 14B → 7B
-python train.py --config-name teacher_gkd \\
+atlas-core train recipe@_global_=teacher_gkd \\
   teacher_model_name_or_path=Qwen/Qwen2.5-14B-Instruct \\
   model.model_name_or_path=Qwen/Qwen2.5-7B-Instruct
 
 # Stage 2: 7B → 3B
-python train.py --config-name teacher_gkd \\
+atlas-core train recipe@_global_=teacher_gkd \\
   teacher_model_name_or_path=outputs/gkd_7b/final \\
   model.model_name_or_path=Qwen/Qwen2.5-3B-Instruct
 ```
@@ -379,7 +379,7 @@ For Stage 3 evaluation (Issue #42):
 
 ```bash
 # 1. Train distilled model from baseline reference traces
-python train.py --config-name teacher_gkd \\
+atlas-core train recipe@_global_=teacher_gkd \\
   trainer.learning_key="crm_workflows" \\
   trainer.min_reward=0.8
 
@@ -392,7 +392,7 @@ python train.py --config-name teacher_gkd \\
 ### AtlasGKDTrainer
 
 ```python
-from trainers import AtlasGKDTrainer
+from atlas_core.training.algorithms.gkd_trainer import AtlasGKDTrainer
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from trl import GKDConfig
 
@@ -423,7 +423,7 @@ trainer.save_model("outputs/gkd/final")
 ### Dataset Functions
 
 ```python
-from trainers.gkd_dataset import build_gkd_dataset
+from atlas_core.data.gkd import build_gkd_dataset
 
 train_ds, eval_ds = build_gkd_dataset(
     db_url="postgresql://localhost:5432/atlas",
@@ -436,7 +436,7 @@ train_ds, eval_ds = build_gkd_dataset(
 ### Baseline Comparison Metrics
 
 ```python
-from trainers.gkd_evaluator import compute_baseline_summary
+from atlas_core.training.evaluation.gkd_evaluator import compute_baseline_summary
 
 summary = compute_baseline_summary(
     eval_results,
